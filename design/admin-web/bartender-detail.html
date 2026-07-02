@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OrderPoint – Bartender Details</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-icon"><span class="material-icons">local_bar</span></div>
+            <div class="sidebar-brand-text">
+                <div class="sidebar-brand-title">OrderPoint</div>
+                <div class="sidebar-brand-sub">Admin Panel</div>
+            </div>
+        </div>
+        <div class="nav-group">
+            <div class="nav-group-label">Overview</div>
+            <a href="dashboard.html" class="nav-item"><span
+                    class="material-icons">dashboard</span><span>Dashboard</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <div class="nav-group-label">Management</div>
+            <a href="bartenders.html" class="nav-item active"><span
+                    class="material-icons">people_alt</span><span>Bartenders</span></a>
+            <a href="items.html" class="nav-item"><span class="material-icons">restaurant_menu</span><span>Menu
+                    Items</span></a>
+            <a href="categories.html" class="nav-item"><span
+                    class="material-icons">category</span><span>Categories</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <div class="nav-group-label">Operations</div>
+            <a href="orders.html" class="nav-item"><span
+                    class="material-icons">receipt_long</span><span>Orders</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <a href="login.html" class="nav-item"><span class="material-icons">logout</span><span>Logout</span></a>
+        </div>
+    </nav>
+
+    <!-- APP BAR -->
+    <header class="appbar">
+        <span class="appbar-title">Bartender Details</span>
+        <div class="appbar-search">
+            <span class="material-icons">search</span>
+            <input type="text" placeholder="Search…" />
+        </div>
+        <a class="icon-btn" href="#" style="color:#fff;"><span class="material-icons">notifications_outlined</span></a>
+        <div class="appbar-user">
+            <div class="appbar-avatar">A</div>
+            <span class="appbar-user-name">Admin</span>
+            <span class="material-icons" style="font-size:18px;opacity:.8;">arrow_drop_down</span>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <div class="page-header">
+            <div class="page-header-left">
+                <h1 class="page-title">John Smith</h1>
+                <div class="breadcrumb">
+                    <a href="dashboard.html">Dashboard</a>
+                    <span class="breadcrumb-sep">›</span>
+                    <a href="bartenders.html">Bartenders</a>
+                    <span class="breadcrumb-sep">›</span>
+                    <span>John Smith</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-12">
+                <a href="bartenders.html" class="btn btn-outlined">
+                    <span class="material-icons">arrow_back</span>
+                    Back
+                </a>
+                <a href="bartender-edit.html" class="btn btn-primary">
+                    <span class="material-icons">edit</span>
+                    Edit Account
+                </a>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 2fr; gap:24px; align-items:start;">
+
+            <!-- Left column: profile card -->
+            <div style="display:flex; flex-direction:column; gap:20px;">
+
+                <div class="card" style="text-align:center;">
+                    <div class="card-body">
+                        <div class="avatar avatar-xl" style="background:#1976d2; margin:0 auto 14px;">JS</div>
+                        <div style="font-size:20px; font-weight:500; margin-bottom:4px;">John Smith</div>
+                        <div class="text-sm text-muted mb-16">Bartender</div>
+                        <span class="chip chip-success" style="font-size:13px; padding:5px 14px;">Active</span>
+
+                        <hr style="border:none; border-top:1px solid var(--divider); margin:20px 0;" />
+
+                        <div class="flex items-center gap-12 mb-8" style="text-align:left;">
+                            <span class="material-icons"
+                                style="color:var(--text-secondary); font-size:18px;">email</span>
+                            <span class="text-sm">john.smith@orderpoint.com</span>
+                        </div>
+                        <div class="flex items-center gap-12 mb-8" style="text-align:left;">
+                            <span class="material-icons"
+                                style="color:var(--text-secondary); font-size:18px;">phone</span>
+                            <span class="text-sm">+1 (555) 010-1234</span>
+                        </div>
+                        <div class="flex items-center gap-12" style="text-align:left;">
+                            <span class="material-icons"
+                                style="color:var(--text-secondary); font-size:18px;">calendar_today</span>
+                            <span class="text-sm">Joined Jan 15, 2026</span>
+                        </div>
+                    </div>
+
+                    <div style="padding:14px 20px; border-top:1px solid var(--divider); display:flex; gap:8px;">
+                        <a href="bartender-edit.html" class="btn btn-outlined" style="flex:1; justify-content:center;">
+                            <span class="material-icons">edit</span> Edit
+                        </a>
+                        <button class="btn btn-danger-outlined" style="flex:1; justify-content:center;"
+                            onclick="document.querySelector('.dialog-backdrop').style.display='flex'">
+                            <span class="material-icons">delete</span> Delete
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Activity stats -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Activity Stats</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="flex items-center justify-between"
+                            style="padding:8px 0; border-bottom:1px solid var(--divider);">
+                            <span class="text-sm text-muted">Orders Served</span>
+                            <span class="fw-500">312</span>
+                        </div>
+                        <div class="flex items-center justify-between"
+                            style="padding:8px 0; border-bottom:1px solid var(--divider);">
+                            <span class="text-sm text-muted">Orders This Month</span>
+                            <span class="fw-500">47</span>
+                        </div>
+                        <div class="flex items-center justify-between"
+                            style="padding:8px 0; border-bottom:1px solid var(--divider);">
+                            <span class="text-sm text-muted">Avg. Completion Time</span>
+                            <span class="fw-500">4.2 min</span>
+                        </div>
+                        <div class="flex items-center justify-between" style="padding:8px 0;">
+                            <span class="text-sm text-muted">Rating</span>
+                            <div class="flex items-center gap-4">
+                                <span class="material-icons" style="font-size:16px; color:#f9a825;">star</span>
+                                <span class="fw-500">4.8</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right column: details -->
+            <div style="display:flex; flex-direction:column; gap:20px;">
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Account Details</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="detail-section-title">Personal Information</div>
+
+                        <div class="detail-row">
+                            <div class="detail-key">Full Name</div>
+                            <div class="detail-val">John Smith</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-key">Email Address</div>
+                            <div class="detail-val">john.smith@orderpoint.com</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-key">Phone Number</div>
+                            <div class="detail-val">+1 (555) 010-1234</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-key">Role</div>
+                            <div class="detail-val">Bartender</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-key">Status</div>
+                            <div class="detail-val"><span class="chip chip-success">Active</span></div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-key">Notes</div>
+                            <div class="detail-val text-muted">Senior bartender, handles VIP tables.</div>
+                        </div>
+
+                        <div class="detail-section-title" style="margin-top:24px;">Account Information</div>
+
+                        <div class="detail-row">
+                            <div class="detail-key">Account ID</div>
+                            <div class="detail-val text-muted">#BRT-001</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-key">Created At</div>
+                            <div class="detail-val">January 15, 2026 at 09:30</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-key">Updated At</div>
+                            <div class="detail-val">April 20, 2026 at 14:15</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-key">Last Login</div>
+                            <div class="detail-val">Today at 10:14 AM from 192.168.1.42</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-key">Login Count</div>
+                            <div class="detail-val">147 sessions</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent orders by this bartender -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Recent Orders Handled</div>
+                        <a href="orders.html" class="btn btn-text"
+                            style="text-transform:none; font-size:13px; font-weight:400;">View all →</a>
+                    </div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order #</th>
+                                    <th>Table</th>
+                                    <th>Items</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><a href="order-detail.html" class="text-primary fw-500">#1045</a></td>
+                                    <td>Table 1</td>
+                                    <td>5</td>
+                                    <td>$52.95</td>
+                                    <td><span class="chip chip-success">Completed</span></td>
+                                    <td class="text-muted text-sm">Today</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="order-detail.html" class="text-primary fw-500">#1040</a></td>
+                                    <td>Table 4</td>
+                                    <td>6</td>
+                                    <td>$68.94</td>
+                                    <td><span class="chip chip-success">Completed</span></td>
+                                    <td class="text-muted text-sm">Today</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="order-detail.html" class="text-primary fw-500">#1035</a></td>
+                                    <td>Table 2</td>
+                                    <td>2</td>
+                                    <td>$19.98</td>
+                                    <td><span class="chip chip-success">Completed</span></td>
+                                    <td class="text-muted text-sm">Yesterday</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Delete dialog -->
+    <div class="dialog-backdrop" style="display:none;">
+        <div class="dialog">
+            <div class="dialog-title">Delete Bartender Account</div>
+            <div class="dialog-text">
+                Are you sure you want to delete <strong>John Smith</strong>'s account? This action cannot be undone.
+            </div>
+            <div class="dialog-actions">
+                <button class="btn btn-text"
+                    onclick="document.querySelector('.dialog-backdrop').style.display='none'">Cancel</button>
+                <a href="bartenders.html" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

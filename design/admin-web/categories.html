@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OrderPoint – Categories</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-icon"><span class="material-icons">local_bar</span></div>
+            <div class="sidebar-brand-text">
+                <div class="sidebar-brand-title">OrderPoint</div>
+                <div class="sidebar-brand-sub">Admin Panel</div>
+            </div>
+        </div>
+        <div class="nav-group">
+            <div class="nav-group-label">Overview</div>
+            <a href="dashboard.html" class="nav-item"><span
+                    class="material-icons">dashboard</span><span>Dashboard</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <div class="nav-group-label">Management</div>
+            <a href="bartenders.html" class="nav-item"><span
+                    class="material-icons">people_alt</span><span>Bartenders</span></a>
+            <a href="items.html" class="nav-item"><span class="material-icons">restaurant_menu</span><span>Menu
+                    Items</span></a>
+            <a href="categories.html" class="nav-item active"><span
+                    class="material-icons">category</span><span>Categories</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <div class="nav-group-label">Operations</div>
+            <a href="orders.html" class="nav-item"><span
+                    class="material-icons">receipt_long</span><span>Orders</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <a href="login.html" class="nav-item"><span class="material-icons">logout</span><span>Logout</span></a>
+        </div>
+    </nav>
+
+    <!-- APP BAR -->
+    <header class="appbar">
+        <span class="appbar-title">Categories</span>
+        <div class="appbar-search">
+            <span class="material-icons">search</span>
+            <input type="text" placeholder="Search categories…" />
+        </div>
+        <a class="icon-btn" href="#" style="color:#fff;"><span class="material-icons">notifications_outlined</span></a>
+        <div class="appbar-user">
+            <div class="appbar-avatar">A</div>
+            <span class="appbar-user-name">Admin</span>
+            <span class="material-icons" style="font-size:18px;opacity:.8;">arrow_drop_down</span>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <div class="page-header">
+            <div class="page-header-left">
+                <h1 class="page-title">Menu Categories</h1>
+                <div class="breadcrumb">
+                    <a href="dashboard.html">Dashboard</a>
+                    <span class="breadcrumb-sep">›</span>
+                    <span>Categories</span>
+                </div>
+            </div>
+            <a href="category-create.html" class="btn btn-primary">
+                <span class="material-icons">add</span>
+                Add Category
+            </a>
+        </div>
+
+        <!-- Category cards overview -->
+        <div style="display:grid; grid-template-columns:repeat(5,1fr); gap:16px; margin-bottom:28px;">
+            <div class="card" style="padding:18px; text-align:center;">
+                <div class="cat-icon-wrap" style="background:#1976d2; margin:0 auto 10px;">
+                    <span class="material-icons">local_bar</span>
+                </div>
+                <div class="fw-500">Cocktails</div>
+                <div class="text-xs text-muted mt-8">3 items</div>
+            </div>
+            <div class="card" style="padding:18px; text-align:center;">
+                <div class="cat-icon-wrap" style="background:#0277bd; margin:0 auto 10px;">
+                    <span class="material-icons">sports_bar</span>
+                </div>
+                <div class="fw-500">Beers</div>
+                <div class="text-xs text-muted mt-8">3 items</div>
+            </div>
+            <div class="card" style="padding:18px; text-align:center;">
+                <div class="cat-icon-wrap" style="background:#9c27b0; margin:0 auto 10px;">
+                    <span class="material-icons">wine_bar</span>
+                </div>
+                <div class="fw-500">Wines</div>
+                <div class="text-xs text-muted mt-8">2 items</div>
+            </div>
+            <div class="card" style="padding:18px; text-align:center;">
+                <div class="cat-icon-wrap" style="background:#2e7d32; margin:0 auto 10px;">
+                    <span class="material-icons">local_cafe</span>
+                </div>
+                <div class="fw-500">Non-Alcoholic</div>
+                <div class="text-xs text-muted mt-8">2 items</div>
+            </div>
+            <div class="card" style="padding:18px; text-align:center;">
+                <div class="cat-icon-wrap" style="background:#e65100; margin:0 auto 10px;">
+                    <span class="material-icons">fastfood</span>
+                </div>
+                <div class="fw-500">Snacks</div>
+                <div class="text-xs text-muted mt-8">2 items</div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="card">
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:44px;"></th>
+                            <th>Category Name</th>
+                            <th>Description</th>
+                            <th>Items Count</th>
+                            <th>Display Order</th>
+                            <th>Status</th>
+                            <th>Created At</th>
+                            <th style="text-align:center;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="cat-icon-wrap avatar-sm"
+                                    style="background:#1976d2; width:32px; height:32px;">
+                                    <span class="material-icons" style="font-size:16px; color:#fff;">local_bar</span>
+                                </div>
+                            </td>
+                            <td class="fw-500">Cocktails</td>
+                            <td class="text-muted text-sm">Mixed drinks with spirits, liqueurs, and mixers</td>
+                            <td>
+                                <a href="category-detail.html" class="text-primary fw-500">3 items</a>
+                            </td>
+                            <td>1</td>
+                            <td><span class="chip chip-success">Active</span></td>
+                            <td class="text-muted text-sm">Jan 10, 2026</td>
+                            <td>
+                                <div class="table-actions" style="justify-content:center;">
+                                    <a href="category-detail.html" class="icon-btn primary" data-tip="View"><span
+                                            class="material-icons">visibility</span></a>
+                                    <a href="category-edit.html" class="icon-btn primary" data-tip="Edit"><span
+                                            class="material-icons">edit</span></a>
+                                    <button class="icon-btn danger" data-tip="Delete"><span
+                                            class="material-icons">delete</span></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div
+                                    style="background:#0277bd; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                                    <span class="material-icons" style="font-size:16px; color:#fff;">sports_bar</span>
+                                </div>
+                            </td>
+                            <td class="fw-500">Beers</td>
+                            <td class="text-muted text-sm">Draught, bottled, and canned beers from around the world</td>
+                            <td><a href="category-detail.html" class="text-primary fw-500">3 items</a></td>
+                            <td>2</td>
+                            <td><span class="chip chip-success">Active</span></td>
+                            <td class="text-muted text-sm">Jan 10, 2026</td>
+                            <td>
+                                <div class="table-actions" style="justify-content:center;">
+                                    <a href="category-detail.html" class="icon-btn primary"><span
+                                            class="material-icons">visibility</span></a>
+                                    <a href="category-edit.html" class="icon-btn primary"><span
+                                            class="material-icons">edit</span></a>
+                                    <button class="icon-btn danger"><span class="material-icons">delete</span></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div
+                                    style="background:#9c27b0; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                                    <span class="material-icons" style="font-size:16px; color:#fff;">wine_bar</span>
+                                </div>
+                            </td>
+                            <td class="fw-500">Wines</td>
+                            <td class="text-muted text-sm">Red, white, rosé, and sparkling wines by the glass</td>
+                            <td><a href="category-detail.html" class="text-primary fw-500">2 items</a></td>
+                            <td>3</td>
+                            <td><span class="chip chip-success">Active</span></td>
+                            <td class="text-muted text-sm">Jan 10, 2026</td>
+                            <td>
+                                <div class="table-actions" style="justify-content:center;">
+                                    <a href="category-detail.html" class="icon-btn primary"><span
+                                            class="material-icons">visibility</span></a>
+                                    <a href="category-edit.html" class="icon-btn primary"><span
+                                            class="material-icons">edit</span></a>
+                                    <button class="icon-btn danger"><span class="material-icons">delete</span></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div
+                                    style="background:#2e7d32; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                                    <span class="material-icons" style="font-size:16px; color:#fff;">local_cafe</span>
+                                </div>
+                            </td>
+                            <td class="fw-500">Non-Alcoholic</td>
+                            <td class="text-muted text-sm">Soft drinks, juices, water, and other alcohol-free options
+                            </td>
+                            <td><a href="category-detail.html" class="text-primary fw-500">2 items</a></td>
+                            <td>4</td>
+                            <td><span class="chip chip-success">Active</span></td>
+                            <td class="text-muted text-sm">Jan 10, 2026</td>
+                            <td>
+                                <div class="table-actions" style="justify-content:center;">
+                                    <a href="category-detail.html" class="icon-btn primary"><span
+                                            class="material-icons">visibility</span></a>
+                                    <a href="category-edit.html" class="icon-btn primary"><span
+                                            class="material-icons">edit</span></a>
+                                    <button class="icon-btn danger"><span class="material-icons">delete</span></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div
+                                    style="background:#e65100; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                                    <span class="material-icons" style="font-size:16px; color:#fff;">fastfood</span>
+                                </div>
+                            </td>
+                            <td class="fw-500">Snacks</td>
+                            <td class="text-muted text-sm">Light bites, finger food, and sharing platters</td>
+                            <td><a href="category-detail.html" class="text-primary fw-500">2 items</a></td>
+                            <td>5</td>
+                            <td><span class="chip chip-success">Active</span></td>
+                            <td class="text-muted text-sm">Feb 1, 2026</td>
+                            <td>
+                                <div class="table-actions" style="justify-content:center;">
+                                    <a href="category-detail.html" class="icon-btn primary"><span
+                                            class="material-icons">visibility</span></a>
+                                    <a href="category-edit.html" class="icon-btn primary"><span
+                                            class="material-icons">edit</span></a>
+                                    <button class="icon-btn danger"><span class="material-icons">delete</span></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="flex items-center justify-between"
+                style="padding:14px 16px; border-top:1px solid var(--divider);">
+                <span class="text-sm text-muted">1–5 of 5 categories</span>
+                <div class="flex items-center gap-4">
+                    <button class="icon-btn" style="color:var(--text-disabled);"><span
+                            class="material-icons">chevron_left</span></button>
+                    <button class="btn btn-text"
+                        style="min-width:36px; min-height:36px; padding:0; font-size:14px; color:var(--primary); background:var(--primary-bg); border-radius:50%;">1</button>
+                    <button class="icon-btn" style="color:var(--text-disabled);"><span
+                            class="material-icons">chevron_right</span></button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Delete dialog -->
+    <div class="dialog-backdrop" style="display:none;">
+        <div class="dialog">
+            <div class="dialog-title">Delete Category</div>
+            <div class="dialog-text">
+                Are you sure you want to delete <strong>Cocktails</strong>? All items in this category will become
+                uncategorised. This action cannot be undone.
+            </div>
+            <div class="dialog-actions">
+                <button class="btn btn-text">Cancel</button>
+                <button class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAB -->
+    <a href="category-create.html" class="fab">
+        <span class="material-icons">add</span>
+    </a>
+
+</body>
+
+</html>

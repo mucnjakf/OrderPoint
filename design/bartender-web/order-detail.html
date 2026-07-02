@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+        =====================================================
+        ORDER DETAIL — STATE SELECTOR
+        Change the <body> class to preview different states:
+
+          class=""                  → PENDING   (Accept / Decline)
+          class="state-accepted"   → ACCEPTED  (Mark Active / Decline)
+          class="state-active"     → ACTIVE    (Mark Complete)
+          class="state-completed"  → COMPLETED (read-only)
+          class="state-declined"   → DECLINED  (read-only)
+        =====================================================
+    -->
+    <title>OrderPoint – Order #1049 (Pending)</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+        /* ── State-driven layout helpers ── */
+
+        /* PENDING: show accept+decline action bar; show stepper at step 1 */
+        body .actions-pending {
+            display: flex;
+        }
+
+        body .actions-accepted {
+            display: none;
+        }
+
+        body .actions-active {
+            display: none;
+        }
+
+        body .actions-done {
+            display: none;
+        }
+
+        body .step-accepted-node {
+            /* inactive */
+        }
+
+        body .step-active-node {
+            /* inactive */
+        }
+
+        body .step-completed-node {
+            /* inactive */
+        }
+
+        body .declined-banner {
+            display: none;
+        }
+
+        /* ACCEPTED */
+        body.state-accepted .actions-pending {
+            display: none;
+        }
+
+        body.state-accepted .actions-accepted {
+            display: flex;
+        }
+
+        body.state-accepted .actions-active {
+            display: none;
+        }
+
+        body.state-accepted .actions-done {
+            display: none;
+        }
+
+        body.state-accepted .declined-banner {
+            display: none;
+        }
+
+        /* ACTIVE */
+        body.state-active .actions-pending {
+            display: none;
+        }
+
+        body.state-active .actions-accepted {
+            display: none;
+        }
+
+        body.state-active .actions-active {
+            display: flex;
+        }
+
+        body.state-active .actions-done {
+            display: none;
+        }
+
+        body.state-active .declined-banner {
+            display: none;
+        }
+
+        /* COMPLETED */
+        body.state-completed .actions-pending {
+            display: none;
+        }
+
+        body.state-completed .actions-accepted {
+            display: none;
+        }
+
+        body.state-completed .actions-active {
+            display: none;
+        }
+
+        body.state-completed .actions-done {
+            display: flex;
+        }
+
+        body.state-completed .declined-banner {
+            display: none;
+        }
+
+        body.state-completed .action-bar {
+            background: var(--surface);
+        }
+
+        /* DECLINED */
+        body.state-declined .actions-pending {
+            display: none;
+        }
+
+        body.state-declined .actions-accepted {
+            display: none;
+        }
+
+        body.state-declined .actions-active {
+            display: none;
+        }
+
+        body.state-declined .actions-done {
+            display: none;
+        }
+
+        body.state-declined .declined-banner {
+            display: flex;
+        }
+
+        body.state-declined .stepper {
+            display: none;
+        }
+
+        body.state-declined .action-bar {
+            display: none;
+        }
+    </style>
+</head>
+
+<!-- Default state: PENDING. Change class to preview other states. -->
+
+<body>
+
+    <!-- ══════════════════════════════════════════
+         TOP APP BAR
+    ═══════════════════════════════════════════ -->
+    <header class="appbar">
+        <a href="orders.html" class="icon-btn white">
+            <span class="material-icons">arrow_back</span>
+        </a>
+        <span class="appbar-title">Order #1049</span>
+        <div class="appbar-actions">
+            <button class="icon-btn white">
+                <span class="material-icons">more_vert</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ══════════════════════════════════════════
+         DECLINED BANNER (hidden unless state-declined)
+    ═══════════════════════════════════════════ -->
+    <div class="declined-banner">
+        <span class="material-icons">cancel</span>
+        <div>
+            <div class="declined-banner-text">This order has been declined</div>
+            <div class="declined-banner-sub">The customer was notified.</div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         STATUS STEPPER
+         Adjust the current/done classes to match
+         the desired state when demoing.
+    ═══════════════════════════════════════════ -->
+    <!--
+        PENDING state classes  → step 1 = current pending
+        ACCEPTED state classes → step 1 = done, step 2 = current accepted
+        ACTIVE state classes   → steps 1-2 = done, step 3 = current active
+        COMPLETED state classes→ all steps done
+    -->
+    <div class="stepper">
+
+        <!-- Step 1: Pending -->
+        <div class="step current pending step-pending-node">
+            <div class="step-dot">
+                <span class="material-icons">hourglass_empty</span>
+            </div>
+            <div class="step-label">Pending</div>
+        </div>
+
+        <!-- Step 2: Accepted -->
+        <div class="step step-accepted-node">
+            <div class="step-dot"><span class="step-num">2</span></div>
+            <div class="step-label">Accepted</div>
+        </div>
+
+        <!-- Step 3: Active -->
+        <div class="step step-active-node">
+            <div class="step-dot"><span class="step-num">3</span></div>
+            <div class="step-label">Active</div>
+        </div>
+
+        <!-- Step 4: Completed -->
+        <div class="step step-completed-node">
+            <div class="step-dot"><span class="step-num">4</span></div>
+            <div class="step-label">Completed</div>
+        </div>
+
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         ORDER INFO
+    ═══════════════════════════════════════════ -->
+    <div class="section-label">Order Info</div>
+    <div class="info-card">
+        <div class="info-row">
+            <div class="info-row-icon"><span class="material-icons">tag</span></div>
+            <span class="info-row-label">Order Number</span>
+            <span class="info-row-value">#1049</span>
+        </div>
+        <div class="info-row">
+            <div class="info-row-icon"><span class="material-icons">table_restaurant</span></div>
+            <span class="info-row-label">Table</span>
+            <span class="info-row-value">Table 7</span>
+        </div>
+        <div class="info-row">
+            <div class="info-row-icon"><span class="material-icons">schedule</span></div>
+            <span class="info-row-label">Ordered at</span>
+            <span class="info-row-value">14:32 · Just now</span>
+        </div>
+        <div class="info-row">
+            <div class="info-row-icon"><span class="material-icons">receipt_long</span></div>
+            <span class="info-row-label">Status</span>
+            <span class="chip chip-pending">Pending</span>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         ORDER ITEMS
+    ═══════════════════════════════════════════ -->
+    <div class="section-label">Items (4)</div>
+    <div class="items-list">
+
+        <div class="item-row">
+            <div class="item-icon cocktail">
+                <span class="material-icons">local_bar</span>
+            </div>
+            <div class="item-info">
+                <div class="item-name">Mojito</div>
+                <div class="item-cat">Cocktails</div>
+            </div>
+            <div class="item-right">
+                <div class="item-qty-badge">×2</div>
+                <div class="item-unit-price">$9.99 each</div>
+                <div class="item-subtotal">$19.98</div>
+            </div>
+        </div>
+
+        <div class="item-row">
+            <div class="item-icon beer">
+                <span class="material-icons">sports_bar</span>
+            </div>
+            <div class="item-info">
+                <div class="item-name">Heineken</div>
+                <div class="item-cat">Beers</div>
+            </div>
+            <div class="item-right">
+                <div class="item-qty-badge">×1</div>
+                <div class="item-unit-price">$4.99</div>
+                <div class="item-subtotal">$4.99</div>
+            </div>
+        </div>
+
+        <div class="item-row">
+            <div class="item-icon soft">
+                <span class="material-icons">local_drink</span>
+            </div>
+            <div class="item-info">
+                <div class="item-name">Diet Coke</div>
+                <div class="item-cat">Soft Drinks</div>
+            </div>
+            <div class="item-right">
+                <div class="item-qty-badge">×1</div>
+                <div class="item-unit-price">$2.99</div>
+                <div class="item-subtotal">$2.99</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         CUSTOMER NOTE
+    ═══════════════════════════════════════════ -->
+    <div class="note-box">
+        <span class="material-icons">sticky_note_2</span>
+        <div>
+            <div class="note-box-label">Customer Note</div>
+            <div class="note-box-text">No mint in the mojito please. Extra lime if possible.</div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         ORDER TOTAL
+    ═══════════════════════════════════════════ -->
+    <div class="total-row">
+        <span class="total-label">Order Total</span>
+        <span class="total-value">$27.96</span>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         STICKY ACTION BAR
+         Each .action-row is hidden/shown by CSS based
+         on the <body> class (state selector above).
+    ═══════════════════════════════════════════ -->
+    <div class="action-bar">
+
+        <!-- ──────────────────────────────────────
+             PENDING: Accept + Decline
+        ─────────────────────────────────────── -->
+        <div class="action-hint text-xs text-secondary text-center mb-8">
+            Review the order and choose an action
+        </div>
+        <div class="action-row actions-pending">
+            <button class="btn btn-outlined-error">
+                <span class="material-icons">close</span>
+                Decline
+            </button>
+            <button class="btn btn-success" style="flex:2;">
+                <span class="material-icons">check</span>
+                Accept Order
+            </button>
+        </div>
+
+        <!-- ──────────────────────────────────────
+             ACCEPTED: Mark Active + Decline
+        ─────────────────────────────────────── -->
+        <div class="action-row actions-accepted">
+            <button class="btn btn-outlined-error">
+                <span class="material-icons">close</span>
+                Decline
+            </button>
+            <button class="btn btn-primary" style="flex:2;">
+                <span class="material-icons">loop</span>
+                Start Preparing
+            </button>
+        </div>
+
+        <!-- ──────────────────────────────────────
+             ACTIVE: Mark Complete
+        ─────────────────────────────────────── -->
+        <div class="action-row actions-active">
+            <button class="btn btn-success btn-w100">
+                <span class="material-icons">done_all</span>
+                Mark as Completed
+            </button>
+        </div>
+
+        <!-- ──────────────────────────────────────
+             COMPLETED / read-only
+        ─────────────────────────────────────── -->
+        <div class="action-row actions-done" style="justify-content:center;">
+            <span class="chip chip-completed chip-lg" style="font-size:14px; padding:10px 20px;">
+                <span class="material-icons">check_circle</span>
+                Order Completed
+            </span>
+        </div>
+
+    </div>
+    <!-- /action-bar -->
+
+    <!-- Bottom spacer so last content line clears the sticky bar -->
+    <div style="height: 20px;"></div>
+
+    <!--
+    ══════════════════════════════════════════════════════════
+    DESIGN NOTES – STATE VARIATIONS
+    ══════════════════════════════════════════════════════════
+
+    To demo each state, add the corresponding class to <body>:
+
+    ┌──────────────┬────────────────────────────────────────┐
+    │  State       │  <body class="...">                    │
+    ├──────────────┼────────────────────────────────────────┤
+    │  Pending     │  (no class – default)                  │
+    │  Accepted    │  state-accepted                        │
+    │  Active      │  state-active                          │
+    │  Completed   │  state-completed                       │
+    │  Declined    │  state-declined                        │
+    └──────────────┴────────────────────────────────────────┘
+
+    Stepper step classes for each state:
+
+    PENDING:
+      step 1 → class="step current pending"
+      steps 2-4 → class="step"
+
+    ACCEPTED:
+      step 1 → class="step done"
+      step 2 → class="step current accepted"
+      steps 3-4 → class="step"
+
+    ACTIVE:
+      steps 1-2 → class="step done"
+      step 3 → class="step current active"
+      step 4 → class="step"
+
+    COMPLETED:
+      steps 1-4 → class="step done"
+
+    ══════════════════════════════════════════════════════════
+    -->
+
+</body>
+
+</html>

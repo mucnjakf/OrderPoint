@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OrderPoint – Edit Item</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-icon"><span class="material-icons">local_bar</span></div>
+            <div class="sidebar-brand-text">
+                <div class="sidebar-brand-title">OrderPoint</div>
+                <div class="sidebar-brand-sub">Admin Panel</div>
+            </div>
+        </div>
+        <div class="nav-group">
+            <div class="nav-group-label">Overview</div>
+            <a href="dashboard.html" class="nav-item"><span
+                    class="material-icons">dashboard</span><span>Dashboard</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <div class="nav-group-label">Management</div>
+            <a href="bartenders.html" class="nav-item"><span
+                    class="material-icons">people_alt</span><span>Bartenders</span></a>
+            <a href="items.html" class="nav-item active"><span class="material-icons">restaurant_menu</span><span>Menu
+                    Items</span></a>
+            <a href="categories.html" class="nav-item"><span
+                    class="material-icons">category</span><span>Categories</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <div class="nav-group-label">Operations</div>
+            <a href="orders.html" class="nav-item"><span
+                    class="material-icons">receipt_long</span><span>Orders</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <a href="login.html" class="nav-item"><span class="material-icons">logout</span><span>Logout</span></a>
+        </div>
+    </nav>
+
+    <!-- APP BAR -->
+    <header class="appbar">
+        <span class="appbar-title">Edit Item</span>
+        <div class="appbar-search">
+            <span class="material-icons">search</span>
+            <input type="text" placeholder="Search…" />
+        </div>
+        <a class="icon-btn" href="#" style="color:#fff;"><span class="material-icons">notifications_outlined</span></a>
+        <div class="appbar-user">
+            <div class="appbar-avatar">A</div>
+            <span class="appbar-user-name">Admin</span>
+            <span class="material-icons" style="font-size:18px;opacity:.8;">arrow_drop_down</span>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <div class="page-header">
+            <div class="page-header-left">
+                <h1 class="page-title">Edit: Mojito</h1>
+                <div class="breadcrumb">
+                    <a href="dashboard.html">Dashboard</a>
+                    <span class="breadcrumb-sep">›</span>
+                    <a href="items.html">Menu Items</a>
+                    <span class="breadcrumb-sep">›</span>
+                    <a href="item-detail.html">Mojito</a>
+                    <span class="breadcrumb-sep">›</span>
+                    <span>Edit</span>
+                </div>
+            </div>
+            <div class="flex gap-12">
+                <a href="item-detail.html" class="btn btn-outlined">
+                    <span class="material-icons">arrow_back</span>
+                    Back to Details
+                </a>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:2fr 1fr; gap:24px; align-items:start;">
+
+            <!-- Left: form -->
+            <div style="display:flex; flex-direction:column; gap:20px;">
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Item Information</div>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="form-field">
+                            <label class="form-label">Item Name *</label>
+                            <input type="text" class="form-input" value="Mojito" />
+                        </div>
+
+                        <div class="form-field">
+                            <label class="form-label">Description</label>
+                            <textarea
+                                class="form-textarea">Classic Cuban cocktail with white rum, fresh lime juice, sugar, mint leaves, and soda water. Served over ice in a highball glass.</textarea>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-field">
+                                <label class="form-label">Category *</label>
+                                <select class="form-select">
+                                    <option selected>Cocktails</option>
+                                    <option>Beers</option>
+                                    <option>Wines</option>
+                                    <option>Non-Alcoholic</option>
+                                    <option>Snacks</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label class="form-label">Price *</label>
+                                <div class="input-wrap">
+                                    <span class="material-icons">attach_money</span>
+                                    <input type="number" class="form-input" value="9.99" min="0" step="0.01" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-field">
+                                <label class="form-label">Preparation Time (minutes)</label>
+                                <div class="input-wrap">
+                                    <span class="material-icons">timer</span>
+                                    <input type="number" class="form-input" value="4" />
+                                </div>
+                            </div>
+                            <div class="form-field">
+                                <label class="form-label">Serving Size</label>
+                                <input type="text" class="form-input" value="300ml glass" />
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label class="form-label">Allergens</label>
+                            <input type="text" class="form-input" value=""
+                                placeholder="e.g. Contains: gluten, dairy, nuts" />
+                        </div>
+
+                        <div class="form-field mb-0">
+                            <label class="form-label">Tags</label>
+                            <input type="text" class="form-input" value="popular, classic, rum-based" />
+                            <div class="form-helper">Separate tags with commas.</div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-actions"
+                        style="padding:16px 20px; margin-top:0; border-top:1px solid var(--divider);">
+                        <a href="item-detail.html" class="btn btn-outlined">Discard Changes</a>
+                        <a href="item-detail.html" class="btn btn-primary">
+                            <span class="material-icons">save</span>
+                            Save Changes
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right: image + settings -->
+            <div style="display:flex; flex-direction:column; gap:20px;">
+
+                <!-- Current photo -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Item Photo</div>
+                    </div>
+                    <div class="card-body">
+                        <div
+                            style="width:100%; height:150px; background:linear-gradient(135deg,#e8f5e9,#c8e6c9);
+                      border-radius:4px; display:flex; align-items:center; justify-content:center; margin-bottom:14px;">
+                            <span class="material-icons" style="font-size:52px; color:#66bb6a;">local_bar</span>
+                        </div>
+                        <div class="upload-area">
+                            <span class="material-icons">upload</span>
+                            <p class="fw-500">Replace photo</p>
+                            <span class="text-xs">PNG, JPG up to 5MB</span>
+                        </div>
+                        <button class="btn btn-text"
+                            style="margin-top:10px; color:var(--error); font-size:13px; width:100%; justify-content:center;">
+                            Remove photo
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Availability -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Availability</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-field">
+                            <label class="form-label">Status</label>
+                            <select class="form-select">
+                                <option value="available" selected>Available</option>
+                                <option value="unavailable">Unavailable</option>
+                            </select>
+                        </div>
+                        <div class="form-field mb-0">
+                            <label class="form-label">Display Order</label>
+                            <input type="number" class="form-input" value="1" min="1" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Danger zone -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Danger Zone</div>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-sm text-muted mb-16">Permanently remove this item from the menu. This cannot be
+                            undone.</p>
+                        <button class="btn btn-danger-outlined w-100" style="justify-content:center;"
+                            onclick="document.querySelector('.dialog-backdrop').style.display='flex'">
+                            <span class="material-icons">delete_forever</span>
+                            Delete Item
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Delete dialog -->
+    <div class="dialog-backdrop" style="display:none;">
+        <div class="dialog">
+            <div class="dialog-title">Delete Menu Item</div>
+            <div class="dialog-text">
+                Are you sure you want to delete <strong>Mojito</strong>? This action cannot be undone.
+            </div>
+            <div class="dialog-actions">
+                <button class="btn btn-text"
+                    onclick="document.querySelector('.dialog-backdrop').style.display='none'">Cancel</button>
+                <a href="items.html" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OrderPoint – Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+    <!-- ═══════════════ SIDEBAR ═══════════════ -->
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-icon"><span class="material-icons">local_bar</span></div>
+            <div class="sidebar-brand-text">
+                <div class="sidebar-brand-title">OrderPoint</div>
+                <div class="sidebar-brand-sub">Admin Panel</div>
+            </div>
+        </div>
+
+        <div class="nav-group">
+            <div class="nav-group-label">Overview</div>
+            <a href="dashboard.html" class="nav-item active">
+                <span class="material-icons">dashboard</span>
+                <span>Dashboard</span>
+            </a>
+        </div>
+
+        <hr class="nav-divider" />
+
+        <div class="nav-group">
+            <div class="nav-group-label">Management</div>
+            <a href="bartenders.html" class="nav-item">
+                <span class="material-icons">people_alt</span>
+                <span>Bartenders</span>
+            </a>
+            <a href="items.html" class="nav-item">
+                <span class="material-icons">restaurant_menu</span>
+                <span>Menu Items</span>
+            </a>
+            <a href="categories.html" class="nav-item">
+                <span class="material-icons">category</span>
+                <span>Categories</span>
+            </a>
+        </div>
+
+        <hr class="nav-divider" />
+
+        <div class="nav-group">
+            <div class="nav-group-label">Operations</div>
+            <a href="orders.html" class="nav-item">
+                <span class="material-icons">receipt_long</span>
+                <span>Orders</span>
+            </a>
+        </div>
+
+        <hr class="nav-divider" />
+
+        <div class="nav-group">
+            <a href="login.html" class="nav-item">
+                <span class="material-icons">logout</span>
+                <span>Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- ═══════════════ APP BAR ═══════════════ -->
+    <header class="appbar">
+        <span class="appbar-title">Dashboard</span>
+
+        <div class="appbar-search">
+            <span class="material-icons">search</span>
+            <input type="text" placeholder="Search…" />
+        </div>
+
+        <a class="icon-btn" href="#" style="color:#fff;" data-tip="Notifications">
+            <span class="material-icons">notifications_outlined</span>
+        </a>
+
+        <div class="appbar-user">
+            <div class="appbar-avatar">A</div>
+            <span class="appbar-user-name">Admin</span>
+            <span class="material-icons" style="font-size:18px; opacity:.8;">arrow_drop_down</span>
+        </div>
+    </header>
+
+    <!-- ═══════════════ MAIN ═══════════════ -->
+    <main class="main">
+
+        <!-- Page header -->
+        <div class="page-header">
+            <div class="page-header-left">
+                <h1 class="page-title">Dashboard</h1>
+                <div class="breadcrumb">
+                    <span class="material-icons" style="font-size:14px;">home</span>
+                    <span class="breadcrumb-sep">›</span>
+                    <span>Dashboard</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-12">
+                <span class="text-sm text-muted">Today: <strong>Mon, Apr 27, 2026</strong></span>
+            </div>
+        </div>
+
+        <!-- Stat cards -->
+        <div class="stat-cards">
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#1976d2;">
+                    <span class="material-icons">receipt_long</span>
+                </div>
+                <div>
+                    <div class="stat-value">47</div>
+                    <div class="stat-label">Orders Today</div>
+                    <div class="stat-trend up">↑ 12% from yesterday</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#2e7d32;">
+                    <span class="material-icons">payments</span>
+                </div>
+                <div>
+                    <div class="stat-value">$489</div>
+                    <div class="stat-label">Revenue Today</div>
+                    <div class="stat-trend up">↑ 8% from yesterday</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#e65100;">
+                    <span class="material-icons">pending_actions</span>
+                </div>
+                <div>
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">Pending Orders</div>
+                    <div class="stat-trend down">↑ 2 new since last hour</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#6a1b9a;">
+                    <span class="material-icons">table_bar</span>
+                </div>
+                <div>
+                    <div class="stat-value">8</div>
+                    <div class="stat-label">Active Tables</div>
+                    <div class="stat-trend up">of 12 total</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Second row of stat cards -->
+        <div class="stat-cards mb-28">
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#0277bd;">
+                    <span class="material-icons">people_alt</span>
+                </div>
+                <div>
+                    <div class="stat-value">4</div>
+                    <div class="stat-label">Active Bartenders</div>
+                    <div class="stat-trend" style="color:var(--text-secondary);">of 5 registered</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#00695c;">
+                    <span class="material-icons">restaurant_menu</span>
+                </div>
+                <div>
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">Menu Items</div>
+                    <div class="stat-trend" style="color:var(--text-secondary);">across 5 categories</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#ad1457;">
+                    <span class="material-icons">category</span>
+                </div>
+                <div>
+                    <div class="stat-value">5</div>
+                    <div class="stat-label">Categories</div>
+                    <div class="stat-trend" style="color:var(--text-secondary);">all active</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#37474f;">
+                    <span class="material-icons">qr_code_scanner</span>
+                </div>
+                <div>
+                    <div class="stat-value">1,247</div>
+                    <div class="stat-label">Total Orders (All Time)</div>
+                    <div class="stat-trend up">↑ steady growth</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Two-column layout -->
+        <div style="display:grid; grid-template-columns: 2fr 1fr; gap:24px; margin-bottom:28px;">
+
+            <!-- Recent orders -->
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Recent Orders</div>
+                        <div class="card-subtitle">Last 10 orders across all tables</div>
+                    </div>
+                    <a href="orders.html" class="btn btn-text"
+                        style="text-transform:none; font-weight:400; font-size:13px;">View all →</a>
+                </div>
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Table</th>
+                                <th>Items</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><a href="order-detail.html" class="text-primary fw-500">#1047</a></td>
+                                <td>Table 3</td>
+                                <td>3</td>
+                                <td>$29.97</td>
+                                <td><span class="chip chip-warning">Pending</span></td>
+                                <td class="text-muted text-sm">2 min ago</td>
+                            </tr>
+                            <tr>
+                                <td><a href="order-detail.html" class="text-primary fw-500">#1046</a></td>
+                                <td>Table 7</td>
+                                <td>2</td>
+                                <td>$15.98</td>
+                                <td><span class="chip chip-info">In Progress</span></td>
+                                <td class="text-muted text-sm">8 min ago</td>
+                            </tr>
+                            <tr>
+                                <td><a href="order-detail.html" class="text-primary fw-500">#1045</a></td>
+                                <td>Table 1</td>
+                                <td>5</td>
+                                <td>$52.95</td>
+                                <td><span class="chip chip-success">Completed</span></td>
+                                <td class="text-muted text-sm">14 min ago</td>
+                            </tr>
+                            <tr>
+                                <td><a href="order-detail.html" class="text-primary fw-500">#1044</a></td>
+                                <td>Table 5</td>
+                                <td>1</td>
+                                <td>$9.99</td>
+                                <td><span class="chip chip-success">Completed</span></td>
+                                <td class="text-muted text-sm">21 min ago</td>
+                            </tr>
+                            <tr>
+                                <td><a href="order-detail.html" class="text-primary fw-500">#1043</a></td>
+                                <td>Table 9</td>
+                                <td>4</td>
+                                <td>$41.96</td>
+                                <td><span class="chip chip-error">Cancelled</span></td>
+                                <td class="text-muted text-sm">35 min ago</td>
+                            </tr>
+                            <tr>
+                                <td><a href="order-detail.html" class="text-primary fw-500">#1042</a></td>
+                                <td>Table 2</td>
+                                <td>2</td>
+                                <td>$21.98</td>
+                                <td><span class="chip chip-success">Completed</span></td>
+                                <td class="text-muted text-sm">42 min ago</td>
+                            </tr>
+                            <tr>
+                                <td><a href="order-detail.html" class="text-primary fw-500">#1041</a></td>
+                                <td>Table 6</td>
+                                <td>3</td>
+                                <td>$33.97</td>
+                                <td><span class="chip chip-warning">Pending</span></td>
+                                <td class="text-muted text-sm">55 min ago</td>
+                            </tr>
+                            <tr>
+                                <td><a href="order-detail.html" class="text-primary fw-500">#1040</a></td>
+                                <td>Table 4</td>
+                                <td>6</td>
+                                <td>$68.94</td>
+                                <td><span class="chip chip-success">Completed</span></td>
+                                <td class="text-muted text-sm">1 hr ago</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Right column: quick stats -->
+            <div style="display:flex; flex-direction:column; gap:24px;">
+
+                <!-- Active bartenders -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Active Bartenders</div>
+                        <a href="bartenders.html" class="btn btn-text"
+                            style="text-transform:none; font-size:13px; font-weight:400;">Manage →</a>
+                    </div>
+                    <div class="card-body" style="padding:12px 16px;">
+                        <div class="flex items-center gap-12"
+                            style="padding:10px 0; border-bottom:1px solid var(--divider);">
+                            <div class="avatar" style="background:#1976d2;">JS</div>
+                            <div style="flex:1;">
+                                <div class="fw-500" style="font-size:14px;">John Smith</div>
+                                <div class="text-xs text-muted">On shift since 10:00</div>
+                            </div>
+                            <span class="chip chip-success">Online</span>
+                        </div>
+                        <div class="flex items-center gap-12"
+                            style="padding:10px 0; border-bottom:1px solid var(--divider);">
+                            <div class="avatar" style="background:#9c27b0;">MG</div>
+                            <div style="flex:1;">
+                                <div class="fw-500" style="font-size:14px;">Maria Garcia</div>
+                                <div class="text-xs text-muted">On shift since 14:00</div>
+                            </div>
+                            <span class="chip chip-success">Online</span>
+                        </div>
+                        <div class="flex items-center gap-12"
+                            style="padding:10px 0; border-bottom:1px solid var(--divider);">
+                            <div class="avatar" style="background:#2e7d32;">EW</div>
+                            <div style="flex:1;">
+                                <div class="fw-500" style="font-size:14px;">Emma Wilson</div>
+                                <div class="text-xs text-muted">On shift since 12:00</div>
+                            </div>
+                            <span class="chip chip-success">Online</span>
+                        </div>
+                        <div class="flex items-center gap-12" style="padding:10px 0;">
+                            <div class="avatar" style="background:#37474f;">JB</div>
+                            <div style="flex:1;">
+                                <div class="fw-500" style="font-size:14px;">James Brown</div>
+                                <div class="text-xs text-muted">On shift since 08:00</div>
+                            </div>
+                            <span class="chip chip-success">Online</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Popular items -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Top Items Today</div>
+                        <a href="items.html" class="btn btn-text"
+                            style="text-transform:none; font-size:13px; font-weight:400;">Menu →</a>
+                    </div>
+                    <div class="card-body" style="padding:12px 16px;">
+                        <div class="flex items-center justify-between"
+                            style="padding:8px 0; border-bottom:1px solid var(--divider);">
+                            <div class="flex items-center gap-12">
+                                <span class="material-icons" style="color:var(--primary-light);">local_bar</span>
+                                <span class="fw-500" style="font-size:14px;">Mojito</span>
+                            </div>
+                            <span class="text-sm text-muted">×18</span>
+                        </div>
+                        <div class="flex items-center justify-between"
+                            style="padding:8px 0; border-bottom:1px solid var(--divider);">
+                            <div class="flex items-center gap-12">
+                                <span class="material-icons" style="color:var(--primary-light);">sports_bar</span>
+                                <span class="fw-500" style="font-size:14px;">Heineken</span>
+                            </div>
+                            <span class="text-sm text-muted">×15</span>
+                        </div>
+                        <div class="flex items-center justify-between"
+                            style="padding:8px 0; border-bottom:1px solid var(--divider);">
+                            <div class="flex items-center gap-12">
+                                <span class="material-icons" style="color:var(--primary-light);">local_bar</span>
+                                <span class="fw-500" style="font-size:14px;">Margarita</span>
+                            </div>
+                            <span class="text-sm text-muted">×12</span>
+                        </div>
+                        <div class="flex items-center justify-between" style="padding:8px 0;">
+                            <div class="flex items-center gap-12">
+                                <span class="material-icons" style="color:var(--primary-light);">wine_bar</span>
+                                <span class="fw-500" style="font-size:14px;">Chardonnay</span>
+                            </div>
+                            <span class="text-sm text-muted">×9</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+</body>
+
+</html>

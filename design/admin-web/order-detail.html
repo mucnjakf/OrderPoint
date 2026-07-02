@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OrderPoint – Order #1045</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-icon"><span class="material-icons">local_bar</span></div>
+            <div class="sidebar-brand-text">
+                <div class="sidebar-brand-title">OrderPoint</div>
+                <div class="sidebar-brand-sub">Admin Panel</div>
+            </div>
+        </div>
+        <div class="nav-group">
+            <div class="nav-group-label">Overview</div>
+            <a href="dashboard.html" class="nav-item"><span
+                    class="material-icons">dashboard</span><span>Dashboard</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <div class="nav-group-label">Management</div>
+            <a href="bartenders.html" class="nav-item"><span
+                    class="material-icons">people_alt</span><span>Bartenders</span></a>
+            <a href="items.html" class="nav-item"><span class="material-icons">restaurant_menu</span><span>Menu
+                    Items</span></a>
+            <a href="categories.html" class="nav-item"><span
+                    class="material-icons">category</span><span>Categories</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <div class="nav-group-label">Operations</div>
+            <a href="orders.html" class="nav-item active"><span
+                    class="material-icons">receipt_long</span><span>Orders</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <a href="login.html" class="nav-item"><span class="material-icons">logout</span><span>Logout</span></a>
+        </div>
+    </nav>
+
+    <!-- APP BAR -->
+    <header class="appbar">
+        <span class="appbar-title">Order #1045</span>
+        <div class="appbar-search">
+            <span class="material-icons">search</span>
+            <input type="text" placeholder="Search…" />
+        </div>
+        <a class="icon-btn" href="#" style="color:#fff;"><span class="material-icons">notifications_outlined</span></a>
+        <div class="appbar-user">
+            <div class="appbar-avatar">A</div>
+            <span class="appbar-user-name">Admin</span>
+            <span class="material-icons" style="font-size:18px;opacity:.8;">arrow_drop_down</span>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <div class="page-header">
+            <div class="page-header-left">
+                <h1 class="page-title">Order #1045</h1>
+                <div class="breadcrumb">
+                    <a href="dashboard.html">Dashboard</a>
+                    <span class="breadcrumb-sep">›</span>
+                    <a href="orders.html">Orders</a>
+                    <span class="breadcrumb-sep">›</span>
+                    <span>#1045</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-12">
+                <a href="orders.html" class="btn btn-outlined">
+                    <span class="material-icons">arrow_back</span>
+                    Back to Orders
+                </a>
+                <button class="btn btn-outlined">
+                    <span class="material-icons">print</span>
+                    Print Receipt
+                </button>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:2fr 1fr; gap:24px; align-items:start;">
+
+            <!-- Left -->
+            <div style="display:flex; flex-direction:column; gap:20px;">
+
+                <!-- Order items -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Order Items</div>
+                            <div class="card-subtitle">5 items ordered</div>
+                        </div>
+                        <span class="chip chip-success" style="font-size:13px; padding:5px 14px;">Completed</span>
+                    </div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Category</th>
+                                    <th style="text-align:center;">Qty</th>
+                                    <th style="text-align:right;">Unit Price</th>
+                                    <th style="text-align:right;">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="flex items-center gap-12">
+                                            <div
+                                                style="width:36px;height:36px;border-radius:4px;background:linear-gradient(135deg,#e8f5e9,#c8e6c9);display:flex;align-items:center;justify-content:center;">
+                                                <span class="material-icons"
+                                                    style="color:#66bb6a;font-size:18px;">local_bar</span>
+                                            </div>
+                                            <div>
+                                                <div class="fw-500">Mojito</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="chip chip-default">Cocktails</span></td>
+                                    <td style="text-align:center;">2</td>
+                                    <td style="text-align:right;">$9.99</td>
+                                    <td style="text-align:right;" class="fw-500">$19.98</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="flex items-center gap-12">
+                                            <div
+                                                style="width:36px;height:36px;border-radius:4px;background:linear-gradient(135deg,#e3f2fd,#bbdefb);display:flex;align-items:center;justify-content:center;">
+                                                <span class="material-icons"
+                                                    style="color:#42a5f5;font-size:18px;">sports_bar</span>
+                                            </div>
+                                            <div>
+                                                <div class="fw-500">Heineken</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="chip chip-default">Beers</span></td>
+                                    <td style="text-align:center;">2</td>
+                                    <td style="text-align:right;">$4.99</td>
+                                    <td style="text-align:right;" class="fw-500">$9.98</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="flex items-center gap-12">
+                                            <div
+                                                style="width:36px;height:36px;border-radius:4px;background:linear-gradient(135deg,#fff3e0,#ffe0b2);display:flex;align-items:center;justify-content:center;">
+                                                <span class="material-icons"
+                                                    style="color:#ff9800;font-size:18px;">fastfood</span>
+                                            </div>
+                                            <div>
+                                                <div class="fw-500">Nachos</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="chip chip-default">Snacks</span></td>
+                                    <td style="text-align:center;">1</td>
+                                    <td style="text-align:right;">$7.99</td>
+                                    <td style="text-align:right;" class="fw-500">$7.99</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Order totals -->
+                    <div style="padding:16px 20px; border-top:1px solid var(--divider);">
+                        <div class="flex items-center justify-between mb-8">
+                            <span class="text-muted text-sm">Subtotal (5 items)</span>
+                            <span>$37.95</span>
+                        </div>
+                        <div class="flex items-center justify-between mb-8">
+                            <span class="text-muted text-sm">Service fee (5%)</span>
+                            <span>$1.90</span>
+                        </div>
+                        <div class="flex items-center justify-between mb-8">
+                            <span class="text-muted text-sm">Tax (VAT 20%)</span>
+                            <span>$7.59</span>
+                        </div>
+                        <hr style="border:none;border-top:1px solid var(--divider);margin:10px 0;" />
+                        <div class="flex items-center justify-between">
+                            <span class="fw-500" style="font-size:16px;">Total</span>
+                            <span class="fw-500" style="font-size:18px; color:var(--primary);">$52.95</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order notes -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Customer Notes</div>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-sm" style="color:var(--text-secondary); font-style:italic; line-height:1.7;">
+                            "Please bring the Nachos first, and make the Mojitos with extra mint. Thanks!"
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right -->
+            <div style="display:flex; flex-direction:column; gap:20px;">
+
+                <!-- Order info -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Order Details</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="detail-row">
+                            <div class="detail-key">Order ID</div>
+                            <div class="detail-val fw-500">#1045</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-key">Status</div>
+                            <div class="detail-val"><span class="chip chip-success">Completed</span></div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-key">Table</div>
+                            <div class="detail-val">
+                                <div class="flex items-center gap-8">
+                                    <span class="material-icons"
+                                        style="font-size:16px;color:var(--text-secondary);">table_bar</span>
+                                    <span>Table 1</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-key">QR Code</div>
+                            <div class="detail-val text-muted text-sm">QR-TABLE-01-2026</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-key">Placed At</div>
+                            <div class="detail-val">Apr 27, 2026 at 14:46</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-key">Completed At</div>
+                            <div class="detail-val">Apr 27, 2026 at 14:58</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-key">Prep Duration</div>
+                            <div class="detail-val text-success fw-500">12 min</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-key">Total</div>
+                            <div class="detail-val fw-500" style="color:var(--primary); font-size:16px;">$52.95</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bartender -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Assigned Bartender</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="flex items-center gap-14">
+                            <div class="avatar avatar-lg" style="background:#1976d2;">JS</div>
+                            <div>
+                                <div class="fw-500" style="font-size:16px;">John Smith</div>
+                                <div class="text-sm text-muted">john.smith@orderpoint.com</div>
+                                <div class="text-xs text-muted mt-8">Handled 47 orders today</div>
+                            </div>
+                        </div>
+                        <a href="bartender-detail.html" class="btn btn-text"
+                            style="margin-top:14px; text-transform:none; font-size:13px; padding:0;">
+                            View profile →
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Order timeline -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Order Timeline</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="timeline">
+
+                            <div class="timeline-item">
+                                <div class="timeline-dot" style="background:var(--primary);">
+                                    <span class="material-icons">qr_code_scanner</span>
+                                </div>
+                                <div class="timeline-content">
+                                    <div class="timeline-label">Order Placed</div>
+                                    <div class="timeline-time">Customer scanned QR at Table 1</div>
+                                    <div class="timeline-time">14:46:03</div>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item">
+                                <div class="timeline-dot" style="background:var(--info);">
+                                    <span class="material-icons">notifications</span>
+                                </div>
+                                <div class="timeline-content">
+                                    <div class="timeline-label">Bartender Notified</div>
+                                    <div class="timeline-time">John Smith accepted the order</div>
+                                    <div class="timeline-time">14:46:22</div>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item">
+                                <div class="timeline-dot" style="background:var(--warning);">
+                                    <span class="material-icons">loop</span>
+                                </div>
+                                <div class="timeline-content">
+                                    <div class="timeline-label">In Preparation</div>
+                                    <div class="timeline-time">Items being prepared</div>
+                                    <div class="timeline-time">14:47:05</div>
+                                </div>
+                            </div>
+
+                            <div class="timeline-item">
+                                <div class="timeline-dot" style="background:var(--success);">
+                                    <span class="material-icons">check</span>
+                                </div>
+                                <div class="timeline-content">
+                                    <div class="timeline-label">Order Completed</div>
+                                    <div class="timeline-time">All items delivered to Table 1</div>
+                                    <div class="timeline-time">14:58:31</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+</body>
+
+</html>

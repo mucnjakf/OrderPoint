@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OrderPoint – Category Details</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-icon"><span class="material-icons">local_bar</span></div>
+            <div class="sidebar-brand-text">
+                <div class="sidebar-brand-title">OrderPoint</div>
+                <div class="sidebar-brand-sub">Admin Panel</div>
+            </div>
+        </div>
+        <div class="nav-group">
+            <div class="nav-group-label">Overview</div>
+            <a href="dashboard.html" class="nav-item"><span
+                    class="material-icons">dashboard</span><span>Dashboard</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <div class="nav-group-label">Management</div>
+            <a href="bartenders.html" class="nav-item"><span
+                    class="material-icons">people_alt</span><span>Bartenders</span></a>
+            <a href="items.html" class="nav-item"><span class="material-icons">restaurant_menu</span><span>Menu
+                    Items</span></a>
+            <a href="categories.html" class="nav-item active"><span
+                    class="material-icons">category</span><span>Categories</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <div class="nav-group-label">Operations</div>
+            <a href="orders.html" class="nav-item"><span
+                    class="material-icons">receipt_long</span><span>Orders</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <a href="login.html" class="nav-item"><span class="material-icons">logout</span><span>Logout</span></a>
+        </div>
+    </nav>
+
+    <!-- APP BAR -->
+    <header class="appbar">
+        <span class="appbar-title">Category Details</span>
+        <div class="appbar-search">
+            <span class="material-icons">search</span>
+            <input type="text" placeholder="Search…" />
+        </div>
+        <a class="icon-btn" href="#" style="color:#fff;"><span class="material-icons">notifications_outlined</span></a>
+        <div class="appbar-user">
+            <div class="appbar-avatar">A</div>
+            <span class="appbar-user-name">Admin</span>
+            <span class="material-icons" style="font-size:18px;opacity:.8;">arrow_drop_down</span>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <div class="page-header">
+            <div class="page-header-left">
+                <h1 class="page-title">Cocktails</h1>
+                <div class="breadcrumb">
+                    <a href="dashboard.html">Dashboard</a>
+                    <span class="breadcrumb-sep">›</span>
+                    <a href="categories.html">Categories</a>
+                    <span class="breadcrumb-sep">›</span>
+                    <span>Cocktails</span>
+                </div>
+            </div>
+            <div class="flex gap-12">
+                <a href="categories.html" class="btn btn-outlined">
+                    <span class="material-icons">arrow_back</span>
+                    Back
+                </a>
+                <a href="category-edit.html" class="btn btn-primary">
+                    <span class="material-icons">edit</span>
+                    Edit Category
+                </a>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 2fr; gap:24px; align-items:start;">
+
+            <!-- Left: summary card -->
+            <div style="display:flex; flex-direction:column; gap:20px;">
+
+                <div class="card" style="text-align:center;">
+                    <div class="card-body">
+                        <div
+                            style="width:80px;height:80px;border-radius:50%;background:#1976d2;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+                            <span class="material-icons" style="font-size:36px;color:#fff;">local_bar</span>
+                        </div>
+                        <div style="font-size:22px;font-weight:500;margin-bottom:4px;">Cocktails</div>
+                        <div class="text-sm text-muted mb-16">Menu Category</div>
+                        <span class="chip chip-success" style="font-size:13px; padding:5px 14px;">Active</span>
+
+                        <hr style="border:none; border-top:1px solid var(--divider); margin:20px 0;" />
+
+                        <div class="flex items-center justify-between mb-8">
+                            <span class="text-sm text-muted">Items in category</span>
+                            <span class="fw-500">3 items</span>
+                        </div>
+                        <div class="flex items-center justify-between mb-8">
+                            <span class="text-sm text-muted">Display order</span>
+                            <span class="fw-500">1st</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-muted">Category ID</span>
+                            <span class="fw-500 text-muted">#CAT-001</span>
+                        </div>
+                    </div>
+                    <div style="padding:14px 20px; border-top:1px solid var(--divider); display:flex; gap:8px;">
+                        <a href="category-edit.html" class="btn btn-outlined" style="flex:1; justify-content:center;">
+                            <span class="material-icons">edit</span> Edit
+                        </a>
+                        <button class="btn btn-danger-outlined" style="flex:1; justify-content:center;"
+                            onclick="document.querySelector('.dialog-backdrop').style.display='flex'">
+                            <span class="material-icons">delete</span> Delete
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Details card -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Details</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="detail-row">
+                            <div class="detail-key">Created</div>
+                            <div class="detail-val text-sm">Jan 10, 2026</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-key">Updated</div>
+                            <div class="detail-val text-sm">Apr 15, 2026</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-key">Orders count</div>
+                            <div class="detail-val text-sm fw-500">489</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-key">Revenue</div>
+                            <div class="detail-val text-sm fw-500 text-success">$4,890</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right -->
+            <div style="display:flex; flex-direction:column; gap:20px;">
+
+                <!-- Category info -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Category Information</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="detail-section-title">General</div>
+                        <div class="detail-row">
+                            <div class="detail-key">Name</div>
+                            <div class="detail-val">Cocktails</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-key">Description</div>
+                            <div class="detail-val">Mixed drinks with spirits, liqueurs, and fresh mixers. Crafted by
+                                our expert bartenders.</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-key">Icon</div>
+                            <div class="detail-val">
+                                <span class="material-icons"
+                                    style="font-size:22px;color:#1976d2;vertical-align:middle;">local_bar</span>
+                                <span class="text-muted text-sm" style="margin-left:6px;">local_bar</span>
+                            </div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-key">Theme Color</div>
+                            <div class="detail-val flex items-center gap-8">
+                                <div style="width:20px;height:20px;border-radius:50%;background:#1976d2;"></div>
+                                <span class="text-muted text-sm">#1976d2 — Blue</span>
+                            </div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-key">Status</div>
+                            <div class="detail-val"><span class="chip chip-success">Active</span></div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-key">Display Order</div>
+                            <div class="detail-val">1 (first on menu)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Items in this category -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">Items in Cocktails</div>
+                            <div class="card-subtitle">3 items in this category</div>
+                        </div>
+                        <a href="item-create.html" class="btn btn-outlined" style="font-size:13px;">
+                            <span class="material-icons">add</span>
+                            Add Item
+                        </a>
+                    </div>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Item Name</th>
+                                    <th>Price</th>
+                                    <th>Status</th>
+                                    <th>Orders</th>
+                                    <th style="text-align:center;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="flex items-center gap-12">
+                                            <div
+                                                style="width:36px;height:36px;border-radius:4px;background:linear-gradient(135deg,#e8f5e9,#c8e6c9);display:flex;align-items:center;justify-content:center;">
+                                                <span class="material-icons"
+                                                    style="color:#66bb6a;font-size:18px;">local_bar</span>
+                                            </div>
+                                            <a href="item-detail.html" class="fw-500 text-primary">Mojito</a>
+                                        </div>
+                                    </td>
+                                    <td>$9.99</td>
+                                    <td><span class="chip chip-success">Available</span></td>
+                                    <td class="text-muted">312</td>
+                                    <td>
+                                        <div class="table-actions" style="justify-content:center;">
+                                            <a href="item-detail.html" class="icon-btn primary"><span
+                                                    class="material-icons">visibility</span></a>
+                                            <a href="item-edit.html" class="icon-btn primary"><span
+                                                    class="material-icons">edit</span></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="flex items-center gap-12">
+                                            <div
+                                                style="width:36px;height:36px;border-radius:4px;background:linear-gradient(135deg,#fce4ec,#f8bbd0);display:flex;align-items:center;justify-content:center;">
+                                                <span class="material-icons"
+                                                    style="color:#ec407a;font-size:18px;">local_bar</span>
+                                            </div>
+                                            <a href="item-detail.html" class="fw-500 text-primary">Cosmopolitan</a>
+                                        </div>
+                                    </td>
+                                    <td>$11.99</td>
+                                    <td><span class="chip chip-success">Available</span></td>
+                                    <td class="text-muted">178</td>
+                                    <td>
+                                        <div class="table-actions" style="justify-content:center;">
+                                            <a href="item-detail.html" class="icon-btn primary"><span
+                                                    class="material-icons">visibility</span></a>
+                                            <a href="item-edit.html" class="icon-btn primary"><span
+                                                    class="material-icons">edit</span></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="flex items-center gap-12">
+                                            <div
+                                                style="width:36px;height:36px;border-radius:4px;background:linear-gradient(135deg,#fff3e0,#ffe0b2);display:flex;align-items:center;justify-content:center;">
+                                                <span class="material-icons"
+                                                    style="color:#ffa726;font-size:18px;">local_bar</span>
+                                            </div>
+                                            <a href="item-detail.html" class="fw-500 text-primary">Margarita</a>
+                                        </div>
+                                    </td>
+                                    <td>$10.99</td>
+                                    <td><span class="chip chip-success">Available</span></td>
+                                    <td class="text-muted">215</td>
+                                    <td>
+                                        <div class="table-actions" style="justify-content:center;">
+                                            <a href="item-detail.html" class="icon-btn primary"><span
+                                                    class="material-icons">visibility</span></a>
+                                            <a href="item-edit.html" class="icon-btn primary"><span
+                                                    class="material-icons">edit</span></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Delete dialog -->
+    <div class="dialog-backdrop" style="display:none;">
+        <div class="dialog">
+            <div class="dialog-title">Delete Category</div>
+            <div class="dialog-text">
+                Are you sure you want to delete <strong>Cocktails</strong>? Items in this category will become
+                uncategorised. This action cannot be undone.
+            </div>
+            <div class="dialog-actions">
+                <button class="btn btn-text"
+                    onclick="document.querySelector('.dialog-backdrop').style.display='none'">Cancel</button>
+                <a href="categories.html" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

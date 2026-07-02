@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OrderPoint – Menu</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+    <!-- ══════════════════════════════════════════
+         TOP APP BAR
+    ═══════════════════════════════════════════ -->
+    <header class="appbar">
+        <span class="appbar-title">Menu</span>
+
+        <div class="appbar-actions">
+            <!-- Cart icon with item count badge -->
+            <a href="order-cart.html" class="icon-btn white cart-icon-wrap">
+                <span class="material-icons">shopping_cart</span>
+                <span class="cart-badge">3</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- ══════════════════════════════════════════
+         HERO — TABLE CONTEXT
+    ═══════════════════════════════════════════ -->
+    <div class="menu-hero">
+        <div class="menu-hero-table">
+            <span class="material-icons">table_restaurant</span>
+            Table 7
+        </div>
+        <div class="menu-hero-title">What would you like?</div>
+        <div class="menu-hero-sub">Browse the menu and add items to your order</div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         PAGE BODY
+    ═══════════════════════════════════════════ -->
+    <div class="page-body">
+
+        <!-- Floating search bar (overlaps the hero bottom edge) -->
+        <div class="search-bar">
+            <span class="material-icons">search</span>
+            <input type="text" placeholder="Search drinks &amp; snacks…" />
+        </div>
+
+        <!-- Category grid -->
+        <div class="section-label">Categories</div>
+        <div class="category-grid">
+
+            <a href="category-items.html" class="category-card">
+                <div class="category-icon cat-cocktails">
+                    <span class="material-icons">local_bar</span>
+                </div>
+                <div>
+                    <div class="category-name">Cocktails</div>
+                    <div class="category-count">12 items</div>
+                </div>
+                <span class="material-icons category-arrow">chevron_right</span>
+            </a>
+
+            <a href="category-items.html" class="category-card">
+                <div class="category-icon cat-beers">
+                    <span class="material-icons">sports_bar</span>
+                </div>
+                <div>
+                    <div class="category-name">Beers</div>
+                    <div class="category-count">8 items</div>
+                </div>
+                <span class="material-icons category-arrow">chevron_right</span>
+            </a>
+
+            <a href="category-items.html" class="category-card">
+                <div class="category-icon cat-wines">
+                    <span class="material-icons">wine_bar</span>
+                </div>
+                <div>
+                    <div class="category-name">Wines</div>
+                    <div class="category-count">10 items</div>
+                </div>
+                <span class="material-icons category-arrow">chevron_right</span>
+            </a>
+
+            <a href="category-items.html" class="category-card">
+                <div class="category-icon cat-spirits">
+                    <span class="material-icons">liquor</span>
+                </div>
+                <div>
+                    <div class="category-name">Spirits</div>
+                    <div class="category-count">14 items</div>
+                </div>
+                <span class="material-icons category-arrow">chevron_right</span>
+            </a>
+
+            <a href="category-items.html" class="category-card">
+                <div class="category-icon cat-soft">
+                    <span class="material-icons">local_drink</span>
+                </div>
+                <div>
+                    <div class="category-name">Soft Drinks</div>
+                    <div class="category-count">6 items</div>
+                </div>
+                <span class="material-icons category-arrow">chevron_right</span>
+            </a>
+
+            <a href="category-items.html" class="category-card">
+                <div class="category-icon cat-hot">
+                    <span class="material-icons">coffee</span>
+                </div>
+                <div>
+                    <div class="category-name">Hot Drinks</div>
+                    <div class="category-count">5 items</div>
+                </div>
+                <span class="material-icons category-arrow">chevron_right</span>
+            </a>
+
+            <a href="category-items.html" class="category-card">
+                <div class="category-icon cat-snacks">
+                    <span class="material-icons">fastfood</span>
+                </div>
+                <div>
+                    <div class="category-name">Snacks</div>
+                    <div class="category-count">7 items</div>
+                </div>
+                <span class="material-icons category-arrow">chevron_right</span>
+            </a>
+
+            <a href="category-items.html" class="category-card">
+                <div class="category-icon cat-water">
+                    <span class="material-icons">water_drop</span>
+                </div>
+                <div>
+                    <div class="category-name">Water</div>
+                    <div class="category-count">3 items</div>
+                </div>
+                <span class="material-icons category-arrow">chevron_right</span>
+            </a>
+
+        </div>
+        <!-- /category-grid -->
+
+    </div>
+    <!-- /page-body -->
+
+    <!-- ══════════════════════════════════════════
+         STICKY BOTTOM — VIEW ORDER
+         Only visible when cart has items
+    ═══════════════════════════════════════════ -->
+    <div class="action-bar">
+        <a href="order-cart.html" class="btn btn-success btn-lg btn-w100">
+            <span class="material-icons">shopping_cart</span>
+            View Order &nbsp;·&nbsp; 3 items &nbsp;·&nbsp; $29.96
+        </a>
+    </div>
+
+</body>
+
+</html>

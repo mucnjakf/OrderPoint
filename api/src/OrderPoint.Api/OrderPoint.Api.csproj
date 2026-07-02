@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>df0c6b02-bd6b-4236-bbc6-5c038b06cbb3</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1"/>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.7"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.5">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Scalar.AspNetCore" Version="2.13.19" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\host\OrderPoint.ServiceDefaults\OrderPoint.ServiceDefaults.csproj"/>
+        <ProjectReference Include="..\OrderPoint.Infrastructure\OrderPoint.Infrastructure.csproj"/>
+    </ItemGroup>
+
+</Project>

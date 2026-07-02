@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OrderPoint – Orders</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-icon"><span class="material-icons">local_bar</span></div>
+            <div class="sidebar-brand-text">
+                <div class="sidebar-brand-title">OrderPoint</div>
+                <div class="sidebar-brand-sub">Admin Panel</div>
+            </div>
+        </div>
+        <div class="nav-group">
+            <div class="nav-group-label">Overview</div>
+            <a href="dashboard.html" class="nav-item"><span
+                    class="material-icons">dashboard</span><span>Dashboard</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <div class="nav-group-label">Management</div>
+            <a href="bartenders.html" class="nav-item"><span
+                    class="material-icons">people_alt</span><span>Bartenders</span></a>
+            <a href="items.html" class="nav-item"><span class="material-icons">restaurant_menu</span><span>Menu
+                    Items</span></a>
+            <a href="categories.html" class="nav-item"><span
+                    class="material-icons">category</span><span>Categories</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <div class="nav-group-label">Operations</div>
+            <a href="orders.html" class="nav-item active"><span
+                    class="material-icons">receipt_long</span><span>Orders</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <a href="login.html" class="nav-item"><span class="material-icons">logout</span><span>Logout</span></a>
+        </div>
+    </nav>
+
+    <!-- APP BAR -->
+    <header class="appbar">
+        <span class="appbar-title">Orders</span>
+        <div class="appbar-search">
+            <span class="material-icons">search</span>
+            <input type="text" placeholder="Search by order # or table…" />
+        </div>
+        <a class="icon-btn" href="#" style="color:#fff;"><span class="material-icons">notifications_outlined</span></a>
+        <div class="appbar-user">
+            <div class="appbar-avatar">A</div>
+            <span class="appbar-user-name">Admin</span>
+            <span class="material-icons" style="font-size:18px;opacity:.8;">arrow_drop_down</span>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <div class="page-header">
+            <div class="page-header-left">
+                <h1 class="page-title">Orders</h1>
+                <div class="breadcrumb">
+                    <a href="dashboard.html">Dashboard</a>
+                    <span class="breadcrumb-sep">›</span>
+                    <span>Orders</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-12">
+                <button class="btn btn-outlined">
+                    <span class="material-icons">download</span>
+                    Export CSV
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats row -->
+        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px;">
+            <div class="stat-card" style="padding:16px 20px;">
+                <div class="stat-icon" style="background:#1976d2; width:44px; height:44px;">
+                    <span class="material-icons" style="font-size:20px;">receipt_long</span>
+                </div>
+                <div>
+                    <div class="stat-value" style="font-size:24px;">47</div>
+                    <div class="stat-label">Today</div>
+                </div>
+            </div>
+            <div class="stat-card" style="padding:16px 20px;">
+                <div class="stat-icon" style="background:#e65100; width:44px; height:44px;">
+                    <span class="material-icons" style="font-size:20px;">pending_actions</span>
+                </div>
+                <div>
+                    <div class="stat-value" style="font-size:24px;">5</div>
+                    <div class="stat-label">Pending</div>
+                </div>
+            </div>
+            <div class="stat-card" style="padding:16px 20px;">
+                <div class="stat-icon" style="background:#0277bd; width:44px; height:44px;">
+                    <span class="material-icons" style="font-size:20px;">loop</span>
+                </div>
+                <div>
+                    <div class="stat-value" style="font-size:24px;">3</div>
+                    <div class="stat-label">In Progress</div>
+                </div>
+            </div>
+            <div class="stat-card" style="padding:16px 20px;">
+                <div class="stat-icon" style="background:#2e7d32; width:44px; height:44px;">
+                    <span class="material-icons" style="font-size:20px;">payments</span>
+                </div>
+                <div>
+                    <div class="stat-value" style="font-size:24px;">$489</div>
+                    <div class="stat-label">Revenue Today</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter row -->
+        <div class="card mb-24">
+            <div class="card-body" style="padding:14px 20px;">
+                <div class="flex items-center gap-16">
+                    <div style="flex:1; max-width:260px;">
+                        <div class="input-wrap">
+                            <span class="material-icons">search</span>
+                            <input type="text" class="form-input" placeholder="Order # or table…"
+                                style="margin-bottom:0;" />
+                        </div>
+                    </div>
+                    <select class="form-select" style="width:150px; margin-bottom:0;">
+                        <option>All Status</option>
+                        <option>Pending</option>
+                        <option>In Progress</option>
+                        <option>Completed</option>
+                        <option>Cancelled</option>
+                    </select>
+                    <select class="form-select" style="width:150px; margin-bottom:0;">
+                        <option>All Tables</option>
+                        <option>Table 1</option>
+                        <option>Table 2</option>
+                        <option>Table 3</option>
+                        <option>Table 4</option>
+                        <option>Table 5</option>
+                    </select>
+                    <div class="flex items-center gap-8">
+                        <input type="date" class="form-input" value="2026-04-27"
+                            style="margin-bottom:0; width:160px;" />
+                    </div>
+                    <span class="text-sm text-muted" style="margin-left:auto;">Showing 10 of 47 today</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders table -->
+        <div class="card">
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order #</th>
+                            <th>Table / QR</th>
+                            <th>Items</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Bartender</th>
+                            <th>Date &amp; Time</th>
+                            <th style="text-align:center;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><a href="order-detail.html" class="text-primary fw-500">#1047</a></td>
+                            <td>
+                                <div class="flex items-center gap-8">
+                                    <span class="material-icons"
+                                        style="font-size:16px; color:var(--text-secondary);">table_bar</span>
+                                    <span>Table 3</span>
+                                </div>
+                            </td>
+                            <td>3</td>
+                            <td class="fw-500">$29.97</td>
+                            <td><span class="chip chip-warning">Pending</span></td>
+                            <td>
+                                <div class="flex items-center gap-8">
+                                    <div class="avatar avatar-sm" style="background:#1976d2;">JS</div>
+                                    <span class="text-sm">John S.</span>
+                                </div>
+                            </td>
+                            <td class="text-muted text-sm">Apr 27, 2026 14:58</td>
+                            <td>
+                                <div class="table-actions" style="justify-content:center;">
+                                    <a href="order-detail.html" class="icon-btn primary" data-tip="View details"><span
+                                            class="material-icons">visibility</span></a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><a href="order-detail.html" class="text-primary fw-500">#1046</a></td>
+                            <td>
+                                <div class="flex items-center gap-8">
+                                    <span class="material-icons"
+                                        style="font-size:16px; color:var(--text-secondary);">table_bar</span>
+                                    <span>Table 7</span>
+                                </div>
+                            </td>
+                            <td>2</td>
+                            <td class="fw-500">$15.98</td>
+                            <td><span class="chip chip-info">In Progress</span></td>
+                            <td>
+                                <div class="flex items-center gap-8">
+                                    <div class="avatar avatar-sm" style="background:#9c27b0;">MG</div>
+                                    <span class="text-sm">Maria G.</span>
+                                </div>
+                            </td>
+                            <td class="text-muted text-sm">Apr 27, 2026 14:52</td>
+                            <td>
+                                <div class="table-actions" style="justify-content:center;">
+                                    <a href="order-detail.html" class="icon-btn primary"><span
+                                            class="material-icons">visibility</span></a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><a href="order-detail.html" class="text-primary fw-500">#1045</a></td>
+                            <td>
+                                <div class="flex items-center gap-8">
+                                    <span class="material-icons"
+                                        style="font-size:16px; color:var(--text-secondary);">table_bar</span>
+                                    <span>Table 1</span>
+                                </div>
+                            </td>
+                            <td>5</td>
+                            <td class="fw-500">$52.95</td>
+                            <td><span class="chip chip-success">Completed</span></td>
+                            <td>
+                                <div class="flex items-center gap-8">
+                                    <div class="avatar avatar-sm" style="background:#1976d2;">JS</div>
+                                    <span class="text-sm">John S.</span>
+                                </div>
+                            </td>
+                            <td class="text-muted text-sm">Apr 27, 2026 14:46</td>
+                            <td>
+                                <div class="table-actions" style="justify-content:center;">
+                                    <a href="order-detail.html" class="icon-btn primary"><span
+                                            class="material-icons">visibility</span></a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><a href="order-detail.html" class="text-primary fw-500">#1044</a></td>
+                            <td>
+                                <div class="flex items-center gap-8">
+                                    <span class="material-icons"
+                                        style="font-size:16px; color:var(--text-secondary);">table_bar</span>
+                                    <span>Table 5</span>
+                                </div>
+                            </td>
+                            <td>1</td>
+                            <td class="fw-500">$9.99</td>
+                            <td><span class="chip chip-success">Completed</span></td>
+                            <td>
+                                <div class="flex items-center gap-8">
+                                    <div class="avatar avatar-sm" style="background:#2e7d32;">EW</div>
+                                    <span class="text-sm">Emma W.</span>
+                                </div>
+                            </td>
+                            <td class="text-muted text-sm">Apr 27, 2026 14:39</td>
+                            <td>
+                                <div class="table-actions" style="justify-content:center;">
+                                    <a href="order-detail.html" class="icon-btn primary"><span
+                                            class="material-icons">visibility</span></a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><a href="order-detail.html" class="text-primary fw-500">#1043</a></td>
+                            <td>
+                                <div class="flex items-center gap-8">
+                                    <span class="material-icons"
+                                        style="font-size:16px; color:var(--text-secondary);">table_bar</span>
+                                    <span>Table 9</span>
+                                </div>
+                            </td>
+                            <td>4</td>
+                            <td class="fw-500">$41.96</td>
+                            <td><span class="chip chip-error">Cancelled</span></td>
+                            <td>
+                                <div class="flex items-center gap-8">
+                                    <div class="avatar avatar-sm" style="background:#37474f;">JB</div>
+                                    <span class="text-sm">James B.</span>
+                                </div>
+                            </td>
+                            <td class="text-muted text-sm">Apr 27, 2026 14:25</td>
+                            <td>
+                                <div class="table-actions" style="justify-content:center;">
+                                    <a href="order-detail.html" class="icon-btn primary"><span
+                                            class="material-icons">visibility</span></a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><a href="order-detail.html" class="text-primary fw-500">#1042</a></td>
+                            <td>
+                                <div class="flex items-center gap-8">
+                                    <span class="material-icons"
+                                        style="font-size:16px; color:var(--text-secondary);">table_bar</span>
+                                    <span>Table 2</span>
+                                </div>
+                            </td>
+                            <td>2</td>
+                            <td class="fw-500">$21.98</td>
+                            <td><span class="chip chip-success">Completed</span></td>
+                            <td>
+                                <div class="flex items-center gap-8">
+                                    <div class="avatar avatar-sm" style="background:#9c27b0;">MG</div>
+                                    <span class="text-sm">Maria G.</span>
+                                </div>
+                            </td>
+                            <td class="text-muted text-sm">Apr 27, 2026 14:18</td>
+                            <td>
+                                <div class="table-actions" style="justify-content:center;">
+                                    <a href="order-detail.html" class="icon-btn primary"><span
+                                            class="material-icons">visibility</span></a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><a href="order-detail.html" class="text-primary fw-500">#1041</a></td>
+                            <td>
+                                <div class="flex items-center gap-8">
+                                    <span class="material-icons"
+                                        style="font-size:16px; color:var(--text-secondary);">table_bar</span>
+                                    <span>Table 6</span>
+                                </div>
+                            </td>
+                            <td>3</td>
+                            <td class="fw-500">$33.97</td>
+                            <td><span class="chip chip-warning">Pending</span></td>
+                            <td>
+                                <div class="flex items-center gap-8">
+                                    <div class="avatar avatar-sm" style="background:#2e7d32;">EW</div>
+                                    <span class="text-sm">Emma W.</span>
+                                </div>
+                            </td>
+                            <td class="text-muted text-sm">Apr 27, 2026 14:05</td>
+                            <td>
+                                <div class="table-actions" style="justify-content:center;">
+                                    <a href="order-detail.html" class="icon-btn primary"><span
+                                            class="material-icons">visibility</span></a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><a href="order-detail.html" class="text-primary fw-500">#1040</a></td>
+                            <td>
+                                <div class="flex items-center gap-8">
+                                    <span class="material-icons"
+                                        style="font-size:16px; color:var(--text-secondary);">table_bar</span>
+                                    <span>Table 4</span>
+                                </div>
+                            </td>
+                            <td>6</td>
+                            <td class="fw-500">$68.94</td>
+                            <td><span class="chip chip-success">Completed</span></td>
+                            <td>
+                                <div class="flex items-center gap-8">
+                                    <div class="avatar avatar-sm" style="background:#1976d2;">JS</div>
+                                    <span class="text-sm">John S.</span>
+                                </div>
+                            </td>
+                            <td class="text-muted text-sm">Apr 27, 2026 14:00</td>
+                            <td>
+                                <div class="table-actions" style="justify-content:center;">
+                                    <a href="order-detail.html" class="icon-btn primary"><span
+                                            class="material-icons">visibility</span></a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><a href="order-detail.html" class="text-primary fw-500">#1039</a></td>
+                            <td>
+                                <div class="flex items-center gap-8">
+                                    <span class="material-icons"
+                                        style="font-size:16px; color:var(--text-secondary);">table_bar</span>
+                                    <span>Table 8</span>
+                                </div>
+                            </td>
+                            <td>2</td>
+                            <td class="fw-500">$18.98</td>
+                            <td><span class="chip chip-info">In Progress</span></td>
+                            <td>
+                                <div class="flex items-center gap-8">
+                                    <div class="avatar avatar-sm" style="background:#37474f;">JB</div>
+                                    <span class="text-sm">James B.</span>
+                                </div>
+                            </td>
+                            <td class="text-muted text-sm">Apr 27, 2026 13:48</td>
+                            <td>
+                                <div class="table-actions" style="justify-content:center;">
+                                    <a href="order-detail.html" class="icon-btn primary"><span
+                                            class="material-icons">visibility</span></a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><a href="order-detail.html" class="text-primary fw-500">#1038</a></td>
+                            <td>
+                                <div class="flex items-center gap-8">
+                                    <span class="material-icons"
+                                        style="font-size:16px; color:var(--text-secondary);">table_bar</span>
+                                    <span>Table 10</span>
+                                </div>
+                            </td>
+                            <td>4</td>
+                            <td class="fw-500">$43.96</td>
+                            <td><span class="chip chip-success">Completed</span></td>
+                            <td>
+                                <div class="flex items-center gap-8">
+                                    <div class="avatar avatar-sm" style="background:#9c27b0;">MG</div>
+                                    <span class="text-sm">Maria G.</span>
+                                </div>
+                            </td>
+                            <td class="text-muted text-sm">Apr 27, 2026 13:30</td>
+                            <td>
+                                <div class="table-actions" style="justify-content:center;">
+                                    <a href="order-detail.html" class="icon-btn primary"><span
+                                            class="material-icons">visibility</span></a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex items-center justify-between"
+                style="padding:14px 16px; border-top:1px solid var(--divider);">
+                <span class="text-sm text-muted">Showing 1–10 of 47 orders today</span>
+                <div class="flex items-center gap-4">
+                    <select class="form-select" style="width:100px; margin-bottom:0; padding:6px 10px;">
+                        <option>10 / page</option>
+                        <option>25 / page</option>
+                        <option>50 / page</option>
+                    </select>
+                    <button class="icon-btn" style="color:var(--text-disabled);"><span
+                            class="material-icons">chevron_left</span></button>
+                    <button class="btn btn-text"
+                        style="min-width:36px; min-height:36px; padding:0; color:var(--primary); background:var(--primary-bg); border-radius:50%;">1</button>
+                    <button class="btn btn-text"
+                        style="min-width:36px; min-height:36px; padding:0; border-radius:50%;">2</button>
+                    <button class="btn btn-text"
+                        style="min-width:36px; min-height:36px; padding:0; border-radius:50%;">3</button>
+                    <span class="text-muted">…</span>
+                    <button class="btn btn-text"
+                        style="min-width:36px; min-height:36px; padding:0; border-radius:50%;">5</button>
+                    <button class="icon-btn primary"><span class="material-icons">chevron_right</span></button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+</body>
+
+</html>

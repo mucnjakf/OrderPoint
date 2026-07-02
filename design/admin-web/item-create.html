@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OrderPoint – Add Menu Item</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-icon"><span class="material-icons">local_bar</span></div>
+            <div class="sidebar-brand-text">
+                <div class="sidebar-brand-title">OrderPoint</div>
+                <div class="sidebar-brand-sub">Admin Panel</div>
+            </div>
+        </div>
+        <div class="nav-group">
+            <div class="nav-group-label">Overview</div>
+            <a href="dashboard.html" class="nav-item"><span
+                    class="material-icons">dashboard</span><span>Dashboard</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <div class="nav-group-label">Management</div>
+            <a href="bartenders.html" class="nav-item"><span
+                    class="material-icons">people_alt</span><span>Bartenders</span></a>
+            <a href="items.html" class="nav-item active"><span class="material-icons">restaurant_menu</span><span>Menu
+                    Items</span></a>
+            <a href="categories.html" class="nav-item"><span
+                    class="material-icons">category</span><span>Categories</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <div class="nav-group-label">Operations</div>
+            <a href="orders.html" class="nav-item"><span
+                    class="material-icons">receipt_long</span><span>Orders</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <a href="login.html" class="nav-item"><span class="material-icons">logout</span><span>Logout</span></a>
+        </div>
+    </nav>
+
+    <!-- APP BAR -->
+    <header class="appbar">
+        <span class="appbar-title">Add Menu Item</span>
+        <div class="appbar-search">
+            <span class="material-icons">search</span>
+            <input type="text" placeholder="Search…" />
+        </div>
+        <a class="icon-btn" href="#" style="color:#fff;"><span class="material-icons">notifications_outlined</span></a>
+        <div class="appbar-user">
+            <div class="appbar-avatar">A</div>
+            <span class="appbar-user-name">Admin</span>
+            <span class="material-icons" style="font-size:18px;opacity:.8;">arrow_drop_down</span>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <div class="page-header">
+            <div class="page-header-left">
+                <h1 class="page-title">Add Menu Item</h1>
+                <div class="breadcrumb">
+                    <a href="dashboard.html">Dashboard</a>
+                    <span class="breadcrumb-sep">›</span>
+                    <a href="items.html">Menu Items</a>
+                    <span class="breadcrumb-sep">›</span>
+                    <span>Add New</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:2fr 1fr; gap:24px; align-items:start;">
+
+            <!-- Left: main form -->
+            <div style="display:flex; flex-direction:column; gap:20px;">
+
+                <!-- Basic info -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Item Information</div>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="form-field">
+                            <label class="form-label">Item Name *</label>
+                            <input type="text" class="form-input" placeholder="e.g. Classic Mojito" />
+                        </div>
+
+                        <div class="form-field">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-textarea"
+                                placeholder="Describe this item — ingredients, preparation, serving size…"></textarea>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-field">
+                                <label class="form-label">Category *</label>
+                                <select class="form-select">
+                                    <option value="" disabled selected>Select a category</option>
+                                    <option>Cocktails</option>
+                                    <option>Beers</option>
+                                    <option>Wines</option>
+                                    <option>Non-Alcoholic</option>
+                                    <option>Snacks</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label class="form-label">Price *</label>
+                                <div class="input-wrap">
+                                    <span class="material-icons">attach_money</span>
+                                    <input type="number" class="form-input" placeholder="0.00" min="0" step="0.01" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-field mb-0">
+                                <label class="form-label">Preparation Time (minutes)</label>
+                                <div class="input-wrap">
+                                    <span class="material-icons">timer</span>
+                                    <input type="number" class="form-input" placeholder="e.g. 5" min="1" />
+                                </div>
+                            </div>
+                            <div class="form-field mb-0">
+                                <label class="form-label">Serving Size</label>
+                                <input type="text" class="form-input" placeholder="e.g. 330ml, 150ml glass, 1 plate" />
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Additional info -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Additional Details</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-field">
+                            <label class="form-label">Allergens</label>
+                            <input type="text" class="form-input" placeholder="e.g. Contains: gluten, dairy, nuts" />
+                            <div class="form-helper">Optional. Displayed to customers on the menu.</div>
+                        </div>
+                        <div class="form-field mb-0">
+                            <label class="form-label">Tags</label>
+                            <input type="text" class="form-input"
+                                placeholder="e.g. vegan, gluten-free, popular, seasonal" />
+                            <div class="form-helper">Separate tags with commas.</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right: image + settings -->
+            <div style="display:flex; flex-direction:column; gap:20px;">
+
+                <!-- Image upload -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Item Photo</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="upload-area">
+                            <span class="material-icons">add_photo_alternate</span>
+                            <p class="fw-500">Upload item photo</p>
+                            <span class="text-xs">PNG, JPG up to 5MB · Recommended 800×600</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Availability -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Availability</div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-field">
+                            <label class="form-label">Status</label>
+                            <select class="form-select">
+                                <option value="available" selected>Available</option>
+                                <option value="unavailable">Unavailable</option>
+                            </select>
+                            <div class="form-helper">Unavailable items are hidden from the customer menu.</div>
+                        </div>
+                        <div class="form-field mb-0">
+                            <label class="form-label">Display Order</label>
+                            <input type="number" class="form-input" placeholder="e.g. 1 (lower = appears first)"
+                                min="1" />
+                            <div class="form-helper">Controls ordering within the category.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="card">
+                    <div class="card-body" style="display:flex; flex-direction:column; gap:12px;">
+                        <a href="items.html" class="btn btn-primary" style="justify-content:center;">
+                            <span class="material-icons">save</span>
+                            Create Item
+                        </a>
+                        <a href="items.html" class="btn btn-outlined" style="justify-content:center;">
+                            Cancel
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+</body>
+
+</html>

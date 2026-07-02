@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OrderPoint – Menu Items</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-icon"><span class="material-icons">local_bar</span></div>
+            <div class="sidebar-brand-text">
+                <div class="sidebar-brand-title">OrderPoint</div>
+                <div class="sidebar-brand-sub">Admin Panel</div>
+            </div>
+        </div>
+        <div class="nav-group">
+            <div class="nav-group-label">Overview</div>
+            <a href="dashboard.html" class="nav-item"><span
+                    class="material-icons">dashboard</span><span>Dashboard</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <div class="nav-group-label">Management</div>
+            <a href="bartenders.html" class="nav-item"><span
+                    class="material-icons">people_alt</span><span>Bartenders</span></a>
+            <a href="items.html" class="nav-item active"><span class="material-icons">restaurant_menu</span><span>Menu
+                    Items</span></a>
+            <a href="categories.html" class="nav-item"><span
+                    class="material-icons">category</span><span>Categories</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <div class="nav-group-label">Operations</div>
+            <a href="orders.html" class="nav-item"><span
+                    class="material-icons">receipt_long</span><span>Orders</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <a href="login.html" class="nav-item"><span class="material-icons">logout</span><span>Logout</span></a>
+        </div>
+    </nav>
+
+    <!-- APP BAR -->
+    <header class="appbar">
+        <span class="appbar-title">Menu Items</span>
+        <div class="appbar-search">
+            <span class="material-icons">search</span>
+            <input type="text" placeholder="Search items…" />
+        </div>
+        <a class="icon-btn" href="#" style="color:#fff;"><span class="material-icons">notifications_outlined</span></a>
+        <div class="appbar-user">
+            <div class="appbar-avatar">A</div>
+            <span class="appbar-user-name">Admin</span>
+            <span class="material-icons" style="font-size:18px;opacity:.8;">arrow_drop_down</span>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <div class="page-header">
+            <div class="page-header-left">
+                <h1 class="page-title">Menu Items</h1>
+                <div class="breadcrumb">
+                    <a href="dashboard.html">Dashboard</a>
+                    <span class="breadcrumb-sep">›</span>
+                    <span>Menu Items</span>
+                </div>
+            </div>
+            <a href="item-create.html" class="btn btn-primary">
+                <span class="material-icons">add</span>
+                Add Item
+            </a>
+        </div>
+
+        <!-- Filter/sort bar -->
+        <div class="card mb-24">
+            <div class="card-body" style="padding:14px 20px;">
+                <div class="flex items-center gap-16">
+                    <div style="flex:1; max-width:300px;">
+                        <div class="input-wrap">
+                            <span class="material-icons">search</span>
+                            <input type="text" class="form-input" placeholder="Search by name…"
+                                style="margin-bottom:0;" />
+                        </div>
+                    </div>
+                    <select class="form-select" style="width:160px; margin-bottom:0;">
+                        <option>All Categories</option>
+                        <option>Cocktails</option>
+                        <option>Beers</option>
+                        <option>Wines</option>
+                        <option>Non-Alcoholic</option>
+                        <option>Snacks</option>
+                    </select>
+                    <select class="form-select" style="width:140px; margin-bottom:0;">
+                        <option>All Status</option>
+                        <option>Available</option>
+                        <option>Unavailable</option>
+                    </select>
+                    <div class="flex items-center gap-8" style="margin-left:auto;">
+                        <span class="text-sm text-muted">12 items</span>
+                        <div class="flex gap-4">
+                            <button class="icon-btn primary" data-tip="Grid view"
+                                style="background:var(--primary-bg);"><span
+                                    class="material-icons">grid_view</span></button>
+                            <button class="icon-btn" data-tip="List view"><span
+                                    class="material-icons">view_list</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Items grid -->
+        <div class="items-grid">
+
+            <!-- Item 1 -->
+            <div class="item-card">
+                <div class="item-card-img" style="background:linear-gradient(135deg,#e8f5e9,#c8e6c9);">
+                    <span class="material-icons" style="color:#66bb6a;">local_bar</span>
+                    <span class="chip chip-success">Available</span>
+                </div>
+                <div class="item-card-body">
+                    <div class="item-card-name">Mojito</div>
+                    <div class="item-card-cat">Cocktails</div>
+                    <div class="item-card-desc">Classic Cuban cocktail with white rum, fresh lime juice, sugar, mint,
+                        and soda water.</div>
+                </div>
+                <div class="item-card-footer">
+                    <span class="item-price">$9.99</span>
+                    <div class="flex gap-4">
+                        <a href="item-detail.html" class="icon-btn primary" data-tip="View"><span
+                                class="material-icons">visibility</span></a>
+                        <a href="item-edit.html" class="icon-btn primary" data-tip="Edit"><span
+                                class="material-icons">edit</span></a>
+                        <button class="icon-btn danger" data-tip="Delete"><span
+                                class="material-icons">delete</span></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="item-card">
+                <div class="item-card-img" style="background:linear-gradient(135deg,#fce4ec,#f8bbd0);">
+                    <span class="material-icons" style="color:#ec407a;">local_bar</span>
+                    <span class="chip chip-success">Available</span>
+                </div>
+                <div class="item-card-body">
+                    <div class="item-card-name">Cosmopolitan</div>
+                    <div class="item-card-cat">Cocktails</div>
+                    <div class="item-card-desc">Vodka, triple sec, cranberry juice, and freshly squeezed lime juice.
+                    </div>
+                </div>
+                <div class="item-card-footer">
+                    <span class="item-price">$11.99</span>
+                    <div class="flex gap-4">
+                        <a href="item-detail.html" class="icon-btn primary"><span
+                                class="material-icons">visibility</span></a>
+                        <a href="item-edit.html" class="icon-btn primary"><span class="material-icons">edit</span></a>
+                        <button class="icon-btn danger"><span class="material-icons">delete</span></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="item-card">
+                <div class="item-card-img" style="background:linear-gradient(135deg,#fff3e0,#ffe0b2);">
+                    <span class="material-icons" style="color:#ffa726;">local_bar</span>
+                    <span class="chip chip-success">Available</span>
+                </div>
+                <div class="item-card-body">
+                    <div class="item-card-name">Margarita</div>
+                    <div class="item-card-cat">Cocktails</div>
+                    <div class="item-card-desc">Tequila, fresh lime juice, and triple sec served with a salted rim.
+                    </div>
+                </div>
+                <div class="item-card-footer">
+                    <span class="item-price">$10.99</span>
+                    <div class="flex gap-4">
+                        <a href="item-detail.html" class="icon-btn primary"><span
+                                class="material-icons">visibility</span></a>
+                        <a href="item-edit.html" class="icon-btn primary"><span class="material-icons">edit</span></a>
+                        <button class="icon-btn danger"><span class="material-icons">delete</span></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 4 -->
+            <div class="item-card">
+                <div class="item-card-img" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb);">
+                    <span class="material-icons" style="color:#42a5f5;">sports_bar</span>
+                    <span class="chip chip-success">Available</span>
+                </div>
+                <div class="item-card-body">
+                    <div class="item-card-name">Heineken</div>
+                    <div class="item-card-cat">Beers</div>
+                    <div class="item-card-desc">Premium Dutch lager with a distinctive bitter taste, 5% ABV. 330ml
+                        bottle.</div>
+                </div>
+                <div class="item-card-footer">
+                    <span class="item-price">$4.99</span>
+                    <div class="flex gap-4">
+                        <a href="item-detail.html" class="icon-btn primary"><span
+                                class="material-icons">visibility</span></a>
+                        <a href="item-edit.html" class="icon-btn primary"><span class="material-icons">edit</span></a>
+                        <button class="icon-btn danger"><span class="material-icons">delete</span></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 5 -->
+            <div class="item-card">
+                <div class="item-card-img" style="background:linear-gradient(135deg,#fff8e1,#ffecb3);">
+                    <span class="material-icons" style="color:#ffca28;">sports_bar</span>
+                    <span class="chip chip-success">Available</span>
+                </div>
+                <div class="item-card-body">
+                    <div class="item-card-name">Corona Extra</div>
+                    <div class="item-card-cat">Beers</div>
+                    <div class="item-card-desc">Light, refreshing Mexican lager. Best served with a wedge of lime. 4.6%
+                        ABV.</div>
+                </div>
+                <div class="item-card-footer">
+                    <span class="item-price">$5.99</span>
+                    <div class="flex gap-4">
+                        <a href="item-detail.html" class="icon-btn primary"><span
+                                class="material-icons">visibility</span></a>
+                        <a href="item-edit.html" class="icon-btn primary"><span class="material-icons">edit</span></a>
+                        <button class="icon-btn danger"><span class="material-icons">delete</span></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 6 – Unavailable -->
+            <div class="item-card" style="opacity:.75;">
+                <div class="item-card-img" style="background:linear-gradient(135deg,#eceff1,#cfd8dc);">
+                    <span class="material-icons" style="color:#90a4ae;">sports_bar</span>
+                    <span class="chip chip-error">Unavailable</span>
+                </div>
+                <div class="item-card-body">
+                    <div class="item-card-name">Guinness</div>
+                    <div class="item-card-cat">Beers</div>
+                    <div class="item-card-desc">Irish dry stout with a distinctive dark colour and creamy head. 4.2%
+                        ABV.</div>
+                </div>
+                <div class="item-card-footer">
+                    <span class="item-price">$6.99</span>
+                    <div class="flex gap-4">
+                        <a href="item-detail.html" class="icon-btn primary"><span
+                                class="material-icons">visibility</span></a>
+                        <a href="item-edit.html" class="icon-btn primary"><span class="material-icons">edit</span></a>
+                        <button class="icon-btn danger"><span class="material-icons">delete</span></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 7 -->
+            <div class="item-card">
+                <div class="item-card-img" style="background:linear-gradient(135deg,#f3e5f5,#e1bee7);">
+                    <span class="material-icons" style="color:#ba68c8;">wine_bar</span>
+                    <span class="chip chip-success">Available</span>
+                </div>
+                <div class="item-card-body">
+                    <div class="item-card-name">Chardonnay</div>
+                    <div class="item-card-cat">Wines</div>
+                    <div class="item-card-desc">Crisp white wine with notes of apple, citrus, and light oak. 150ml
+                        glass.</div>
+                </div>
+                <div class="item-card-footer">
+                    <span class="item-price">$8.99</span>
+                    <div class="flex gap-4">
+                        <a href="item-detail.html" class="icon-btn primary"><span
+                                class="material-icons">visibility</span></a>
+                        <a href="item-edit.html" class="icon-btn primary"><span class="material-icons">edit</span></a>
+                        <button class="icon-btn danger"><span class="material-icons">delete</span></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 8 -->
+            <div class="item-card">
+                <div class="item-card-img" style="background:linear-gradient(135deg,#fce4ec,#f48fb1);">
+                    <span class="material-icons" style="color:#e91e63;">wine_bar</span>
+                    <span class="chip chip-success">Available</span>
+                </div>
+                <div class="item-card-body">
+                    <div class="item-card-name">Merlot</div>
+                    <div class="item-card-cat">Wines</div>
+                    <div class="item-card-desc">Smooth red wine with flavours of black cherry, plum, and chocolate.
+                        150ml glass.</div>
+                </div>
+                <div class="item-card-footer">
+                    <span class="item-price">$9.99</span>
+                    <div class="flex gap-4">
+                        <a href="item-detail.html" class="icon-btn primary"><span
+                                class="material-icons">visibility</span></a>
+                        <a href="item-edit.html" class="icon-btn primary"><span class="material-icons">edit</span></a>
+                        <button class="icon-btn danger"><span class="material-icons">delete</span></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 9 -->
+            <div class="item-card">
+                <div class="item-card-img" style="background:linear-gradient(135deg,#e8eaf6,#c5cae9);">
+                    <span class="material-icons" style="color:#5c6bc0;">local_cafe</span>
+                    <span class="chip chip-success">Available</span>
+                </div>
+                <div class="item-card-body">
+                    <div class="item-card-name">Coca-Cola</div>
+                    <div class="item-card-cat">Non-Alcoholic</div>
+                    <div class="item-card-desc">Classic ice-cold Coca-Cola served in a glass with ice. 300ml.</div>
+                </div>
+                <div class="item-card-footer">
+                    <span class="item-price">$2.99</span>
+                    <div class="flex gap-4">
+                        <a href="item-detail.html" class="icon-btn primary"><span
+                                class="material-icons">visibility</span></a>
+                        <a href="item-edit.html" class="icon-btn primary"><span class="material-icons">edit</span></a>
+                        <button class="icon-btn danger"><span class="material-icons">delete</span></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 10 -->
+            <div class="item-card">
+                <div class="item-card-img" style="background:linear-gradient(135deg,#e8f5e9,#a5d6a7);">
+                    <span class="material-icons" style="color:#4caf50;">local_cafe</span>
+                    <span class="chip chip-success">Available</span>
+                </div>
+                <div class="item-card-body">
+                    <div class="item-card-name">Fresh Orange Juice</div>
+                    <div class="item-card-cat">Non-Alcoholic</div>
+                    <div class="item-card-desc">Freshly squeezed orange juice served chilled. 300ml.</div>
+                </div>
+                <div class="item-card-footer">
+                    <span class="item-price">$3.99</span>
+                    <div class="flex gap-4">
+                        <a href="item-detail.html" class="icon-btn primary"><span
+                                class="material-icons">visibility</span></a>
+                        <a href="item-edit.html" class="icon-btn primary"><span class="material-icons">edit</span></a>
+                        <button class="icon-btn danger"><span class="material-icons">delete</span></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 11 -->
+            <div class="item-card">
+                <div class="item-card-img" style="background:linear-gradient(135deg,#fff3e0,#ffe0b2);">
+                    <span class="material-icons" style="color:#ff9800;">fastfood</span>
+                    <span class="chip chip-success">Available</span>
+                </div>
+                <div class="item-card-body">
+                    <div class="item-card-name">Nachos</div>
+                    <div class="item-card-cat">Snacks</div>
+                    <div class="item-card-desc">Crispy tortilla chips topped with melted cheese, jalapeños, and salsa
+                        dip.</div>
+                </div>
+                <div class="item-card-footer">
+                    <span class="item-price">$7.99</span>
+                    <div class="flex gap-4">
+                        <a href="item-detail.html" class="icon-btn primary"><span
+                                class="material-icons">visibility</span></a>
+                        <a href="item-edit.html" class="icon-btn primary"><span class="material-icons">edit</span></a>
+                        <button class="icon-btn danger"><span class="material-icons">delete</span></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 12 -->
+            <div class="item-card">
+                <div class="item-card-img" style="background:linear-gradient(135deg,#fafafa,#eeeeee);">
+                    <span class="material-icons" style="color:#9e9e9e;">kitchen</span>
+                    <span class="chip chip-success">Available</span>
+                </div>
+                <div class="item-card-body">
+                    <div class="item-card-name">Cheese Platter</div>
+                    <div class="item-card-cat">Snacks</div>
+                    <div class="item-card-desc">Selection of artisan cheeses, grapes, and crackers. Perfect for sharing.
+                    </div>
+                </div>
+                <div class="item-card-footer">
+                    <span class="item-price">$12.99</span>
+                    <div class="flex gap-4">
+                        <a href="item-detail.html" class="icon-btn primary"><span
+                                class="material-icons">visibility</span></a>
+                        <a href="item-edit.html" class="icon-btn primary"><span class="material-icons">edit</span></a>
+                        <button class="icon-btn danger"><span class="material-icons">delete</span></button>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /items-grid -->
+
+    </main>
+
+    <!-- Delete dialog -->
+    <div class="dialog-backdrop" style="display:none;">
+        <div class="dialog">
+            <div class="dialog-title">Delete Menu Item</div>
+            <div class="dialog-text">
+                Are you sure you want to delete <strong>Mojito</strong>? Customers will no longer be able to order this
+                item. This action cannot be undone.
+            </div>
+            <div class="dialog-actions">
+                <button class="btn btn-text">Cancel</button>
+                <button class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAB -->
+    <a href="item-create.html" class="fab">
+        <span class="material-icons">add</span>
+    </a>
+
+</body>
+
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OrderPoint – Edit Bartender</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-icon"><span class="material-icons">local_bar</span></div>
+            <div class="sidebar-brand-text">
+                <div class="sidebar-brand-title">OrderPoint</div>
+                <div class="sidebar-brand-sub">Admin Panel</div>
+            </div>
+        </div>
+        <div class="nav-group">
+            <div class="nav-group-label">Overview</div>
+            <a href="dashboard.html" class="nav-item"><span
+                    class="material-icons">dashboard</span><span>Dashboard</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <div class="nav-group-label">Management</div>
+            <a href="bartenders.html" class="nav-item active"><span
+                    class="material-icons">people_alt</span><span>Bartenders</span></a>
+            <a href="items.html" class="nav-item"><span class="material-icons">restaurant_menu</span><span>Menu
+                    Items</span></a>
+            <a href="categories.html" class="nav-item"><span
+                    class="material-icons">category</span><span>Categories</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <div class="nav-group-label">Operations</div>
+            <a href="orders.html" class="nav-item"><span
+                    class="material-icons">receipt_long</span><span>Orders</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <a href="login.html" class="nav-item"><span class="material-icons">logout</span><span>Logout</span></a>
+        </div>
+    </nav>
+
+    <!-- APP BAR -->
+    <header class="appbar">
+        <span class="appbar-title">Edit Bartender</span>
+        <div class="appbar-search">
+            <span class="material-icons">search</span>
+            <input type="text" placeholder="Search…" />
+        </div>
+        <a class="icon-btn" href="#" style="color:#fff;"><span class="material-icons">notifications_outlined</span></a>
+        <div class="appbar-user">
+            <div class="appbar-avatar">A</div>
+            <span class="appbar-user-name">Admin</span>
+            <span class="material-icons" style="font-size:18px;opacity:.8;">arrow_drop_down</span>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <div class="page-header">
+            <div class="page-header-left">
+                <h1 class="page-title">Edit: John Smith</h1>
+                <div class="breadcrumb">
+                    <a href="dashboard.html">Dashboard</a>
+                    <span class="breadcrumb-sep">›</span>
+                    <a href="bartenders.html">Bartenders</a>
+                    <span class="breadcrumb-sep">›</span>
+                    <a href="bartender-detail.html">John Smith</a>
+                    <span class="breadcrumb-sep">›</span>
+                    <span>Edit</span>
+                </div>
+            </div>
+            <div class="flex gap-12">
+                <a href="bartender-detail.html" class="btn btn-outlined">
+                    <span class="material-icons">arrow_back</span>
+                    Back to Details
+                </a>
+            </div>
+        </div>
+
+        <!-- Success alert example -->
+        <div class="flex items-center gap-12 mb-24"
+            style="padding:12px 16px; background:rgba(46,125,50,.1); border-left:4px solid var(--success); border-radius:4px;">
+            <span class="material-icons" style="color:var(--success);">info_outline</span>
+            <span class="text-sm" style="color:var(--success);">Editing account for <strong>John Smith</strong> — ID
+                #BRT-001, created Jan 15, 2026.</span>
+        </div>
+
+        <div style="display:grid; grid-template-columns:2fr 1fr; gap:24px; align-items:start;">
+
+            <!-- Form card -->
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="card-title">Account Information</div>
+                        <div class="card-subtitle">Update the bartender's account details</div>
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    <div class="form-grid">
+                        <div class="form-field">
+                            <label class="form-label">First Name *</label>
+                            <input type="text" class="form-input" value="John" />
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">Last Name *</label>
+                            <input type="text" class="form-input" value="Smith" />
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <label class="form-label">Email Address *</label>
+                        <div class="input-wrap">
+                            <span class="material-icons">email</span>
+                            <input type="email" class="form-input" value="john.smith@orderpoint.com" />
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <label class="form-label">Phone Number</label>
+                        <div class="input-wrap">
+                            <span class="material-icons">phone</span>
+                            <input type="tel" class="form-input" value="+1 (555) 010-1234" />
+                        </div>
+                    </div>
+
+                    <div class="form-field">
+                        <label class="form-label">Account Status</label>
+                        <select class="form-select">
+                            <option value="active" selected>Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+
+                    <!-- Password section -->
+                    <div style="padding:16px; background:var(--bg); border-radius:4px; margin-bottom:20px;">
+                        <div class="flex items-center gap-8 mb-16">
+                            <span class="material-icons"
+                                style="color:var(--text-secondary); font-size:18px;">lock</span>
+                            <span class="fw-500 text-sm">Change Password</span>
+                            <span class="text-xs text-muted">(leave blank to keep current password)</span>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-field mb-0">
+                                <label class="form-label">New Password</label>
+                                <div class="input-wrap input-wrap-end">
+                                    <input type="password" class="form-input" placeholder="New password"
+                                        style="padding-left:13px;" />
+                                    <span class="material-icons" style="cursor:pointer;">visibility_off</span>
+                                </div>
+                            </div>
+                            <div class="form-field mb-0">
+                                <label class="form-label">Confirm New Password</label>
+                                <div class="input-wrap input-wrap-end">
+                                    <input type="password" class="form-input" placeholder="Repeat new password"
+                                        style="padding-left:13px;" />
+                                    <span class="material-icons" style="cursor:pointer;">visibility_off</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-field mb-0">
+                        <label class="form-label">Notes</label>
+                        <textarea class="form-textarea">Senior bartender, handles VIP tables.</textarea>
+                    </div>
+
+                </div>
+
+                <div class="form-actions" style="padding:16px 20px; margin-top:0; border-top:1px solid var(--divider);">
+                    <a href="bartender-detail.html" class="btn btn-outlined">Discard Changes</a>
+                    <a href="bartender-detail.html" class="btn btn-primary">
+                        <span class="material-icons">save</span>
+                        Save Changes
+                    </a>
+                </div>
+            </div>
+
+            <!-- Side info -->
+            <div style="display:flex; flex-direction:column; gap:20px;">
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Profile Photo</div>
+                    </div>
+                    <div class="card-body" style="text-align:center;">
+                        <div class="avatar avatar-xl" style="background:#1976d2; margin:0 auto 16px;">JS</div>
+                        <div class="upload-area">
+                            <span class="material-icons">upload</span>
+                            <p class="fw-500">Replace photo</p>
+                            <span class="text-xs">PNG, JPG up to 2MB</span>
+                        </div>
+                        <button class="btn btn-text" style="margin-top:10px; color:var(--error); font-size:13px;">
+                            Remove photo
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Danger Zone</div>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-sm text-muted mb-16">Permanently delete this bartender account. This action
+                            cannot be undone.</p>
+                        <button class="btn btn-danger-outlined w-100" style="justify-content:center;"
+                            onclick="document.querySelector('.dialog-backdrop').style.display='flex'">
+                            <span class="material-icons">delete_forever</span>
+                            Delete Account
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Delete dialog -->
+    <div class="dialog-backdrop" style="display:none;">
+        <div class="dialog">
+            <div class="dialog-title">Delete Bartender Account</div>
+            <div class="dialog-text">
+                Are you sure you want to delete <strong>John Smith</strong>'s account? This action cannot be undone.
+            </div>
+            <div class="dialog-actions">
+                <button class="btn btn-text"
+                    onclick="document.querySelector('.dialog-backdrop').style.display='none'">Cancel</button>
+                <a href="bartenders.html" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

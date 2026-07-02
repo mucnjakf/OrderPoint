@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OrderPoint – Mojito</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+    <!-- ══════════════════════════════════════════
+         TOP APP BAR
+         (transparent / overlays hero image)
+    ═══════════════════════════════════════════ -->
+    <header class="appbar" style="position: absolute; background: transparent; box-shadow: none;">
+        <a href="category-items.html" class="icon-btn white" style="background: rgba(0,0,0,.28); border-radius: 50%;">
+            <span class="material-icons">arrow_back</span>
+        </a>
+        <div style="flex:1;"></div>
+        <div class="appbar-actions">
+            <a href="order-cart.html" class="icon-btn white cart-icon-wrap"
+                style="background: rgba(0,0,0,.28); border-radius: 50%;">
+                <span class="material-icons">shopping_cart</span>
+                <span class="cart-badge">3</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- ══════════════════════════════════════════
+         ITEM HERO IMAGE AREA
+    ═══════════════════════════════════════════ -->
+    <div class="item-hero">
+        <span class="material-icons">local_bar</span>
+        <span class="item-hero-badge">$9.99</span>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         PAGE BODY (scrollable)
+    ═══════════════════════════════════════════ -->
+    <div class="page-body" style="padding-bottom: 112px;">
+
+        <div class="item-detail-body">
+            <div class="item-detail-name">Mojito</div>
+            <div class="item-detail-cat">
+                <span class="material-icons" style="font-size:13px;">local_bar</span>
+                Cocktails
+            </div>
+            <div class="item-detail-desc">
+                A refreshing Cuban classic. White rum is combined with fresh mint leaves,
+                zesty lime juice, cane sugar, and a splash of soda water.
+                Served over crushed ice in a tall glass — perfect for a warm evening.
+            </div>
+
+            <hr class="item-detail-divider" />
+
+            <div class="item-detail-price-row">
+                <div>
+                    <div class="item-detail-price-label">Price per drink</div>
+                    <div class="item-detail-price">$9.99</div>
+                </div>
+
+                <!-- Quantity stepper -->
+                <div class="qty-stepper-lg">
+                    <button class="qty-btn-lg">
+                        <span class="material-icons">remove</span>
+                    </button>
+                    <span class="qty-num-lg">2</span>
+                    <button class="qty-btn-lg add">
+                        <span class="material-icons">add</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        <!-- /item-detail-body -->
+
+    </div>
+    <!-- /page-body -->
+
+    <!-- ══════════════════════════════════════════
+         STICKY BOTTOM ACTION BAR
+    ═══════════════════════════════════════════ -->
+    <div class="action-bar">
+        <div class="action-bar-hint">2 × Mojito already in your order</div>
+        <div style="display: flex; gap: 10px;">
+            <a href="order-cart.html" class="btn btn-outlined" style="flex: 1; height: 52px;">
+                View Order
+            </a>
+            <button class="btn btn-primary btn-lg" style="flex: 2;">
+                <span class="material-icons">add_shopping_cart</span>
+                Add to Order · $19.98
+            </button>
+        </div>
+    </div>
+
+</body>
+
+</html>

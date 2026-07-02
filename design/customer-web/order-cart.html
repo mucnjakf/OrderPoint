@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OrderPoint – Your Order</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+    <!-- ══════════════════════════════════════════
+         TOP APP BAR
+    ═══════════════════════════════════════════ -->
+    <header class="appbar">
+        <a href="menu.html" class="icon-btn white">
+            <span class="material-icons">arrow_back</span>
+        </a>
+        <span class="appbar-title">Your Order</span>
+        <div class="appbar-actions">
+            <!-- Table context chip -->
+            <span style="font-size: 13px; font-weight: 500; opacity: .85; padding-right: 8px;
+                         display: flex; align-items: center; gap: 4px;">
+                <span class="material-icons" style="font-size: 17px;">table_restaurant</span>
+                Table 7
+            </span>
+        </div>
+    </header>
+
+    <!-- ══════════════════════════════════════════
+         PAGE BODY
+    ═══════════════════════════════════════════ -->
+    <div class="page-body">
+
+        <!-- ── Cart items ──────────────────────────────────── -->
+        <div class="section-label">Items (4)</div>
+
+        <div style="background: var(--surface); margin-bottom: 8px;">
+
+            <!-- Item 1 -->
+            <div class="cart-item-row">
+                <div class="cart-item-icon cat-cocktails">
+                    <span class="material-icons">local_bar</span>
+                </div>
+                <div class="cart-item-info">
+                    <div class="cart-item-name">Mojito</div>
+                    <div class="cart-item-price">$9.99 each</div>
+                </div>
+                <div class="cart-item-right">
+                    <span class="cart-item-subtotal">$19.98</span>
+                    <div class="qty-stepper">
+                        <button class="qty-btn">
+                            <span class="material-icons">remove</span>
+                        </button>
+                        <span class="qty-num">2</span>
+                        <button class="qty-btn add">
+                            <span class="material-icons">add</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="cart-item-row">
+                <div class="cart-item-icon cat-beers">
+                    <span class="material-icons">sports_bar</span>
+                </div>
+                <div class="cart-item-info">
+                    <div class="cart-item-name">Heineken</div>
+                    <div class="cart-item-price">$4.99 each</div>
+                </div>
+                <div class="cart-item-right">
+                    <span class="cart-item-subtotal">$4.99</span>
+                    <div class="qty-stepper">
+                        <button class="qty-btn">
+                            <span class="material-icons">remove</span>
+                        </button>
+                        <span class="qty-num">1</span>
+                        <button class="qty-btn add">
+                            <span class="material-icons">add</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="cart-item-row">
+                <div class="cart-item-icon cat-soft">
+                    <span class="material-icons">local_drink</span>
+                </div>
+                <div class="cart-item-info">
+                    <div class="cart-item-name">Diet Coke</div>
+                    <div class="cart-item-price">$2.99 each</div>
+                </div>
+                <div class="cart-item-right">
+                    <span class="cart-item-subtotal">$2.99</span>
+                    <div class="qty-stepper">
+                        <button class="qty-btn">
+                            <span class="material-icons">remove</span>
+                        </button>
+                        <span class="qty-num">1</span>
+                        <button class="qty-btn add">
+                            <span class="material-icons">add</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Item 4 -->
+            <div class="cart-item-row">
+                <div class="cart-item-icon cat-cocktails">
+                    <span class="material-icons">local_bar</span>
+                </div>
+                <div class="cart-item-info">
+                    <div class="cart-item-name">Whiskey Sour</div>
+                    <div class="cart-item-price">$11.99 each</div>
+                </div>
+                <div class="cart-item-right">
+                    <span class="cart-item-subtotal">$11.99</span>
+                    <div class="qty-stepper">
+                        <!-- qty = 1, minus removes the item entirely -->
+                        <button class="qty-btn" style="border-color: rgba(211,47,47,.35); color: var(--error);">
+                            <span class="material-icons">delete_outline</span>
+                        </button>
+                        <span class="qty-num">1</span>
+                        <button class="qty-btn add">
+                            <span class="material-icons">add</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- /cart items -->
+
+        <!-- ── Add more items link ─────────────────────────── -->
+        <div style="background: var(--surface); margin-bottom: 8px;">
+            <a href="menu.html" style="display: flex; align-items: center; gap: 12px;
+                   padding: 14px 16px; color: var(--primary); text-decoration: none;">
+                <span class="material-icons">add_circle_outline</span>
+                <span style="font-size: 14px; font-weight: 500;">Add more items</span>
+                <span class="material-icons"
+                    style="margin-left: auto; color: var(--text-disabled);">chevron_right</span>
+            </a>
+        </div>
+
+        <!-- ── Order note ──────────────────────────────────── -->
+        <div class="section-label">Special Instructions</div>
+        <div style="background: var(--surface); padding: 14px 16px; margin-bottom: 8px;">
+            <div class="form-field">
+                <label class="form-label">Note for the bartender (optional)</label>
+                <textarea class="form-textarea"
+                    placeholder="e.g. No mint in the mojito, extra ice for the whiskey…">No mint in the mojito please. Extra lime if possible.</textarea>
+                <div class="form-helper">Your note will be visible to the bartender</div>
+            </div>
+        </div>
+
+        <!-- ── Order summary ──────────────────────────────── -->
+        <div class="section-label">Summary</div>
+        <div style="background: var(--surface); margin-bottom: 8px;">
+            <div class="summary-row">
+                <span class="summary-label">Items (5)</span>
+                <span class="summary-value">$39.95</span>
+            </div>
+            <div class="summary-row" style="border-bottom: 1px solid var(--divider);">
+                <span class="summary-label">Table</span>
+                <span class="summary-value" style="display: flex; align-items: center; gap: 4px;">
+                    <span class="material-icons"
+                        style="font-size: 16px; color: var(--text-secondary);">table_restaurant</span>
+                    Table 7
+                </span>
+            </div>
+            <div class="summary-row total">
+                <span class="summary-label">Total</span>
+                <span class="summary-value">$39.95</span>
+            </div>
+        </div>
+
+    </div>
+    <!-- /page-body -->
+
+    <!-- ══════════════════════════════════════════
+         STICKY BOTTOM — PLACE ORDER
+    ═══════════════════════════════════════════ -->
+    <div class="action-bar">
+        <div class="action-bar-hint">
+            Your order will be sent to the bartender for review
+        </div>
+        <a href="order-status.html" class="btn btn-primary btn-lg btn-w100">
+            <span class="material-icons">send</span>
+            Place Order · $39.95
+        </a>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--
+        =====================================================
+        ORDER STATUS — STATE SELECTOR
+        Change the <body> class to preview different states:
+
+          class=""                  → PENDING   (waiting for bartender)
+          class="state-accepted"   → ACCEPTED  (bartender accepted)
+          class="state-active"     → ACTIVE    (being prepared)
+          class="state-completed"  → COMPLETED (ready / served)
+          class="state-declined"   → DECLINED  (cannot be fulfilled)
+        =====================================================
+    -->
+    <title>OrderPoint – Order Status</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+        /* ── Visibility driven by body state class ── */
+
+        /* Default = PENDING */
+        .view-pending {
+            display: block;
+        }
+
+        .view-accepted {
+            display: none;
+        }
+
+        .view-active {
+            display: none;
+        }
+
+        .view-completed {
+            display: none;
+        }
+
+        .view-declined {
+            display: none;
+        }
+
+        body.state-accepted .view-pending {
+            display: none;
+        }
+
+        body.state-accepted .view-accepted {
+            display: block;
+        }
+
+        body.state-active .view-pending {
+            display: none;
+        }
+
+        body.state-active .view-active {
+            display: block;
+        }
+
+        body.state-completed .view-pending {
+            display: none;
+        }
+
+        body.state-completed .view-completed {
+            display: block;
+        }
+
+        body.state-declined .view-pending {
+            display: none;
+        }
+
+        body.state-declined .view-declined {
+            display: block;
+        }
+
+        /* New-order CTA shown only on completed / declined */
+        .new-order-bar {
+            display: none;
+        }
+
+        body.state-completed .new-order-bar {
+            display: block;
+        }
+
+        body.state-declined .new-order-bar {
+            display: block;
+        }
+
+        /* hide default action bar on completed/declined */
+        body.state-completed .default-action-bar {
+            display: none;
+        }
+
+        body.state-declined .default-action-bar {
+            display: none;
+        }
+    </style>
+</head>
+
+<!-- Default state: PENDING. Change class to preview others. -->
+
+<body>
+
+    <!-- ══════════════════════════════════════════
+         TOP APP BAR
+    ═══════════════════════════════════════════ -->
+    <header class="appbar">
+        <a href="menu.html" class="icon-btn white">
+            <span class="material-icons">home</span>
+        </a>
+        <div class="appbar-title-group">
+            <span class="appbar-title">Order #1049</span>
+            <span class="appbar-subtitle">Table 7</span>
+        </div>
+        <div class="appbar-actions" style="padding-right: 8px;">
+            <!-- Live indicator -->
+            <div style="display: flex; align-items: center; gap: 5px;
+                        font-size: 11px; font-weight: 700; color: rgba(255,255,255,.85);
+                        background: rgba(255,255,255,.15); padding: 4px 10px;
+                        border-radius: 12px; white-space: nowrap;">
+                <span class="live-dot"></span>
+                LIVE
+            </div>
+        </div>
+    </header>
+
+    <!-- ══════════════════════════════════════════
+         PAGE BODY
+    ═══════════════════════════════════════════ -->
+    <div class="page-body">
+
+        <!-- ─────────────────────────────────────────────
+             STATUS HERO  ·  one per state
+        ──────────────────────────────────────────────── -->
+
+        <!-- PENDING -->
+        <div class="view-pending status-hero">
+            <div class="status-icon-wrap pending">
+                <span class="material-icons">hourglass_empty</span>
+            </div>
+            <div class="status-title">Waiting for bartender</div>
+            <div class="status-subtitle">
+                Your order has been sent to the bar.<br />
+                The bartender will review it shortly.
+            </div>
+        </div>
+
+        <!-- ACCEPTED -->
+        <div class="view-accepted status-hero">
+            <div class="status-icon-wrap accepted">
+                <span class="material-icons">check_circle</span>
+            </div>
+            <div class="status-title">Order accepted!</div>
+            <div class="status-subtitle">
+                The bartender has reviewed your order.<br />
+                Preparation will begin very soon.
+            </div>
+        </div>
+
+        <!-- ACTIVE -->
+        <div class="view-active status-hero">
+            <div class="status-icon-wrap active">
+                <span class="material-icons">blender</span>
+            </div>
+            <div class="status-title">Being prepared</div>
+            <div class="status-subtitle">
+                Your order is being prepared right now.<br />
+                Hang tight — it's almost ready!
+            </div>
+        </div>
+
+        <!-- COMPLETED -->
+        <div class="view-completed status-hero"
+            style="background: linear-gradient(180deg, var(--s-completed-bg) 0%, transparent 100%);">
+            <div class="status-icon-wrap completed">
+                <span class="material-icons">celebration</span>
+            </div>
+            <div class="status-title">Order ready!</div>
+            <div class="status-subtitle">
+                Your drinks are ready! 🎉<br />
+                Enjoy your order — want anything else?
+            </div>
+        </div>
+
+        <!-- DECLINED -->
+        <div class="view-declined">
+            <div class="declined-banner" style="margin: 0 0 8px;">
+                <span class="material-icons">cancel</span>
+                <div>
+                    <div class="declined-banner-title">Order declined</div>
+                    <div class="declined-banner-sub">
+                        Unfortunately your order could not be fulfilled.<br />
+                        You can try placing a new order.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────────
+             STATUS STEPPER (shared, classes change per state)
+        ──────────────────────────────────────────────── -->
+        <!--
+            PENDING:    step 1 current pending
+            ACCEPTED:   step 1 done, step 2 current accepted
+            ACTIVE:     steps 1-2 done, step 3 current active
+            COMPLETED:  all done
+            DECLINED:   all greyed (no current) — or hide the stepper and show declined banner
+        -->
+        <div class="stepper">
+
+            <div class="step current pending">
+                <div class="step-dot">
+                    <span class="material-icons">hourglass_empty</span>
+                </div>
+                <div class="step-label">Pending</div>
+            </div>
+
+            <div class="step">
+                <div class="step-dot"><span class="step-num">2</span></div>
+                <div class="step-label">Accepted</div>
+            </div>
+
+            <div class="step">
+                <div class="step-dot"><span class="step-num">3</span></div>
+                <div class="step-label">Active</div>
+            </div>
+
+            <div class="step">
+                <div class="step-dot"><span class="step-num">4</span></div>
+                <div class="step-label">Ready</div>
+            </div>
+
+        </div>
+
+        <!-- ─────────────────────────────────────────────
+             ORDER INFO
+        ──────────────────────────────────────────────── -->
+        <div class="section-label">Order Info</div>
+        <div class="info-card">
+            <div class="info-row">
+                <div class="info-row-icon"><span class="material-icons">tag</span></div>
+                <span class="info-row-label">Order number</span>
+                <span class="info-row-value">#1049</span>
+            </div>
+            <div class="info-row">
+                <div class="info-row-icon"><span class="material-icons">table_restaurant</span></div>
+                <span class="info-row-label">Table</span>
+                <span class="info-row-value">Table 7</span>
+            </div>
+            <div class="info-row">
+                <div class="info-row-icon"><span class="material-icons">schedule</span></div>
+                <span class="info-row-label">Ordered at</span>
+                <span class="info-row-value">14:32</span>
+            </div>
+            <div class="info-row">
+                <div class="info-row-icon"><span class="material-icons">receipt_long</span></div>
+                <span class="info-row-label">Status</span>
+                <!-- Pending state status chip (matches the default body state) -->
+                <span class="chip chip-pending">
+                    <span class="material-icons">hourglass_empty</span>
+                    Pending
+                </span>
+            </div>
+        </div>
+
+        <!-- ─────────────────────────────────────────────
+             ORDER ITEMS (summary, read-only)
+        ──────────────────────────────────────────────── -->
+        <div class="section-label">Your Items (5)</div>
+        <div style="background: var(--surface); margin-bottom: 8px;">
+
+            <div class="cart-item-row">
+                <div class="cart-item-icon cat-cocktails">
+                    <span class="material-icons">local_bar</span>
+                </div>
+                <div class="cart-item-info">
+                    <div class="cart-item-name">Mojito</div>
+                    <div class="cart-item-price">$9.99 × 2</div>
+                </div>
+                <div class="cart-item-right">
+                    <span class="cart-item-subtotal">$19.98</span>
+                </div>
+            </div>
+
+            <div class="cart-item-row">
+                <div class="cart-item-icon cat-beers">
+                    <span class="material-icons">sports_bar</span>
+                </div>
+                <div class="cart-item-info">
+                    <div class="cart-item-name">Heineken</div>
+                    <div class="cart-item-price">$4.99 × 1</div>
+                </div>
+                <div class="cart-item-right">
+                    <span class="cart-item-subtotal">$4.99</span>
+                </div>
+            </div>
+
+            <div class="cart-item-row">
+                <div class="cart-item-icon cat-soft">
+                    <span class="material-icons">local_drink</span>
+                </div>
+                <div class="cart-item-info">
+                    <div class="cart-item-name">Diet Coke</div>
+                    <div class="cart-item-price">$2.99 × 1</div>
+                </div>
+                <div class="cart-item-right">
+                    <span class="cart-item-subtotal">$2.99</span>
+                </div>
+            </div>
+
+            <div class="cart-item-row">
+                <div class="cart-item-icon cat-cocktails">
+                    <span class="material-icons">local_bar</span>
+                </div>
+                <div class="cart-item-info">
+                    <div class="cart-item-name">Whiskey Sour</div>
+                    <div class="cart-item-price">$11.99 × 1</div>
+                </div>
+                <div class="cart-item-right">
+                    <span class="cart-item-subtotal">$11.99</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Note box -->
+        <div style="background: #fffde7; border-left: 4px solid #ffc107;
+                    margin: 0 0 8px; padding: 12px 16px;
+                    display: flex; gap: 10px; align-items: flex-start;">
+            <span class="material-icons"
+                style="font-size: 20px; color: #f57f17; flex-shrink: 0; margin-top: 1px;">sticky_note_2</span>
+            <div>
+                <div style="font-size: 10px; font-weight: 700; color: #e65100;
+                            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px;">Your note</div>
+                <div style="font-size: 14px; color: var(--text-primary); line-height: 1.5;">
+                    No mint in the mojito please. Extra lime if possible.
+                </div>
+            </div>
+        </div>
+
+        <!-- Total -->
+        <div style="background: var(--surface); margin-bottom: 8px;">
+            <div class="summary-row total">
+                <span class="summary-label">Total</span>
+                <span class="summary-value">$39.95</span>
+            </div>
+        </div>
+
+    </div>
+    <!-- /page-body -->
+
+    <!-- ══════════════════════════════════════════
+         STICKY BOTTOM — DEFAULT (waiting / in progress)
+    ═══════════════════════════════════════════ -->
+    <div class="action-bar default-action-bar">
+        <div class="action-bar-hint">
+            This page updates automatically — no need to refresh
+        </div>
+        <a href="menu.html" class="btn btn-outlined btn-lg btn-w100">
+            <span class="material-icons">arrow_back</span>
+            Back to Menu
+        </a>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         STICKY BOTTOM — COMPLETED / DECLINED
+         (Place new order CTA)
+    ═══════════════════════════════════════════ -->
+    <div class="action-bar new-order-bar">
+        <div class="action-bar-hint">Want to order something else?</div>
+        <a href="menu.html" class="btn btn-primary btn-lg btn-w100">
+            <span class="material-icons">add_shopping_cart</span>
+            Start a New Order
+        </a>
+    </div>
+
+    <!--
+    ══════════════════════════════════════════════════════════
+    DESIGN NOTES — STATE VARIATIONS
+    ══════════════════════════════════════════════════════════
+
+    To demo each state, add the class to <body>:
+
+    ┌───────────────┬────────────────────────────────────────┐
+    │  State        │  <body class="...">                    │
+    ├───────────────┼────────────────────────────────────────┤
+    │  Pending      │  (no class – default)                  │
+    │  Accepted     │  state-accepted                        │
+    │  Active       │  state-active                          │
+    │  Completed    │  state-completed                       │
+    │  Declined     │  state-declined                        │
+    └───────────────┴────────────────────────────────────────┘
+
+    Stepper step classes per state  (update manually when demoing):
+
+    PENDING:
+      step 1 → class="step current pending"
+      steps 2-4 → class="step"
+
+    ACCEPTED:
+      step 1 → class="step done"
+      step 2 → class="step current accepted"
+      steps 3-4 → class="step"
+
+    ACTIVE:
+      steps 1-2 → class="step done"
+      step 3 → class="step current active"
+      step 4 → class="step"
+
+    COMPLETED:
+      all steps → class="step done"
+
+    DECLINED:
+      all steps → class="step" (greyed)
+
+    Also update the status chip in the Order Info section to match:
+      chip-pending / chip-accepted / chip-active / chip-completed / chip-declined
+    ══════════════════════════════════════════════════════════
+    -->
+
+</body>
+
+</html>

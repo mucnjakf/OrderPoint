@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OrderPoint – Bartenders</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-icon"><span class="material-icons">local_bar</span></div>
+            <div class="sidebar-brand-text">
+                <div class="sidebar-brand-title">OrderPoint</div>
+                <div class="sidebar-brand-sub">Admin Panel</div>
+            </div>
+        </div>
+        <div class="nav-group">
+            <div class="nav-group-label">Overview</div>
+            <a href="dashboard.html" class="nav-item"><span
+                    class="material-icons">dashboard</span><span>Dashboard</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <div class="nav-group-label">Management</div>
+            <a href="bartenders.html" class="nav-item active"><span
+                    class="material-icons">people_alt</span><span>Bartenders</span></a>
+            <a href="items.html" class="nav-item"><span class="material-icons">restaurant_menu</span><span>Menu
+                    Items</span></a>
+            <a href="categories.html" class="nav-item"><span
+                    class="material-icons">category</span><span>Categories</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <div class="nav-group-label">Operations</div>
+            <a href="orders.html" class="nav-item"><span
+                    class="material-icons">receipt_long</span><span>Orders</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <a href="login.html" class="nav-item"><span class="material-icons">logout</span><span>Logout</span></a>
+        </div>
+    </nav>
+
+    <!-- APP BAR -->
+    <header class="appbar">
+        <span class="appbar-title">Bartenders</span>
+        <div class="appbar-search">
+            <span class="material-icons">search</span>
+            <input type="text" placeholder="Search bartenders…" />
+        </div>
+        <a class="icon-btn" href="#" style="color:#fff;"><span class="material-icons">notifications_outlined</span></a>
+        <div class="appbar-user">
+            <div class="appbar-avatar">A</div>
+            <span class="appbar-user-name">Admin</span>
+            <span class="material-icons" style="font-size:18px;opacity:.8;">arrow_drop_down</span>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <div class="page-header">
+            <div class="page-header-left">
+                <h1 class="page-title">Bartender Accounts</h1>
+                <div class="breadcrumb">
+                    <a href="dashboard.html">Dashboard</a>
+                    <span class="breadcrumb-sep">›</span>
+                    <span>Bartenders</span>
+                </div>
+            </div>
+            <a href="bartender-create.html" class="btn btn-primary">
+                <span class="material-icons">person_add</span>
+                Add Bartender
+            </a>
+        </div>
+
+        <!-- Filter row -->
+        <div class="card mb-24" style="overflow:visible;">
+            <div class="card-body" style="padding:14px 20px;">
+                <div class="flex items-center gap-16">
+                    <div style="flex:1; max-width:300px;">
+                        <div class="input-wrap">
+                            <span class="material-icons">search</span>
+                            <input type="text" class="form-input mb-0" placeholder="Search by name or email…"
+                                style="margin-bottom:0;" />
+                        </div>
+                    </div>
+                    <select class="form-select" style="width:150px; margin-bottom:0;">
+                        <option>All Status</option>
+                        <option>Active</option>
+                        <option>Inactive</option>
+                    </select>
+                    <button class="btn btn-outlined">
+                        <span class="material-icons">filter_list</span>
+                        Filter
+                    </button>
+                    <span class="text-sm text-muted" style="margin-left:auto;">Showing 5 of 5 bartenders</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="card">
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:44px;"></th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Status</th>
+                            <th>Created At</th>
+                            <th>Last Login</th>
+                            <th style="text-align:center;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="avatar avatar-sm" style="background:#1976d2;">JS</div>
+                            </td>
+                            <td>
+                                <div class="fw-500">John Smith</div>
+                            </td>
+                            <td class="text-muted">john.smith@orderpoint.com</td>
+                            <td class="text-muted">+1 (555) 010-1234</td>
+                            <td><span class="chip chip-success">Active</span></td>
+                            <td class="text-muted text-sm">Jan 15, 2026</td>
+                            <td class="text-muted text-sm">Today, 10:14</td>
+                            <td>
+                                <div class="table-actions" style="justify-content:center;">
+                                    <a href="bartender-detail.html" class="icon-btn primary"
+                                        data-tip="View details"><span class="material-icons">visibility</span></a>
+                                    <a href="bartender-edit.html" class="icon-btn primary" data-tip="Edit"><span
+                                            class="material-icons">edit</span></a>
+                                    <button class="icon-btn danger" data-tip="Delete"><span
+                                            class="material-icons">delete</span></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="avatar avatar-sm" style="background:#9c27b0;">MG</div>
+                            </td>
+                            <td>
+                                <div class="fw-500">Maria Garcia</div>
+                            </td>
+                            <td class="text-muted">maria.garcia@orderpoint.com</td>
+                            <td class="text-muted">+1 (555) 020-5678</td>
+                            <td><span class="chip chip-success">Active</span></td>
+                            <td class="text-muted text-sm">Feb 3, 2026</td>
+                            <td class="text-muted text-sm">Today, 14:02</td>
+                            <td>
+                                <div class="table-actions" style="justify-content:center;">
+                                    <a href="bartender-detail.html" class="icon-btn primary"
+                                        data-tip="View details"><span class="material-icons">visibility</span></a>
+                                    <a href="bartender-edit.html" class="icon-btn primary" data-tip="Edit"><span
+                                            class="material-icons">edit</span></a>
+                                    <button class="icon-btn danger" data-tip="Delete"><span
+                                            class="material-icons">delete</span></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="avatar avatar-sm" style="background:#757575;">AJ</div>
+                            </td>
+                            <td>
+                                <div class="fw-500">Alex Johnson</div>
+                            </td>
+                            <td class="text-muted">alex.johnson@orderpoint.com</td>
+                            <td class="text-muted">+1 (555) 030-9012</td>
+                            <td><span class="chip chip-default">Inactive</span></td>
+                            <td class="text-muted text-sm">Mar 12, 2026</td>
+                            <td class="text-muted text-sm">Apr 10, 2026</td>
+                            <td>
+                                <div class="table-actions" style="justify-content:center;">
+                                    <a href="bartender-detail.html" class="icon-btn primary"
+                                        data-tip="View details"><span class="material-icons">visibility</span></a>
+                                    <a href="bartender-edit.html" class="icon-btn primary" data-tip="Edit"><span
+                                            class="material-icons">edit</span></a>
+                                    <button class="icon-btn danger" data-tip="Delete"><span
+                                            class="material-icons">delete</span></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="avatar avatar-sm" style="background:#2e7d32;">EW</div>
+                            </td>
+                            <td>
+                                <div class="fw-500">Emma Wilson</div>
+                            </td>
+                            <td class="text-muted">emma.wilson@orderpoint.com</td>
+                            <td class="text-muted">+1 (555) 040-3456</td>
+                            <td><span class="chip chip-success">Active</span></td>
+                            <td class="text-muted text-sm">Mar 20, 2026</td>
+                            <td class="text-muted text-sm">Today, 12:31</td>
+                            <td>
+                                <div class="table-actions" style="justify-content:center;">
+                                    <a href="bartender-detail.html" class="icon-btn primary"
+                                        data-tip="View details"><span class="material-icons">visibility</span></a>
+                                    <a href="bartender-edit.html" class="icon-btn primary" data-tip="Edit"><span
+                                            class="material-icons">edit</span></a>
+                                    <button class="icon-btn danger" data-tip="Delete"><span
+                                            class="material-icons">delete</span></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="avatar avatar-sm" style="background:#37474f;">JB</div>
+                            </td>
+                            <td>
+                                <div class="fw-500">James Brown</div>
+                            </td>
+                            <td class="text-muted">james.brown@orderpoint.com</td>
+                            <td class="text-muted">+1 (555) 050-7890</td>
+                            <td><span class="chip chip-success">Active</span></td>
+                            <td class="text-muted text-sm">Apr 1, 2026</td>
+                            <td class="text-muted text-sm">Today, 08:05</td>
+                            <td>
+                                <div class="table-actions" style="justify-content:center;">
+                                    <a href="bartender-detail.html" class="icon-btn primary"
+                                        data-tip="View details"><span class="material-icons">visibility</span></a>
+                                    <a href="bartender-edit.html" class="icon-btn primary" data-tip="Edit"><span
+                                            class="material-icons">edit</span></a>
+                                    <button class="icon-btn danger" data-tip="Delete"><span
+                                            class="material-icons">delete</span></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex items-center justify-between"
+                style="padding:14px 16px; border-top:1px solid var(--divider);">
+                <span class="text-sm text-muted">1–5 of 5 records</span>
+                <div class="flex items-center gap-4">
+                    <button class="icon-btn" style="color:var(--text-disabled);"><span
+                            class="material-icons">chevron_left</span></button>
+                    <button class="btn btn-text"
+                        style="min-width:36px; min-height:36px; padding:0; font-size:14px; color:var(--primary); background:var(--primary-bg); border-radius:50%;">1</button>
+                    <button class="icon-btn" style="color:var(--text-disabled);"><span
+                            class="material-icons">chevron_right</span></button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Delete confirmation dialog -->
+    <div class="dialog-backdrop" style="display:none;">
+        <div class="dialog">
+            <div class="dialog-title">Delete Bartender Account</div>
+            <div class="dialog-text">
+                Are you sure you want to delete <strong>John Smith</strong>'s account? This action cannot be undone and
+                the bartender will lose access immediately.
+            </div>
+            <div class="dialog-actions">
+                <button class="btn btn-text">Cancel</button>
+                <button class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAB -->
+    <a href="bartender-create.html" class="fab" data-tip="Add bartender">
+        <span class="material-icons">add</span>
+    </a>
+
+</body>
+
+</html>

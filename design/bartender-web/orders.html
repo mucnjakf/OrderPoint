@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OrderPoint – Bartender Orders</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+    <!-- ══════════════════════════════════════════
+         TOP APP BAR
+    ═══════════════════════════════════════════ -->
+    <header class="appbar">
+        <span class="appbar-title">Orders</span>
+
+        <div class="live-badge">
+            <span class="live-dot"></span>
+            LIVE
+        </div>
+
+        <div class="appbar-actions">
+            <!-- Notification bell with badge -->
+            <div class="badge-wrap">
+                <button class="icon-btn white">
+                    <span class="material-icons">notifications</span>
+                </button>
+                <span class="badge">2</span>
+            </div>
+
+            <!-- Bartender avatar -->
+            <div class="avatar-btn">
+                <div class="avatar">JD</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ══════════════════════════════════════════
+         PAGE CONTENT
+    ═══════════════════════════════════════════ -->
+
+    <!-- New order toast / snackbar -->
+    <div class="snackbar info" style="margin-top: 8px;">
+        <span class="material-icons snackbar-icon">add_circle</span>
+        <span class="snackbar-text">New order arrived — Table 7 (#1049)</span>
+        <span class="snackbar-action">View</span>
+    </div>
+
+    <!-- Live summary counters -->
+    <div class="status-counters">
+        <div class="status-counter">
+            <div class="status-counter-num pending">5</div>
+            <div class="status-counter-label">Pending</div>
+        </div>
+        <div class="status-counter">
+            <div class="status-counter-num accepted">2</div>
+            <div class="status-counter-label">Accepted</div>
+        </div>
+        <div class="status-counter">
+            <div class="status-counter-num active">3</div>
+            <div class="status-counter-label">Active</div>
+        </div>
+        <div class="status-counter">
+            <div class="status-counter-num completed">12</div>
+            <div class="status-counter-label">Done</div>
+        </div>
+    </div>
+
+    <!-- ── Status filter chips ─────────────────────── -->
+    <div class="filter-strip">
+        <button class="filter-chip active">
+            All
+            <span class="filter-chip-count">22</span>
+        </button>
+        <button class="filter-chip">
+            <span class="s-dot pending"></span>
+            Pending
+            <span class="filter-chip-count">5</span>
+        </button>
+        <button class="filter-chip">
+            <span class="s-dot accepted"></span>
+            Accepted
+            <span class="filter-chip-count">2</span>
+        </button>
+        <button class="filter-chip">
+            <span class="s-dot active"></span>
+            Active
+            <span class="filter-chip-count">3</span>
+        </button>
+        <button class="filter-chip">
+            <span class="s-dot completed"></span>
+            Completed
+            <span class="filter-chip-count">12</span>
+        </button>
+        <button class="filter-chip">
+            <span class="s-dot declined"></span>
+            Declined
+        </button>
+    </div>
+
+    <!-- ── Secondary filters (time + table) ──────────── -->
+    <div class="filter-bar">
+        <div class="filter-select-wrap">
+            <span class="material-icons">schedule</span>
+            <select class="filter-select">
+                <option>Newest first</option>
+                <option>Oldest first</option>
+            </select>
+        </div>
+        <div class="filter-select-wrap">
+            <span class="material-icons">table_restaurant</span>
+            <select class="filter-select">
+                <option>All Tables</option>
+                <option>Table 1</option>
+                <option>Table 2</option>
+                <option>Table 3</option>
+                <option>Table 4</option>
+                <option>Table 5</option>
+                <option>Table 6</option>
+                <option>Table 7</option>
+                <option>Table 8</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         ORDER LIST
+    ═══════════════════════════════════════════ -->
+    <div class="order-list">
+
+        <!-- ────────────────────────────────────────
+             ORDER 1 · PENDING · NEW (pulsing border)
+        ──────────────────────────────────────────── -->
+        <a href="order-detail.html" class="order-card is-new">
+            <div class="order-card-inner">
+                <div class="order-accent pending"></div>
+                <div class="order-card-content">
+                    <div class="order-card-header">
+                        <div>
+                            <div class="order-card-num">#1049</div>
+                            <div class="order-card-meta">
+                                <span class="material-icons">table_restaurant</span>
+                                Table 7 &nbsp;·&nbsp; 4 items
+                            </div>
+                        </div>
+                        <span class="chip chip-pending">
+                            <span class="material-icons">fiber_new</span>
+                            Pending
+                        </span>
+                    </div>
+                    <div class="order-card-items">
+                        <strong>2×</strong> Mojito &nbsp;·&nbsp;
+                        <strong>1×</strong> Heineken &nbsp;·&nbsp;
+                        <strong>1×</strong> Diet Coke
+                    </div>
+                    <div class="order-card-footer">
+                        <span class="order-card-total">$29.96</span>
+                        <span class="order-card-time urgent">
+                            <span class="material-icons">schedule</span>
+                            Just now
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <!-- ────────────────────────────────────────
+             ORDER 2 · PENDING
+        ──────────────────────────────────────────── -->
+        <a href="order-detail.html" class="order-card">
+            <div class="order-card-inner">
+                <div class="order-accent pending"></div>
+                <div class="order-card-content">
+                    <div class="order-card-header">
+                        <div>
+                            <div class="order-card-num">#1048</div>
+                            <div class="order-card-meta">
+                                <span class="material-icons">table_restaurant</span>
+                                Table 3 &nbsp;·&nbsp; 3 items
+                            </div>
+                        </div>
+                        <span class="chip chip-pending">Pending</span>
+                    </div>
+                    <div class="order-card-items">
+                        <strong>2×</strong> Margarita &nbsp;·&nbsp;
+                        <strong>1×</strong> Sparkling Water
+                    </div>
+                    <div class="order-card-footer">
+                        <span class="order-card-total">$22.97</span>
+                        <span class="order-card-time urgent">
+                            <span class="material-icons">schedule</span>
+                            6 min ago
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <!-- ────────────────────────────────────────
+             ORDER 3 · ACCEPTED
+        ──────────────────────────────────────────── -->
+        <a href="order-detail.html" class="order-card">
+            <div class="order-card-inner">
+                <div class="order-accent accepted"></div>
+                <div class="order-card-content">
+                    <div class="order-card-header">
+                        <div>
+                            <div class="order-card-num">#1047</div>
+                            <div class="order-card-meta">
+                                <span class="material-icons">table_restaurant</span>
+                                Table 5 &nbsp;·&nbsp; 2 items
+                            </div>
+                        </div>
+                        <span class="chip chip-accepted">Accepted</span>
+                    </div>
+                    <div class="order-card-items">
+                        <strong>2×</strong> Red Wine &nbsp;·&nbsp;
+                        <strong>1×</strong> Mineral Water
+                    </div>
+                    <div class="order-card-footer">
+                        <span class="order-card-total">$19.98</span>
+                        <span class="order-card-time">
+                            <span class="material-icons">schedule</span>
+                            11 min ago
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <!-- ────────────────────────────────────────
+             ORDER 4 · ACTIVE
+        ──────────────────────────────────────────── -->
+        <a href="order-detail.html" class="order-card">
+            <div class="order-card-inner">
+                <div class="order-accent active"></div>
+                <div class="order-card-content">
+                    <div class="order-card-header">
+                        <div>
+                            <div class="order-card-num">#1046</div>
+                            <div class="order-card-meta">
+                                <span class="material-icons">table_restaurant</span>
+                                Table 2 &nbsp;·&nbsp; 4 items
+                            </div>
+                        </div>
+                        <span class="chip chip-active">
+                            <span class="material-icons">loop</span>
+                            Active
+                        </span>
+                    </div>
+                    <div class="order-card-items">
+                        <strong>2×</strong> Espresso Martini &nbsp;·&nbsp;
+                        <strong>1×</strong> Aperol Spritz &nbsp;·&nbsp;
+                        <strong>1×</strong> Orange Juice
+                    </div>
+                    <div class="order-card-footer">
+                        <span class="order-card-total">$44.95</span>
+                        <span class="order-card-time">
+                            <span class="material-icons">schedule</span>
+                            17 min ago
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <!-- ────────────────────────────────────────
+             ORDER 5 · ACTIVE
+        ──────────────────────────────────────────── -->
+        <a href="order-detail.html" class="order-card">
+            <div class="order-card-inner">
+                <div class="order-accent active"></div>
+                <div class="order-card-content">
+                    <div class="order-card-header">
+                        <div>
+                            <div class="order-card-num">#1045</div>
+                            <div class="order-card-meta">
+                                <span class="material-icons">table_restaurant</span>
+                                Table 8 &nbsp;·&nbsp; 2 items
+                            </div>
+                        </div>
+                        <span class="chip chip-active">
+                            <span class="material-icons">loop</span>
+                            Active
+                        </span>
+                    </div>
+                    <div class="order-card-items">
+                        <strong>2×</strong> Gin &amp; Tonic &nbsp;·&nbsp;
+                        <strong>2×</strong> Stella Artois
+                    </div>
+                    <div class="order-card-footer">
+                        <span class="order-card-total">$31.96</span>
+                        <span class="order-card-time">
+                            <span class="material-icons">schedule</span>
+                            20 min ago
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <!-- ────────────────────────────────────────
+             ORDER 6 · COMPLETED
+        ──────────────────────────────────────────── -->
+        <a href="order-detail.html" class="order-card" style="opacity:.65;">
+            <div class="order-card-inner">
+                <div class="order-accent completed"></div>
+                <div class="order-card-content">
+                    <div class="order-card-header">
+                        <div>
+                            <div class="order-card-num">#1044</div>
+                            <div class="order-card-meta">
+                                <span class="material-icons">table_restaurant</span>
+                                Table 1 &nbsp;·&nbsp; 3 items
+                            </div>
+                        </div>
+                        <span class="chip chip-completed">
+                            <span class="material-icons">check_circle</span>
+                            Completed
+                        </span>
+                    </div>
+                    <div class="order-card-items">
+                        <strong>1×</strong> Mojito &nbsp;·&nbsp;
+                        <strong>2×</strong> Heineken &nbsp;·&nbsp;
+                        <strong>1×</strong> Cider
+                    </div>
+                    <div class="order-card-footer">
+                        <span class="order-card-total">$24.96</span>
+                        <span class="order-card-time">
+                            <span class="material-icons">schedule</span>
+                            28 min ago
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <!-- ────────────────────────────────────────
+             ORDER 7 · DECLINED
+        ──────────────────────────────────────────── -->
+        <a href="order-detail.html" class="order-card" style="opacity:.55;">
+            <div class="order-card-inner">
+                <div class="order-accent declined"></div>
+                <div class="order-card-content">
+                    <div class="order-card-header">
+                        <div>
+                            <div class="order-card-num">#1043</div>
+                            <div class="order-card-meta">
+                                <span class="material-icons">table_restaurant</span>
+                                Table 4 &nbsp;·&nbsp; 1 item
+                            </div>
+                        </div>
+                        <span class="chip chip-declined">
+                            <span class="material-icons">cancel</span>
+                            Declined
+                        </span>
+                    </div>
+                    <div class="order-card-items">
+                        <strong>1×</strong> Whiskey Sour
+                    </div>
+                    <div class="order-card-footer">
+                        <span class="order-card-total">$11.99</span>
+                        <span class="order-card-time">
+                            <span class="material-icons">schedule</span>
+                            35 min ago
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+    </div>
+    <!-- /order-list -->
+
+    <!-- Bottom spacer ensures last card isn't hidden by browser nav -->
+    <div style="height: 24px;"></div>
+
+</body>
+
+</html>

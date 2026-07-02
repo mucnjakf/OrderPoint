@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OrderPoint – Edit Category</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-icon"><span class="material-icons">local_bar</span></div>
+            <div class="sidebar-brand-text">
+                <div class="sidebar-brand-title">OrderPoint</div>
+                <div class="sidebar-brand-sub">Admin Panel</div>
+            </div>
+        </div>
+        <div class="nav-group">
+            <div class="nav-group-label">Overview</div>
+            <a href="dashboard.html" class="nav-item"><span
+                    class="material-icons">dashboard</span><span>Dashboard</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <div class="nav-group-label">Management</div>
+            <a href="bartenders.html" class="nav-item"><span
+                    class="material-icons">people_alt</span><span>Bartenders</span></a>
+            <a href="items.html" class="nav-item"><span class="material-icons">restaurant_menu</span><span>Menu
+                    Items</span></a>
+            <a href="categories.html" class="nav-item active"><span
+                    class="material-icons">category</span><span>Categories</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <div class="nav-group-label">Operations</div>
+            <a href="orders.html" class="nav-item"><span
+                    class="material-icons">receipt_long</span><span>Orders</span></a>
+        </div>
+        <hr class="nav-divider" />
+        <div class="nav-group">
+            <a href="login.html" class="nav-item"><span class="material-icons">logout</span><span>Logout</span></a>
+        </div>
+    </nav>
+
+    <!-- APP BAR -->
+    <header class="appbar">
+        <span class="appbar-title">Edit Category</span>
+        <div class="appbar-search">
+            <span class="material-icons">search</span>
+            <input type="text" placeholder="Search…" />
+        </div>
+        <a class="icon-btn" href="#" style="color:#fff;"><span class="material-icons">notifications_outlined</span></a>
+        <div class="appbar-user">
+            <div class="appbar-avatar">A</div>
+            <span class="appbar-user-name">Admin</span>
+            <span class="material-icons" style="font-size:18px;opacity:.8;">arrow_drop_down</span>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <div class="page-header">
+            <div class="page-header-left">
+                <h1 class="page-title">Edit: Cocktails</h1>
+                <div class="breadcrumb">
+                    <a href="dashboard.html">Dashboard</a>
+                    <span class="breadcrumb-sep">›</span>
+                    <a href="categories.html">Categories</a>
+                    <span class="breadcrumb-sep">›</span>
+                    <a href="category-detail.html">Cocktails</a>
+                    <span class="breadcrumb-sep">›</span>
+                    <span>Edit</span>
+                </div>
+            </div>
+            <a href="category-detail.html" class="btn btn-outlined">
+                <span class="material-icons">arrow_back</span>
+                Back to Details
+            </a>
+        </div>
+
+        <div style="display:grid; grid-template-columns:2fr 1fr; gap:24px; align-items:start;">
+
+            <!-- Form -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Category Information</div>
+                </div>
+                <div class="card-body">
+
+                    <div class="form-field">
+                        <label class="form-label">Category Name *</label>
+                        <input type="text" class="form-input" value="Cocktails" />
+                    </div>
+
+                    <div class="form-field">
+                        <label class="form-label">Description</label>
+                        <textarea
+                            class="form-textarea">Mixed drinks with spirits, liqueurs, and fresh mixers. Crafted by our expert bartenders.</textarea>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-field">
+                            <label class="form-label">Display Order</label>
+                            <input type="number" class="form-input" value="1" min="1" />
+                        </div>
+                        <div class="form-field">
+                            <label class="form-label">Status</label>
+                            <select class="form-select">
+                                <option value="active" selected>Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Icon picker -->
+                    <div class="form-field mb-0">
+                        <label class="form-label">Icon</label>
+                        <div
+                            style="display:grid; grid-template-columns:repeat(8,1fr); gap:8px; padding:12px; border:1px solid rgba(0,0,0,.23); border-radius:4px;">
+                            <button
+                                style="width:40px;height:40px;border-radius:4px;border:2px solid var(--primary);background:var(--primary-bg);cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                                <span class="material-icons"
+                                    style="font-size:20px;color:var(--primary);">local_bar</span>
+                            </button>
+                            <button
+                                style="width:40px;height:40px;border-radius:4px;border:1px solid rgba(0,0,0,.12);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                                <span class="material-icons"
+                                    style="font-size:20px;color:var(--text-secondary);">sports_bar</span>
+                            </button>
+                            <button
+                                style="width:40px;height:40px;border-radius:4px;border:1px solid rgba(0,0,0,.12);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                                <span class="material-icons"
+                                    style="font-size:20px;color:var(--text-secondary);">wine_bar</span>
+                            </button>
+                            <button
+                                style="width:40px;height:40px;border-radius:4px;border:1px solid rgba(0,0,0,.12);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                                <span class="material-icons"
+                                    style="font-size:20px;color:var(--text-secondary);">local_cafe</span>
+                            </button>
+                            <button
+                                style="width:40px;height:40px;border-radius:4px;border:1px solid rgba(0,0,0,.12);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                                <span class="material-icons"
+                                    style="font-size:20px;color:var(--text-secondary);">fastfood</span>
+                            </button>
+                            <button
+                                style="width:40px;height:40px;border-radius:4px;border:1px solid rgba(0,0,0,.12);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                                <span class="material-icons"
+                                    style="font-size:20px;color:var(--text-secondary);">restaurant</span>
+                            </button>
+                            <button
+                                style="width:40px;height:40px;border-radius:4px;border:1px solid rgba(0,0,0,.12);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                                <span class="material-icons"
+                                    style="font-size:20px;color:var(--text-secondary);">emoji_food_beverage</span>
+                            </button>
+                            <button
+                                style="width:40px;height:40px;border-radius:4px;border:1px solid rgba(0,0,0,.12);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                                <span class="material-icons"
+                                    style="font-size:20px;color:var(--text-secondary);">kitchen</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form-actions" style="padding:16px 20px; margin-top:0; border-top:1px solid var(--divider);">
+                    <a href="category-detail.html" class="btn btn-outlined">Discard Changes</a>
+                    <a href="category-detail.html" class="btn btn-primary">
+                        <span class="material-icons">save</span>
+                        Save Changes
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right -->
+            <div style="display:flex; flex-direction:column; gap:20px;">
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Color</div>
+                    </div>
+                    <div class="card-body">
+                        <label class="form-label">Theme Color</label>
+                        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:16px;">
+                            <div
+                                style="width:36px;height:36px;border-radius:50%;background:#1976d2;cursor:pointer;outline:3px solid rgba(25,118,210,.4);">
+                            </div>
+                            <div style="width:36px;height:36px;border-radius:50%;background:#0277bd;cursor:pointer;">
+                            </div>
+                            <div style="width:36px;height:36px;border-radius:50%;background:#9c27b0;cursor:pointer;">
+                            </div>
+                            <div style="width:36px;height:36px;border-radius:50%;background:#2e7d32;cursor:pointer;">
+                            </div>
+                            <div style="width:36px;height:36px;border-radius:50%;background:#e65100;cursor:pointer;">
+                            </div>
+                            <div style="width:36px;height:36px;border-radius:50%;background:#37474f;cursor:pointer;">
+                            </div>
+                            <div style="width:36px;height:36px;border-radius:50%;background:#ad1457;cursor:pointer;">
+                            </div>
+                            <div style="width:36px;height:36px;border-radius:50%;background:#00695c;cursor:pointer;">
+                            </div>
+                        </div>
+
+                        <div class="detail-section-title">Preview</div>
+                        <div
+                            style="display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg);border-radius:4px;">
+                            <div
+                                style="width:44px;height:44px;border-radius:50%;background:#1976d2;display:flex;align-items:center;justify-content:center;">
+                                <span class="material-icons" style="color:#fff;font-size:22px;">local_bar</span>
+                            </div>
+                            <div>
+                                <div class="fw-500">Cocktails</div>
+                                <div class="text-xs text-muted">3 items</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Danger zone -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Danger Zone</div>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-sm text-muted mb-16">Permanently delete this category. Items in it will become
+                            uncategorised.</p>
+                        <button class="btn btn-danger-outlined w-100" style="justify-content:center;"
+                            onclick="document.querySelector('.dialog-backdrop').style.display='flex'">
+                            <span class="material-icons">delete_forever</span>
+                            Delete Category
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Delete dialog -->
+    <div class="dialog-backdrop" style="display:none;">
+        <div class="dialog">
+            <div class="dialog-title">Delete Category</div>
+            <div class="dialog-text">
+                Are you sure you want to delete <strong>Cocktails</strong>? Items in this category will become
+                uncategorised. This action cannot be undone.
+            </div>
+            <div class="dialog-actions">
+                <button class="btn btn-text"
+                    onclick="document.querySelector('.dialog-backdrop').style.display='none'">Cancel</button>
+                <a href="categories.html" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
