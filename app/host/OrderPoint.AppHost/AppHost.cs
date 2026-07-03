@@ -1,5 +1,3 @@
-using Aspire.Hosting.JavaScript;
-
 IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
 
 IResourceBuilder<PostgresServerResource> postgres = builder
@@ -19,14 +17,10 @@ IResourceBuilder<ProjectResource> api = builder
     .WithReference(database)
     .WaitFor(database);
 
-IResourceBuilder<ViteAppResource> adminWeb = builder
-    .AddViteApp("admin-web", "../../../client/admin-web")
-    .WithEndpoint("http", endpoint =>
-    {
-        endpoint.Port = 5173;
-        endpoint.TargetPort = 5173;
-        endpoint.IsProxied = false;
-    })
+IResourceBuilder<ProjectResource> web = builder
+    .AddProject<Projects.OrderPoint_Web>("order-point-web")
+    .WithExternalHttpEndpoints()
+    .WithHttpHealthCheck("/health")
     .WithReference(api)
     .WaitFor(api);
 

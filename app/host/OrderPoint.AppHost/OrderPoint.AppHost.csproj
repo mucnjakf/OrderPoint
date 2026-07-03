@@ -9,11 +9,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\OrderPoint.Api\OrderPoint.Api.csproj" />
+      <ProjectReference Include="..\..\api\OrderPoint.Api\OrderPoint.Api.csproj" />
+      <ProjectReference Include="..\..\web\OrderPoint.Web\OrderPoint.Web.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Aspire.Hosting.JavaScript" Version="13.2.4" />
         <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.2.1" />
     </ItemGroup>
 </Project>

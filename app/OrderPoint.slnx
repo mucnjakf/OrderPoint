@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/host/">
+    <Project Path="host/OrderPoint.AppHost/OrderPoint.AppHost.csproj" />
+    <Project Path="host/OrderPoint.ServiceDefaults/OrderPoint.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/api/">
+    <Project Path="api/OrderPoint.Api/OrderPoint.Api.csproj" />
+    <Project Path="api/OrderPoint.Application/OrderPoint.Application.csproj" />
+    <Project Path="api/OrderPoint.Domain/OrderPoint.Domain.csproj" />
+    <Project Path="api/OrderPoint.Infrastructure/OrderPoint.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/web/">
+    <Project Path="web/OrderPoint.Web/OrderPoint.Web.csproj" />
+  </Folder>
+</Solution>
