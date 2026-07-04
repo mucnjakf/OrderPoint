@@ -13,8 +13,14 @@
             Edge="Edge.Start"
             OnClick="@(_ => ToggleDrawer())"/>
 
-        <MudText Typo="Typo.h5" Class="ml-3">OrderPoint</MudText>
-        @* <MudText Typo="Typo.body2">Admin panel</MudText> *@
+        <MudStack Class="ml-3" Row="true" AlignItems="AlignItems.Center">
+            <MudIcon Icon="@Icons.Material.Filled.CropOriginal" Title="Placeholder" Size="Size.Large"/>
+
+            <MudStack Spacing="0">
+                <MudText Typo="Typo.h6">OrderPoint</MudText>
+                <MudText Typo="Typo.caption">Admin panel</MudText>
+            </MudStack>
+        </MudStack>
 
         <MudSpacer/>
 
@@ -23,29 +29,40 @@
 
     <MudDrawer @bind-Open="@DrawerOpen" ClipMode="DrawerClipMode.Always" Elevation="1" Variant="DrawerVariant.Mini">
         <MudNavMenu Bordered="true">
-            <MudText Typo="Typo.button" HtmlTag="h1" Class="pa-3">Overview</MudText>
+            @if (DrawerOpen)
+            {
+                <MudText Typo="Typo.button" HtmlTag="h1" Class="px-3 pt-3 pb-1" Style="font-size: 12px">
+                    Overview
+                </MudText>
+            }
 
             <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">
-                Dashboard
+                <MudText Typo="Typo.body1">Dashboard</MudText>
             </MudNavLink>
 
             <MudNavLink Href="/orders" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Receipt">
-                Orders
+                <MudText Typo="Typo.body1">Orders</MudText>
             </MudNavLink>
 
-            <MudDivider/>
+            <MudDivider Class="my-3"/>
 
-            @* managemnt *@
+            @if (DrawerOpen)
+            {
+                <MudText Typo="Typo.button" HtmlTag="h1" Class="px-3 pt-1 pb-1" Style="font-size: 12px">
+                    Management
+                </MudText>
+            }
+
             <MudNavLink Href="/bartenders" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.People">
-                Bartenders
+                <MudText Typo="Typo.body1">Bartenders</MudText>
             </MudNavLink>
 
             <MudNavLink Href="/items" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.MenuBook">
-                Items
+                <MudText Typo="Typo.body1">Items</MudText>
             </MudNavLink>
 
             <MudNavLink Href="/categories" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Category">
-                Categories
+                <MudText Typo="Typo.body1">Categories</MudText>
             </MudNavLink>
         </MudNavMenu>
     </MudDrawer>
