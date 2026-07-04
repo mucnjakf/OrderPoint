@@ -1,0 +1,85 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider @bind-IsDarkMode="@IsDarkMode"/>
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton
+            Icon="@Icons.Material.Filled.Menu"
+            Color="Color.Inherit"
+            Edge="Edge.Start"
+            OnClick="@(_ => ToggleDrawer())"/>
+
+        <MudText Typo="Typo.h5" Class="ml-3">OrderPoint</MudText>
+        @* <MudText Typo="Typo.body2">Admin panel</MudText> *@
+
+        <MudSpacer/>
+
+        <MudIconButton Icon="@(IconButton)" OnClick="@(_ => ToggleDarkMode())" Color="Color.Inherit"/>
+    </MudAppBar>
+
+    <MudDrawer @bind-Open="@DrawerOpen" ClipMode="DrawerClipMode.Always" Elevation="1" Variant="DrawerVariant.Mini">
+        <MudNavMenu Bordered="true">
+            <MudText Typo="Typo.button" HtmlTag="h1" Class="pa-3">Overview</MudText>
+
+            <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">
+                Dashboard
+            </MudNavLink>
+
+            <MudNavLink Href="/orders" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Receipt">
+                Orders
+            </MudNavLink>
+
+            <MudDivider/>
+
+            @* managemnt *@
+            <MudNavLink Href="/bartenders" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.People">
+                Bartenders
+            </MudNavLink>
+
+            <MudNavLink Href="/items" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.MenuBook">
+                Items
+            </MudNavLink>
+
+            <MudNavLink Href="/categories" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Category">
+                Categories
+            </MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
+
+    <MudMainContent>
+        <MudContainer Class="pa-3">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    bool DrawerOpen { get; set; } = true;
+
+    bool IsDarkMode { get; set; } = true;
+
+    string IconButton { get; set; } = Icons.Material.Filled.LightMode;
+
+    void ToggleDrawer()
+    {
+        DrawerOpen = !DrawerOpen;
+    }
+
+    void ToggleDarkMode()
+    {
+        IsDarkMode = !IsDarkMode;
+
+        if (IsDarkMode)
+        {
+            IconButton = Icons.Material.Filled.LightMode;
+            return;
+        }
+
+        IconButton = Icons.Material.Filled.DarkMode;
+    }
+
+}
