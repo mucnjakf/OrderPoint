@@ -1,0 +1,58 @@
+﻿<MudDialog ActionsClass="pa-6">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Error"/>
+            <MudText Typo="Typo.h6">Delete category</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudStack Spacing="5" Class="mb-3">
+            <MudText Typo="Typo.body1">
+                Are you sure you want to delete @CategoryName?
+            </MudText>
+
+            <MudAlert Severity="Severity.Error" Variant="Variant.Text" Dense="true">
+                <MudText Typo="Typo.body2">
+                    This action cannot be undone.
+                </MudText>
+                <MudText Typo="Typo.body2">
+                    All items associated with this category will be affected.
+                </MudText>
+            </MudAlert>
+        </MudStack>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="Cancel" Variant="Variant.Text">
+            Cancel
+        </MudButton>
+
+        <MudButton OnClick="Confirm"
+                   Variant="Variant.Filled"
+                   Color="Color.Error"
+                   StartIcon="@Icons.Material.Filled.Delete">
+            Confirm
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    IMudDialogInstance MudDialogInstance { get; set; } = null!;
+
+    [Parameter]
+    public string CategoryName { get; set; } = null!;
+
+    void Confirm()
+    {
+        MudDialogInstance.Close(DialogResult.Ok(true));
+    }
+
+    void Cancel()
+    {
+        MudDialogInstance.Cancel();
+    }
+
+}

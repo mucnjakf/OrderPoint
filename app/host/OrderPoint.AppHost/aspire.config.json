@@ -1,8 +1,5 @@
 {
   "appHost": {
     "path": "OrderPoint.AppHost.csproj"
-  },
-  "features": {
-    "defaultWatchEnabled": "true"
   }
 }

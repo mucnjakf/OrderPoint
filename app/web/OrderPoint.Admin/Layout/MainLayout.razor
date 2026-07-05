@@ -2,7 +2,10 @@
 
 <MudThemeProvider @bind-IsDarkMode="@IsDarkMode"/>
 <MudPopoverProvider/>
-<MudDialogProvider/>
+<MudDialogProvider CloseButton="true" 
+                   BackdropClick="false" 
+                   Position="DialogPosition.Center" 
+                   CloseOnEscapeKey="true"/>
 <MudSnackbarProvider/>
 
 <MudLayout>
