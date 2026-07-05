@@ -1,0 +1,66 @@
+﻿@page "/categories"
+
+<PageTitle>Categories</PageTitle>
+
+<MudBreadcrumbs Items="Breadcrumbs" Class="px-0 pt-0 pb-5" Style="font-size: 14px"/>
+
+<MudText Typo="Typo.h4" Class="mb-3">Categories</MudText>
+
+<MudStack Row="true" Spacing="3" Class="flex-1">
+    @for (var i = 0; i < 5; i++)
+    {
+        <MudPaper Class="pa-8 d-flex flex-column align-center flex-1">
+            <MudIcon Icon="@Icons.Material.Filled.CropOriginal" Title="Placeholder" Size="Size.Large" Class="mb-3"/>
+            <MudText Typo="Typo.body1" Class="mb-1">Cocktails</MudText>
+            <MudText Typo="Typo.caption">3 items</MudText>
+        </MudPaper>
+    }
+</MudStack>
+
+<MudStack Row="true">
+    <MudTextField @bind-Value="SearchQuery"
+                  Label="Search"
+                  Variant="Variant.Outlined"
+                  Clearable="true"
+                  Style="width: 300px"/>
+
+    <MudSelect @bind-Value="SelectedCategoryStatus"
+               Variant="Variant.Outlined"
+               Label="Status"
+               FitContent="true">
+
+        <MudSelectItem Value="@("All")">
+            <MudStack Row="true">
+                <MudIcon Icon="@Icons.Material.Filled.Circle" Color="Color.Primary" Title="All"/>
+                <MudText Typo="Typo.body1">All</MudText>
+            </MudStack>
+        </MudSelectItem>
+
+        <MudSelectItem Value="@("Active")">
+            <MudStack Row="true">
+                <MudIcon Icon="@Icons.Material.Filled.Circle" Color="Color.Success" Title="Active"/>
+                <MudText Typo="Typo.body1">Active</MudText>
+            </MudStack>
+        </MudSelectItem>
+
+        <MudSelectItem Value="@("Inactive")">
+            <MudStack Row="true">
+                <MudIcon Icon="@Icons.Material.Filled.Circle" Color="Color.Error" Title="Inactive"/>
+                <MudText Typo="Typo.body1">Inactive</MudText>
+            </MudStack>
+        </MudSelectItem>
+    </MudSelect>
+</MudStack>
+
+@code {
+
+    List<BreadcrumbItem> Breadcrumbs { get; set; } =
+    [
+        new("Dashboard", href: "/", icon: Icons.Material.Filled.Dashboard),
+        new("Categories", href: null, disabled: true, icon: Icons.Material.Filled.Category)
+    ];
+
+    string? SearchQuery { get; set; }
+
+    string? SelectedCategoryStatus { get; set; } = "All";
+}

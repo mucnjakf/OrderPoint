@@ -10,6 +10,6 @@
     <Project Path="api/OrderPoint.Infrastructure/OrderPoint.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/web/">
-    <Project Path="web/OrderPoint.Web/OrderPoint.Web.csproj" />
+    <Project Path="web/OrderPoint.Admin/OrderPoint.Admin.csproj" />
   </Folder>
 </Solution>

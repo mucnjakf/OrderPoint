@@ -18,7 +18,7 @@ IResourceBuilder<ProjectResource> api = builder
     .WaitFor(database);
 
 IResourceBuilder<ProjectResource> web = builder
-    .AddProject<Projects.OrderPoint_Web>("order-point-web")
+    .AddProject<Projects.OrderPoint_Admin>("order-point-admin")
     .WithExternalHttpEndpoints()
     .WithHttpHealthCheck("/health")
     .WithReference(api)
