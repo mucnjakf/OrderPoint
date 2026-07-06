@@ -1,0 +1,150 @@
+﻿@page "/categories/create"
+
+<PageTitle>New category</PageTitle>
+
+<Breadcrumbs Items="Breadcrumbs"/>
+
+<MainTitle Text="New category"/>
+
+<MudGrid Spacing="3" Class="mb-3">
+    <MudItem xs="12" md="8">
+        <EditForm Model="@Request" OnValidSubmit="OnValidSubmitAsync">
+            <DataAnnotationsValidator/>
+
+            <MudCard Class="pa-3" Style="height: 100%;">
+                <MudCardContent>
+                    <MudTextField Label="Name"
+                                  @bind-Value="Request.Name"
+                                  For="@(() => Request.Name)"
+                                  Class="mb-5 mt-0"
+                                  HelperText="The display name of the category shown to customers."
+                                  Variant="Variant.Outlined"
+                                  Immediate="true"/>
+
+                    <MudTextField Label="Description"
+                                  @bind-Value="Request.Description"
+                                  For="@(() => Request.Description)"
+                                  HelperText="A brief description of what this category contains."
+                                  Variant="Variant.Outlined"
+                                  Class="mb-5"
+                                  Lines="5"
+                                  Immediate="true"/>
+
+                    <MudStack Row="true">
+                        <MudSelect Label="Status"
+                                   T="CategoryStatus"
+                                   @bind-Value="Request.Status"
+                                   For="@(() => Request.Status)"
+                                   HelperText="Controls whether this category is visible to customers."
+                                   Variant="Variant.Outlined">
+                            @foreach (CategoryStatus status in Enum.GetValues<CategoryStatus>())
+                            {
+                                <MudSelectItem Value="@status" T="CategoryStatus">
+                                    <MudText Color="@(status is CategoryStatus.Active ? Color.Success : Color.Error)">
+                                        @status.ToString()
+                                    </MudText>
+                                </MudSelectItem>
+                            }
+                        </MudSelect>
+
+                        <MudTextField Label="Image URL"
+                                      Disabled="true"
+                                      @bind-Value="Request.ImageUrl"
+                                      For="@(() => Request.ImageUrl)"
+                                      HelperText="Image upload will be available in a future update."
+                                      Variant="Variant.Outlined"/>
+                    </MudStack>
+                </MudCardContent>
+
+                <MudCardActions Class="pa-4 d-flex justify-end">
+                    <MudButton Href="/categories" Variant="Variant.Text" Class="mr-5">
+                        Cancel
+                    </MudButton>
+
+                    <MudButton ButtonType="ButtonType.Submit"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.Add">
+                        Confirm
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+        </EditForm>
+    </MudItem>
+
+    <MudItem xs="12" md="4">
+        <MudStack Spacing="3" Style="height: 100%;">
+            <MudPaper Class="pa-3 d-flex flex-column flex-grow-1 align-center justify-center">
+                <MudIcon Icon="@Icons.Material.Filled.CropOriginal"
+                         Title="Category name"
+                         Size="Size.Large"
+                         Class="mb-4"/>
+
+                <MudText Typo="Typo.body1" Class="mb-2">
+                    @(string.IsNullOrWhiteSpace(Request.Name) ? "Category name" : Request.Name)
+                </MudText>
+
+                <MudText Typo="Typo.caption" Color="Color.Default" Class="mb-4">
+                    @(string.IsNullOrWhiteSpace(Request.Description) ? "Category description" : Request.Description)
+                </MudText>
+
+                <MudChip T="string"
+                         Variant="Variant.Text"
+                         Color="@(Request.Status is CategoryStatus.Active ? Color.Success : Color.Error)">
+                    @Request.Status.ToString()
+                </MudChip>
+            </MudPaper>
+
+            <MudAlert Severity="Severity.Info" Class="pa-3">
+                <MudText Typo="Typo.body2" Class="mb-3">How categories work</MudText>
+
+                <MudStack Spacing="2">
+                    <MudText Typo="Typo.body2">
+                        - Categories appear on the QR-code customer menu
+                    </MudText>
+
+                    <MudText Typo="Typo.body2">
+                        - Items must belong to a category
+                    </MudText>
+
+                    <MudText Typo="Typo.body2">
+                        - Inactive categories are hidden from customers
+                    </MudText>
+                </MudStack>
+            </MudAlert>
+        </MudStack>
+    </MudItem>
+</MudGrid>
+
+@code {
+
+    [Inject]
+    ISnackbar Snackbar { get; set; } = null!;
+
+    [Inject]
+    NavigationManager NavigationManager { get; set; } = null!;
+
+    [Inject]
+    CategoryApiClient CategoryApiClient { get; set; } = null!;
+
+    List<BreadcrumbItem> Breadcrumbs { get; set; } =
+    [
+        new("Dashboard", href: "/", icon: Icons.Material.Filled.Dashboard),
+        new("Categories", href: "/categories", icon: Icons.Material.Filled.Category),
+        new("New category", href: null, disabled: true, icon: Icons.Material.Filled.Add)
+    ];
+
+    CreateCategoryRequest Request { get; set; } = new();
+
+    async Task OnValidSubmitAsync(EditContext editContext)
+    {
+        StateHasChanged();
+
+        await CategoryApiClient.CreateCategoryAsync(Request);
+
+        Snackbar.Add($"Category {Request.Name} created successfully", Severity.Success);
+
+        NavigationManager.NavigateTo("/categories");
+    }
+
+}

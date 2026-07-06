@@ -8,7 +8,7 @@ internal static class CategoryMapper
         category.Id,
         category.Name,
         category.Description,
-        category.Status.ToString(),
+        category.Status,
         category.ImageUrl,
         0, // TODO: map when items are added
         category.CreatedAtUtc,

@@ -1,0 +1,9 @@
+﻿<MudBreadcrumbs Items="Items" Class="px-0 pt-0 pb-5" Style="font-size: 14px"/>
+
+@code {
+
+    [Parameter]
+    [EditorRequired]
+    public IReadOnlyList<BreadcrumbItem> Items { get; set; } = [];
+
+}

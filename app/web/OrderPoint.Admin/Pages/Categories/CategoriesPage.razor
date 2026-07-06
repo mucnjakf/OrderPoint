@@ -2,9 +2,9 @@
 
 <PageTitle>Categories</PageTitle>
 
-<MudBreadcrumbs Items="Breadcrumbs" Class="px-0 pt-0 pb-5" Style="font-size: 14px"/>
+<Breadcrumbs Items="Breadcrumbs"/>
 
-<MudText Typo="Typo.h4" Class="mb-3">Categories</MudText>
+<MainTitle Text="Categories"/>
 
 <TopCategoriesSection Categories="TopCategories" IsLoading="IsLoadingTop"/>
 
@@ -14,34 +14,34 @@
           IsLoading="IsLoading"
           SearchLabel="Search by name"
           SortOptions="@Enum.GetNames(typeof(CategorySortBy))"
-          GetSortLabel="CategorySortingHelpers.GetSortByLabel"
-          GetSortIcon="CategorySortingHelpers.GetSortByIcon"
+          GetSortByLabel="CategorySortingHelpers.GetSortByLabel"
+          GetSortByIcon="CategorySortingHelpers.GetSortByIcon"
           DefaultSortBy="CreatedAtUtcDesc"
           CreateButtonRoute="/categories/create"
           CreateButtonText="New category"
           EmptyStateIcon="@Icons.Material.Filled.Category"
           EmptyStateTitle="No categories found"
           EmptyStateMessage="Get started by creating your first category."
-          HasActiveFilters="@(!string.IsNullOrWhiteSpace(SelectedStatus))"
+          HasActiveFilters="@(!string.IsNullOrWhiteSpace(SelectedStatus?.ToString()))"
           OnFiltersChanged="HandleFiltersChangedAsync">
 
     <CustomFilters>
         <MudSelect @bind-Value="SelectedStatus"
                    @bind-Value:after="OnStatusChangedAsync"
-                   T="string"
+                   T="CategoryStatus?"
                    Variant="Variant.Outlined"
                    Label="Status"
                    FitContent="true">
 
-            <MudSelectItem Value="@(null)" T="string">
+            <MudSelectItem Value="@(null)" T="CategoryStatus?">
                 <MudText>All</MudText>
             </MudSelectItem>
 
-            @foreach (string status in Enum.GetNames(typeof(CategoryStatus)))
+            @foreach (CategoryStatus status in Enum.GetValues<CategoryStatus>())
             {
-                <MudSelectItem Value="@(status)">
-                    <MudText Color="@(status is "Active" ? Color.Success : Color.Error)">
-                        @status
+                <MudSelectItem Value="@(status)" T="CategoryStatus?">
+                    <MudText Color="@(status is CategoryStatus.Active ? Color.Success : Color.Error)">
+                        @status.ToString()
                     </MudText>
                 </MudSelectItem>
             }
@@ -49,12 +49,12 @@
     </CustomFilters>
 
     <TableHeaders>
-        <MudTh Style="width: 100px;"></MudTh>
-        <MudTh Style="width: 310px;">Name</MudTh>
-        <MudTh Style="width: 175px;">Status</MudTh>
-        <MudTh Style="width: 160px;">Items</MudTh>
-        <MudTh Style="width: 245px;">Created at</MudTh>
-        <MudTh Style="width: 205px;"></MudTh>
+        <MudTh Style="width: 105px;"></MudTh>
+        <MudTh Style="width: 325px;">Name</MudTh>
+        <MudTh Style="width: 185px;">Status</MudTh>
+        <MudTh Style="width: 170px;">Items</MudTh>
+        <MudTh Style="width: 260px;">Created</MudTh>
+        <MudTh Style="width: 150px;"></MudTh>
     </TableHeaders>
 
     <RowTemplate Context="category">
@@ -67,8 +67,8 @@
         <MudTd DataLabel="Status">
             <MudChip T="string"
                      Variant="Variant.Text"
-                     Color="@(category.Status is "Active" ? Color.Success : Color.Error)">
-                @category.Status
+                     Color="@(category.Status is CategoryStatus.Active ? Color.Success : Color.Error)">
+                @category.Status.ToString()
             </MudChip>
         </MudTd>
 
@@ -79,14 +79,18 @@
         <MudTd>
             <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye"
                            Color="Color.Primary"
+                           Size="Size.Small"
                            Href="@($"/categories/{category.Id}")"/>
 
             <MudIconButton Icon="@Icons.Material.Filled.Edit"
                            Color="Color.Secondary"
+                           Size="Size.Small"
+                           Class="mx-2"
                            Href="@($"/categories/{category.Id}/update")"/>
 
             <MudIconButton Icon="@Icons.Material.Filled.Delete"
                            Color="Color.Error"
+                           Size="Size.Small"
                            OnClick="() => ShowDeleteCategoryDialogAsync(category.Id, category.Name)"/>
         </MudTd>
     </RowTemplate>
@@ -116,7 +120,7 @@
 
     string SelectedSortBy { get; set; } = "CreatedAtUtcDesc";
     string? SearchQuery { get; set; }
-    string? SelectedStatus { get; set; }
+    CategoryStatus? SelectedStatus { get; set; }
 
     bool IsLoadingTop { get; set; } = true;
     bool IsLoading { get; set; } = true;
@@ -156,7 +160,7 @@
         int pageSize,
         string sortBy,
         string? searchQuery,
-        string? status)
+        CategoryStatus? status)
     {
         try
         {
@@ -179,11 +183,14 @@
 
     async Task HandleFiltersChangedAsync(DataGrid<CategoryDto>.DataGridFilters filters)
     {
+        SearchQuery = filters.SearchQuery;
+        SelectedSortBy = filters.SortBy ?? SelectedSortBy;
+
         await GetCategoriesAsync(
             filters.PageNumber,
             filters.PageSize,
-            filters.SortBy ?? SelectedSortBy,
-            filters.SearchQuery,
+            SelectedSortBy,
+            SearchQuery,
             SelectedStatus);
     }
 
@@ -192,9 +199,8 @@
         await HandleFiltersChangedAsync(new DataGrid<CategoryDto>.DataGridFilters(
             1,
             10,
-            null,
-            SelectedSortBy,
-            null));
+            SearchQuery,
+            SelectedSortBy));
     }
 
     async Task ShowDeleteCategoryDialogAsync(Guid categoryId, string categoryName)

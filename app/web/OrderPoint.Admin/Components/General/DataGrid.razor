@@ -27,23 +27,20 @@
             {
                 <MudSelectItem Value="@(sortBy)">
                     <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
-                        <MudText Typo="Typo.body1">@GetSortLabel(sortBy)</MudText>
-                        <MudIcon Icon="@GetSortIcon(sortBy)" Size="Size.Small"/>
+                        <MudText Typo="Typo.body1">@GetSortByLabel(sortBy)</MudText>
+                        <MudIcon Icon="@GetSortByIcon(sortBy)" Size="Size.Small"/>
                     </MudStack>
                 </MudSelectItem>
             }
         </MudSelect>
     </MudStack>
 
-    @if (CreateButtonRoute is not null)
-    {
-        <MudButton Variant="Variant.Filled"
-                   StartIcon="@Icons.Material.Filled.Add"
-                   Color="Color.Primary"
-                   Href="@CreateButtonRoute">
-            @CreateButtonText
-        </MudButton>
-    }
+    <MudButton Variant="Variant.Filled"
+               StartIcon="@Icons.Material.Filled.Add"
+               Color="Color.Primary"
+               Href="@CreateButtonRoute">
+        @CreateButtonText
+    </MudButton>
 </MudStack>
 
 <MudTable Items="Items" Hover="true" Loading="@IsLoading" LoadingProgressColor="Color.Primary">
@@ -62,7 +59,7 @@
             <MudText Typo="Typo.body2" Color="Color.Default">
                 @if (!string.IsNullOrWhiteSpace(SearchQuery) || HasActiveFilters)
                 {
-                    <MudText Typo="Typo.caption">@EmptyStateFilteredMessage</MudText>
+                    <MudText Typo="Typo.caption">"Try adjusting your filters or search query."</MudText>
                 }
                 else
                 {
@@ -96,7 +93,7 @@
 
     [Parameter]
     [EditorRequired]
-    public IReadOnlyList<TItem> Items { get; set; } = [];
+    public IReadOnlyList<TItem> Items { get; set; } = null!;
 
     [Parameter]
     [EditorRequired]
@@ -122,7 +119,8 @@
     public RenderFragment? CustomFilters { get; set; }
 
     [Parameter]
-    public string SearchLabel { get; set; } = "Search";
+    [EditorRequired]
+    public string SearchLabel { get; set; }
 
     [Parameter]
     [EditorRequired]
@@ -130,38 +128,42 @@
 
     [Parameter]
     [EditorRequired]
-    public Func<string, string> GetSortLabel { get; set; } = null!;
+    public Func<string, string> GetSortByLabel { get; set; } = null!;
 
     [Parameter]
     [EditorRequired]
-    public Func<string, string> GetSortIcon { get; set; } = null!;
+    public Func<string, string> GetSortByIcon { get; set; } = null!;
 
     [Parameter]
-    public string DefaultSortBy { get; set; } = "";
+    [EditorRequired]
+    public string DefaultSortBy { get; set; } = null!;
 
     [Parameter]
-    public string? CreateButtonRoute { get; set; }
+    [EditorRequired]
+    public string CreateButtonRoute { get; set; } = null!;
 
     [Parameter]
-    public string CreateButtonText { get; set; } = "New item";
+    [EditorRequired]
+    public string CreateButtonText { get; set; } = null!;
 
     [Parameter]
-    public string EmptyStateIcon { get; set; } = Icons.Material.Filled.List;
+    [EditorRequired]
+    public string EmptyStateIcon { get; set; } = null!;
 
     [Parameter]
-    public string EmptyStateTitle { get; set; } = "No items found";
+    [EditorRequired]
+    public string EmptyStateTitle { get; set; } = null!;
 
     [Parameter]
-    public string EmptyStateMessage { get; set; } = "Get started by creating your first item.";
+    [EditorRequired]
+    public string EmptyStateMessage { get; set; } = null!;
 
     [Parameter]
-    public string EmptyStateFilteredMessage { get; set; } = "Try adjusting your filters or search query.";
-
-    [Parameter]
+    [EditorRequired]
     public bool HasActiveFilters { get; set; }
 
     string? SearchQuery { get; set; }
-    string SelectedSortBy { get; set; } = "";
+    string? SelectedSortBy { get; set; }
 
     protected override void OnInitialized()
     {
@@ -184,8 +186,7 @@
             pageNumber,
             10,
             SearchQuery,
-            SelectedSortBy,
-            null
+            SelectedSortBy
         ));
     }
 
@@ -195,8 +196,7 @@
             1,
             10,
             SearchQuery,
-            SelectedSortBy,
-            null
+            SelectedSortBy
         ));
     }
 
@@ -204,8 +204,7 @@
         int PageNumber,
         int PageSize,
         string? SearchQuery,
-        string? SortBy,
-        Dictionary<string, string?>? CustomFilters
+        string? SortBy
     );
 
 }

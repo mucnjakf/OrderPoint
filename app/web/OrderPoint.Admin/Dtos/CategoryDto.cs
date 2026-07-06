@@ -1,10 +1,12 @@
-﻿namespace OrderPoint.Admin.Dtos;
+﻿using OrderPoint.Admin.Enumerations;
+
+namespace OrderPoint.Admin.Dtos;
 
 public sealed record CategoryDto(
     Guid Id,
     string Name,
     string Description,
-    string Status,
+    CategoryStatus Status,
     string? ImageUrl,
     int ItemsCount,
     DateTimeOffset CreatedAtUtc,

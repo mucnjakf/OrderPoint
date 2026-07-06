@@ -1,6 +1,6 @@
 ﻿namespace OrderPoint.Admin.Enumerations;
 
-internal enum CategoryStatus
+public enum CategoryStatus
 {
     Active,
     Inactive
