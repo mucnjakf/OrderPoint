@@ -1,6 +1,6 @@
 ﻿namespace OrderPoint.Admin.Dtos;
 
-internal sealed record PaginationDto<T>(IReadOnlyList<T> Items, int PageNumber, int PageSize, int TotalCount)
+public sealed record PaginationDto<T>(IReadOnlyList<T> Items, int PageNumber, int PageSize, int TotalCount)
 {
     internal int TotalPages => (int)Math.Ceiling(TotalCount / (double)PageSize);
 

@@ -1,0 +1,211 @@
+﻿@typeparam TItem
+
+<MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.End" Class="mb-3">
+    <MudStack Row="true">
+        <MudTextField @bind-Value="SearchQuery"
+                      @bind-Value:after="OnSearchChangedAsync"
+                      T="string"
+                      Label="@SearchLabel"
+                      Variant="Variant.Outlined"
+                      Clearable="true"
+                      DebounceInterval="500"
+                      Immediate="false"/>
+
+        @if (CustomFilters is not null)
+        {
+            @CustomFilters
+        }
+
+        <MudSelect @bind-Value="SelectedSortBy"
+                   @bind-Value:after="OnSortChangedAsync"
+                   T="string"
+                   Variant="Variant.Outlined"
+                   Label="Sort by"
+                   FitContent="true">
+
+            @foreach (string sortBy in SortOptions)
+            {
+                <MudSelectItem Value="@(sortBy)">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                        <MudText Typo="Typo.body1">@GetSortLabel(sortBy)</MudText>
+                        <MudIcon Icon="@GetSortIcon(sortBy)" Size="Size.Small"/>
+                    </MudStack>
+                </MudSelectItem>
+            }
+        </MudSelect>
+    </MudStack>
+
+    @if (CreateButtonRoute is not null)
+    {
+        <MudButton Variant="Variant.Filled"
+                   StartIcon="@Icons.Material.Filled.Add"
+                   Color="Color.Primary"
+                   Href="@CreateButtonRoute">
+            @CreateButtonText
+        </MudButton>
+    }
+</MudStack>
+
+<MudTable Items="Items" Hover="true" Loading="@IsLoading" LoadingProgressColor="Color.Primary">
+    <HeaderContent>
+        @TableHeaders
+    </HeaderContent>
+
+    <RowTemplate>
+        @RowTemplate(context)
+    </RowTemplate>
+
+    <NoRecordsContent>
+        <MudStack AlignItems="AlignItems.Center" Spacing="3" Class="py-10">
+            <MudIcon Icon="@EmptyStateIcon" Size="Size.Large" Color="Color.Default"/>
+            <MudText Typo="Typo.h6">@EmptyStateTitle</MudText>
+            <MudText Typo="Typo.body2" Color="Color.Default">
+                @if (!string.IsNullOrWhiteSpace(SearchQuery) || HasActiveFilters)
+                {
+                    <MudText Typo="Typo.caption">@EmptyStateFilteredMessage</MudText>
+                }
+                else
+                {
+                    <MudText Typo="Typo.caption">@EmptyStateMessage</MudText>
+                }
+            </MudText>
+        </MudStack>
+    </NoRecordsContent>
+</MudTable>
+
+@if (Pagination is not null && Pagination.TotalPages > 1)
+{
+    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mt-3">
+        <MudText Typo="Typo.caption" Color="Color.Default">
+            Showing @((Pagination.PageNumber - 1) * Pagination.PageSize + 1)
+            to @(Math.Min(Pagination.PageNumber * Pagination.PageSize, Pagination.TotalCount))
+            of @Pagination.TotalCount items
+        </MudText>
+
+        <MudPagination Count="Pagination.TotalPages"
+                       Selected="Pagination.PageNumber"
+                       SelectedChanged="OnPageChanged"
+                       BoundaryCount="1"
+                       MiddleCount="3"
+                       ShowFirstButton="true"
+                       ShowLastButton="true"/>
+    </MudStack>
+}
+
+@code {
+
+    [Parameter]
+    [EditorRequired]
+    public IReadOnlyList<TItem> Items { get; set; } = [];
+
+    [Parameter]
+    [EditorRequired]
+    public PaginationDto<TItem>? Pagination { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public bool IsLoading { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment TableHeaders { get; set; } = null!;
+
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment<TItem> RowTemplate { get; set; } = null!;
+
+    [Parameter]
+    [EditorRequired]
+    public EventCallback<DataGridFilters> OnFiltersChanged { get; set; }
+
+    [Parameter]
+    public RenderFragment? CustomFilters { get; set; }
+
+    [Parameter]
+    public string SearchLabel { get; set; } = "Search";
+
+    [Parameter]
+    [EditorRequired]
+    public IReadOnlyList<string> SortOptions { get; set; } = [];
+
+    [Parameter]
+    [EditorRequired]
+    public Func<string, string> GetSortLabel { get; set; } = null!;
+
+    [Parameter]
+    [EditorRequired]
+    public Func<string, string> GetSortIcon { get; set; } = null!;
+
+    [Parameter]
+    public string DefaultSortBy { get; set; } = "";
+
+    [Parameter]
+    public string? CreateButtonRoute { get; set; }
+
+    [Parameter]
+    public string CreateButtonText { get; set; } = "New item";
+
+    [Parameter]
+    public string EmptyStateIcon { get; set; } = Icons.Material.Filled.List;
+
+    [Parameter]
+    public string EmptyStateTitle { get; set; } = "No items found";
+
+    [Parameter]
+    public string EmptyStateMessage { get; set; } = "Get started by creating your first item.";
+
+    [Parameter]
+    public string EmptyStateFilteredMessage { get; set; } = "Try adjusting your filters or search query.";
+
+    [Parameter]
+    public bool HasActiveFilters { get; set; }
+
+    string? SearchQuery { get; set; }
+    string SelectedSortBy { get; set; } = "";
+
+    protected override void OnInitialized()
+    {
+        SelectedSortBy = DefaultSortBy;
+    }
+
+    async Task OnSearchChangedAsync()
+    {
+        await NotifyFiltersChanged();
+    }
+
+    async Task OnSortChangedAsync()
+    {
+        await NotifyFiltersChanged();
+    }
+
+    public async Task OnPageChanged(int pageNumber)
+    {
+        await OnFiltersChanged.InvokeAsync(new DataGridFilters(
+            pageNumber,
+            10,
+            SearchQuery,
+            SelectedSortBy,
+            null
+        ));
+    }
+
+    async Task NotifyFiltersChanged()
+    {
+        await OnFiltersChanged.InvokeAsync(new DataGridFilters(
+            1,
+            10,
+            SearchQuery,
+            SelectedSortBy,
+            null
+        ));
+    }
+
+    public sealed record DataGridFilters(
+        int PageNumber,
+        int PageSize,
+        string? SearchQuery,
+        string? SortBy,
+        Dictionary<string, string?>? CustomFilters
+    );
+
+}
