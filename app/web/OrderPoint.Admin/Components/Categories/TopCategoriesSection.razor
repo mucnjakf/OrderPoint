@@ -1,0 +1,71 @@
+﻿@if (IsLoading)
+{
+    <MudStack Row="true" Spacing="3" Class="flex-1 mb-5">
+        @for (var i = 0; i < 5; i++)
+        {
+            <MudPaper Class="pa-8 d-flex flex-column align-center flex-1">
+                <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="48px" Height="48px" Class="mb-3"/>
+                <MudSkeleton SkeletonType="SkeletonType.Text" Width="80%" Class="mb-1"/>
+                <MudSkeleton SkeletonType="SkeletonType.Text" Width="60%"/>
+            </MudPaper>
+        }
+    </MudStack>
+}
+else if (Categories.Any())
+{
+    <MudStack Row="true" Spacing="3" Class="flex-1 mb-5">
+        @foreach (CategoryDto category in Categories)
+        {
+            <MudPaper Class="pa-8 d-flex flex-column align-center flex-1"
+                      Style="cursor: pointer; transition: all 0.2s ease-in-out;"
+                      Elevation="@(HoveredCategoryId == category.Id ? 10 : 1)"
+                      @onclick="@(() => NavigationManager.NavigateTo($"/categories/{category.Id}"))"
+                      @onmouseover="() => HoveredCategoryId = category.Id"
+                      @onmouseout="() => HoveredCategoryId = null">
+
+                <MudIcon Icon="@Icons.Material.Filled.CropOriginal"
+                         Title="@category.Name"
+                         Size="Size.Large"
+                         Class="mb-3"/>
+
+                <MudText Typo="Typo.body1" Class="mb-1" Align="Align.Center">
+                    @category.Name
+                </MudText>
+
+                <MudText Typo="Typo.caption" Color="Color.Default">
+                    @category.ItemsCount @(category.ItemsCount == 1 ? "item" : "items")
+                </MudText>
+            </MudPaper>
+        }
+    </MudStack>
+}
+else
+{
+    <MudPaper Class="pa-8 mb-5">
+        <MudStack AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.Category"
+                     Size="Size.Large"
+                     Color="Color.Default"/>
+
+            <MudText Typo="Typo.body1" Color="Color.Default">
+                No categories yet
+            </MudText>
+        </MudStack>
+    </MudPaper>
+}
+
+@code {
+
+    [Parameter]
+    [EditorRequired]
+    public IReadOnlyList<CategoryDto> Categories { get; set; } = [];
+
+    [Parameter]
+    [EditorRequired]
+    public bool IsLoading { get; set; } = true;
+
+    [Inject]
+    NavigationManager NavigationManager { get; set; } = null!;
+
+    Guid? HoveredCategoryId { get; set; }
+}

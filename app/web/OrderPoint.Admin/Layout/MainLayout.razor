@@ -2,9 +2,9 @@
 
 <MudThemeProvider @bind-IsDarkMode="@IsDarkMode"/>
 <MudPopoverProvider/>
-<MudDialogProvider CloseButton="true" 
-                   BackdropClick="false" 
-                   Position="DialogPosition.Center" 
+<MudDialogProvider CloseButton="true"
+                   BackdropClick="false"
+                   Position="DialogPosition.Center"
                    CloseOnEscapeKey="true"/>
 <MudSnackbarProvider/>
 
@@ -71,7 +71,7 @@
     </MudDrawer>
 
     <MudMainContent>
-        <MudContainer Class="pa-3">
+        <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="pa-3">
             @Body
         </MudContainer>
     </MudMainContent>

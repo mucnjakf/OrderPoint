@@ -1,6 +1,6 @@
 ﻿namespace OrderPoint.Admin.Dtos;
 
-internal sealed record CategoryDto(
+public sealed record CategoryDto(
     Guid Id,
     string Name,
     string Description,
