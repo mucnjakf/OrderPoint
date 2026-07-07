@@ -38,6 +38,20 @@ internal sealed class CategoryApiClient(HttpClient httpClient)
         return response.Data;
     }
 
+    internal async Task<CategoryDto> GetCategoryAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var response = await httpClient
+            .GetFromJsonAsync<GetCategoryResponse>($"api/categories/{id}", cancellationToken);
+
+        if (response is null)
+        {
+            // tODO; handle
+            throw new Exception("Handle get category");
+        }
+
+        return response.Data;
+    }
+
     internal async Task CreateCategoryAsync(
         CreateCategoryRequest request,
         CancellationToken cancellationToken = default)
