@@ -1,0 +1,273 @@
+﻿@page "/categories/{id:guid}/update"
+
+<PageTitle>Edit category</PageTitle>
+
+<Breadcrumbs Items="Breadcrumbs"/>
+
+@if (IsLoading)
+{
+    <MudSkeleton SkeletonType="SkeletonType.Text" Width="200px" Height="40px" Class="mb-3"/>
+
+    <MudGrid Spacing="3" Class="mb-3">
+        <MudItem xs="12" md="8">
+            <MudCard Class="pa-3" Style="height: 490px;">
+                <MudCardContent>
+                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="56px" Class="mb-5"/>
+                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="140px" Class="mb-5"/>
+
+                    <MudStack Row="true">
+                        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="56px" Width="380px"/>
+                        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="56px" Width="380px"/>
+                    </MudStack>
+
+                </MudCardContent>
+                <MudCardActions Class="pa-4 d-flex justify-end">
+                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100px" Height="36px" Class="mr-3"/>
+                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="120px" Height="36px"/>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" md="4">
+            <MudStack Spacing="3" Style="height: 100%;">
+                <MudPaper Class="pa-3 d-flex flex-column flex-grow-1 align-center justify-center">
+                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="48px" Height="48px" Class="mb-4"/>
+                    <MudSkeleton SkeletonType="SkeletonType.Text" Width="150px" Class="mb-2"/>
+                    <MudSkeleton SkeletonType="SkeletonType.Text" Width="120px" Class="mb-4"/>
+                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="80px" Height="32px"/>
+                </MudPaper>
+
+                <MudPaper Class="pa-3">
+                    <MudSkeleton SkeletonType="SkeletonType.Text" Class="mb-3"/>
+                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="36px"/>
+                </MudPaper>
+            </MudStack>
+        </MudItem>
+    </MudGrid>
+}
+else if (Request is not null)
+{
+    <MainTitle Text="@($"Edit {CategoryName}")"/>
+
+    <MudGrid Spacing="3" Class="mb-3">
+        <MudItem xs="12" md="8">
+            <EditForm Model="@Request" OnValidSubmit="OnValidSubmitAsync">
+                <DataAnnotationsValidator/>
+
+                <MudCard Class="pa-3" Style="height: 100%;">
+                    <MudCardContent>
+                        <MudTextField Label="Name"
+                                      @bind-Value="Request.Name"
+                                      For="@(() => Request.Name)"
+                                      Class="mb-5 mt-0"
+                                      HelperText="The display name of the category shown to customers."
+                                      Variant="Variant.Outlined"
+                                      Immediate="true"/>
+
+                        <MudTextField Label="Description"
+                                      @bind-Value="Request.Description"
+                                      For="@(() => Request.Description)"
+                                      HelperText="A brief description of what this category contains."
+                                      Variant="Variant.Outlined"
+                                      Class="mb-5"
+                                      Lines="5"
+                                      Immediate="true"/>
+
+                        <MudStack Row="true">
+                            <MudSelect Label="Status"
+                                       T="CategoryStatus"
+                                       @bind-Value="Request.Status"
+                                       For="@(() => Request.Status)"
+                                       HelperText="Controls whether this category is visible to customers."
+                                       Variant="Variant.Outlined">
+                                @foreach (CategoryStatus status in Enum.GetValues<CategoryStatus>())
+                                {
+                                    <MudSelectItem Value="@status" T="CategoryStatus">
+                                        <MudText
+                                            Color="@(status is CategoryStatus.Active ? Color.Success : Color.Error)">
+                                            @status.ToString()
+                                        </MudText>
+                                    </MudSelectItem>
+                                }
+                            </MudSelect>
+
+                            <MudTextField Label="Image URL"
+                                          Disabled="true"
+                                          @bind-Value="Request.ImageUrl"
+                                          For="@(() => Request.ImageUrl)"
+                                          HelperText="Image upload will be available in a future update."
+                                          Variant="Variant.Outlined"/>
+                        </MudStack>
+                    </MudCardContent>
+
+                    <MudCardActions Class="pa-4 d-flex justify-end">
+                        <MudButton Href="@(ReturnUrl ?? "/categories")" Variant="Variant.Text" Class="mr-5">
+                            Cancel
+                        </MudButton>
+
+                        <MudButton ButtonType="ButtonType.Submit"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.Edit">
+                            Confirm
+                        </MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </EditForm>
+        </MudItem>
+
+        <MudItem xs="12" md="4">
+            <MudStack Spacing="3" Style="height: 100%;">
+                <MudPaper Class="pa-3 d-flex flex-column flex-grow-1 align-center justify-center">
+                    <MudIcon Icon="@Icons.Material.Filled.CropOriginal"
+                             Title="Category name"
+                             Size="Size.Large"
+                             Class="mb-4"/>
+
+                    <MudText Typo="Typo.body1" Class="mb-2">
+                        @(string.IsNullOrWhiteSpace(Request.Name) ? "Category name" : Request.Name)
+                    </MudText>
+
+                    <MudText Typo="Typo.caption" Color="Color.Default" Class="mb-4">
+                        @(string.IsNullOrWhiteSpace(Request.Description) ? "Category description" : Request.Description)
+                    </MudText>
+
+                    <MudChip T="string"
+                             Variant="Variant.Text"
+                             Color="@(Request.Status is CategoryStatus.Active ? Color.Success : Color.Error)">
+                        @Request.Status.ToString()
+                    </MudChip>
+                </MudPaper>
+
+                <MudPaper Class="pa-3">
+                    <MudText Typo="Typo.body2" Class="mb-3">
+                        Permanently delete this category. This action cannot be undone.
+                    </MudText>
+
+                    <MudButton Variant="Variant.Outlined"
+                               StartIcon="@Icons.Material.Filled.Delete"
+                               FullWidth="true"
+                               Color="Color.Error"
+                               OnClick="ShowDeleteCategoryDialogAsync">
+                        Delete
+                    </MudButton>
+                </MudPaper>
+            </MudStack>
+        </MudItem>
+    </MudGrid>
+}
+
+@code {
+
+    [Parameter]
+    public Guid Id { get; set; }
+
+    [SupplyParameterFromQuery(Name = "returnUrl")]
+    public string? ReturnUrl { get; set; }
+
+    [Inject]
+    IDialogService DialogService { get; set; } = null!;
+
+    [Inject]
+    ISnackbar Snackbar { get; set; } = null!;
+
+    [Inject]
+    NavigationManager NavigationManager { get; set; } = null!;
+
+    [Inject]
+    CategoryApiClient CategoryApiClient { get; set; } = null!;
+
+    List<BreadcrumbItem> Breadcrumbs { get; set; } = [];
+
+    bool IsLoading { get; set; } = true;
+
+    string? CategoryName { get; set; }
+
+    UpdateCategoryRequest? Request { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        InitializeBreadcrumbs();
+        await GetCategoryAsync();
+    }
+
+    void InitializeBreadcrumbs()
+    {
+        Breadcrumbs =
+        [
+            new BreadcrumbItem("Dashboard", href: "/", icon: Icons.Material.Filled.Dashboard),
+            new BreadcrumbItem("Categories", href: "/categories", icon: Icons.Material.Filled.Category)
+        ];
+
+        if (ReturnUrl?.Contains("/categories/") == true && ReturnUrl != "/categories")
+        {
+            Breadcrumbs.Add(new BreadcrumbItem("Details", href: $"/categories/{Id}", icon: Icons.Material.Filled.Notes));
+        }
+
+        Breadcrumbs.Add(new BreadcrumbItem("Edit", href: null, disabled: true, icon: Icons.Material.Filled.Edit));
+    }
+
+    async Task GetCategoryAsync()
+    {
+        try
+        {
+            IsLoading = true;
+
+            CategoryDto category = await CategoryApiClient.GetCategoryAsync(Id);
+
+            CategoryName = category.Name;
+
+            Request = new UpdateCategoryRequest
+            {
+                Name = category.Name,
+                Description = category.Description,
+                Status = category.Status,
+                ImageUrl = category.ImageUrl
+            };
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    async Task ShowDeleteCategoryDialogAsync()
+    {
+        var parameters = new DialogParameters<DeleteCategoryDialog>
+        {
+            { dialog => dialog.CategoryName, CategoryName },
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true
+        };
+
+        IDialogReference dialogReference = await DialogService
+            .ShowAsync<DeleteCategoryDialog>(string.Empty, parameters, options);
+
+        DialogResult dialogResult = (await dialogReference.Result)!;
+
+        if (!dialogResult.Canceled)
+        {
+            await CategoryApiClient.DeleteCategoryAsync(Id);
+
+            Snackbar.Add($"Category {CategoryName} deleted successfully", Severity.Success);
+
+            NavigationManager.NavigateTo("/categories");
+        }
+    }
+
+    async Task OnValidSubmitAsync(EditContext editContext)
+    {
+        StateHasChanged();
+
+        await CategoryApiClient.UpdateCategoryAsync(Id, Request!);
+
+        Snackbar.Add($"Category {Request!.Name} edited successfully", Severity.Success);
+
+        NavigationManager.NavigateTo(ReturnUrl ?? "/categories");
+    }
+
+}

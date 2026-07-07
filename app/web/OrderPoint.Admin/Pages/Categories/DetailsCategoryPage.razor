@@ -43,10 +43,13 @@
 else if (Category is not null)
 {
     <MudStack Row="true" Justify="Justify.SpaceBetween">
-        <MainTitle Text="@Category.Name"/>
+        <MainTitle Text="@($"{Category.Name} details")"/>
 
         <MudStack Row="true" AlignItems="AlignItems.End" Class="mb-3">
-            <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Edit" Color="Color.Primary">
+            <MudButton Variant="Variant.Outlined"
+                       StartIcon="@Icons.Material.Filled.Edit"
+                       Color="Color.Primary"
+                       Href="@($"/categories/{Category.Id}/update?returnUrl=/categories/{Category.Id}")">
                 Edit
             </MudButton>
 

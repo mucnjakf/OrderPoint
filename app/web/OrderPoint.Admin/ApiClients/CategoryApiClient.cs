@@ -66,6 +66,21 @@ internal sealed class CategoryApiClient(HttpClient httpClient)
         }
     }
 
+    internal async Task UpdateCategoryAsync(
+        Guid id,
+        UpdateCategoryRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await httpClient
+            .PutAsJsonAsync($"api/categories/{id}", request, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            // todo: handle
+            throw new Exception("Handle update category");
+        }
+    }
+
     internal async Task DeleteCategoryAsync(Guid id, CancellationToken cancellationToken = default)
     {
         HttpResponseMessage response = await httpClient
