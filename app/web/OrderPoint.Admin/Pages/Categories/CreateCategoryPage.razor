@@ -115,36 +115,3 @@
         </MudStack>
     </MudItem>
 </MudGrid>
-
-@code {
-
-    [Inject]
-    ISnackbar Snackbar { get; set; } = null!;
-
-    [Inject]
-    NavigationManager NavigationManager { get; set; } = null!;
-
-    [Inject]
-    CategoryApiClient CategoryApiClient { get; set; } = null!;
-
-    List<BreadcrumbItem> Breadcrumbs { get; set; } =
-    [
-        new("Dashboard", href: "/", icon: Icons.Material.Filled.Dashboard),
-        new("Categories", href: "/categories", icon: Icons.Material.Filled.Category),
-        new("New", href: null, disabled: true, icon: Icons.Material.Filled.Add)
-    ];
-
-    CreateCategoryRequest Request { get; set; } = new();
-
-    async Task OnValidSubmitAsync(EditContext editContext)
-    {
-        StateHasChanged();
-
-        await CategoryApiClient.CreateCategoryAsync(Request);
-
-        Snackbar.Add($"Category {Request.Name} created successfully", Severity.Success);
-
-        NavigationManager.NavigateTo("/categories");
-    }
-
-}

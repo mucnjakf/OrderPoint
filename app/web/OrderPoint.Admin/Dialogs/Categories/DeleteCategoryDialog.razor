@@ -33,23 +33,3 @@
         </MudButton>
     </DialogActions>
 </MudDialog>
-
-@code {
-
-    [CascadingParameter]
-    IMudDialogInstance MudDialogInstance { get; set; } = null!;
-
-    [Parameter]
-    public string CategoryName { get; set; } = null!;
-
-    void Confirm()
-    {
-        MudDialogInstance.Close(DialogResult.Ok(true));
-    }
-
-    void Cancel()
-    {
-        MudDialogInstance.Cancel();
-    }
-
-}

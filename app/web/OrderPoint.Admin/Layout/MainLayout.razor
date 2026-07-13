@@ -78,30 +78,3 @@
         </MudContainer>
     </MudMainContent>
 </MudLayout>
-
-@code {
-    bool DrawerOpen { get; set; } = true;
-
-    bool IsDarkMode { get; set; } = true;
-
-    string IconButton { get; set; } = Icons.Material.Filled.LightMode;
-
-    void ToggleDrawer()
-    {
-        DrawerOpen = !DrawerOpen;
-    }
-
-    void ToggleDarkMode()
-    {
-        IsDarkMode = !IsDarkMode;
-
-        if (IsDarkMode)
-        {
-            IconButton = Icons.Material.Filled.LightMode;
-            return;
-        }
-
-        IconButton = Icons.Material.Filled.DarkMode;
-    }
-
-}
