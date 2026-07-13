@@ -21,6 +21,7 @@ public static class InfrastructureModule
         services.AddScoped<IUnitOfWork>(serviceProvider => serviceProvider.GetRequiredService<ApplicationDbContext>());
 
         services.AddScoped<ICategoryRepository, CategoryEfCoreRepository>();
+        services.AddScoped<IItemRepository, ItemEfCoreRepository>();
 
         return services;
     }

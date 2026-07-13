@@ -5,6 +5,7 @@ using OrderPoint.Api.Configuration;
 using OrderPoint.Api.Extensions;
 using OrderPoint.Application.Dtos;
 using OrderPoint.Application.Queries;
+using OrderPoint.Application.Queries.Categories;
 using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Categories;

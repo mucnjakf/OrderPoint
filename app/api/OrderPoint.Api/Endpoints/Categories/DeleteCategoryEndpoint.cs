@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using OrderPoint.Api.Configuration;
 using OrderPoint.Api.Extensions;
-using OrderPoint.Application.Commands;
+using OrderPoint.Application.Commands.Categories;
 using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Categories;

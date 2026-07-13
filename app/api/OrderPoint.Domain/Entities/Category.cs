@@ -15,6 +15,10 @@ public sealed class Category : Entity
 
     public string? ImageUrl { get; private set; }
 
+    private readonly List<Item> _items = [];
+
+    public IReadOnlyList<Item> Items => _items.AsReadOnly();
+
     private Category(
         Guid id,
         string name,

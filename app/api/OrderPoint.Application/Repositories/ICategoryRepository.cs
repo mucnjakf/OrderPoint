@@ -19,4 +19,6 @@ public interface ICategoryRepository
     Task CreateAsync(Category category, CancellationToken cancellationToken = default);
 
     void Delete(Category category);
+
+    Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default);
 }

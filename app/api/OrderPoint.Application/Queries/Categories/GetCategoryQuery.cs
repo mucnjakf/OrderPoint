@@ -6,11 +6,11 @@ using OrderPoint.Domain.Entities;
 using OrderPoint.Domain.Errors;
 using OrderPoint.Domain.Outcomes;
 
-namespace OrderPoint.Application.Queries;
+namespace OrderPoint.Application.Queries.Categories;
 
 public sealed record GetCategoryQuery(Guid CategoryId) : IQuery<CategoryDto>;
 
-internal sealed class GetCategoryQueryHandler(ICategoryRepository categoryRepository)
+internal sealed class GetCategoryQueryHandler(ICategoryRepository categoryRepository, IItemRepository itemRepository)
     : IQueryHandler<GetCategoryQuery, CategoryDto>
 {
     public async Task<Result<CategoryDto>> Handle(GetCategoryQuery query, CancellationToken cancellationToken)
@@ -22,7 +22,9 @@ internal sealed class GetCategoryQueryHandler(ICategoryRepository categoryReposi
             return Result.Failure<CategoryDto>(CategoryErrors.NotFound);
         }
 
-        var categoryDto = category.ToCategoryDto();
+        int itemsCount = await itemRepository.CountAsync(category.Id, cancellationToken);
+
+        var categoryDto = category.ToCategoryDto(itemsCount);
 
         return Result.Success(categoryDto);
     }

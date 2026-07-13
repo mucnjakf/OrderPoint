@@ -6,7 +6,7 @@ using OrderPoint.Domain.Entities;
 using OrderPoint.Domain.Enumerations;
 using OrderPoint.Domain.Outcomes;
 
-namespace OrderPoint.Application.Commands;
+namespace OrderPoint.Application.Commands.Categories;
 
 public sealed record CreateCategoryCommand(
     string Name,
@@ -15,7 +15,10 @@ public sealed record CreateCategoryCommand(
     string? ImageUrl)
     : ICommand<CategoryDto>;
 
-internal sealed class CreateCategoryCommandHandler(ICategoryRepository categoryRepository, IUnitOfWork unitOfWork)
+internal sealed class CreateCategoryCommandHandler(
+    ICategoryRepository categoryRepository,
+    IItemRepository itemRepository,
+    IUnitOfWork unitOfWork)
     : ICommandHandler<CreateCategoryCommand, CategoryDto>
 {
     public async Task<Result<CategoryDto>> Handle(CreateCategoryCommand command, CancellationToken cancellationToken)
@@ -30,7 +33,9 @@ internal sealed class CreateCategoryCommandHandler(ICategoryRepository categoryR
         await categoryRepository.CreateAsync(result.Value, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        var categoryDto = result.Value.ToCategoryDto(); // TODO: also get items count
+        int itemsCount = await itemRepository.CountAsync(result.Value.Id, cancellationToken);
+
+        var categoryDto = result.Value.ToCategoryDto(itemsCount);
 
         return Result.Success(categoryDto);
     }

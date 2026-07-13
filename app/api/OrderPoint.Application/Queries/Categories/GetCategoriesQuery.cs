@@ -7,7 +7,7 @@ using OrderPoint.Domain.Enumerations;
 using OrderPoint.Domain.Outcomes;
 using OrderPoint.Domain.Sorting;
 
-namespace OrderPoint.Application.Queries;
+namespace OrderPoint.Application.Queries.Categories;
 
 public sealed record GetCategoriesQuery(
     int PageNumber,
@@ -17,7 +17,7 @@ public sealed record GetCategoriesQuery(
     CategorySortBy? SortBy)
     : IQuery<PaginationDto<CategoryDto>>;
 
-internal sealed class GetCategoriesQueryHandler(ICategoryRepository categoryRepository)
+internal sealed class GetCategoriesQueryHandler(ICategoryRepository categoryRepository, IItemRepository itemRepository)
     : IQueryHandler<GetCategoriesQuery, PaginationDto<CategoryDto>>
 {
     public async Task<Result<PaginationDto<CategoryDto>>> Handle(
@@ -34,7 +34,7 @@ internal sealed class GetCategoriesQueryHandler(ICategoryRepository categoryRepo
                 cancellationToken);
 
         return new PaginationDto<CategoryDto>(
-            categories.Select(category => category.ToCategoryDto()).ToList(),
+            categories.Select(category => category.ToCategoryDto(category.Items.Count)).ToList(),
             query.PageNumber,
             query.PageSize,
             totalCount);

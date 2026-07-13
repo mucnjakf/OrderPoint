@@ -141,13 +141,14 @@ else if (Request is not null)
 
                 <MudPaper Class="pa-3">
                     <MudText Typo="Typo.body2" Class="mb-3">
-                        Permanently delete this category. This action cannot be undone.
+                        @(CategoryContainsItems ? "This category contains items and cannot be deleted." : "Permanently delete this category. This action cannot be undone.")
                     </MudText>
-
+                    
                     <MudButton Variant="Variant.Outlined"
                                StartIcon="@Icons.Material.Filled.Delete"
                                FullWidth="true"
                                Color="Color.Error"
+                               Disabled="CategoryContainsItems"
                                OnClick="ShowDeleteCategoryDialogAsync">
                         Delete
                     </MudButton>
@@ -182,6 +183,7 @@ else if (Request is not null)
     bool IsLoading { get; set; } = true;
 
     string? CategoryName { get; set; }
+    bool CategoryContainsItems { get; set; }
 
     UpdateCategoryRequest? Request { get; set; }
 
@@ -216,6 +218,7 @@ else if (Request is not null)
             CategoryDto category = await CategoryApiClient.GetCategoryAsync(Id);
 
             CategoryName = category.Name;
+            CategoryContainsItems = category.ItemsCount > 0;
 
             Request = new UpdateCategoryRequest
             {
@@ -235,7 +238,7 @@ else if (Request is not null)
     {
         var parameters = new DialogParameters<DeleteCategoryDialog>
         {
-            { dialog => dialog.CategoryName, CategoryName },
+            { dialog => dialog.CategoryName, CategoryName }
         };
 
         var options = new DialogOptions

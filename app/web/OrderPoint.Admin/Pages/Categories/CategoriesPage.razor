@@ -91,6 +91,7 @@
             <MudIconButton Icon="@Icons.Material.Filled.Delete"
                            Color="Color.Error"
                            Size="Size.Small"
+                           Disabled="category.ItemsCount > 0"
                            OnClick="() => ShowDeleteCategoryDialogAsync(category.Id, category.Name)"/>
         </MudTd>
     </RowTemplate>
@@ -143,9 +144,8 @@
         {
             IsLoadingTop = true;
 
-            // TODO: change to items when implemented
             PaginationDto<CategoryDto> pagination = await CategoryApiClient
-                .GetCategoriesAsync(1, 5, "NameAsc");
+                .GetCategoriesAsync(1, 5, "ItemsCountDesc");
 
             TopCategories = pagination.Items;
         }
@@ -207,7 +207,7 @@
     {
         var parameters = new DialogParameters<DeleteCategoryDialog>
         {
-            { dialog => dialog.CategoryName, categoryName },
+            { dialog => dialog.CategoryName, categoryName }
         };
 
         var options = new DialogOptions

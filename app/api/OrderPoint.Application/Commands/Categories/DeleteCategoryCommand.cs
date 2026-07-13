@@ -4,11 +4,14 @@ using OrderPoint.Domain.Entities;
 using OrderPoint.Domain.Errors;
 using OrderPoint.Domain.Outcomes;
 
-namespace OrderPoint.Application.Commands;
+namespace OrderPoint.Application.Commands.Categories;
 
 public sealed record DeleteCategoryCommand(Guid Id) : ICommand;
 
-internal sealed class DeleteCategoryCommandHandler(ICategoryRepository categoryRepository, IUnitOfWork unitOfWork)
+internal sealed class DeleteCategoryCommandHandler(
+    ICategoryRepository categoryRepository,
+    IItemRepository itemRepository,
+    IUnitOfWork unitOfWork)
     : ICommandHandler<DeleteCategoryCommand>
 {
     public async Task<Result> Handle(DeleteCategoryCommand command, CancellationToken cancellationToken)
@@ -20,7 +23,12 @@ internal sealed class DeleteCategoryCommandHandler(ICategoryRepository categoryR
             return Result.Failure(CategoryErrors.NotFound);
         }
 
-        // TODO: add check if contains items
+        bool containsItems = await itemRepository.ExistsAsync(category.Id, cancellationToken);
+
+        if (containsItems)
+        {
+            return Result.Failure(CategoryErrors.CannotDeleteCategoryWithItems);
+        }
 
         categoryRepository.Delete(category);
         await unitOfWork.SaveChangesAsync(cancellationToken);

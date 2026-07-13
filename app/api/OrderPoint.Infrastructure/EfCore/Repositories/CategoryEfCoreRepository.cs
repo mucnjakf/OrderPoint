@@ -16,7 +16,8 @@ internal sealed class CategoryEfCoreRepository(ApplicationDbContext dbContext) :
         CategorySortBy? sortBy = null,
         CancellationToken cancellationToken = default)
     {
-        IQueryable<Category> query = dbContext.Categories;
+        IQueryable<Category> query = dbContext.Categories
+            .Include(category => category.Items);
 
         query = SearchCategories(query, searchQuery);
         query = FilterCategories(query, status);
@@ -40,6 +41,9 @@ internal sealed class CategoryEfCoreRepository(ApplicationDbContext dbContext) :
 
     public void Delete(Category category)
         => dbContext.Categories.Remove(category);
+
+    public async Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default)
+        => await dbContext.Categories.AnyAsync(category => category.Id == id, cancellationToken);
 
     private static IQueryable<Category> SearchCategories(IQueryable<Category> query, string? searchQuery)
     {
@@ -68,10 +72,10 @@ internal sealed class CategoryEfCoreRepository(ApplicationDbContext dbContext) :
         {
             CategorySortBy.NameAsc => query.OrderBy(category => category.Name),
             CategorySortBy.NameDesc => query.OrderByDescending(category => category.Name),
-            // TODO: when items get added CategorySortBy.ItemsCountAsc => query.OrderBy(category => category.Name),
-            // TODO: when items get added CategorySortBy.ItemsCountDesc => query.OrderBy(category => category.Name),
+            CategorySortBy.ItemsCountAsc => query.OrderBy(category => category.Items.Count),
+            CategorySortBy.ItemsCountDesc => query.OrderByDescending(category => category.Items.Count),
             CategorySortBy.CreatedAtUtcAsc => query.OrderBy(category => category.CreatedAtUtc),
             CategorySortBy.CreatedAtUtcDesc => query.OrderByDescending(category => category.CreatedAtUtc),
             _ => query.OrderByDescending(category => category.CreatedAtUtc)
         };
-}
+}   
