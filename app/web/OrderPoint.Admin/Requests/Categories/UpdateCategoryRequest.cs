@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using OrderPoint.Admin.Enumerations;
 
-namespace OrderPoint.Admin.ApiClients.Requests;
+namespace OrderPoint.Admin.Requests.Categories;
 
 internal sealed class UpdateCategoryRequest
 {

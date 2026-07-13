@@ -1,7 +1,7 @@
-﻿using OrderPoint.Admin.ApiClients.Requests;
-using OrderPoint.Admin.ApiClients.Responses;
-using OrderPoint.Admin.Dtos;
+﻿using OrderPoint.Admin.Dtos;
 using OrderPoint.Admin.Enumerations;
+using OrderPoint.Admin.Requests.Categories;
+using OrderPoint.Admin.Responses.Categories;
 
 namespace OrderPoint.Admin.ApiClients;
 

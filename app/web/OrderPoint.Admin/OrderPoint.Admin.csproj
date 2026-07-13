@@ -15,4 +15,9 @@
       <ProjectReference Include="..\..\host\OrderPoint.ServiceDefaults\OrderPoint.ServiceDefaults.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Components\Categories\TopCategoriesSection.razor" />
+      <_ContentIncludedByDefault Remove="Components\General\DataGrid.razor" />
+    </ItemGroup>
+
 </Project>

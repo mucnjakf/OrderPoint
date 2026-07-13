@@ -2,7 +2,7 @@
 
 <PageTitle>Category details</PageTitle>
 
-<Breadcrumbs Items="Breadcrumbs"/>
+<MudBreadcrumbs Items="Breadcrumbs" Class="px-0 pt-0 pb-5" Style="font-size: 14px"/>
 
 @if (IsLoading)
 {
@@ -43,7 +43,7 @@
 else if (Category is not null)
 {
     <MudStack Row="true" Justify="Justify.SpaceBetween">
-        <MainTitle Text="@($"{Category.Name} details")"/>
+        <MudText Typo="Typo.h4" Class="mb-3">@($"{Category.Name} details")</MudText>
 
         <MudStack Row="true" AlignItems="AlignItems.End" Class="mb-3">
             <MudButton Variant="Variant.Outlined"

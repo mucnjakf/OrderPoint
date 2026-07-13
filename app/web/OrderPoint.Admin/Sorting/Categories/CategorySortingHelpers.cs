@@ -1,6 +1,6 @@
 ﻿using MudBlazor;
 
-namespace OrderPoint.Admin.Sorting;
+namespace OrderPoint.Admin.Sorting.Categories;
 
 internal class CategorySortingHelpers
 {

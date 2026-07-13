@@ -1,4 +1,4 @@
-﻿namespace OrderPoint.Admin.Sorting;
+﻿namespace OrderPoint.Admin.Sorting.Categories;
 
 internal enum CategorySortBy
 {

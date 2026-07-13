@@ -2,7 +2,7 @@
 
 <PageTitle>Edit category</PageTitle>
 
-<Breadcrumbs Items="Breadcrumbs"/>
+<MudBreadcrumbs Items="Breadcrumbs" Class="px-0 pt-0 pb-5" Style="font-size: 14px"/>
 
 @if (IsLoading)
 {
@@ -47,7 +47,7 @@
 }
 else if (Request is not null)
 {
-    <MainTitle Text="@($"Edit {CategoryName}")"/>
+    <MudText Typo="Typo.h4" Class="mb-3">@($"Edit {CategoryName}")</MudText>
 
     <MudGrid Spacing="3" Class="mb-3">
         <MudItem xs="12" md="8">

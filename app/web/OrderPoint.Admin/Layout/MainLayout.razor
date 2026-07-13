@@ -27,7 +27,9 @@
 
         <MudSpacer/>
 
-        <MudIconButton Icon="@(IconButton)" OnClick="@(_ => ToggleDarkMode())" Color="Color.Inherit"/>
+        <MudTooltip Text="@(IsDarkMode ? "Light mode" : "Dark mode")">
+            <MudIconButton Icon="@(IconButton)" OnClick="@(_ => ToggleDarkMode())" Color="Color.Inherit"/>
+        </MudTooltip>
     </MudAppBar>
 
     <MudDrawer @bind-Open="@DrawerOpen" ClipMode="DrawerClipMode.Always" Elevation="1" Variant="DrawerVariant.Mini">
