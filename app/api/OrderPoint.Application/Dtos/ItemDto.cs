@@ -7,6 +7,6 @@ public sealed record ItemDto(
     double Portion,
     decimal Price,
     string? ImageUrl,
-    CategoryItemDto Category,
+    ItemCategoryDto Category,
     DateTimeOffset CreatedAtUtc,
     DateTimeOffset? UpdatedAtUtc);

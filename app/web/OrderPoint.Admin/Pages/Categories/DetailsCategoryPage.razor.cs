@@ -30,7 +30,7 @@ public sealed partial class DetailsCategoryPage
         new("Details", href: null, disabled: true, icon: Icons.Material.Filled.Notes)
     ];
 
-    private CategoryDto? Category { get; set; }
+    private CategoryDto Category { get; set; } = null!;
 
     private bool IsLoading { get; set; } = true;
 
@@ -57,7 +57,7 @@ public sealed partial class DetailsCategoryPage
     {
         var parameters = new DialogParameters<DeleteCategoryDialog>
         {
-            { dialog => dialog.CategoryName, Category!.Name }
+            { dialog => dialog.CategoryName, Category.Name }
         };
 
         var options = new DialogOptions
@@ -73,7 +73,7 @@ public sealed partial class DetailsCategoryPage
 
         if (!dialogResult.Canceled)
         {
-            await CategoryApiClient.DeleteCategoryAsync(Category!.Id);
+            await CategoryApiClient.DeleteCategoryAsync(Category.Id);
 
             Snackbar.Add($"Category {Category.Name} deleted successfully", Severity.Success);
 

@@ -2,7 +2,7 @@
 
 namespace OrderPoint.Application.Dtos;
 
-public sealed record CategoryItemDto(
+public sealed record ItemCategoryDto(
     Guid Id,
     string Name,
     string Description,

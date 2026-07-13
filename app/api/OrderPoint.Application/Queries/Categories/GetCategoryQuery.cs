@@ -8,14 +8,14 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Queries.Categories;
 
-public sealed record GetCategoryQuery(Guid CategoryId) : IQuery<CategoryDto>;
+public sealed record GetCategoryQuery(Guid Id) : IQuery<CategoryDto>;
 
 internal sealed class GetCategoryQueryHandler(ICategoryRepository categoryRepository, IItemRepository itemRepository)
     : IQueryHandler<GetCategoryQuery, CategoryDto>
 {
     public async Task<Result<CategoryDto>> Handle(GetCategoryQuery query, CancellationToken cancellationToken)
     {
-        Category? category = await categoryRepository.GetAsync(query.CategoryId, cancellationToken);
+        Category? category = await categoryRepository.GetAsync(query.Id, cancellationToken);
 
         if (category is null)
         {

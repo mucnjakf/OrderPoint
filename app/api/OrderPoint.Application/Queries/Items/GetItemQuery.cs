@@ -8,14 +8,14 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Queries.Items;
 
-public sealed record GetItemQuery(Guid ItemId) : IQuery<ItemDto>;
+public sealed record GetItemQuery(Guid Id) : IQuery<ItemDto>;
 
 internal sealed class GetItemQueryHandler(IItemRepository itemRepository)
     : IQueryHandler<GetItemQuery, ItemDto>
 {
     public async Task<Result<ItemDto>> Handle(GetItemQuery query, CancellationToken cancellationToken)
     {
-        Item? item = await itemRepository.GetAsync(query.ItemId, cancellationToken);
+        Item? item = await itemRepository.GetAsync(query.Id, cancellationToken);
 
         if (item is null)
         {

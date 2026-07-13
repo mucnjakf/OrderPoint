@@ -11,11 +11,11 @@ internal static class ItemMapper
         item.Portion,
         item.Price,
         item.ImageUrl,
-        item.Category.ToCategoryItemDto(),
+        item.Category.ToItemCategoryDto(),
         item.CreatedAtUtc,
         item.UpdatedAtUtc);
 
-    internal static CategoryItemDto ToCategoryItemDto(this Category category) => new(
+    internal static ItemCategoryDto ToItemCategoryDto(this Category category) => new(
         category.Id,
         category.Name,
         category.Description,
