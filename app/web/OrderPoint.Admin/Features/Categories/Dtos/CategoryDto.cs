@@ -1,6 +1,6 @@
-﻿using OrderPoint.Admin.Enumerations;
+﻿using OrderPoint.Admin.Features.Categories.Enumerations;
 
-namespace OrderPoint.Admin.Dtos;
+namespace OrderPoint.Admin.Features.Categories.Dtos;
 
 public sealed record CategoryDto(
     Guid Id,

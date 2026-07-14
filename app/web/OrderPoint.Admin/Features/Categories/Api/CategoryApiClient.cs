@@ -1,9 +1,10 @@
 ﻿using OrderPoint.Admin.Dtos;
-using OrderPoint.Admin.Enumerations;
-using OrderPoint.Admin.Requests.Categories;
-using OrderPoint.Admin.Responses.Categories;
+using OrderPoint.Admin.Features.Categories.Api.Requests;
+using OrderPoint.Admin.Features.Categories.Api.Responses;
+using OrderPoint.Admin.Features.Categories.Dtos;
+using OrderPoint.Admin.Features.Categories.Enumerations;
 
-namespace OrderPoint.Admin.ApiClients;
+namespace OrderPoint.Admin.Features.Categories.Api;
 
 internal sealed class CategoryApiClient(HttpClient httpClient)
 {

@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using OrderPoint.Admin.Enumerations;
+using OrderPoint.Admin.Features.Categories.Enumerations;
 
-namespace OrderPoint.Admin.Requests.Categories;
+namespace OrderPoint.Admin.Features.Categories.Api.Requests;
 
-internal sealed class CreateCategoryRequest
+internal sealed class UpdateCategoryRequest
 {
     [Required(ErrorMessage = "Name is required.")]
     [StringLength(30, ErrorMessage = "Name must be at most 30 characters.")]

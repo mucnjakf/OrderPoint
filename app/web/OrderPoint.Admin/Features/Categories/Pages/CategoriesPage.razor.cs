@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using OrderPoint.Admin.ApiClients;
-using OrderPoint.Admin.Dialogs.Categories;
 using OrderPoint.Admin.Dtos;
-using OrderPoint.Admin.Enumerations;
+using OrderPoint.Admin.Features.Categories.Api;
+using OrderPoint.Admin.Features.Categories.Dialogs;
+using OrderPoint.Admin.Features.Categories.Dtos;
+using OrderPoint.Admin.Features.Categories.Enumerations;
 
-namespace OrderPoint.Admin.Pages.Categories;
+namespace OrderPoint.Admin.Features.Categories.Pages;
 
 public sealed partial class CategoriesPage
 {

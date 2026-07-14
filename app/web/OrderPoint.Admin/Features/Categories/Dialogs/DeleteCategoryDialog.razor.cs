@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace OrderPoint.Admin.Dialogs.Categories;
+namespace OrderPoint.Admin.Features.Categories.Dialogs;
 
 public sealed partial class DeleteCategoryDialog
 {

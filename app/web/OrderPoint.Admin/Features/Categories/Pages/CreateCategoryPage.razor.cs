@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
-using OrderPoint.Admin.ApiClients;
-using OrderPoint.Admin.Requests.Categories;
+using OrderPoint.Admin.Features.Categories.Api;
+using OrderPoint.Admin.Features.Categories.Api.Requests;
 
-namespace OrderPoint.Admin.Pages.Categories;
+namespace OrderPoint.Admin.Features.Categories.Pages;
 
 public sealed partial class CreateCategoryPage
 {

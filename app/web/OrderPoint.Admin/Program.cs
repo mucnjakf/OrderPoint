@@ -1,7 +1,7 @@
 using MudBlazor;
 using OrderPoint.Admin;
 using MudBlazor.Services;
-using OrderPoint.Admin.ApiClients;
+using OrderPoint.Admin.Features.Categories.Api;
 using OrderPoint.ServiceDefaults;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
