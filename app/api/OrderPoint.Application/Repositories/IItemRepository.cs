@@ -17,6 +17,8 @@ public interface IItemRepository
 
     Task CreateAsync(Item item, CancellationToken cancellationToken = default);
 
+    void Delete(Item item);
+
     Task<int> CountAsync(Guid categoryId, CancellationToken cancellationToken = default);
 
     Task<bool> ExistsAsync(Guid categoryId, CancellationToken cancellationToken = default);

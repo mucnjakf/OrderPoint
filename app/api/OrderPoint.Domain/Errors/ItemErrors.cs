@@ -7,7 +7,7 @@ public static class ItemErrors
     public static readonly Error NotFound = Error.NotFound(
         "Item.NotFound",
         "Item not found");
-    
+
     internal static readonly Error NameIsRequired = Error.Validation(
         "Item.NameIsRequired",
         "Item name is required");

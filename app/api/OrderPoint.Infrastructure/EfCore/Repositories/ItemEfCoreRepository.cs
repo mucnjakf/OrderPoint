@@ -40,6 +40,9 @@ internal sealed class ItemEfCoreRepository(ApplicationDbContext dbContext) : IIt
     public async Task CreateAsync(Item item, CancellationToken cancellationToken = default)
         => await dbContext.Items.AddAsync(item, cancellationToken);
 
+    public void Delete(Item item)
+        => dbContext.Items.Remove(item);
+
     public async Task<int> CountAsync(Guid categoryId, CancellationToken cancellationToken = default)
         => await dbContext.Items.CountAsync(item => item.CategoryId == categoryId, cancellationToken);
 
