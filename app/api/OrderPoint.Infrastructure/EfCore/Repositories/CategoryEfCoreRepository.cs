@@ -47,7 +47,7 @@ internal sealed class CategoryEfCoreRepository(ApplicationDbContext dbContext) :
 
     private static IQueryable<Category> SearchCategories(IQueryable<Category> query, string? searchQuery)
     {
-        if (searchQuery is not null)
+        if (!string.IsNullOrWhiteSpace(searchQuery))
         {
             string normalizedSearchQuery = searchQuery.ToLower();
 
@@ -67,8 +67,8 @@ internal sealed class CategoryEfCoreRepository(ApplicationDbContext dbContext) :
         return query;
     }
 
-    private static IQueryable<Category> SortCategories(IQueryable<Category> query, CategorySortBy? sortBy) =>
-        sortBy switch
+    private static IQueryable<Category> SortCategories(IQueryable<Category> query, CategorySortBy? sortBy)
+        => sortBy switch
         {
             CategorySortBy.NameAsc => query.OrderBy(category => category.Name),
             CategorySortBy.NameDesc => query.OrderByDescending(category => category.Name),
@@ -78,4 +78,4 @@ internal sealed class CategoryEfCoreRepository(ApplicationDbContext dbContext) :
             CategorySortBy.CreatedAtUtcDesc => query.OrderByDescending(category => category.CreatedAtUtc),
             _ => query.OrderByDescending(category => category.CreatedAtUtc)
         };
-}   
+}
