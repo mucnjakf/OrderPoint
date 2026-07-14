@@ -78,4 +78,44 @@ public sealed class Item : Entity
 
         return Result.Success(item);
     }
+
+    public Result Update(
+        string name,
+        string description,
+        double portion,
+        decimal price,
+        string? imageUrl,
+        Guid categoryId)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return Result.Failure<Item>(ItemErrors.NameIsRequired);
+        }
+
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            return Result.Failure<Item>(ItemErrors.DescriptionIsRequired);
+        }
+
+        if (portion <= 0)
+        {
+            return Result.Failure<Item>(ItemErrors.PortionMustBePositive);
+        }
+
+        if (price <= 0)
+        {
+            return Result.Failure<Item>(ItemErrors.PriceMustBePositive);
+        }
+
+        Name = name;
+        Description = description;
+        Portion = portion;
+        Price = price;
+        ImageUrl = imageUrl;
+        CategoryId = categoryId;
+
+        UpdatedAtUtc = DateTimeOffset.UtcNow;
+
+        return Result.Success();
+    }
 }
