@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using OrderPoint.Admin.Dtos;
 using OrderPoint.Admin.Features.Categories.Api;
 using OrderPoint.Admin.Features.Categories.Dialogs;
 using OrderPoint.Admin.Features.Categories.Dtos;
+using OrderPoint.Admin.Features.Items.Api;
+using OrderPoint.Admin.Features.Items.Dtos;
 
 namespace OrderPoint.Admin.Features.Categories.Pages;
 
@@ -23,6 +26,9 @@ public sealed partial class DetailsCategoryPage
     [Inject]
     private CategoryApiClient CategoryApiClient { get; set; } = null!;
 
+    [Inject]
+    private ItemApiClient ItemApiClient { get; set; } = null!;
+
     private List<BreadcrumbItem> Breadcrumbs { get; set; } =
     [
         new("Dashboard", href: "/", icon: Icons.Material.Filled.Dashboard),
@@ -32,11 +38,25 @@ public sealed partial class DetailsCategoryPage
 
     private CategoryDto Category { get; set; } = null!;
 
+    private IReadOnlyList<ItemDto> Items { get; set; } = [];
+    private PaginationDto<ItemDto>? Pagination { get; set; }
+    private string? SearchQuery { get; set; }
+    private string SelectedSortBy { get; set; } = "CreatedAtUtcDesc";
+
     private bool IsLoading { get; set; } = true;
+    private bool IsLoadingItems { get; set; } = true;
 
     protected override async Task OnParametersSetAsync()
     {
         await GetCategoryAsync();
+
+        await GetItemsAsync(
+            1,
+            5,
+            SelectedSortBy,
+            null,
+            Id
+        );
     }
 
     private async Task GetCategoryAsync()
@@ -51,6 +71,64 @@ public sealed partial class DetailsCategoryPage
         {
             IsLoading = false;
         }
+    }
+
+    private async Task GetItemsAsync(
+        int page,
+        int pageSize,
+        string sortBy,
+        string? searchQuery,
+        Guid categoryId
+    )
+    {
+        try
+        {
+            IsLoadingItems = true;
+
+            Pagination = await ItemApiClient.GetItemsAsync(
+                page,
+                pageSize,
+                sortBy,
+                searchQuery,
+                categoryId
+            );
+
+            Items = Pagination.Items;
+        }
+        finally
+        {
+            IsLoadingItems = false;
+        }
+    }
+
+    private async Task OnSearchChangedAsync()
+    {
+        await GetItemsAsync(
+            1,
+            5,
+            SelectedSortBy,
+            SearchQuery,
+            Id);
+    }
+
+    private async Task OnSortChangedAsync()
+    {
+        await GetItemsAsync(
+            1,
+            5,
+            SelectedSortBy,
+            SearchQuery,
+            Id);
+    }
+
+    private async Task OnPageChanged(int pageNumber)
+    {
+        await GetItemsAsync(
+            pageNumber,
+            5,
+            SelectedSortBy,
+            SearchQuery,
+            Id);
     }
 
     private async Task ShowDeleteCategoryDialogAsync()

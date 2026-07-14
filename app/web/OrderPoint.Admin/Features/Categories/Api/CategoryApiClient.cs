@@ -6,8 +6,10 @@ using OrderPoint.Admin.Features.Categories.Enumerations;
 
 namespace OrderPoint.Admin.Features.Categories.Api;
 
-internal sealed class CategoryApiClient(HttpClient httpClient)
+internal sealed class CategoryApiClient(IHttpClientFactory httpClientFactory)
 {
+    private readonly HttpClient _httpClient = httpClientFactory.CreateClient("OrderPointApi");
+
     internal async Task<PaginationDto<CategoryDto>> GetCategoriesAsync(
         int pageNumber,
         int pageSize,
@@ -28,7 +30,7 @@ internal sealed class CategoryApiClient(HttpClient httpClient)
             requestUri += $"&status={status}";
         }
 
-        var response = await httpClient.GetFromJsonAsync<GetCategoriesResponse>(requestUri, cancellationToken);
+        var response = await _httpClient.GetFromJsonAsync<GetCategoriesResponse>(requestUri, cancellationToken);
 
         if (response is null)
         {
@@ -41,7 +43,7 @@ internal sealed class CategoryApiClient(HttpClient httpClient)
 
     internal async Task<CategoryDto> GetCategoryAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var response = await httpClient
+        var response = await _httpClient
             .GetFromJsonAsync<GetCategoryResponse>($"api/categories/{id}", cancellationToken);
 
         if (response is null)
@@ -57,7 +59,7 @@ internal sealed class CategoryApiClient(HttpClient httpClient)
         CreateCategoryRequest request,
         CancellationToken cancellationToken = default)
     {
-        HttpResponseMessage response = await httpClient
+        HttpResponseMessage response = await _httpClient
             .PostAsJsonAsync("api/categories", request, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
@@ -72,7 +74,7 @@ internal sealed class CategoryApiClient(HttpClient httpClient)
         UpdateCategoryRequest request,
         CancellationToken cancellationToken = default)
     {
-        HttpResponseMessage response = await httpClient
+        HttpResponseMessage response = await _httpClient
             .PutAsJsonAsync($"api/categories/{id}", request, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
@@ -84,7 +86,7 @@ internal sealed class CategoryApiClient(HttpClient httpClient)
 
     internal async Task DeleteCategoryAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        HttpResponseMessage response = await httpClient
+        HttpResponseMessage response = await _httpClient
             .DeleteAsync($"api/categories/{id}", cancellationToken);
 
         if (!response.IsSuccessStatusCode)

@@ -51,37 +51,29 @@ else
         <MudText Typo="Typo.h4" Class="mb-3">@($"{Category.Name} details")</MudText>
 
         <MudStack Row="true" AlignItems="AlignItems.End" Class="mb-3">
-            <MudButton Variant="Variant.Outlined"
-                       StartIcon="@Icons.Material.Filled.Edit"
-                       Color="Color.Primary"
+            <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Edit" Color="Color.Primary"
                        Href="@($"/categories/{Category.Id}/update?returnUrl=/categories/{Category.Id}")">
                 Edit
             </MudButton>
 
-            <MudButton Variant="Variant.Outlined"
-                       StartIcon="@Icons.Material.Filled.Delete"
-                       Color="Color.Error"
-                       Disabled="Category.ItemsCount > 0"
-                       OnClick="ShowDeleteCategoryDialogAsync">
+            <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error"
+                       Disabled="Category.ItemsCount > 0" OnClick="ShowDeleteCategoryDialogAsync">
                 Delete
             </MudButton>
         </MudStack>
     </MudStack>
 
-    <MudGrid Spacing="3">
+    <MudGrid Spacing="3" Class="mb-5">
         <MudItem xs="12" md="4">
             <MudPaper Class="d-flex flex-column flex-grow-1 align-center justify-center" Style="height: 100%">
-                <MudIcon Icon="@Icons.Material.Filled.CropOriginal"
-                         Title="Category name"
-                         Size="Size.Large"
+                <MudIcon Icon="@Icons.Material.Filled.CropOriginal" Title="Category name" Size="Size.Large"
                          Class="mb-4"/>
 
                 <MudText Typo="Typo.body1" Class="mb-2">
                     @Category.Name
                 </MudText>
 
-                <MudChip T="string"
-                         Variant="Variant.Text"
+                <MudChip T="string" Variant="Variant.Text"
                          Color="@(Category.Status is CategoryStatus.Active ? Color.Success : Color.Error)">
                     @Category.Status.ToString()
                 </MudChip>
@@ -92,9 +84,7 @@ else
             <MudPaper Class="pa-5">
                 <MudStack>
                     <MudStack Row="true" Class="d-flex align-center">
-                        <MudIcon Icon="@Icons.Material.Filled.Numbers"
-                                 Size="Size.Small"
-                                 Color="Color.Surface"/>
+                        <MudIcon Icon="@Icons.Material.Filled.Numbers" Size="Size.Small" Color="Color.Surface"/>
 
                         <MudText Class="mr-5" Color="Color.Surface" Typo="Typo.body2">ID</MudText>
 
@@ -104,9 +94,7 @@ else
                     <MudDivider Class="my-1"/>
 
                     <MudStack Row="true" Class="d-flex align-center">
-                        <MudIcon Icon="@Icons.Material.Filled.ShortText"
-                                 Size="Size.Small"
-                                 Color="Color.Surface"/>
+                        <MudIcon Icon="@Icons.Material.Filled.ShortText" Size="Size.Small" Color="Color.Surface"/>
 
                         <MudText Class="mr-5" Color="Color.Surface" Typo="Typo.body2">Name</MudText>
 
@@ -116,9 +104,7 @@ else
                     <MudDivider Class="my-1"/>
 
                     <MudStack Row="true" Class="d-flex align-center">
-                        <MudIcon Icon="@Icons.Material.Filled.Description"
-                                 Size="Size.Small"
-                                 Color="Color.Surface"/>
+                        <MudIcon Icon="@Icons.Material.Filled.Description" Size="Size.Small" Color="Color.Surface"/>
 
                         <MudText Class="mr-5" Color="Color.Surface" Typo="Typo.body2">Description</MudText>
 
@@ -128,15 +114,11 @@ else
                     <MudDivider Class="my-1"/>
 
                     <MudStack Row="true" Class="d-flex align-center">
-                        <MudIcon Icon="@Icons.Material.Filled.MonitorHeart"
-                                 Size="Size.Small"
-                                 Color="Color.Surface"/>
+                        <MudIcon Icon="@Icons.Material.Filled.MonitorHeart" Size="Size.Small" Color="Color.Surface"/>
 
                         <MudText Class="mr-5" Color="Color.Surface" Typo="Typo.body2">Status</MudText>
 
-                        <MudChip T="string"
-                                 Variant="Variant.Text"
-                                 Class="ma-0"
+                        <MudChip T="string" Variant="Variant.Text" Class="ma-0"
                                  Color="@(Category.Status is CategoryStatus.Active ? Color.Success : Color.Error)">
                             @Category.Status.ToString()
                         </MudChip>
@@ -145,9 +127,7 @@ else
                     <MudDivider Class="my-1"/>
 
                     <MudStack Row="true" Class="d-flex align-center">
-                        <MudIcon Icon="@Icons.Material.Filled.CalendarMonth"
-                                 Size="Size.Small"
-                                 Color="Color.Surface"/>
+                        <MudIcon Icon="@Icons.Material.Filled.CalendarMonth" Size="Size.Small" Color="Color.Surface"/>
 
                         <MudText Class="mr-5" Color="Color.Surface" Typo="Typo.body2">Created</MudText>
 
@@ -157,9 +137,7 @@ else
                     <MudDivider Class="my-1"/>
 
                     <MudStack Row="true" Class="d-flex align-center">
-                        <MudIcon Icon="@Icons.Material.Filled.CalendarMonth"
-                                 Size="Size.Small"
-                                 Color="Color.Surface"/>
+                        <MudIcon Icon="@Icons.Material.Filled.CalendarMonth" Size="Size.Small" Color="Color.Surface"/>
 
                         <MudText Class="mr-5" Color="Color.Surface" Typo="Typo.body2">Updated</MudText>
 
@@ -173,4 +151,100 @@ else
     </MudGrid>
 }
 
-@* TODO: add items when implemented *@
+<MudText Typo="Typo.h5">Items</MudText>
+
+<MudDivider Class="my-2"/>
+
+@if (Items.Any())
+{
+    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.End" Class="mb-3">
+        <MudStack Row="true">
+            <MudTextField @bind-Value="SearchQuery"
+                          @bind-Value:after="OnSearchChangedAsync"
+                          T="string"
+                          Label="Search by name"
+                          Variant="Variant.Outlined"
+                          Clearable="true"
+                          DebounceInterval="500"
+                          Immediate="false"/>
+
+            <MudSelect @bind-Value="SelectedSortBy"
+                       @bind-Value:after="OnSortChangedAsync"
+                       T="string"
+                       Variant="Variant.Outlined"
+                       Label="Sort by"
+                       FitContent="true">
+
+                @foreach (string sortBy in Enum.GetNames(typeof(ItemSortBy)))
+                {
+                    <MudSelectItem Value="@(sortBy)">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                            <MudText Typo="Typo.body1">@ItemSorting.GetSortByLabel(sortBy)</MudText>
+                            <MudIcon Icon="@ItemSorting.GetSortByIcon(sortBy)" Size="Size.Small"/>
+                        </MudStack>
+                    </MudSelectItem>
+                }
+            </MudSelect>
+        </MudStack>
+    </MudStack>
+}
+
+<MudTable Items="Items" Hover="true" Loading="@IsLoadingItems" LoadingProgressColor="Color.Primary">
+    <HeaderContent>
+        <MudTh Style="width: 105px;"></MudTh>
+        <MudTh Style="width: 325px;">Name</MudTh>
+        <MudTh Style="width: 150px;">Portion</MudTh>
+        <MudTh Style="width: 150px;">Price</MudTh>
+        <MudTh Style="width: 260px;">Created</MudTh>
+    </HeaderContent>
+
+    <RowTemplate>
+        <MudTd DataLabel="">
+            <MudIcon Icon="@Icons.Material.Filled.CropOriginal" Size="Size.Large" Title="Placeholder"/>
+        </MudTd>
+
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+
+        <MudTd DataLabel="Portion">@context.Portion</MudTd>
+
+        <MudTd DataLabel="Price">$ @context.Price</MudTd>
+
+        <MudTd DataLabel="Created">@context.CreatedAtUtc.ToString("G")</MudTd>
+    </RowTemplate>
+
+    <NoRecordsContent>
+        <MudStack AlignItems="AlignItems.Center" Spacing="3" Class="py-10">
+            <MudIcon Icon="@Icons.Material.Filled.MenuBook" Size="Size.Large" Color="Color.Default"/>
+            <MudText Typo="Typo.h6">No items found</MudText>
+            <MudText Typo="Typo.body2" Color="Color.Default">
+                @if (!string.IsNullOrWhiteSpace(SearchQuery))
+                {
+                    <MudText Typo="Typo.caption">Try adjusting your search query.</MudText>
+                }
+                else
+                {
+                    <MudText Typo="Typo.caption">Get started by creating your first item.</MudText>
+                }
+            </MudText>
+        </MudStack>
+    </NoRecordsContent>
+</MudTable>
+
+@if (Pagination is not null && Pagination.TotalPages > 1)
+{
+    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mt-3">
+        <MudText Typo="Typo.caption" Color="Color.Default">
+            Showing @((Pagination.PageNumber - 1) * Pagination.PageSize + 1)
+            to @(Math.Min(Pagination.PageNumber * Pagination.PageSize, Pagination.TotalCount))
+            of @Pagination.TotalCount items
+        </MudText>
+
+        <MudPagination Count="Pagination.TotalPages"
+                       Selected="Pagination.PageNumber"
+                       SelectedChanged="OnPageChanged"
+                       BoundaryCount="1"
+                       MiddleCount="3"
+                       ShowFirstButton="true"
+                       ShowLastButton="true"/>
+    </MudStack>
+}

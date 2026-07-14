@@ -2,7 +2,7 @@
 
 namespace OrderPoint.Admin.Features.Categories.Sorting;
 
-internal class CategorySortingHelpers
+internal static class CategorySorting
 {
     internal static string GetSortByLabel(string sortBy)
     {

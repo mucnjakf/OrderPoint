@@ -2,6 +2,7 @@ using MudBlazor;
 using OrderPoint.Admin;
 using MudBlazor.Services;
 using OrderPoint.Admin.Features.Categories.Api;
+using OrderPoint.Admin.Features.Items.Api;
 using OrderPoint.ServiceDefaults;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -12,10 +13,13 @@ builder.Services
     .AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddHttpClient<CategoryApiClient>(client =>
+builder.Services.AddHttpClient("OrderPointApi", client =>
 {
     client.BaseAddress = new Uri("https+http://order-point-api");
 });
+
+builder.Services.AddScoped<CategoryApiClient>();
+builder.Services.AddScoped<ItemApiClient>();
 
 builder.Services.AddMudServices(configuration =>
 {

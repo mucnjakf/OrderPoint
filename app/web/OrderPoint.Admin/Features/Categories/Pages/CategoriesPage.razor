@@ -64,53 +64,56 @@ else
 
 <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.End" Class="mb-3">
     <MudStack Row="true">
-        <MudTextField @bind-Value="SearchQuery"
-                      @bind-Value:after="OnSearchChangedAsync"
-                      T="string"
-                      Label="Search by name"
-                      Variant="Variant.Outlined"
-                      Clearable="true"
-                      DebounceInterval="500"
-                      Immediate="false"/>
+        @if (Categories.Any())
+        {
+            <MudTextField @bind-Value="SearchQuery"
+                          @bind-Value:after="OnSearchChangedAsync"
+                          T="string"
+                          Label="Search by name"
+                          Variant="Variant.Outlined"
+                          Clearable="true"
+                          DebounceInterval="500"
+                          Immediate="false"/>
 
-        <MudSelect @bind-Value="SelectedStatus"
-                   @bind-Value:after="OnStatusChangedAsync"
-                   T="CategoryStatus?"
-                   Variant="Variant.Outlined"
-                   Label="Status"
-                   FitContent="true">
+            <MudSelect @bind-Value="SelectedStatus"
+                       @bind-Value:after="OnStatusChangedAsync"
+                       T="CategoryStatus?"
+                       Variant="Variant.Outlined"
+                       Label="Status"
+                       FitContent="true">
 
-            <MudSelectItem Value="@(null)" T="CategoryStatus?">
-                <MudText>All</MudText>
-            </MudSelectItem>
-
-            @foreach (CategoryStatus status in Enum.GetValues<CategoryStatus>())
-            {
-                <MudSelectItem Value="@(status)" T="CategoryStatus?">
-                    <MudText Color="@(status is CategoryStatus.Active ? Color.Success : Color.Error)">
-                        @status.ToString()
-                    </MudText>
+                <MudSelectItem Value="@(null)" T="CategoryStatus?">
+                    <MudText>All</MudText>
                 </MudSelectItem>
-            }
-        </MudSelect>
 
-        <MudSelect @bind-Value="SelectedSortBy"
-                   @bind-Value:after="OnSortChangedAsync"
-                   T="string"
-                   Variant="Variant.Outlined"
-                   Label="Sort by"
-                   FitContent="true">
+                @foreach (CategoryStatus status in Enum.GetValues<CategoryStatus>())
+                {
+                    <MudSelectItem Value="@(status)" T="CategoryStatus?">
+                        <MudText Color="@(status is CategoryStatus.Active ? Color.Success : Color.Error)">
+                            @status.ToString()
+                        </MudText>
+                    </MudSelectItem>
+                }
+            </MudSelect>
 
-            @foreach (string sortBy in Enum.GetNames(typeof(CategorySortBy)))
-            {
-                <MudSelectItem Value="@(sortBy)">
-                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
-                        <MudText Typo="Typo.body1">@CategorySortingHelpers.GetSortByLabel(sortBy)</MudText>
-                        <MudIcon Icon="@CategorySortingHelpers.GetSortByIcon(sortBy)" Size="Size.Small"/>
-                    </MudStack>
-                </MudSelectItem>
-            }
-        </MudSelect>
+            <MudSelect @bind-Value="SelectedSortBy"
+                       @bind-Value:after="OnSortChangedAsync"
+                       T="string"
+                       Variant="Variant.Outlined"
+                       Label="Sort by"
+                       FitContent="true">
+
+                @foreach (string sortBy in Enum.GetNames(typeof(CategorySortBy)))
+                {
+                    <MudSelectItem Value="@(sortBy)">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                            <MudText Typo="Typo.body1">@CategorySorting.GetSortByLabel(sortBy)</MudText>
+                            <MudIcon Icon="@CategorySorting.GetSortByIcon(sortBy)" Size="Size.Small"/>
+                        </MudStack>
+                    </MudSelectItem>
+                }
+            </MudSelect>
+        }
     </MudStack>
 
     <MudButton Variant="Variant.Filled"
@@ -148,7 +151,7 @@ else
 
         <MudTd DataLabel="Items">@context.ItemsCount items</MudTd>
 
-        <MudTd DataLabel="Created at">@context.CreatedAtUtc.ToString("G")</MudTd>
+        <MudTd DataLabel="Created">@context.CreatedAtUtc.ToString("G")</MudTd>
 
         <MudTd>
             <MudTooltip Text="Details">
@@ -200,7 +203,7 @@ else
         <MudText Typo="Typo.caption" Color="Color.Default">
             Showing @((Pagination.PageNumber - 1) * Pagination.PageSize + 1)
             to @(Math.Min(Pagination.PageNumber * Pagination.PageSize, Pagination.TotalCount))
-            of @Pagination.TotalCount items
+            of @Pagination.TotalCount categories
         </MudText>
 
         <MudPagination Count="Pagination.TotalPages"
