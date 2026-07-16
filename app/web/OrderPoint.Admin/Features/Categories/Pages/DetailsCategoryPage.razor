@@ -56,10 +56,26 @@ else
                 Edit
             </MudButton>
 
-            <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Delete" Color="Color.Error"
-                       Disabled="Category.ItemsCount > 0" OnClick="ShowDeleteCategoryDialogAsync">
-                Delete
-            </MudButton>
+            @if (Category.ItemsCount > 0)
+            {
+                <MudTooltip Text="Category contains items">
+                    <MudButton Variant="Variant.Outlined"
+                               StartIcon="@Icons.Material.Filled.Delete"
+                               Color="Color.Error"
+                               Disabled="true">
+                        Delete
+                    </MudButton>
+                </MudTooltip>
+            }
+            else
+            {
+                <MudButton Variant="Variant.Outlined"
+                           StartIcon="@Icons.Material.Filled.Delete"
+                           Color="Color.Error"
+                           OnClick="ShowDeleteCategoryDialogAsync">
+                    Delete
+                </MudButton>
+            }
         </MudStack>
     </MudStack>
 

@@ -141,7 +141,7 @@ else if (Request is not null)
 
                 <MudPaper Class="pa-3">
                     <MudText Typo="Typo.body2" Class="mb-3">
-                        @(CategoryContainsItems ? "This category contains items and cannot be deleted." : "Permanently delete this category. This action cannot be undone.")
+                        @(CategoryContainsItems ? "Category contains items." : "Permanently delete this category. This action cannot be undone.")
                     </MudText>
                     
                     <MudButton Variant="Variant.Outlined"
@@ -156,10 +156,4 @@ else if (Request is not null)
             </MudStack>
         </MudItem>
     </MudGrid>
-}
-
-@code {
-
-    
-
 }
