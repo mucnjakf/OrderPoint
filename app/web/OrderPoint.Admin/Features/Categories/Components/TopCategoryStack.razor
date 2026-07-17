@@ -1,0 +1,25 @@
+﻿<MudStack Row="true" Spacing="3" Class="flex-1 mb-5">
+    @foreach (CategoryDto category in Categories)
+    {
+        <MudPaper Class="pa-10 d-flex flex-column align-center justify-center flex-1"
+                  Style="cursor: pointer; transition: all 0.2s ease-in-out; height: 180px;"
+                  Elevation="@(HoveredCategoryId == category.Id ? 10 : 1)"
+                  @onclick="@(() => NavigationManager.NavigateTo($"/categories/{category.Id}"))"
+                  @onmouseover="() => HoveredCategoryId = category.Id"
+                  @onmouseout="() => HoveredCategoryId = null">
+
+            <MudIcon Icon="@Icons.Material.Filled.CropOriginal"
+                     Title="@category.Name"
+                     Size="Size.Large"
+                     Class="mb-3"/>
+
+            <MudText Typo="Typo.body1" Class="mb-1" Align="Align.Center">
+                @category.Name
+            </MudText>
+
+            <MudText Typo="Typo.caption">
+                @category.ItemsCount @(category.ItemsCount == 1 ? "item" : "items")
+            </MudText>
+        </MudPaper>
+    }
+</MudStack>

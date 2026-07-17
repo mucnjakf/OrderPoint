@@ -8,12 +8,7 @@
               ShowContent="TopCategories.Any()"
               EmptyStateIcon="@Icons.Material.Filled.Category"
               EmptyStateText="No categories yet">
-    <MudStack Row="true" Spacing="3" Class="flex-1 mb-5">
-        @foreach (CategoryDto category in TopCategories)
-        {
-            <TopCategoryPaper Category="category" HoveredCategoryId="HoveredTopCategoryId"/>
-        }
-    </MudStack>
+    <TopCategoryStack Categories="TopCategories"/>
 </StatefulView>
 
 <DataTable TItem="CategoryDto"
@@ -41,64 +36,16 @@
            NoRecordsIcon="@Icons.Material.Filled.Category"
            NoRecordsText="No categories found">
     <FilterContent>
-        <MudSelect @bind-Value="SelectedStatus"
-                   @bind-Value:after="OnStatusChangedAsync"
-                   T="CategoryStatus?"
-                   Variant="Variant.Outlined"
-                   Label="Status"
-                   FitContent="true">
-
-            <MudSelectItem Value="@(null)" T="CategoryStatus?">
-                <MudText>All</MudText>
-            </MudSelectItem>
-
-            @foreach (CategoryStatus status in Enum.GetValues<CategoryStatus>())
-            {
-                <MudSelectItem Value="@(status)" T="CategoryStatus?">
-                    <MudText Color="@(status is CategoryStatus.Active ? Color.Success : Color.Error)">
-                        @status.ToString()
-                    </MudText>
-                </MudSelectItem>
-            }
-        </MudSelect>
+        <CategoriesTableFilter SelectedStatus="@SelectedStatus"
+                               SelectedStatusChanged="value => SelectedStatus = value"
+                               OnStatusChanged="OnStatusChangedAsync"/>
     </FilterContent>
 
     <HeaderContent>
-        <MudTh Style="width: 100px;"></MudTh>
-        <MudTh>Name</MudTh>
-        <MudTh>Status</MudTh>
-        <MudTh>Items</MudTh>
-        <MudTh>Created</MudTh>
+        <CategoriesTableHeader/>
     </HeaderContent>
 
     <RowTemplate>
-        <MudTd Class="d-flex justify-end">
-            <MudImage Src="images/mony.jpg"
-                      Alt="Mony the dog"
-                      Elevation="25"
-                      Class="rounded-lg"
-                      Width="55"
-                      Height="55"/>
-        </MudTd>
-
-        <MudTd DataLabel="Name">
-            @context.Name
-        </MudTd>
-
-        <MudTd DataLabel="Status">
-            <MudChip T="string"
-                     Variant="Variant.Text"
-                     Color="@(context.Status is CategoryStatus.Active ? Color.Success : Color.Error)">
-                @context.Status.ToString()
-            </MudChip>
-        </MudTd>
-
-        <MudTd DataLabel="Items">
-            @context.ItemsCount items
-        </MudTd>
-
-        <MudTd DataLabel="Created">
-            @context.CreatedAtUtc.ToString("G")
-        </MudTd>
+        <CategoriesTableRow Category="context"/>
     </RowTemplate>
 </DataTable>

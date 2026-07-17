@@ -29,7 +29,6 @@ public sealed partial class CategoriesPage
     ];
 
     private IReadOnlyList<CategoryDto> TopCategories { get; set; } = [];
-    private Guid? HoveredTopCategoryId { get; set; }
 
     private PaginationDto<CategoryDto>? Pagination { get; set; }
     private IReadOnlyList<CategoryDto> Categories { get; set; } = [];
