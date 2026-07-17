@@ -3,14 +3,17 @@
 <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.End" Class="mb-3">
     <MudStack Row="true">
 
-        <MudTextField @bind-Value="SearchQuery"
-                      @bind-Value:after="OnSearchChangedAsync"
-                      T="string"
-                      Label="@SearchLabel"
-                      Variant="Variant.Outlined"
-                      Clearable="true"
-                      DebounceInterval="500"
-                      Immediate="false"/>
+        @if (Items.Any() || !string.IsNullOrEmpty(SearchQuery))
+        {
+            <MudTextField @bind-Value="SearchQuery"
+                          @bind-Value:after="OnSearchChangedAsync"
+                          T="string"
+                          Label="@SearchLabel"
+                          Variant="Variant.Outlined"
+                          Clearable="true"
+                          DebounceInterval="500"
+                          Immediate="false"/>
+        }
 
         @if (Items.Any())
         {

@@ -37,14 +37,22 @@
                       Height="55"/>
         </MudTd>
 
-        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Name">
+            @context.Name
+        </MudTd>
 
-        <MudTd DataLabel="Portion">@context.Portion</MudTd>
+        <MudTd DataLabel="Portion">
+            @context.Portion
+        </MudTd>
 
         @* TODO: format price *@
-        <MudTd DataLabel="Price">$ @context.Price</MudTd>
+        <MudTd DataLabel="Price">
+            $ @context.Price
+        </MudTd>
 
         @* TODO: format date *@
-        <MudTd DataLabel="Created">@context.CreatedAtUtc.ToString("G")</MudTd>
+        <MudTd DataLabel="Created">
+            @context.CreatedAtUtc.ToString("G")
+        </MudTd>
     </RowTemplate>
 </DataTable>
