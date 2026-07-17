@@ -1,0 +1,22 @@
+﻿<MudPaper Class="d-flex flex-column flex-grow-1 align-center justify-center pa-10" Style="height: 100%">
+    <MudImage Src="images/mony.jpg"
+              Alt="Mony the dog"
+              Elevation="25"
+              Class="rounded-lg mb-3"
+              Width="55"
+              Height="55"/>
+
+    <MudText Typo="Typo.body1" Class="mb-5">
+        @Category.Name
+    </MudText>
+
+    <MudText Typo="Typo.body2" Class="mb-5">
+        @Category.Description
+    </MudText>
+
+    <MudChip T="string"
+             Variant="Variant.Text"
+             Color="@(Category.Status is CategoryStatus.Active ? Color.Success : Color.Error)">
+        @Category.Status.ToString()
+    </MudChip>
+</MudPaper>

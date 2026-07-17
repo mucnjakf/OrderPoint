@@ -1,0 +1,42 @@
+﻿<MudPaper Class="pa-5">
+    <MudStack>
+        <TextDisplayRow Icon="@Icons.Material.Filled.Numbers"
+                        Label="ID"
+                        Text="@Category.Id.ToString()"
+                        ShowDivider="true"/>
+
+        <TextDisplayRow Icon="@Icons.Material.Filled.ShortText"
+                        Label="Name"
+                        Text="@Category.Name"
+                        ShowDivider="true"/>
+
+        <TextDisplayRow Icon="@Icons.Material.Filled.Description"
+                        Label="Description"
+                        Text="@Category.Description"
+                        ShowDivider="true"/>
+
+        <ChipDisplayRow Icon="@Icons.Material.Filled.MonitorHeart"
+                        Label="Status"
+                        Text="@Category.Status.ToString()"
+                        Color="@(Category.Status is CategoryStatus.Active ? Color.Success : Color.Error)"
+                        ShowDivider="true"/>
+
+        @* TODO: format date *@
+        <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
+                        Label="Created"
+                        Text="@Category.CreatedAtUtc.ToString("G")"
+                        ShowDivider="true"/>
+
+        @* TODO: format date *@
+        <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
+                        Label="Updated"
+                        Text="@(Category.UpdatedAtUtc is null ? "-" : Category.UpdatedAtUtc.Value.ToString("G"))"
+                        ShowDivider="true"/>
+
+        <DetailsActionsStack
+            UpdateButtonHref="@($"/categories/{Category.Id}/update?returnUrl=/categories/{Category.Id}")"
+            DeleteButtonDisabled="@(Category.ItemsCount > 0)"
+            DeleteButtonDisabledTooltipText="Category contains items"
+            OnDeleteClick="OnDeleteClickedAsync"/>
+    </MudStack>
+</MudPaper>

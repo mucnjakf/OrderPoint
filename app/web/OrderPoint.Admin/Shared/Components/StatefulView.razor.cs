@@ -13,12 +13,10 @@ public sealed partial class StatefulView
     public bool ShowContent { get; set; }
 
     [Parameter]
-    [EditorRequired]
-    public string EmptyStateIcon { get; set; } = null!;
+    public string? EmptyStateIcon { get; set; }
 
     [Parameter]
-    [EditorRequired]
-    public string EmptyStateText { get; set; } = null!;
+    public string? EmptyStateText { get; set; }
 
     [Parameter]
     [EditorRequired]
