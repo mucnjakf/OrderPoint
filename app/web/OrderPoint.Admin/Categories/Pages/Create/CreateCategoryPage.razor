@@ -72,44 +72,13 @@
 
     <MudItem xs="12" md="4">
         <MudStack Spacing="3" Style="height: 100%;">
-            <MudPaper Class="pa-3 d-flex flex-column flex-grow-1 align-center justify-center">
-                <MudIcon Icon="@Icons.Material.Filled.CropOriginal"
-                         Title="Category name"
-                         Size="Size.Large"
-                         Class="mb-4"/>
+            <CategoryPreviewPaper Name="@Request.Name"
+                                  Description="@Request.Description"
+                                  Status="@Request.Status"
+                                  NamePlaceholder="Category name"
+                                  DescriptionPlaceholder="Category description"/>
 
-                <MudText Typo="Typo.body1" Class="mb-2">
-                    @(string.IsNullOrWhiteSpace(Request.Name) ? "Category name" : Request.Name)
-                </MudText>
-
-                <MudText Typo="Typo.caption" Color="Color.Default" Class="mb-4">
-                    @(string.IsNullOrWhiteSpace(Request.Description) ? "Category description" : Request.Description)
-                </MudText>
-
-                <MudChip T="string"
-                         Variant="Variant.Text"
-                         Color="@(Request.Status is CategoryStatus.Active ? Color.Success : Color.Error)">
-                    @Request.Status.ToString()
-                </MudChip>
-            </MudPaper>
-
-            <MudAlert Severity="Severity.Info" Class="pa-3">
-                <MudText Typo="Typo.body2" Class="mb-3">How categories work</MudText>
-
-                <MudStack Spacing="2">
-                    <MudText Typo="Typo.body2">
-                        - Categories appear on the QR-code customer menu
-                    </MudText>
-
-                    <MudText Typo="Typo.body2">
-                        - Items must belong to a category
-                    </MudText>
-
-                    <MudText Typo="Typo.body2">
-                        - Inactive categories are hidden from customers
-                    </MudText>
-                </MudStack>
-            </MudAlert>
+            <CreateCategoryAlert/>
         </MudStack>
     </MudItem>
 </MudGrid>

@@ -7,7 +7,9 @@
 <StatefulView IsLoading="IsLoading" ShowContent="true">
     <MudGrid Spacing="3" Class="mb-5">
         <MudItem xs="12" md="4">
-            <CategoryPreviewPaper Category="Category"/>
+            <CategoryPreviewPaper Name="@Category.Name"
+                                  Description="@Category.Description"
+                                  Status="@Category.Status"/>
         </MudItem>
 
         <MudItem xs="12" md="8">

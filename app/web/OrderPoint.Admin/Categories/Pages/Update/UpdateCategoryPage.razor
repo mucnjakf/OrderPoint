@@ -2,53 +2,9 @@
 
 <PageTitle>Edit category</PageTitle>
 
-<MudBreadcrumbs Items="Breadcrumbs" Class="px-0 pt-0 pb-5" Style="font-size: 14px"/>
+<PageHeader Text="Edit category" Breadcrumbs="Breadcrumbs"/>
 
-@if (IsLoading)
-{
-    <MudSkeleton SkeletonType="SkeletonType.Text" Width="200px" Height="40px" Class="mb-3"/>
-
-    <MudGrid Spacing="3" Class="mb-3">
-        <MudItem xs="12" md="8">
-            <MudCard Class="pa-3" Style="height: 490px;">
-                <MudCardContent>
-                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="56px" Class="mb-5"/>
-                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="140px" Class="mb-5"/>
-
-                    <MudStack Row="true">
-                        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="56px" Width="380px"/>
-                        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="56px" Width="380px"/>
-                    </MudStack>
-
-                </MudCardContent>
-                <MudCardActions Class="pa-4 d-flex justify-end">
-                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100px" Height="36px" Class="mr-3"/>
-                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="120px" Height="36px"/>
-                </MudCardActions>
-            </MudCard>
-        </MudItem>
-
-        <MudItem xs="12" md="4">
-            <MudStack Spacing="3" Style="height: 100%;">
-                <MudPaper Class="pa-3 d-flex flex-column flex-grow-1 align-center justify-center">
-                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="48px" Height="48px" Class="mb-4"/>
-                    <MudSkeleton SkeletonType="SkeletonType.Text" Width="150px" Class="mb-2"/>
-                    <MudSkeleton SkeletonType="SkeletonType.Text" Width="120px" Class="mb-4"/>
-                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="80px" Height="32px"/>
-                </MudPaper>
-
-                <MudPaper Class="pa-3">
-                    <MudSkeleton SkeletonType="SkeletonType.Text" Class="mb-3"/>
-                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="36px"/>
-                </MudPaper>
-            </MudStack>
-        </MudItem>
-    </MudGrid>
-}
-else if (Request is not null)
-{
-    <MudText Typo="Typo.h4" Class="mb-3">@($"Edit {CategoryName}")</MudText>
-
+<StatefulView IsLoading="IsLoading" ShowContent="@(Request is not null)">
     <MudGrid Spacing="3" Class="mb-3">
         <MudItem xs="12" md="8">
             <EditForm Model="@Request" OnValidSubmit="OnValidSubmitAsync">
@@ -118,42 +74,15 @@ else if (Request is not null)
 
         <MudItem xs="12" md="4">
             <MudStack Spacing="3" Style="height: 100%;">
-                <MudPaper Class="pa-3 d-flex flex-column flex-grow-1 align-center justify-center">
-                    <MudIcon Icon="@Icons.Material.Filled.CropOriginal"
-                             Title="Category name"
-                             Size="Size.Large"
-                             Class="mb-4"/>
+                <CategoryPreviewPaper Name="@Request.Name"
+                                      Description="@Request.Description"
+                                      Status="@Request.Status"
+                                      NamePlaceholder="Category name"
+                                      DescriptionPlaceholder="Category description"/>
 
-                    <MudText Typo="Typo.body1" Class="mb-2">
-                        @(string.IsNullOrWhiteSpace(Request.Name) ? "Category name" : Request.Name)
-                    </MudText>
-
-                    <MudText Typo="Typo.caption" Color="Color.Default" Class="mb-4">
-                        @(string.IsNullOrWhiteSpace(Request.Description) ? "Category description" : Request.Description)
-                    </MudText>
-
-                    <MudChip T="string"
-                             Variant="Variant.Text"
-                             Color="@(Request.Status is CategoryStatus.Active ? Color.Success : Color.Error)">
-                        @Request.Status.ToString()
-                    </MudChip>
-                </MudPaper>
-
-                <MudPaper Class="pa-3">
-                    <MudText Typo="Typo.body2" Class="mb-3">
-                        @(CategoryContainsItems ? "Category contains items." : "Permanently delete this category. This action cannot be undone.")
-                    </MudText>
-                    
-                    <MudButton Variant="Variant.Outlined"
-                               StartIcon="@Icons.Material.Filled.Delete"
-                               FullWidth="true"
-                               Color="Color.Error"
-                               Disabled="CategoryContainsItems"
-                               OnClick="ShowDeleteCategoryDialogAsync">
-                        Delete
-                    </MudButton>
-                </MudPaper>
+                <UpdateCategoryDeletePaper CategoryContainsItems="@CategoryContainsItems"
+                                           OnDeleteClick="ShowDeleteCategoryDialogAsync"/>
             </MudStack>
         </MudItem>
     </MudGrid>
-}
+</StatefulView>

@@ -7,16 +7,16 @@
               Height="55"/>
 
     <MudText Typo="Typo.body1" Class="mb-5">
-        @Category.Name
+        @(string.IsNullOrWhiteSpace(Name) ? NamePlaceholder : Name)
     </MudText>
 
-    <MudText Typo="Typo.body2" Class="mb-5">
-        @Category.Description
+    <MudText Typo="Typo.body2" Class="mb-5" Style="max-width: 100%; word-wrap: break-word; text-align: center;">
+        @(string.IsNullOrWhiteSpace(Description) ? DescriptionPlaceholder : Description)
     </MudText>
 
     <MudChip T="string"
              Variant="Variant.Text"
-             Color="@(Category.Status is CategoryStatus.Active ? Color.Success : Color.Error)">
-        @Category.Status.ToString()
+             Color="@(Status is CategoryStatus.Active ? Color.Success : Color.Error)">
+        @Status.ToString()
     </MudChip>
 </MudPaper>
