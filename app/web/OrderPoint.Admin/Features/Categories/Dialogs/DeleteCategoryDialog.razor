@@ -1,35 +1,8 @@
-﻿<MudDialog ActionsClass="pa-6">
-    <TitleContent>
-        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
-            <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Error"/>
-            <MudText Typo="Typo.h6">Delete category</MudText>
-        </MudStack>
-    </TitleContent>
-
-    <DialogContent>
-        <MudStack Spacing="5" Class="mb-3">
-            <MudText Typo="Typo.body1">
-                Are you sure you want to delete @CategoryName?
-            </MudText>
-
-            <MudAlert Severity="Severity.Error" Variant="Variant.Text" Dense="true">
-                <MudText Typo="Typo.body2">
-                    This action cannot be undone.
-                </MudText>
-            </MudAlert>
-        </MudStack>
-    </DialogContent>
-
-    <DialogActions>
-        <MudButton OnClick="Cancel" Variant="Variant.Text" Class="mr-5">
-            Cancel
-        </MudButton>
-
-        <MudButton OnClick="Confirm"
-                   Variant="Variant.Filled"
-                   Color="Color.Error"
-                   StartIcon="@Icons.Material.Filled.Delete">
-            Confirm
-        </MudButton>
-    </DialogActions>
-</MudDialog>
+﻿<Dialog TitleIcon="@Icons.Material.Filled.Warning"
+        TitleIconColor="Color.Error"
+        Title="Delete category"
+        Content="@($"Are you sure you want to delete {CategoryName}?")"
+        AlertText="This action cannot be undone."
+        ConfirmedButtonIcon="@Icons.Material.Filled.Delete"
+        ConfirmButtonColor="Color.Error"/>
+    

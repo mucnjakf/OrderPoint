@@ -18,6 +18,7 @@
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Components\Categories\TopCategoriesSection.razor" />
       <_ContentIncludedByDefault Remove="Components\General\DataGrid.razor" />
+      <_ContentIncludedByDefault Remove="Features\Categories\Dialogs\DeleteCategoryDialog.razor" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,5 +1,38 @@
-﻿<h3>Dialog</h3>
+﻿<MudDialog ActionsClass="pa-6">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@TitleIcon" Color="@TitleIconColor"/>
+            <MudText Typo="Typo.h6">@Title</MudText>
+        </MudStack>
+    </TitleContent>
 
-@code {
-    
-}
+    <DialogContent>
+        <MudStack Spacing="5" Class="mb-3">
+            <MudText Typo="Typo.body1">
+                @Content
+            </MudText>
+
+            @if (AlertText is not null)
+            {
+                <MudAlert Severity="Severity.Error" Variant="Variant.Text" Dense="true">
+                    <MudText Typo="Typo.body2">
+                        @AlertText
+                    </MudText>
+                </MudAlert>
+            }
+        </MudStack>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="Cancel" Variant="Variant.Text" Class="mr-5">
+            Cancel
+        </MudButton>
+
+        <MudButton OnClick="Confirm"
+                   Variant="Variant.Filled"
+                   Color="@ConfirmButtonColor"
+                   StartIcon="@ConfirmedButtonIcon">
+            Confirm
+        </MudButton>
+    </DialogActions>
+</MudDialog>
