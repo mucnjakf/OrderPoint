@@ -8,16 +8,18 @@
                   @onmouseover="() => HoveredCategoryId = category.Id"
                   @onmouseout="() => HoveredCategoryId = null">
 
-            <MudIcon Icon="@Icons.Material.Filled.CropOriginal"
-                     Title="@category.Name"
-                     Size="Size.Large"
-                     Class="mb-3"/>
+            <MudImage Src="images/mony.jpg"
+                      Alt="Mony the dog"
+                      Elevation="25"
+                      Class="rounded-lg mb-3"
+                      Width="55"
+                      Height="55"/>
 
             <MudText Typo="Typo.body1" Class="mb-1" Align="Align.Center">
                 @category.Name
             </MudText>
 
-            <MudText Typo="Typo.caption">
+            <MudText Typo="Typo.body2">
                 @category.ItemsCount @(category.ItemsCount == 1 ? "item" : "items")
             </MudText>
         </MudPaper>
