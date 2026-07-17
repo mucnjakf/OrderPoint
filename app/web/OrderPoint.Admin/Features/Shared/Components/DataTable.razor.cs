@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using OrderPoint.Admin.Dtos;
+using OrderPoint.Admin.Features.Shared.Dtos;
 
 namespace OrderPoint.Admin.Features.Shared.Components;
 

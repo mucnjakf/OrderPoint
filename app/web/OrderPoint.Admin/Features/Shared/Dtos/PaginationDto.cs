@@ -1,4 +1,4 @@
-﻿namespace OrderPoint.Admin.Dtos;
+﻿namespace OrderPoint.Admin.Features.Shared.Dtos;
 
 public sealed record PaginationDto<T>(IReadOnlyList<T> Items, int PageNumber, int PageSize, int TotalCount)
 {

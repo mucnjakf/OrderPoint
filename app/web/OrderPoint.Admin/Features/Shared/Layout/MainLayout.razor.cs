@@ -1,6 +1,6 @@
 ﻿using MudBlazor;
 
-namespace OrderPoint.Admin.Layout;
+namespace OrderPoint.Admin.Features.Shared.Layout;
 
 public sealed partial class MainLayout
 {

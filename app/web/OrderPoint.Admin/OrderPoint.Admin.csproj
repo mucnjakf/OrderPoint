@@ -25,4 +25,9 @@
       <Folder Include="wwwroot\images\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <AdditionalFiles Include="Features\Shared\Layout\MainLayout.razor" />
+      <AdditionalFiles Include="Features\Shared\Pages\NotFound.razor" />
+    </ItemGroup>
+
 </Project>

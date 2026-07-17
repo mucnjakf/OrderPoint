@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using OrderPoint.Admin.Dtos;
 using OrderPoint.Admin.Features.Categories.Api;
 using OrderPoint.Admin.Features.Categories.Dialogs;
 using OrderPoint.Admin.Features.Categories.Dtos;
 using OrderPoint.Admin.Features.Items.Api;
 using OrderPoint.Admin.Features.Items.Dtos;
+using OrderPoint.Admin.Features.Shared.Dtos;
 
 namespace OrderPoint.Admin.Features.Categories.Pages;
 
