@@ -38,7 +38,7 @@
                             @foreach (CategoryStatus status in Enum.GetValues<CategoryStatus>())
                             {
                                 <MudSelectItem Value="@status" T="CategoryStatus">
-                                    <MudText Color="@(status is CategoryStatus.Active ? Color.Success : Color.Error)">
+                                    <MudText>
                                         @status.ToString()
                                     </MudText>
                                 </MudSelectItem>

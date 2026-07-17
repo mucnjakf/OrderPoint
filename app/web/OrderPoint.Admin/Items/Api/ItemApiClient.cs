@@ -1,6 +1,7 @@
 ﻿using OrderPoint.Admin.Items.Api.Responses;
 using OrderPoint.Admin.Items.Dtos;
 using OrderPoint.Admin.Shared.Dtos;
+using OrderPoint.Admin.Shared.Errors;
 
 namespace OrderPoint.Admin.Items.Api;
 
@@ -28,14 +29,17 @@ internal sealed class ItemApiClient(IHttpClientFactory httpClientFactory)
             requestUri += $"&categoryId={categoryId}";
         }
 
-        var response = await _httpClient.GetFromJsonAsync<GetItemsResponse>(requestUri, cancellationToken);
+        HttpResponseMessage response = await _httpClient.GetAsync(requestUri, cancellationToken);
 
-        if (response is null)
+        if (!response.IsSuccessStatusCode)
         {
-            // TODO: handle
-            throw new Exception("Handle get items");
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
         }
 
-        return response.Data;
+        GetItemsResponse result =
+            await response.Content.ReadFromJsonAsync<GetItemsResponse>(cancellationToken)
+            ?? throw new InvalidOperationException($"Unable to parse {nameof(GetItemsResponse)}");
+
+        return result.Data;
     }
 }

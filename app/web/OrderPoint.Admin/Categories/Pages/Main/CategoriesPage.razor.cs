@@ -5,6 +5,7 @@ using OrderPoint.Admin.Categories.Dialogs;
 using OrderPoint.Admin.Categories.Dtos;
 using OrderPoint.Admin.Categories.Enumerations;
 using OrderPoint.Admin.Shared.Dtos;
+using OrderPoint.Admin.Shared.Services;
 
 namespace OrderPoint.Admin.Categories.Pages.Main;
 
@@ -15,6 +16,9 @@ public sealed partial class CategoriesPage
 
     [Inject]
     private ISnackbar Snackbar { get; set; } = null!;
+
+    [Inject]
+    private ApiService ApiService { get; set; } = null!;
 
     [Inject]
     private CategoryApiClient CategoryApiClient { get; set; } = null!;
@@ -51,19 +55,14 @@ public sealed partial class CategoriesPage
 
     private async Task GetTopCategoriesAsync()
     {
-        try
-        {
-            IsLoadingTop = true;
+        IsLoadingTop = true;
 
-            PaginationDto<CategoryDto> pagination = await CategoryApiClient
-                .GetCategoriesAsync(1, 5, "ItemsCountDesc");
+        PaginationDto<CategoryDto> pagination = await ApiService.ExecuteAsync(async ()
+            => await CategoryApiClient.GetCategoriesAsync(1, 5, "ItemsCountDesc"));
 
-            TopCategories = pagination.Items;
-        }
-        finally
-        {
-            IsLoadingTop = false;
-        }
+        TopCategories = pagination.Items;
+
+        IsLoadingTop = false;
     }
 
     private async Task GetCategoriesAsync(
@@ -73,23 +72,19 @@ public sealed partial class CategoriesPage
         string? searchQuery,
         CategoryStatus? status)
     {
-        try
-        {
-            IsLoading = true;
+        IsLoading = true;
 
-            Pagination = await CategoryApiClient.GetCategoriesAsync(
+        Pagination = await ApiService.ExecuteAsync(async ()
+            => await CategoryApiClient.GetCategoriesAsync(
                 pageNumber,
                 pageSize,
                 sortBy,
                 searchQuery,
-                status);
+                status));
 
-            Categories = Pagination.Items;
-        }
-        finally
-        {
-            IsLoading = false;
-        }
+        Categories = Pagination.Items;
+
+        IsLoading = false;
     }
 
     private async Task OnSearchChangedAsync()
@@ -152,7 +147,8 @@ public sealed partial class CategoriesPage
 
         if (!dialogResult.Canceled)
         {
-            await CategoryApiClient.DeleteCategoryAsync(categoryId);
+            await ApiService.ExecuteAsync(async ()
+                => await CategoryApiClient.DeleteCategoryAsync(categoryId));
 
             Snackbar.Add($"Category {categoryName} deleted successfully", Severity.Success);
 

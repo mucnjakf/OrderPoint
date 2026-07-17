@@ -6,6 +6,7 @@ using OrderPoint.Admin.Categories.Dtos;
 using OrderPoint.Admin.Items.Api;
 using OrderPoint.Admin.Items.Dtos;
 using OrderPoint.Admin.Shared.Dtos;
+using OrderPoint.Admin.Shared.Services;
 
 namespace OrderPoint.Admin.Categories.Pages.Details;
 
@@ -24,6 +25,9 @@ public sealed partial class CategoryPage
     private NavigationManager NavigationManager { get; set; } = null!;
 
     [Inject]
+    private ApiService ApiService { get; set; } = null!;
+
+    [Inject]
     private CategoryApiClient CategoryApiClient { get; set; } = null!;
 
     [Inject]
@@ -40,6 +44,7 @@ public sealed partial class CategoryPage
 
     private IReadOnlyList<ItemDto> Items { get; set; } = [];
     private PaginationDto<ItemDto>? Pagination { get; set; }
+
     private string? SearchQuery { get; set; }
     private string SelectedSortBy { get; set; } = "CreatedAtUtcDesc";
 
@@ -61,16 +66,12 @@ public sealed partial class CategoryPage
 
     private async Task GetCategoryAsync()
     {
-        try
-        {
-            IsLoading = true;
+        IsLoading = true;
 
-            Category = await CategoryApiClient.GetCategoryAsync(Id);
-        }
-        finally
-        {
-            IsLoading = false;
-        }
+        Category = await ApiService.ExecuteAsync(async ()
+            => await CategoryApiClient.GetCategoryAsync(Id));
+
+        IsLoading = false;
     }
 
     private async Task GetItemsAsync(
@@ -81,24 +82,20 @@ public sealed partial class CategoryPage
         Guid categoryId
     )
     {
-        try
-        {
-            IsLoadingItems = true;
+        IsLoadingItems = true;
 
-            Pagination = await ItemApiClient.GetItemsAsync(
+        Pagination = await ApiService.ExecuteAsync(async ()
+            => await ItemApiClient.GetItemsAsync(
                 page,
                 pageSize,
                 sortBy,
                 searchQuery,
                 categoryId
-            );
+            ));
 
-            Items = Pagination.Items;
-        }
-        finally
-        {
-            IsLoadingItems = false;
-        }
+        Items = Pagination.Items;
+
+        IsLoadingItems = false;
     }
 
     private async Task OnSearchChangedAsync()
@@ -151,7 +148,8 @@ public sealed partial class CategoryPage
 
         if (!dialogResult.Canceled)
         {
-            await CategoryApiClient.DeleteCategoryAsync(Category.Id);
+            await ApiService.ExecuteAsync(async ()
+                => await CategoryApiClient.DeleteCategoryAsync(Category.Id));
 
             Snackbar.Add($"Category {Category.Name} deleted successfully", Severity.Success);
 

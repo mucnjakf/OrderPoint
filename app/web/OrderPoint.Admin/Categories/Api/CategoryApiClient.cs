@@ -3,6 +3,7 @@ using OrderPoint.Admin.Categories.Api.Responses;
 using OrderPoint.Admin.Categories.Dtos;
 using OrderPoint.Admin.Categories.Enumerations;
 using OrderPoint.Admin.Shared.Dtos;
+using OrderPoint.Admin.Shared.Errors;
 
 namespace OrderPoint.Admin.Categories.Api;
 
@@ -30,29 +31,34 @@ internal sealed class CategoryApiClient(IHttpClientFactory httpClientFactory)
             requestUri += $"&status={status}";
         }
 
-        var response = await _httpClient.GetFromJsonAsync<GetCategoriesResponse>(requestUri, cancellationToken);
+        HttpResponseMessage response = await _httpClient.GetAsync(requestUri, cancellationToken);
 
-        if (response is null)
+        if (!response.IsSuccessStatusCode)
         {
-            // TODO: handle
-            throw new Exception("Handle get categories");
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
         }
 
-        return response.Data;
+        GetCategoriesResponse result =
+            await response.Content.ReadFromJsonAsync<GetCategoriesResponse>(cancellationToken)
+            ?? throw new InvalidOperationException($"Unable to parse {nameof(GetCategoriesResponse)}");
+
+        return result.Data;
     }
 
     internal async Task<CategoryDto> GetCategoryAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        var response = await _httpClient
-            .GetFromJsonAsync<GetCategoryResponse>($"api/categories/{id}", cancellationToken);
+        HttpResponseMessage response = await _httpClient.GetAsync($"api/categories/{id}", cancellationToken);
 
-        if (response is null)
+        if (!response.IsSuccessStatusCode)
         {
-            // tODO; handle
-            throw new Exception("Handle get category");
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
         }
 
-        return response.Data;
+        GetCategoryResponse result =
+            await response.Content.ReadFromJsonAsync<GetCategoryResponse>(cancellationToken)
+            ?? throw new InvalidOperationException($"Unable to parse {nameof(GetCategoryResponse)}");
+
+        return result.Data;
     }
 
     internal async Task CreateCategoryAsync(
@@ -64,8 +70,7 @@ internal sealed class CategoryApiClient(IHttpClientFactory httpClientFactory)
 
         if (!response.IsSuccessStatusCode)
         {
-            // TODO: handle
-            throw new Exception("Handle create category");
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
         }
     }
 
@@ -79,8 +84,7 @@ internal sealed class CategoryApiClient(IHttpClientFactory httpClientFactory)
 
         if (!response.IsSuccessStatusCode)
         {
-            // todo: handle
-            throw new Exception("Handle update category");
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
         }
     }
 
@@ -91,8 +95,7 @@ internal sealed class CategoryApiClient(IHttpClientFactory httpClientFactory)
 
         if (!response.IsSuccessStatusCode)
         {
-            // TODO: handle
-            throw new Exception("Handle delete category");
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
         }
     }
 }

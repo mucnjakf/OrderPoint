@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 using OrderPoint.Admin.Categories.Api;
 using OrderPoint.Admin.Categories.Api.Requests;
+using OrderPoint.Admin.Shared.Services;
 
 namespace OrderPoint.Admin.Categories.Pages.Create;
 
@@ -13,6 +14,9 @@ public sealed partial class CreateCategoryPage
 
     [Inject]
     private NavigationManager NavigationManager { get; set; } = null!;
+
+    [Inject]
+    private ApiService ApiService { get; set; } = null!;
 
     [Inject]
     private CategoryApiClient CategoryApiClient { get; set; } = null!;
@@ -30,7 +34,8 @@ public sealed partial class CreateCategoryPage
     {
         StateHasChanged();
 
-        await CategoryApiClient.CreateCategoryAsync(Request);
+        await ApiService.ExecuteAsync(async ()
+            => await CategoryApiClient.CreateCategoryAsync(Request));
 
         Snackbar.Add($"Category {Request.Name} created successfully", Severity.Success);
 

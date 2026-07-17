@@ -5,6 +5,7 @@ using OrderPoint.Admin.Categories.Api;
 using OrderPoint.Admin.Categories.Api.Requests;
 using OrderPoint.Admin.Categories.Dialogs;
 using OrderPoint.Admin.Categories.Dtos;
+using OrderPoint.Admin.Shared.Services;
 
 namespace OrderPoint.Admin.Categories.Pages.Update;
 
@@ -24,6 +25,9 @@ public sealed partial class UpdateCategoryPage
 
     [Inject]
     private NavigationManager NavigationManager { get; set; } = null!;
+
+    [Inject]
+    private ApiService ApiService { get; set; } = null!;
 
     [Inject]
     private CategoryApiClient CategoryApiClient { get; set; } = null!;
@@ -62,27 +66,23 @@ public sealed partial class UpdateCategoryPage
 
     private async Task GetCategoryAsync()
     {
-        try
+        IsLoading = true;
+
+        CategoryDto category = await ApiService.ExecuteAsync(async ()
+            => await CategoryApiClient.GetCategoryAsync(Id));
+
+        CategoryName = category.Name;
+        CategoryContainsItems = category.ItemsCount > 0;
+
+        Request = new UpdateCategoryRequest
         {
-            IsLoading = true;
+            Name = category.Name,
+            Description = category.Description,
+            Status = category.Status,
+            ImageUrl = category.ImageUrl
+        };
 
-            CategoryDto category = await CategoryApiClient.GetCategoryAsync(Id);
-
-            CategoryName = category.Name;
-            CategoryContainsItems = category.ItemsCount > 0;
-
-            Request = new UpdateCategoryRequest
-            {
-                Name = category.Name,
-                Description = category.Description,
-                Status = category.Status,
-                ImageUrl = category.ImageUrl
-            };
-        }
-        finally
-        {
-            IsLoading = false;
-        }
+        IsLoading = false;
     }
 
     private async Task ShowDeleteCategoryDialogAsync()
@@ -105,7 +105,8 @@ public sealed partial class UpdateCategoryPage
 
         if (!dialogResult.Canceled)
         {
-            await CategoryApiClient.DeleteCategoryAsync(Id);
+            await ApiService.ExecuteAsync(async ()
+                => await CategoryApiClient.DeleteCategoryAsync(Id));
 
             Snackbar.Add($"Category {CategoryName} deleted successfully", Severity.Success);
 
@@ -117,7 +118,8 @@ public sealed partial class UpdateCategoryPage
     {
         StateHasChanged();
 
-        await CategoryApiClient.UpdateCategoryAsync(Id, Request!);
+        await ApiService.ExecuteAsync(async ()
+            => await CategoryApiClient.UpdateCategoryAsync(Id, Request!));
 
         Snackbar.Add($"Category {Request!.Name} edited successfully", Severity.Success);
 

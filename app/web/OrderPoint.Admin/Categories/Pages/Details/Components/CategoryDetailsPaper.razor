@@ -21,13 +21,11 @@
                         Color="@(Category.Status is CategoryStatus.Active ? Color.Success : Color.Error)"
                         ShowDivider="true"/>
 
-        @* TODO: format date *@
         <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
                         Label="Created"
                         Text="@Category.CreatedAtUtc.ToString("G")"
                         ShowDivider="true"/>
 
-        @* TODO: format date *@
         <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
                         Label="Updated"
                         Text="@(Category.UpdatedAtUtc is null ? "-" : Category.UpdatedAtUtc.Value.ToString("G"))"
