@@ -22,8 +22,6 @@ public sealed partial class CategoriesPage
     [Inject]
     private NavigationManager NavigationManager { get; set; } = null!;
 
-    private Guid? HoveredTopCategoryId { get; set; }
-
     private List<BreadcrumbItem> Breadcrumbs { get; set; } =
     [
         new("Dashboard", href: "/", icon: Icons.Material.Filled.Dashboard),
@@ -31,6 +29,7 @@ public sealed partial class CategoriesPage
     ];
 
     private IReadOnlyList<CategoryDto> TopCategories { get; set; } = [];
+    private Guid? HoveredTopCategoryId { get; set; }
 
     private PaginationDto<CategoryDto>? Pagination { get; set; }
     private IReadOnlyList<CategoryDto> Categories { get; set; } = [];

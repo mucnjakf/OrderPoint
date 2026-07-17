@@ -2,144 +2,88 @@
 
 <PageTitle>Categories</PageTitle>
 
-<MudBreadcrumbs Items="Breadcrumbs" Class="px-0 pt-0 pb-5" Style="font-size: 14px"/>
+<PageHeader Text="Categories" Breadcrumbs="Breadcrumbs"/>
 
-<MudText Typo="Typo.h4" Class="mb-3">Categories</MudText>
-
-@if (IsLoadingTop)
-{
-    <MudStack Row="true" Spacing="3" Class="flex-1 mb-5">
-        @for (var i = 0; i < 5; i++)
-        {
-            <MudPaper Class="pa-8 d-flex flex-column align-center flex-1" Style="height: 180px;">
-                <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="48px" Height="48px" Class="mb-3"/>
-                <MudSkeleton SkeletonType="SkeletonType.Text" Width="80%" Class="mb-1"/>
-                <MudSkeleton SkeletonType="SkeletonType.Text" Width="60%"/>
-            </MudPaper>
-        }
-    </MudStack>
-}
-else if (TopCategories.Any())
-{
+<StatefulView IsLoading="IsLoadingTop"
+              ShowContent="TopCategories.Any()"
+              EmptyStateIcon="@Icons.Material.Filled.Category"
+              EmptyStateText="No categories yet">
     <MudStack Row="true" Spacing="3" Class="flex-1 mb-5">
         @foreach (CategoryDto category in TopCategories)
         {
-            <MudPaper Class="pa-8 d-flex flex-column align-center justify-center flex-1"
-                      Style="cursor: pointer; transition: all 0.2s ease-in-out; height: 180px;"
-                      Elevation="@(HoveredTopCategoryId == category.Id ? 10 : 1)"
-                      @onclick="@(() => NavigationManager.NavigateTo($"/categories/{category.Id}"))"
-                      @onmouseover="() => HoveredTopCategoryId = category.Id"
-                      @onmouseout="() => HoveredTopCategoryId = null">
-
-                <MudIcon Icon="@Icons.Material.Filled.CropOriginal"
-                         Title="@category.Name"
-                         Size="Size.Large"
-                         Class="mb-3"/>
-
-                <MudText Typo="Typo.body1" Class="mb-1" Align="Align.Center">
-                    @category.Name
-                </MudText>
-
-                <MudText Typo="Typo.caption" Color="Color.Default">
-                    @category.ItemsCount @(category.ItemsCount == 1 ? "item" : "items")
-                </MudText>
-            </MudPaper>
+            <TopCategoryPaper Category="category" HoveredCategoryId="HoveredTopCategoryId"/>
         }
     </MudStack>
-}
-else
-{
-    <MudPaper Class="pa-8 mb-5">
-        <MudStack AlignItems="AlignItems.Center" Spacing="2">
-            <MudIcon Icon="@Icons.Material.Filled.Category"
-                     Size="Size.Large"
-                     Color="Color.Default"/>
+</StatefulView>
 
-            <MudText Typo="Typo.body1" Color="Color.Default">
-                No categories yet
-            </MudText>
-        </MudStack>
-    </MudPaper>
-}
+<DataTable TItem="CategoryDto"
+           Items="Categories"
+           Pagination="Pagination"
+           IsLoading="IsLoading"
+           CreateButtonText="New category"
+           CreateButtonHref="/categories/create"
+           DetailsButtonHref="@(category => $"/categories/{category.Id}")"
+           UpdateButtonHref="@(category => $"/categories/{category.Id}/update?returnUrl=/categories")"
+           DeleteButtonDisabled="@(category => category.ItemsCount > 0)"
+           DeleteButtonDisabledTooltipText="Category contains items"
+           OnDeleteClick="category => ShowDeleteCategoryDialogAsync(category.Id, category.Name)"
+           SearchLabel="Search by name"
+           SearchQuery="@SearchQuery"
+           SearchQueryChanged="value => SearchQuery = value"
+           SelectedSortBy="@SelectedSortBy"
+           SelectedSortByChanged="value => SelectedSortBy = value"
+           SortByOptions="Enum.GetNames(typeof(CategorySortBy))"
+           GetSortByLabel="CategorySorting.GetSortByLabel"
+           GetSortByIcon="CategorySorting.GetSortByIcon"
+           OnSearchChanged="OnSearchChangedAsync"
+           OnSortChanged="OnSortChangedAsync"
+           OnPageChanged="OnPageChanged"
+           NoRecordsIcon="@Icons.Material.Filled.Category"
+           NoRecordsText="No categories found">
+    <FilterContent>
+        <MudSelect @bind-Value="SelectedStatus"
+                   @bind-Value:after="OnStatusChangedAsync"
+                   T="CategoryStatus?"
+                   Variant="Variant.Outlined"
+                   Label="Status"
+                   FitContent="true">
 
-<MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.End" Class="mb-3">
-    <MudStack Row="true">
-        @if (Categories.Any())
-        {
-            <MudTextField @bind-Value="SearchQuery"
-                          @bind-Value:after="OnSearchChangedAsync"
-                          T="string"
-                          Label="Search by name"
-                          Variant="Variant.Outlined"
-                          Clearable="true"
-                          DebounceInterval="500"
-                          Immediate="false"/>
+            <MudSelectItem Value="@(null)" T="CategoryStatus?">
+                <MudText>All</MudText>
+            </MudSelectItem>
 
-            <MudSelect @bind-Value="SelectedStatus"
-                       @bind-Value:after="OnStatusChangedAsync"
-                       T="CategoryStatus?"
-                       Variant="Variant.Outlined"
-                       Label="Status"
-                       FitContent="true">
-
-                <MudSelectItem Value="@(null)" T="CategoryStatus?">
-                    <MudText>All</MudText>
+            @foreach (CategoryStatus status in Enum.GetValues<CategoryStatus>())
+            {
+                <MudSelectItem Value="@(status)" T="CategoryStatus?">
+                    <MudText Color="@(status is CategoryStatus.Active ? Color.Success : Color.Error)">
+                        @status.ToString()
+                    </MudText>
                 </MudSelectItem>
+            }
+        </MudSelect>
+    </FilterContent>
 
-                @foreach (CategoryStatus status in Enum.GetValues<CategoryStatus>())
-                {
-                    <MudSelectItem Value="@(status)" T="CategoryStatus?">
-                        <MudText Color="@(status is CategoryStatus.Active ? Color.Success : Color.Error)">
-                            @status.ToString()
-                        </MudText>
-                    </MudSelectItem>
-                }
-            </MudSelect>
-
-            <MudSelect @bind-Value="SelectedSortBy"
-                       @bind-Value:after="OnSortChangedAsync"
-                       T="string"
-                       Variant="Variant.Outlined"
-                       Label="Sort by"
-                       FitContent="true">
-
-                @foreach (string sortBy in Enum.GetNames(typeof(CategorySortBy)))
-                {
-                    <MudSelectItem Value="@(sortBy)">
-                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
-                            <MudText Typo="Typo.body1">@CategorySorting.GetSortByLabel(sortBy)</MudText>
-                            <MudIcon Icon="@CategorySorting.GetSortByIcon(sortBy)" Size="Size.Small"/>
-                        </MudStack>
-                    </MudSelectItem>
-                }
-            </MudSelect>
-        }
-    </MudStack>
-
-    <MudButton Variant="Variant.Filled"
-               StartIcon="@Icons.Material.Filled.Add"
-               Color="Color.Primary"
-               Href="/categories/create">
-        New category
-    </MudButton>
-</MudStack>
-
-<MudTable Items="Categories" Hover="true" Loading="@IsLoading" LoadingProgressColor="Color.Primary">
     <HeaderContent>
-        <MudTh Style="width: 105px;"></MudTh>
-        <MudTh Style="width: 325px;">Name</MudTh>
-        <MudTh Style="width: 185px;">Status</MudTh>
-        <MudTh Style="width: 170px;">Items</MudTh>
-        <MudTh Style="width: 260px;">Created</MudTh>
-        <MudTh Style="width: 150px;"></MudTh>
+        <MudTh Style="width: 100px;"></MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Status</MudTh>
+        <MudTh>Items</MudTh>
+        <MudTh>Created</MudTh>
     </HeaderContent>
 
     <RowTemplate>
-        <MudTd DataLabel="">
-            <MudIcon Icon="@Icons.Material.Filled.CropOriginal" Size="Size.Large" Title="Placeholder"/>
+        <MudTd Class="d-flex justify-end">
+            <MudImage Src="images/mony.jpg"
+                      Alt="Mony the dog"
+                      Elevation="25"
+                      Class="rounded-lg"
+                      Width="55"
+                      Height="55"/>
         </MudTd>
 
-        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Name">
+            @context.Name
+        </MudTd>
 
         <MudTd DataLabel="Status">
             <MudChip T="string"
@@ -149,69 +93,12 @@ else
             </MudChip>
         </MudTd>
 
-        <MudTd DataLabel="Items">@context.ItemsCount items</MudTd>
+        <MudTd DataLabel="Items">
+            @context.ItemsCount items
+        </MudTd>
 
-        <MudTd DataLabel="Created">@context.CreatedAtUtc.ToString("G")</MudTd>
-
-        <MudTd>
-            <MudTooltip Text="Details">
-                <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye"
-                               Color="Color.Primary"
-                               Size="Size.Small"
-                               Href="@($"/categories/{context.Id}")"/>
-            </MudTooltip>
-
-            <MudTooltip Text="Edit">
-                <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                               Color="Color.Secondary"
-                               Size="Size.Small"
-                               Class="mx-2"
-                               Href="@($"/categories/{context.Id}/update?returnUrl=/categories")"/>
-            </MudTooltip>
-
-            <MudTooltip Text="@(context.ItemsCount > 0 ? "Category contains items" : "Delete")">
-                <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                               Color="Color.Error"
-                               Size="Size.Small"
-                               Disabled="context.ItemsCount > 0"
-                               OnClick="() => ShowDeleteCategoryDialogAsync(context.Id, context.Name)"/>
-            </MudTooltip>
+        <MudTd DataLabel="Created">
+            @context.CreatedAtUtc.ToString("G")
         </MudTd>
     </RowTemplate>
-
-    <NoRecordsContent>
-        <MudStack AlignItems="AlignItems.Center" Spacing="3" Class="py-10">
-            <MudIcon Icon="@Icons.Material.Filled.Category" Size="Size.Large" Color="Color.Default"/>
-            <MudText Typo="Typo.h6">No categories found</MudText>
-            <MudText Typo="Typo.body2" Color="Color.Default">
-                @if (!string.IsNullOrWhiteSpace(SearchQuery) || !string.IsNullOrWhiteSpace(SelectedStatus?.ToString()))
-                {
-                    <MudText Typo="Typo.caption">Try adjusting your filters or search query.</MudText>
-                }
-                else
-                {
-                    <MudText Typo="Typo.caption">Get started by creating your first category.</MudText>
-                }
-            </MudText>
-        </MudStack>
-    </NoRecordsContent>
-</MudTable>
-
-@if (Pagination is not null && Pagination.TotalPages > 1)
-{
-    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mt-3">
-        <MudText Typo="Typo.caption" Color="Color.Default">
-            Showing @((Pagination.PageNumber - 1) * Pagination.PageSize + 1)
-            to @(Math.Min(Pagination.PageNumber * Pagination.PageSize, Pagination.TotalCount))
-            of @Pagination.TotalCount categories
-        </MudText>
-
-        <MudPagination Count="Pagination.TotalPages"
-                       Selected="Pagination.PageNumber"
-                       SelectedChanged="OnPageChanged"
-                       BoundaryCount="1"
-                       MiddleCount="3"
-                       ShowFirstButton="true"
-                       ShowLastButton="true"/>
-    </MudStack>
-}
+</DataTable>
