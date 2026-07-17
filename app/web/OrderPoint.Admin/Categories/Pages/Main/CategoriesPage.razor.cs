@@ -19,9 +19,6 @@ public sealed partial class CategoriesPage
     [Inject]
     private CategoryApiClient CategoryApiClient { get; set; } = null!;
 
-    [Inject]
-    private NavigationManager NavigationManager { get; set; } = null!;
-
     private List<BreadcrumbItem> Breadcrumbs { get; set; } =
     [
         new("Dashboard", href: "/", icon: Icons.Material.Filled.Dashboard),

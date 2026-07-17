@@ -7,7 +7,7 @@ public sealed partial class TopCategoryStack
 {
     [Parameter]
     [EditorRequired]
-    public IReadOnlyList<CategoryDto> Categories { get; set; } = null!;
+    public IReadOnlyList<CategoryDto> Categories { get; set; } = [];
 
     [Inject]
     public NavigationManager NavigationManager { get; set; } = null!;
