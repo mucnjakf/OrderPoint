@@ -1,0 +1,29 @@
+﻿<MudTd Class="d-flex justify-end">
+    <MudImage Src="images/mony.jpg"
+              Alt="Mony the dog"
+              Elevation="25"
+              Class="rounded-lg"
+              Width="55"
+              Height="55"/>
+</MudTd>
+
+<MudTd DataLabel="Name">
+    @Category.Name
+</MudTd>
+
+<MudTd DataLabel="Status">
+    <MudChip T="string"
+             Variant="Variant.Text"
+             Color="@(Category.Status is CategoryStatus.Active ? Color.Success : Color.Error)">
+        @Category.Status.ToString()
+    </MudChip>
+</MudTd>
+
+<MudTd DataLabel="Items">
+    @Category.ItemsCount items
+</MudTd>
+
+<MudTd DataLabel="Created">
+    @* TODO: format date *@
+    @Category.CreatedAtUtc.ToString("G")
+</MudTd>

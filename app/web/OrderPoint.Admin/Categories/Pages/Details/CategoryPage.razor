@@ -1,0 +1,179 @@
+﻿@page "/categories/{id:guid}"
+
+<PageTitle>Category details</PageTitle>
+
+<MudBreadcrumbs Items="Breadcrumbs" Class="px-0 pt-0 pb-5" Style="font-size: 14px"/>
+
+@if (IsLoading)
+{
+    <MudStack Row="true" Justify="Justify.SpaceBetween" Class="mb-3">
+        <MudSkeleton SkeletonType="SkeletonType.Text" Width="200px" Height="40px"/>
+
+        <MudStack Row="true" Spacing="2">
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100px" Height="36px"/>
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100px" Height="36px"/>
+        </MudStack>
+    </MudStack>
+
+    <MudGrid Spacing="3">
+        <MudItem xs="12" md="4">
+            <MudPaper Class="d-flex flex-column flex-grow-1 align-center justify-center pa-8" Style="height: 360px;">
+                <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="48px" Height="48px" Class="mb-4"/>
+                <MudSkeleton SkeletonType="SkeletonType.Text" Width="150px" Class="mb-2"/>
+                <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="80px" Height="32px"/>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="8">
+            <MudPaper Class="pa-5" Style="height: 360px;">
+                <MudStack>
+                    @for (var i = 0; i < 6; i++)
+                    {
+                        <MudStack Row="true" Class="d-flex align-center">
+                            <MudSkeleton SkeletonType="SkeletonType.Circle" Width="24px" Height="24px"/>
+                            <MudSkeleton SkeletonType="SkeletonType.Text" Width="80px" Class="mx-3"/>
+                            <MudSkeleton SkeletonType="SkeletonType.Text" Width="100%"/>
+                        </MudStack>
+
+                        if (i < 5)
+                        {
+                            <MudDivider Class="my-1"/>
+                        }
+                    }
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+}
+else
+{
+    <MudStack Row="true" Justify="Justify.SpaceBetween">
+        <MudText Typo="Typo.h4" Class="mb-3">@($"{Category.Name} details")</MudText>
+
+        <MudStack Row="true" AlignItems="AlignItems.End" Class="mb-3">
+            <MudButton Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Edit" Color="Color.Primary"
+                       Href="@($"/categories/{Category.Id}/update?returnUrl=/categories/{Category.Id}")">
+                Edit
+            </MudButton>
+
+            @if (Category.ItemsCount > 0)
+            {
+                <MudTooltip Text="Category contains items">
+                    <MudButton Variant="Variant.Outlined"
+                               StartIcon="@Icons.Material.Filled.Delete"
+                               Color="Color.Error"
+                               Disabled="true">
+                        Delete
+                    </MudButton>
+                </MudTooltip>
+            }
+            else
+            {
+                <MudButton Variant="Variant.Outlined"
+                           StartIcon="@Icons.Material.Filled.Delete"
+                           Color="Color.Error"
+                           OnClick="ShowDeleteCategoryDialogAsync">
+                    Delete
+                </MudButton>
+            }
+        </MudStack>
+    </MudStack>
+
+    <MudGrid Spacing="3" Class="mb-5">
+        <MudItem xs="12" md="4">
+            <MudPaper Class="d-flex flex-column flex-grow-1 align-center justify-center" Style="height: 100%">
+                <MudIcon Icon="@Icons.Material.Filled.CropOriginal" Title="Category name" Size="Size.Large"
+                         Class="mb-4"/>
+
+                <MudText Typo="Typo.body1" Class="mb-2">
+                    @Category.Name
+                </MudText>
+
+                <MudChip T="string" Variant="Variant.Text"
+                         Color="@(Category.Status is CategoryStatus.Active ? Color.Success : Color.Error)">
+                    @Category.Status.ToString()
+                </MudChip>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="8">
+            <MudPaper Class="pa-5">
+                <MudStack>
+                    <MudStack Row="true" Class="d-flex align-center">
+                        <MudIcon Icon="@Icons.Material.Filled.Numbers" Size="Size.Small" Color="Color.Surface"/>
+
+                        <MudText Class="mr-5" Color="Color.Surface" Typo="Typo.body2">ID</MudText>
+
+                        <MudText Typo="Typo.body1">@Category.Id</MudText>
+                    </MudStack>
+
+                    <MudDivider Class="my-1"/>
+
+                    <MudStack Row="true" Class="d-flex align-center">
+                        <MudIcon Icon="@Icons.Material.Filled.ShortText" Size="Size.Small" Color="Color.Surface"/>
+
+                        <MudText Class="mr-5" Color="Color.Surface" Typo="Typo.body2">Name</MudText>
+
+                        <MudText Typo="Typo.body1">@Category.Name</MudText>
+                    </MudStack>
+
+                    <MudDivider Class="my-1"/>
+
+                    <MudStack Row="true" Class="d-flex align-center">
+                        <MudIcon Icon="@Icons.Material.Filled.Description" Size="Size.Small" Color="Color.Surface"/>
+
+                        <MudText Class="mr-5" Color="Color.Surface" Typo="Typo.body2">Description</MudText>
+
+                        <MudText Typo="Typo.body1">@Category.Description</MudText>
+                    </MudStack>
+
+                    <MudDivider Class="my-1"/>
+
+                    <MudStack Row="true" Class="d-flex align-center">
+                        <MudIcon Icon="@Icons.Material.Filled.MonitorHeart" Size="Size.Small" Color="Color.Surface"/>
+
+                        <MudText Class="mr-5" Color="Color.Surface" Typo="Typo.body2">Status</MudText>
+
+                        <MudChip T="string" Variant="Variant.Text" Class="ma-0"
+                                 Color="@(Category.Status is CategoryStatus.Active ? Color.Success : Color.Error)">
+                            @Category.Status.ToString()
+                        </MudChip>
+                    </MudStack>
+
+                    <MudDivider Class="my-1"/>
+
+                    <MudStack Row="true" Class="d-flex align-center">
+                        <MudIcon Icon="@Icons.Material.Filled.CalendarMonth" Size="Size.Small" Color="Color.Surface"/>
+
+                        <MudText Class="mr-5" Color="Color.Surface" Typo="Typo.body2">Created</MudText>
+
+                        <MudText Typo="Typo.body1">@Category.CreatedAtUtc.ToString("G")</MudText>
+                    </MudStack>
+
+                    <MudDivider Class="my-1"/>
+
+                    <MudStack Row="true" Class="d-flex align-center">
+                        <MudIcon Icon="@Icons.Material.Filled.CalendarMonth" Size="Size.Small" Color="Color.Surface"/>
+
+                        <MudText Class="mr-5" Color="Color.Surface" Typo="Typo.body2">Updated</MudText>
+
+                        <MudText Typo="Typo.body1">
+                            @(Category.UpdatedAtUtc is null ? "-" : Category.UpdatedAtUtc.Value.ToString("G"))
+                        </MudText>
+                    </MudStack>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+}
+
+<CategoryItemsSection Items="Items"
+                      Pagination="Pagination"
+                      IsLoading="IsLoadingItems"
+                      SearchQuery="@SearchQuery"
+                      SearchQueryChanged="value => SearchQuery = value"
+                      SelectedSortBy="@SelectedSortBy"
+                      SelectedSortByChanged="value => SelectedSortBy = value"
+                      OnSearchChanged="OnSearchChangedAsync"
+                      OnSortChanged="OnSortChangedAsync"
+                      OnPageChanged="OnPageChanged"/>

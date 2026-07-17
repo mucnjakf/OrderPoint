@@ -19,6 +19,16 @@
       <_ContentIncludedByDefault Remove="Components\Categories\TopCategoriesSection.razor" />
       <_ContentIncludedByDefault Remove="Components\General\DataGrid.razor" />
       <_ContentIncludedByDefault Remove="Features\Categories\Dialogs\DeleteCategoryDialog.razor" />
+      <_ContentIncludedByDefault Remove="Features\Categories\Pages\Create\CreateCategoryPage.razor" />
+      <_ContentIncludedByDefault Remove="Features\Categories\Pages\Details\CategoryPage.razor" />
+      <_ContentIncludedByDefault Remove="Features\Categories\Pages\Details\Components\CategoryItemsSection.razor" />
+      <_ContentIncludedByDefault Remove="Features\Categories\Pages\Main\CategoriesPage.razor" />
+      <_ContentIncludedByDefault Remove="Features\Categories\Pages\Main\Components\CategoriesTableFilter.razor" />
+      <_ContentIncludedByDefault Remove="Features\Categories\Pages\Main\Components\CategoriesTableHeader.razor" />
+      <_ContentIncludedByDefault Remove="Features\Categories\Pages\Main\Components\CategoriesTableRow.razor" />
+      <_ContentIncludedByDefault Remove="Features\Categories\Pages\Main\Components\TopCategoryStack.razor" />
+      <_ContentIncludedByDefault Remove="Features\Categories\Pages\Update\UpdateCategoryPage.razor" />
+      <_ContentIncludedByDefault Remove="Features\Dashboard\DashboardPage.razor" />
     </ItemGroup>
 
     <ItemGroup>
@@ -26,8 +36,17 @@
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="Features\Shared\Layout\MainLayout.razor" />
-      <AdditionalFiles Include="Features\Shared\Pages\NotFound.razor" />
+      <AdditionalFiles Include="Categories\Pages\Create\CreateCategoryPage.razor" />
+      <AdditionalFiles Include="Categories\Pages\Details\CategoryPage.razor" />
+      <AdditionalFiles Include="Categories\Pages\Main\CategoriesPage.razor" />
+      <AdditionalFiles Include="Categories\Pages\Update\UpdateCategoryPage.razor" />
+      <AdditionalFiles Include="Dashboard\DashboardPage.razor" />
+      <AdditionalFiles Include="Shared\Layout\MainLayout.razor" />
+      <AdditionalFiles Include="Shared\Pages\NotFound.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Features\Categories\Dialogs\DeleteCategoryDialog.razor" />
     </ItemGroup>
 
 </Project>

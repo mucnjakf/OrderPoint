@@ -1,0 +1,50 @@
+﻿<MudText Typo="Typo.h5">Items</MudText>
+
+<MudDivider Class="my-2"/>
+
+<DataTable TItem="ItemDto"
+           Items="Items"
+           Pagination="Pagination"
+           IsLoading="IsLoading"
+           SearchLabel="Search by name"
+           SearchQuery="@SearchQuery"
+           SearchQueryChanged="SearchQueryChanged"
+           SelectedSortBy="@SelectedSortBy"
+           SelectedSortByChanged="SelectedSortByChanged"
+           SortByOptions="Enum.GetNames(typeof(ItemSortBy))"
+           GetSortByLabel="ItemSorting.GetSortByLabel"
+           GetSortByIcon="ItemSorting.GetSortByIcon"
+           OnSearchChanged="OnSearchChanged"
+           OnSortChanged="OnSortChanged"
+           OnPageChanged="OnPageChanged"
+           NoRecordsIcon="@Icons.Material.Filled.MenuBook"
+           NoRecordsText="No items found">
+    <HeaderContent>
+        <MudTh Style="width: 100px"></MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Portion</MudTh>
+        <MudTh>Price</MudTh>
+        <MudTh>Created</MudTh>
+    </HeaderContent>
+
+    <RowTemplate>
+        <MudTd Class="d-flex justify-end">
+            <MudImage Src="images/mony.jpg"
+                      Alt="Mony the dog"
+                      Elevation="25"
+                      Class="rounded-lg"
+                      Width="55"
+                      Height="55"/>
+        </MudTd>
+
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+
+        <MudTd DataLabel="Portion">@context.Portion</MudTd>
+
+        @* TODO: format price *@
+        <MudTd DataLabel="Price">$ @context.Price</MudTd>
+
+        @* TODO: format date *@
+        <MudTd DataLabel="Created">@context.CreatedAtUtc.ToString("G")</MudTd>
+    </RowTemplate>
+</DataTable>
