@@ -1,11 +1,14 @@
 ﻿<MudText Typo="Typo.h5">Items</MudText>
 
-@* TODO: maybe add create update delete *@
+@* TODO: maybe add create update *@
 <DataTable TItem="ItemDto"
            Items="Items"
            Pagination="Pagination"
            IsLoading="IsLoading"
            DetailsButtonHref="@(item => $"/items/{item.Id}")"
+           DeleteButtonDisabled="@(item => false)"
+           DeleteButtonDisabledTooltipText="@string.Empty"
+           OnDeleteClick="@(item => ShowDeleteItemDialogAsync(item.Id, item.Name))"
            SearchLabel="Search by name"
            SearchQuery="@SearchQuery"
            SearchQueryChanged="SearchQueryChanged"

@@ -128,6 +128,16 @@ public sealed partial class CategoryPage
             Id);
     }
 
+    private async Task OnItemDeletedAsync()
+    {
+        await GetItemsAsync(
+            1,
+            5,
+            SelectedSortBy,
+            SearchQuery,
+            Id);
+    }
+
     private async Task ShowDeleteCategoryDialogAsync()
     {
         var parameters = new DialogParameters<DeleteCategoryDialog>
