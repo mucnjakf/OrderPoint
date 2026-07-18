@@ -1,0 +1,112 @@
+﻿@page "/items/{Id:guid}/update"
+
+<PageTitle>Update item</PageTitle>
+
+<PageHeader Text="Update item" Breadcrumbs="Breadcrumbs"/>
+
+<StatefulView IsLoading="@IsLoading"
+              ShowContent="@(Request is not null)"
+              EmptyStateIcon="@Icons.Material.Filled.MenuBook"
+              EmptyStateText="@("No item found")">
+
+    <MudGrid Spacing="3" Class="mb-3">
+        <MudItem xs="12" md="8">
+            <EditForm Model="@Request" OnValidSubmit="OnValidSubmitAsync" OnInvalidSubmit="OnInvalidSubmitAsync">
+                <DataAnnotationsValidator/>
+
+                <MudCard Class="pa-3" Style="height: 100%;">
+                    <MudCardContent>
+                        <MudTextField Label="Name"
+                                      @bind-Value="Request.Name"
+                                      For="@(() => Request.Name)"
+                                      Class="mb-5 mt-0"
+                                      HelperText="The display name of the item shown to customers."
+                                      Variant="Variant.Outlined"
+                                      Immediate="true"/>
+
+                        <MudTextField Label="Description"
+                                      @bind-Value="Request.Description"
+                                      For="@(() => Request.Description)"
+                                      HelperText="A brief description of the item and its ingredients."
+                                      Variant="Variant.Outlined"
+                                      Class="mb-5"
+                                      Lines="5"
+                                      Immediate="true"/>
+
+                        <MudStack Row="true">
+                            <MudNumericField Label="Portion"
+                                             @bind-Value="Request.Portion"
+                                             For="@(() => Request.Portion)"
+                                             HelperText="Serving size."
+                                             Variant="Variant.Outlined"
+                                             Class="mb-5"
+                                             Immediate="true"/>
+
+                            <MudNumericField Label="Price"
+                                             @bind-Value="Request.Price"
+                                             For="@(() => Request.Price)"
+                                             HelperText="Price in euros."
+                                             Variant="Variant.Outlined"
+                                             Class="mb-5"
+                                             Immediate="true"/>
+                        </MudStack>
+
+                        <MudStack Row="true">
+                            <MudAutocomplete @bind-Value="@SelectedCategory"
+                                             @bind-Value:after="@(() => Request.CategoryId = SelectedCategory?.Id ?? Guid.Empty)"
+                                             T="CategoryDto"
+                                             SearchFunc="OnCategorySearchAsync"
+                                             Variant="@Variant.Outlined"
+                                             HelperText="The category this item belongs to."
+                                             Label="@("Category")"
+                                             Clearable="@true"
+                                             ShowProgressIndicator="@true"
+                                             ToStringFunc="@(category => category?.Name)"
+                                             Error="@(IsFormSubmitted && Request.CategoryId == Guid.Empty)"
+                                             ErrorText="Category is required.">
+                                <NoItemsTemplate>
+                                    <MudText Align="Align.Center" Class="px-3 py-1">
+                                        No items found
+                                    </MudText>
+                                </NoItemsTemplate>
+                            </MudAutocomplete>
+
+                            <MudTextField Label="Image URL"
+                                          Disabled="true"
+                                          @bind-Value="Request.ImageUrl"
+                                          For="@(() => Request.ImageUrl)"
+                                          HelperText="Image upload will be available in a future update."
+                                          Variant="Variant.Outlined"/>
+                        </MudStack>
+                    </MudCardContent>
+
+                    <MudCardActions Class="pa-4 d-flex justify-end">
+                        <MudButton Href="@(ReturnUrl ?? "/items")" Variant="Variant.Text" Class="mr-5">
+                            Cancel
+                        </MudButton>
+
+                        <MudButton ButtonType="ButtonType.Submit"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.Add">
+                            Confirm
+                        </MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </EditForm>
+        </MudItem>
+
+        <MudItem xs="12" md="4">
+            <MudStack Spacing="3" Style="height: 100%;">
+                <ItemPreviewPaper ImageUrl="@Request.ImageUrl"
+                                  Name="@Request.Name"
+                                  Description="@Request.Description"
+                                  Price="@Request.Price"
+                                  NamePlaceholder="Item name"
+                                  DescriptionPlaceholder="Item description"/>
+
+                <UpdateItemDeletePaper OnDeleteClick="ShowDeleteItemDialogAsync"/>
+            </MudStack>
+        </MudItem>
+    </MudGrid>
+</StatefulView>

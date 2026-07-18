@@ -73,6 +73,20 @@ internal sealed class ItemApiClient(IHttpClientFactory httpClientFactory)
         }
     }
 
+    internal async Task UpdateItemAsync(
+        Guid id,
+        UpdateItemRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await _httpClient
+            .PutAsJsonAsync($"api/items/{id}", request, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+    }
+
     internal async Task DeleteItemAsync(Guid id, CancellationToken cancellationToken = default)
     {
         HttpResponseMessage response = await _httpClient

@@ -37,6 +37,7 @@ public sealed partial class UpdateCategoryPage
     private bool IsLoading { get; set; } = true;
 
     private string? CategoryName { get; set; }
+
     private bool CategoryContainsItems { get; set; }
 
     private UpdateCategoryRequest? Request { get; set; }

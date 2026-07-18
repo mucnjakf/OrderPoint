@@ -30,7 +30,7 @@ public sealed partial class ItemPage
     private List<BreadcrumbItem> Breadcrumbs { get; set; } =
     [
         new("Dashboard", href: "/", icon: Icons.Material.Filled.Dashboard),
-        new("Items", href: "/items", icon: Icons.Material.Filled.Category),
+        new("Items", href: "/items", icon: Icons.Material.Filled.MenuBook),
         new("Details", href: null, disabled: true, icon: Icons.Material.Filled.Notes)
     ];
 

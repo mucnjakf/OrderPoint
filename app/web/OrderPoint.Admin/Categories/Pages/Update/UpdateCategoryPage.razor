@@ -8,6 +8,7 @@
               ShowContent="@(Request is not null)"
               EmptyStateIcon="@Icons.Material.Filled.Category"
               EmptyStateText="@("No category found")">
+    
     <MudGrid Spacing="3" Class="mb-3">
         <MudItem xs="12" md="8">
             <EditForm Model="@Request" OnValidSubmit="OnValidSubmitAsync">
@@ -79,6 +80,7 @@
                 <CategoryPreviewPaper Name="@Request.Name"
                                       Description="@Request.Description"
                                       Status="@Request.Status"
+                                      ImageUrl="@Request.ImageUrl"
                                       NamePlaceholder="Category name"
                                       DescriptionPlaceholder="Category description"/>
 
