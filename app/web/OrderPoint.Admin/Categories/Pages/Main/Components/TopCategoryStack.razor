@@ -8,10 +8,9 @@
                   @onmouseover="() => HoveredCategoryId = category.Id"
                   @onmouseout="() => HoveredCategoryId = null">
 
-            <MudImage Src="images/mony.jpg"
-                      Alt="Mony the dog"
-                      Elevation="25"
-                      Class="rounded-lg mb-3"
+            <MudImage Src="@(category.ImageUrl ?? "images/image-placeholder.svg")"
+                      Alt="Category image"
+                      Class="mb-3"
                       Width="55"
                       Height="55"/>
 

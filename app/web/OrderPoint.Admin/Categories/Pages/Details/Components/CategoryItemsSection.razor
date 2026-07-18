@@ -28,10 +28,8 @@
 
     <RowTemplate>
         <MudTd Class="d-flex justify-end">
-            <MudImage Src="images/mony.jpg"
-                      Alt="Mony the dog"
-                      Elevation="25"
-                      Class="rounded-lg"
+            <MudImage Src="@(context.ImageUrl ?? "images/image-placeholder.svg")"
+                      Alt="Category image"
                       Width="55"
                       Height="55"/>
         </MudTd>

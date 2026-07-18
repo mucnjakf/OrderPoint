@@ -7,6 +7,10 @@ public sealed partial class CategoryPreviewPaper
 {
     [Parameter]
     [EditorRequired]
+    public string? ImageUrl { get; set; }
+
+    [Parameter]
+    [EditorRequired]
     public string Name { get; set; }
 
     [Parameter]
