@@ -43,6 +43,22 @@ internal sealed class ItemApiClient(IHttpClientFactory httpClientFactory)
         return result.Data;
     }
 
+    internal async Task<ItemDto> GetItemAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await _httpClient.GetAsync($"api/items/{id}", cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+
+        GetItemResponse result =
+            await response.Content.ReadFromJsonAsync<GetItemResponse>(cancellationToken)
+            ?? throw new InvalidOperationException($"Unable to parse {nameof(GetItemResponse)}");
+
+        return result.Data;
+    }
+
     internal async Task DeleteItemAsync(Guid id, CancellationToken cancellationToken = default)
     {
         HttpResponseMessage response = await _httpClient

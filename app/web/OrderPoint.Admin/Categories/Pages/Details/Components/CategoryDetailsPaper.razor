@@ -28,7 +28,7 @@
 
         <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
                         Label="Updated"
-                        Text="@(Category.UpdatedAtUtc is null ? "-" : Category.UpdatedAtUtc.Value.ToString("G"))"
+                        Text="@(Category.UpdatedAtUtc.HasValue ? Category.UpdatedAtUtc.Value.ToString("G") : "-")"
                         ShowDivider="true"/>
 
         <DetailsActionsStack

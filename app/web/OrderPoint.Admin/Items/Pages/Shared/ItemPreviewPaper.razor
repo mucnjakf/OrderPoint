@@ -1,0 +1,19 @@
+﻿<MudPaper Class="d-flex flex-column flex-grow-1 align-center justify-center pa-10" Style="height: 100%">
+    <MudImage Src="@(ImageUrl ?? "images/image-placeholder.svg")"
+              Alt="Category image"
+              Class="mb-3"
+              Width="55"
+              Height="55"/>
+
+    <MudText Typo="Typo.body1" Class="mb-3">
+        @(string.IsNullOrWhiteSpace(Name) ? NamePlaceholder : Name)
+    </MudText>
+
+    <MudText Typo="Typo.body2" Class="mb-5" Style="max-width: 100%; word-wrap: break-word; text-align: center;">
+        @(string.IsNullOrWhiteSpace(Description) ? DescriptionPlaceholder : Description)
+    </MudText>
+
+    <MudText Typo="Typo.h6">
+        @Price.ToString("C", CultureInfo.CurrentCulture)
+    </MudText>
+</MudPaper>

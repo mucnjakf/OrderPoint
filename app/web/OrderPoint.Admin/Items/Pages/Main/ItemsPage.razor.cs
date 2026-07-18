@@ -121,7 +121,7 @@ public sealed partial class ItemsPage
             SelectedCategory?.Id);
     }
 
-    private async Task ShowDeleteItemDialogAsync(Guid itemId, string itemName)
+    private async Task ShowDeleteItemDialogAsync(Guid id, string itemName)
     {
         var parameters = new DialogParameters<DeleteItemDialog>
         {
@@ -142,7 +142,7 @@ public sealed partial class ItemsPage
         if (!dialogResult.Canceled)
         {
             await ApiService.ExecuteAsync(async ()
-                => await ItemApiClient.DeleteItemAsync(itemId));
+                => await ItemApiClient.DeleteItemAsync(id));
 
             Snackbar.Add($"Item {itemName} deleted successfully", Severity.Success);
 

@@ -131,7 +131,7 @@ public sealed partial class CategoriesPage
             SelectedStatus);
     }
 
-    private async Task ShowDeleteCategoryDialogAsync(Guid categoryId, string categoryName)
+    private async Task ShowDeleteCategoryDialogAsync(Guid id, string categoryName)
     {
         var parameters = new DialogParameters<DeleteCategoryDialog>
         {
@@ -152,7 +152,7 @@ public sealed partial class CategoriesPage
         if (!dialogResult.Canceled)
         {
             await ApiService.ExecuteAsync(async ()
-                => await CategoryApiClient.DeleteCategoryAsync(categoryId));
+                => await CategoryApiClient.DeleteCategoryAsync(id));
 
             Snackbar.Add($"Category {categoryName} deleted successfully", Severity.Success);
 

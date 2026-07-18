@@ -1,0 +1,49 @@
+﻿<MudPaper Class="pa-5">
+    <MudStack>
+        <TextDisplayRow Icon="@Icons.Material.Filled.Numbers"
+                        Label="ID"
+                        Text="@Item.Id.ToString()"
+                        ShowDivider="true"/>
+
+        <TextDisplayRow Icon="@Icons.Material.Filled.ShortText"
+                        Label="Name"
+                        Text="@Item.Name"
+                        ShowDivider="true"/>
+
+        <TextDisplayRow Icon="@Icons.Material.Filled.Description"
+                        Label="Description"
+                        Text="@Item.Description"
+                        ShowDivider="true"/>
+
+        <TextDisplayRow Icon="@Icons.Material.Filled.LocalDrink"
+                        Label="Portion"
+                        Text="@Item.Portion.ToString(CultureInfo.CurrentCulture)"
+                        ShowDivider="true"/>
+
+        <TextDisplayRow Icon="@Icons.Material.Filled.AttachMoney"
+                        Label="Price"
+                        Text="@Item.Price.ToString("C", CultureInfo.CurrentCulture)"
+                        ShowDivider="true"/>
+
+        <TextDisplayRow Icon="@Icons.Material.Filled.Category"
+                        Label="Category"
+                        Text="@Item.Category.Name"
+                        ShowDivider="true"/>
+
+        <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
+                        Label="Created"
+                        Text="@Item.CreatedAtUtc.ToString("G")"
+                        ShowDivider="true"/>
+
+        <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
+                        Label="Updated"
+                        Text="@(Item.UpdatedAtUtc.HasValue ? Item.UpdatedAtUtc.Value.ToString("G") : "-")"
+                        ShowDivider="true"/>
+
+        <DetailsActionsStack
+            UpdateButtonHref="@($"/items/{Item.Id}/update?returnUrl=/items/{Item.Id}")"
+            DeleteButtonDisabled="@false"
+            DeleteButtonDisabledTooltipText="@string.Empty"
+            OnDeleteClick="@OnDeleteClickedAsync"/>
+    </MudStack>
+</MudPaper>

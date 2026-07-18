@@ -1,0 +1,24 @@
+﻿@page "/items/{id:guid}"
+
+<PageTitle>Item Details</PageTitle>
+
+<PageHeader Text="Item details" Breadcrumbs="Breadcrumbs"/>
+
+<StatefulView IsLoading="@IsLoading"
+              ShowContent="@true"
+              EmptyStateIcon="@Icons.Material.Filled.MenuBook"
+              EmptyStateText="@("No item found")">
+    <MudGrid Spacing="3" Class="mb-5">
+        <MudItem xs="12" md="4">
+            <ItemPreviewPaper ImageUrl="@Item.ImageUrl"
+                              Name="@Item.Name"
+                              Description="@Item.Description"
+                              Price="@Item.Price"/>
+        </MudItem>
+
+        <MudItem xs="12" md="8">
+            <ItemDetailsPaper Item="Item"
+                              OnDeleteClick="ShowDeleteItemDialogAsync"/>
+        </MudItem>
+    </MudGrid>
+</StatefulView>

@@ -1,10 +1,11 @@
 ﻿<MudText Typo="Typo.h5">Items</MudText>
 
-@* TODO: maybe add create read update delete *@
+@* TODO: maybe add create update delete *@
 <DataTable TItem="ItemDto"
            Items="Items"
            Pagination="Pagination"
            IsLoading="IsLoading"
+           DetailsButtonHref="@(item => $"/items/{item.Id}")"
            SearchLabel="Search by name"
            SearchQuery="@SearchQuery"
            SearchQueryChanged="SearchQueryChanged"
@@ -43,7 +44,7 @@
         </MudTd>
 
         <MudTd DataLabel="Price">
-            € @context.Price
+            @context.Price.ToString("C", CultureInfo.CurrentCulture)
         </MudTd>
 
         <MudTd DataLabel="Created">
