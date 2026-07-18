@@ -4,43 +4,43 @@
 
 <PageHeader Text="Categories" Breadcrumbs="Breadcrumbs"/>
 
-<StatefulView IsLoading="IsLoadingTop"
-              ShowContent="TopCategories.Any()"
+<StatefulView IsLoading="@IsLoadingTop"
+              ShowContent="@TopCategories.Any()"
               EmptyStateIcon="@Icons.Material.Filled.Category"
-              EmptyStateText="No categories yet">
-    <TopCategoryStack Categories="TopCategories"/>
+              EmptyStateText="@("No categories found")">
+    <TopCategoryStack Categories="@TopCategories"/>
 </StatefulView>
 
-<DataTable TItem="CategoryDto"
-           Items="Categories"
-           Pagination="Pagination"
-           IsLoading="IsLoading"
-           CreateButtonText="New category"
-           CreateButtonHref="/categories/create"
+<DataTable TItem="@CategoryDto"
+           Items="@Categories"
+           Pagination="@Pagination"
+           IsLoading="@IsLoading"
+           CreateButtonText="@("New category")"
+           CreateButtonHref="@("/categories/create")"
            DetailsButtonHref="@(category => $"/categories/{category.Id}")"
            UpdateButtonHref="@(category => $"/categories/{category.Id}/update?returnUrl=/categories")"
            DeleteButtonDisabled="@(category => category.ItemsCount > 0)"
-           DeleteButtonDisabledTooltipText="Category contains items"
-           OnDeleteClick="category => ShowDeleteCategoryDialogAsync(category.Id, category.Name)"
-           SearchLabel="Search by name"
+           DeleteButtonDisabledTooltipText="@("Category contains items")"
+           OnDeleteClick="@(category => ShowDeleteCategoryDialogAsync(category.Id, category.Name))"
+           SearchLabel="@("Search by name")"
            SearchQuery="@SearchQuery"
-           SearchQueryChanged="value => SearchQuery = value"
+           SearchQueryChanged="@(value => SearchQuery = value)"
            SelectedSortBy="@SelectedSortBy"
-           SelectedSortByChanged="value => SelectedSortBy = value"
-           SortByOptions="Enum.GetNames(typeof(CategorySortBy))"
-           GetSortByLabel="CategorySorting.GetSortByLabel"
-           GetSortByIcon="CategorySorting.GetSortByIcon"
-           OnSearchChanged="OnSearchChangedAsync"
-           OnSortChanged="OnSortChangedAsync"
-           OnPageChanged="OnPageChanged"
-           NoRecordsIcon="@Icons.Material.Filled.Category"
-           NoRecordsText="No categories found">
+           SelectedSortByChanged="@(value => SelectedSortBy = value)"
+           SortByOptions="@Enum.GetNames(typeof(CategorySortBy))"
+           GetSortByLabel="@CategorySorting.GetSortByLabel"
+           GetSortByIcon="@CategorySorting.GetSortByIcon"
+           OnSearchChanged="@OnSearchChangedAsync"
+           OnSortChanged="@OnSortChangedAsync"
+           OnPageChanged="@OnPageChanged"
+           EmptyStateIcon="@Icons.Material.Filled.Category"
+           EmptyStateText="@("No categories found")">
     <FilterContent>
         <MudSelect @bind-Value="SelectedStatus"
                    @bind-Value:after="OnStatusChangedAsync"
                    T="CategoryStatus?"
                    Variant="Variant.Outlined"
-                   Label="Status"
+                   Label="@("Status")"
                    FitContent="true">
 
             <MudSelectItem Value="@(null)" T="CategoryStatus?">

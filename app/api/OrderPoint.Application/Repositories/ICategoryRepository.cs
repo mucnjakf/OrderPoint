@@ -14,6 +14,8 @@ public interface ICategoryRepository
         CategorySortBy? sortBy = null,
         CancellationToken cancellationToken = default);
 
+    Task<IReadOnlyList<Category>> SearchAsync(string searchQuery, CancellationToken cancellationToken = default);
+
     Task<Category?> GetAsync(Guid id, CancellationToken cancellationToken = default);
 
     Task CreateAsync(Category category, CancellationToken cancellationToken = default);

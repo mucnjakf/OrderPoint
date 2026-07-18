@@ -33,6 +33,19 @@ internal sealed class CategoryEfCoreRepository(ApplicationDbContext dbContext) :
         return (categories.AsReadOnly(), totalCount);
     }
 
+    public async Task<IReadOnlyList<Category>> SearchAsync(
+        string searchQuery,
+        CancellationToken cancellationToken = default)
+    {
+        IQueryable<Category> query = dbContext.Categories
+            .Include(category => category.Items);
+
+        query = SearchCategories(query, searchQuery);
+        query = SortCategories(query, CategorySortBy.NameDesc);
+
+        return await query.ToListAsync(cancellationToken);
+    }
+
     public async Task<Category?> GetAsync(Guid id, CancellationToken cancellationToken = default)
         => await dbContext.Categories.SingleOrDefaultAsync(category => category.Id == id, cancellationToken);
 

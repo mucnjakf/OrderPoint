@@ -42,4 +42,15 @@ internal sealed class ItemApiClient(IHttpClientFactory httpClientFactory)
 
         return result.Data;
     }
+
+    internal async Task DeleteItemAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await _httpClient
+            .DeleteAsync($"api/items/{id}", cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+    }
 }

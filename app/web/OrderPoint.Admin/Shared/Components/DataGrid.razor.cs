@@ -3,7 +3,7 @@ using OrderPoint.Admin.Shared.Dtos;
 
 namespace OrderPoint.Admin.Shared.Components;
 
-public sealed partial class DataTable<TItem>
+public sealed partial class DataGrid<TItem>
 {
     [Parameter]
     [EditorRequired]
@@ -84,10 +84,6 @@ public sealed partial class DataTable<TItem>
 
     [Parameter]
     public string? CreateButtonHref { get; set; }
-
-    [Parameter]
-    [EditorRequired]
-    public RenderFragment HeaderContent { get; set; }
 
     [Parameter]
     [EditorRequired]

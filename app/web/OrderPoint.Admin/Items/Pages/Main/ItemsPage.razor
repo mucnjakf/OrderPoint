@@ -1,0 +1,78 @@
+﻿@page "/items"
+
+<PageTitle>Items</PageTitle>
+
+<PageHeader Text="@("Items")" Breadcrumbs="@Breadcrumbs"/>
+
+<DataGrid TItem="@ItemDto"
+          Items="@Items"
+          Pagination="@Pagination"
+          IsLoading="@IsLoading"
+          SearchLabel="@("Search by name")"
+          SearchQuery="@SearchQuery"
+          SearchQueryChanged="@(value => SearchQuery = value)"
+          SelectedSortBy="@SelectedSortBy"
+          SelectedSortByChanged="@(value => SelectedSortBy = value)"
+          OnSearchChanged="@OnSearchChangedAsync"
+          OnSortChanged="@OnSortChangedAsync"
+          OnPageChanged="@OnPageChanged"
+          SortByOptions="@Enum.GetNames(typeof(ItemSortBy))"
+          GetSortByLabel="@ItemSorting.GetSortByLabel"
+          GetSortByIcon="@ItemSorting.GetSortByIcon"
+          CreateButtonText="@("New item")"
+          DetailsButtonHref="@(item => $"/items/{item.Id}")"
+          UpdateButtonHref="@(item => $"/items/{item.Id}/update?returnUrl=/items")"
+          DeleteButtonDisabled="@(item => false)"
+          DeleteButtonDisabledTooltipText="@string.Empty"
+          OnDeleteClick="@(item => ShowDeleteItemDialogAsync(item.Id, item.Name))"
+          CreateButtonHref="@("/items/create")"
+          EmptyStateIcon="@Icons.Material.Filled.MenuBook"
+          EmptyStateText="@("No items found")">
+
+    <FilterContent>
+        <MudAutocomplete @bind-Value="@SelectedCategory"
+                         @bind-Value:after="@OnCategoryChangedAsync"
+                         T="CategoryDto"
+                         SearchFunc="OnCategorySearchAsync"
+                         Variant="@Variant.Outlined"
+                         Label="@("Filter by category")"
+                         Clearable="@true"
+                         ShowProgressIndicator="@true"
+                         Class="@("mt-0")"
+                         ToStringFunc="@(category => category?.Name)">
+            <NoItemsTemplate>
+                <MudText Align="Align.Center" Class="px-3 py-1">
+                    No items found
+                </MudText>
+            </NoItemsTemplate>
+        </MudAutocomplete>
+    </FilterContent>
+
+    <RowTemplate>
+        <MudCardMedia Image="images/mony.jpg" Height="200"/>
+
+        <MudCardContent>
+            <MudStack Row="@true" Class="mb-1 d-flex justify-space-between">
+                <MudText Typo="Typo.h6">
+                    @context.Name
+                </MudText>
+
+                <MudText Typo="Typo.h6">
+                    € @context.Price
+                </MudText>
+            </MudStack>
+
+            <MudText Typo="Typo.body1" Class="mb-1">
+                @context.Category.Name
+            </MudText>
+
+            <MudText Typo="Typo.body2" Class="mb-2">
+                @context.Description
+            </MudText>
+
+            <MudText Typo="Typo.caption">
+                @context.CreatedAtUtc.ToString("G")
+            </MudText>
+        </MudCardContent>
+    </RowTemplate>
+</DataGrid>

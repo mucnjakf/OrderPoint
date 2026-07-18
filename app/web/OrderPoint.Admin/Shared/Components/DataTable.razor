@@ -2,42 +2,35 @@
 
 <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.End" Class="mb-3">
     <MudStack Row="true">
+        <MudTextField @bind-Value="SearchQuery"
+                      @bind-Value:after="OnSearchChangedAsync"
+                      T="string"
+                      Label="@SearchLabel"
+                      Variant="Variant.Outlined"
+                      Clearable="true"
+                      DebounceInterval="500"
+                      Immediate="false"/>
 
-        @if (Items.Any() || !string.IsNullOrEmpty(SearchQuery))
-        {
-            <MudTextField @bind-Value="SearchQuery"
-                          @bind-Value:after="OnSearchChangedAsync"
-                          T="string"
-                          Label="@SearchLabel"
-                          Variant="Variant.Outlined"
-                          Clearable="true"
-                          DebounceInterval="500"
-                          Immediate="false"/>
-        }
-
-        @if (Items.Any())
-        {
-            <MudSelect @bind-Value="SelectedSortBy"
-                       @bind-Value:after="OnSortChangedAsync"
-                       T="string"
-                       Variant="Variant.Outlined"
-                       Label="Sort by"
-                       FitContent="true">
-                @foreach (string sortBy in SortByOptions)
-                {
-                    <MudSelectItem Value="@(sortBy)">
-                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
-                            <MudText Typo="Typo.body1">@GetSortByLabel(sortBy)</MudText>
-                            <MudIcon Icon="@GetSortByIcon(sortBy)" Size="Size.Small"/>
-                        </MudStack>
-                    </MudSelectItem>
-                }
-            </MudSelect>
-
-            if (FilterContent is not null)
+        <MudSelect @bind-Value="SelectedSortBy"
+                   @bind-Value:after="OnSortChangedAsync"
+                   T="string"
+                   Variant="Variant.Outlined"
+                   Label="Sort by"
+                   FitContent="true">
+            @foreach (string sortBy in SortByOptions)
             {
-                @FilterContent
+                <MudSelectItem Value="@(sortBy)">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                        <MudText Typo="Typo.body1">@GetSortByLabel(sortBy)</MudText>
+                        <MudIcon Icon="@GetSortByIcon(sortBy)" Size="Size.Small"/>
+                    </MudStack>
+                </MudSelectItem>
             }
+        </MudSelect>
+
+        @if (FilterContent is not null)
+        {
+            @FilterContent
         }
     </MudStack>
 
@@ -52,87 +45,72 @@
     }
 </MudStack>
 
-<MudTable Items="Items" Hover="true" Loading="@IsLoading">
-    <HeaderContent>
-        @HeaderContent
-        <MudTh Style="width: 150px;"></MudTh>
-    </HeaderContent>
+<StatefulView IsLoading="@IsLoading"
+              ShowContent="@Items.Any()"
+              EmptyStateIcon="@EmptyStateIcon"
+              EmptyStateText="@EmptyStateText">
 
-    <RowTemplate>
-        @RowTemplate(context)
+    <MudTable Items="Items" Hover="true">
+        <HeaderContent>
+            @HeaderContent
+            <MudTh Style="width: 150px;"></MudTh>
+        </HeaderContent>
 
-        <MudTd>
-            @if (DetailsButtonHref is not null)
-            {
-                <MudTooltip Text="Details">
-                    <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye"
-                                   Color="Color.Primary"
-                                   Size="Size.Small"
-                                   Href="@DetailsButtonHref(context)"/>
-                </MudTooltip>
-            }
+        <RowTemplate>
+            @RowTemplate(context)
 
-            @if (UpdateButtonHref is not null)
-            {
-                <MudTooltip Text="Edit">
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                   Color="Color.Secondary"
-                                   Size="Size.Small"
-                                   Class="mx-2"
-                                   Href="@UpdateButtonHref(context)"/>
-                </MudTooltip>
-            }
+            <MudTd>
+                @if (DetailsButtonHref is not null)
+                {
+                    <MudTooltip Text="Details">
+                        <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye"
+                                       Color="Color.Primary"
+                                       Size="Size.Small"
+                                       Href="@DetailsButtonHref(context)"/>
+                    </MudTooltip>
+                }
 
-            @if (DeleteButtonDisabled is not null && DeleteButtonDisabledTooltipText is not null)
-            {
-                <MudTooltip Text="@(DeleteButtonDisabled(context) ? DeleteButtonDisabledTooltipText : "Delete")">
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                   Color="Color.Error"
-                                   Size="Size.Small"
-                                   Disabled="DeleteButtonDisabled(context)"
-                                   OnClick="() => OnDeleteClickedAsync(context)"/>
-                </MudTooltip>
-            }
-        </MudTd>
-    </RowTemplate>
+                @if (UpdateButtonHref is not null)
+                {
+                    <MudTooltip Text="Edit">
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                       Color="Color.Secondary"
+                                       Size="Size.Small"
+                                       Class="mx-2"
+                                       Href="@UpdateButtonHref(context)"/>
+                    </MudTooltip>
+                }
 
-    <NoRecordsContent>
-        <MudStack AlignItems="AlignItems.Center" Spacing="3" Class="py-10">
-            <MudIcon Icon="@NoRecordsIcon" Size="Size.Large"/>
+                @if (DeleteButtonDisabled is not null && DeleteButtonDisabledTooltipText is not null)
+                {
+                    <MudTooltip Text="@(DeleteButtonDisabled(context) ? DeleteButtonDisabledTooltipText : "Delete")">
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                       Color="Color.Error"
+                                       Size="Size.Small"
+                                       Disabled="DeleteButtonDisabled(context)"
+                                       OnClick="() => OnDeleteClickedAsync(context)"/>
+                    </MudTooltip>
+                }
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
 
-            <MudText Typo="Typo.h6">
-                @NoRecordsText
+    @if (Pagination is not null && Pagination.TotalPages > 1)
+    {
+        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mt-3">
+            <MudText Typo="Typo.caption">
+                Showing @((Pagination.PageNumber - 1) * Pagination.PageSize + 1)
+                to @(Math.Min(Pagination.PageNumber * Pagination.PageSize, Pagination.TotalCount))
+                of @Pagination.TotalCount items
             </MudText>
 
-            <MudText Typo="Typo.body2">
-                @if (!string.IsNullOrWhiteSpace(SearchQuery))
-                {
-                    <MudText Typo="Typo.caption">Try adjusting your search query.</MudText>
-                }
-                else
-                {
-                    <MudText Typo="Typo.caption">Get started by creating your first item.</MudText>
-                }
-            </MudText>
+            <MudPagination Count="Pagination.TotalPages"
+                           Selected="Pagination.PageNumber"
+                           SelectedChanged="OnPageChanged"
+                           BoundaryCount="1"
+                           MiddleCount="3"
+                           ShowFirstButton="true"
+                           ShowLastButton="true"/>
         </MudStack>
-    </NoRecordsContent>
-</MudTable>
-
-@if (Pagination is not null && Pagination.TotalPages > 1)
-{
-    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mt-3">
-        <MudText Typo="Typo.caption">
-            Showing @((Pagination.PageNumber - 1) * Pagination.PageSize + 1)
-            to @(Math.Min(Pagination.PageNumber * Pagination.PageSize, Pagination.TotalCount))
-            of @Pagination.TotalCount items
-        </MudText>
-
-        <MudPagination Count="Pagination.TotalPages"
-                       Selected="Pagination.PageNumber"
-                       SelectedChanged="OnPageChanged"
-                       BoundaryCount="1"
-                       MiddleCount="3"
-                       ShowFirstButton="true"
-                       ShowLastButton="true"/>
-    </MudStack>
-}
+    }
+</StatefulView>

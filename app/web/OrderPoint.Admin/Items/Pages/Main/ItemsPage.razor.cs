@@ -1,15 +1,16 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using OrderPoint.Admin.Categories.Api;
-using OrderPoint.Admin.Categories.Dialogs;
 using OrderPoint.Admin.Categories.Dtos;
-using OrderPoint.Admin.Categories.Enumerations;
+using OrderPoint.Admin.Items.Api;
+using OrderPoint.Admin.Items.Dialogs;
+using OrderPoint.Admin.Items.Dtos;
 using OrderPoint.Admin.Shared.Dtos;
 using OrderPoint.Admin.Shared.Services;
 
-namespace OrderPoint.Admin.Categories.Pages.Main;
+namespace OrderPoint.Admin.Items.Pages.Main;
 
-public sealed partial class CategoriesPage
+public sealed partial class ItemsPage
 {
     [Inject]
     private IDialogService DialogService { get; set; } = null!;
@@ -21,121 +22,109 @@ public sealed partial class CategoriesPage
     private ApiService ApiService { get; set; } = null!;
 
     [Inject]
+    private ItemApiClient ItemApiClient { get; set; } = null!;
+
+    [Inject]
     private CategoryApiClient CategoryApiClient { get; set; } = null!;
 
     private List<BreadcrumbItem> Breadcrumbs { get; set; } =
     [
         new("Dashboard", href: "/", icon: Icons.Material.Filled.Dashboard),
-        new("Categories", href: null, disabled: true, icon: Icons.Material.Filled.Category)
+        new("Items", href: null, disabled: true, icon: Icons.Material.Filled.MenuBook)
     ];
 
-    private IReadOnlyList<CategoryDto> TopCategories { get; set; } = [];
+    private PaginationDto<ItemDto>? Pagination { get; set; }
 
-    private PaginationDto<CategoryDto>? Pagination { get; set; }
-
-    private IReadOnlyList<CategoryDto> Categories { get; set; } = [];
+    private IReadOnlyList<ItemDto> Items { get; set; } = [];
 
     private string SelectedSortBy { get; set; } = "CreatedAtUtcDesc";
 
     private string? SearchQuery { get; set; }
 
-    private CategoryStatus? SelectedStatus { get; set; }
-
-    private bool IsLoadingTop { get; set; } = true;
+    private CategoryDto? SelectedCategory { get; set; }
 
     private bool IsLoading { get; set; } = true;
 
     protected override async Task OnInitializedAsync()
     {
-        await GetTopCategoriesAsync();
-
-        await GetCategoriesAsync(
+        await GetItemsAsync(
             1,
-            10,
+            8,
             SelectedSortBy,
             SearchQuery,
-            SelectedStatus);
+            SelectedCategory?.Id);
     }
 
-    private async Task GetTopCategoriesAsync()
-    {
-        IsLoadingTop = true;
-
-        PaginationDto<CategoryDto> pagination = await ApiService.ExecuteAsync(async ()
-            => await CategoryApiClient.GetCategoriesAsync(1, 5, "ItemsCountDesc"));
-
-        TopCategories = pagination.Items;
-
-        IsLoadingTop = false;
-    }
-
-    private async Task GetCategoriesAsync(
+    private async Task GetItemsAsync(
         int pageNumber,
         int pageSize,
         string sortBy,
         string? searchQuery,
-        CategoryStatus? status)
+        Guid? categoryId)
     {
         IsLoading = true;
 
         Pagination = await ApiService.ExecuteAsync(async ()
-            => await CategoryApiClient.GetCategoriesAsync(
+            => await ItemApiClient.GetItemsAsync(
                 pageNumber,
                 pageSize,
                 sortBy,
                 searchQuery,
-                status));
+                categoryId));
 
-        Categories = Pagination.Items;
+        Items = Pagination.Items;
 
         IsLoading = false;
     }
 
     private async Task OnSearchChangedAsync()
     {
-        await GetCategoriesAsync(
+        await GetItemsAsync(
             1,
-            10,
+            8,
             SelectedSortBy,
             SearchQuery,
-            SelectedStatus);
+            SelectedCategory?.Id);
     }
 
     private async Task OnSortChangedAsync()
     {
-        await GetCategoriesAsync(
+        await GetItemsAsync(
             1,
-            10,
+            8,
             SelectedSortBy,
             SearchQuery,
-            SelectedStatus);
+            SelectedCategory?.Id);
     }
 
-    private async Task OnStatusChangedAsync()
+    private async Task<IEnumerable<CategoryDto>>? OnCategorySearchAsync(string? value, CancellationToken cancellationToken)
+        => await CategoryApiClient.SearchCategoriesAsync(value, cancellationToken);
+
+    private async Task OnCategoryChangedAsync()
     {
-        await GetCategoriesAsync(
+        await GetItemsAsync(
             1,
-            10,
+            8,
             SelectedSortBy,
             SearchQuery,
-            SelectedStatus);
+            SelectedCategory?.Id);
     }
 
     private async Task OnPageChanged(int pageNumber)
     {
-        await GetCategoriesAsync(
+        await GetItemsAsync(
             pageNumber,
-            10,
+            8,
             SelectedSortBy,
             SearchQuery,
-            SelectedStatus);
+            SelectedCategory?.Id);
     }
 
-    private async Task ShowDeleteCategoryDialogAsync(Guid categoryId, string categoryName)
+    private async Task ShowDeleteItemDialogAsync(Guid itemId, string itemName)
     {
-        var parameters = new DialogParameters<DeleteCategoryDialog>
+        var parameters = new DialogParameters<DeleteItemDialog>
         {
-            { dialog => dialog.CategoryName, categoryName }
+            { dialog => dialog.ItemName, itemName }
         };
 
         var options = new DialogOptions
@@ -145,25 +134,23 @@ public sealed partial class CategoriesPage
         };
 
         IDialogReference dialogReference = await DialogService
-            .ShowAsync<DeleteCategoryDialog>(string.Empty, parameters, options);
+            .ShowAsync<DeleteItemDialog>(string.Empty, parameters, options);
 
         DialogResult dialogResult = (await dialogReference.Result)!;
 
         if (!dialogResult.Canceled)
         {
             await ApiService.ExecuteAsync(async ()
-                => await CategoryApiClient.DeleteCategoryAsync(categoryId));
+                => await ItemApiClient.DeleteItemAsync(itemId));
 
-            Snackbar.Add($"Category {categoryName} deleted successfully", Severity.Success);
+            Snackbar.Add($"Item {itemName} deleted successfully", Severity.Success);
 
-            await GetTopCategoriesAsync();
-
-            await GetCategoriesAsync(
+            await GetItemsAsync(
                 1,
                 10,
                 SelectedSortBy,
                 SearchQuery,
-                SelectedStatus);
+                SelectedCategory?.Id);
         }
     }
 }

@@ -4,7 +4,10 @@
 
 <PageHeader Text="Edit category" Breadcrumbs="Breadcrumbs"/>
 
-<StatefulView IsLoading="IsLoading" ShowContent="@(Request is not null)">
+<StatefulView IsLoading="@IsLoading"
+              ShowContent="@(Request is not null)"
+              EmptyStateIcon="@Icons.Material.Filled.Category"
+              EmptyStateText="@("No category found")">
     <MudGrid Spacing="3" Class="mb-3">
         <MudItem xs="12" md="8">
             <EditForm Model="@Request" OnValidSubmit="OnValidSubmitAsync">

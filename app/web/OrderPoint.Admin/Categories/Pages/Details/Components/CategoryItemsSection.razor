@@ -1,7 +1,6 @@
 ﻿<MudText Typo="Typo.h5">Items</MudText>
 
-<MudDivider Class="my-2"/>
-
+@* TODO: maybe add create read update delete *@
 <DataTable TItem="ItemDto"
            Items="Items"
            Pagination="Pagination"
@@ -17,8 +16,8 @@
            OnSearchChanged="OnSearchChanged"
            OnSortChanged="OnSortChanged"
            OnPageChanged="OnPageChanged"
-           NoRecordsIcon="@Icons.Material.Filled.MenuBook"
-           NoRecordsText="No items found">
+           EmptyStateIcon="@Icons.Material.Filled.MenuBook"
+           EmptyStateText="No items found">
     <HeaderContent>
         <MudTh Style="width: 100px"></MudTh>
         <MudTh>Name</MudTh>

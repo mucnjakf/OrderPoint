@@ -2,6 +2,7 @@
 using OrderPoint.Admin.Categories.Api.Responses;
 using OrderPoint.Admin.Categories.Dtos;
 using OrderPoint.Admin.Categories.Enumerations;
+using OrderPoint.Admin.Categories.Sorting;
 using OrderPoint.Admin.Shared.Dtos;
 using OrderPoint.Admin.Shared.Errors;
 
@@ -43,6 +44,38 @@ internal sealed class CategoryApiClient(IHttpClientFactory httpClientFactory)
             ?? throw new InvalidOperationException($"Unable to parse {nameof(GetCategoriesResponse)}");
 
         return result.Data;
+    }
+
+    internal async Task<IReadOnlyList<CategoryDto>> SearchCategoriesAsync(
+        string? searchQuery,
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(searchQuery))
+        {
+            PaginationDto<CategoryDto> result = await GetCategoriesAsync(
+                1,
+                5,
+                nameof(CategorySortBy.NameAsc),
+                null,
+                null,
+                cancellationToken);
+
+            return result.Items;
+        }
+
+        HttpResponseMessage response = await _httpClient
+            .GetAsync($"api/categories/{searchQuery}", cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+
+        SearchCategoriesResponse searchResult =
+            await response.Content.ReadFromJsonAsync<SearchCategoriesResponse>(cancellationToken)
+            ?? throw new InvalidOperationException($"Unable to parse {nameof(SearchCategoriesResponse)}");
+
+        return searchResult.Data;
     }
 
     internal async Task<CategoryDto> GetCategoryAsync(Guid id, CancellationToken cancellationToken = default)
