@@ -52,7 +52,7 @@
         <MudCardMedia Image="images/mony.jpg" Height="200"/>
 
         <MudCardContent>
-            <MudStack Row="@true" Class="mb-1 d-flex justify-space-between">
+            <MudStack Row="@true" Class="mb-2 d-flex justify-space-between">
                 <MudText Typo="Typo.h6">
                     @context.Name
                 </MudText>
@@ -62,15 +62,24 @@
                 </MudText>
             </MudStack>
 
-            <MudText Typo="Typo.body1" Class="mb-1">
+            <MudText Typo="Typo.body1" Class="mb-2">
+                <MudIcon Icon="@Icons.Material.Filled.Circle"
+                         Style="width: 6px; height: 6px; margin-right: 3px"/>
+
                 @context.Category.Name
             </MudText>
 
             <MudText Typo="Typo.body2" Class="mb-2">
+                <MudIcon Icon="@Icons.Material.Filled.Circle"
+                         Style="width: 6px; height: 6px; margin-right: 3px"/>
+
                 @context.Description
             </MudText>
 
-            <MudText Typo="Typo.caption">
+            <MudText Typo="Typo.body2">
+                <MudIcon Icon="@Icons.Material.Filled.Circle"
+                         Style="width: 6px; height: 6px; margin-right: 3px"/>
+
                 @context.CreatedAtUtc.ToString("G")
             </MudText>
         </MudCardContent>

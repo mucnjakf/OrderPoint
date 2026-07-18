@@ -49,7 +49,7 @@ public sealed partial class ItemsPage
     {
         await GetItemsAsync(
             1,
-            8,
+            9,
             SelectedSortBy,
             SearchQuery,
             SelectedCategory?.Id);
@@ -81,7 +81,7 @@ public sealed partial class ItemsPage
     {
         await GetItemsAsync(
             1,
-            8,
+            9,
             SelectedSortBy,
             SearchQuery,
             SelectedCategory?.Id);
@@ -91,20 +91,21 @@ public sealed partial class ItemsPage
     {
         await GetItemsAsync(
             1,
-            8,
+            9,
             SelectedSortBy,
             SearchQuery,
             SelectedCategory?.Id);
     }
 
-    private async Task<IEnumerable<CategoryDto>>? OnCategorySearchAsync(string? value, CancellationToken cancellationToken)
+    private async Task<IEnumerable<CategoryDto>>? OnCategorySearchAsync(string? value,
+        CancellationToken cancellationToken)
         => await CategoryApiClient.SearchCategoriesAsync(value, cancellationToken);
 
     private async Task OnCategoryChangedAsync()
     {
         await GetItemsAsync(
             1,
-            8,
+            9,
             SelectedSortBy,
             SearchQuery,
             SelectedCategory?.Id);
@@ -114,7 +115,7 @@ public sealed partial class ItemsPage
     {
         await GetItemsAsync(
             pageNumber,
-            8,
+            9,
             SelectedSortBy,
             SearchQuery,
             SelectedCategory?.Id);
@@ -147,7 +148,7 @@ public sealed partial class ItemsPage
 
             await GetItemsAsync(
                 1,
-                10,
+                9,
                 SelectedSortBy,
                 SearchQuery,
                 SelectedCategory?.Id);
