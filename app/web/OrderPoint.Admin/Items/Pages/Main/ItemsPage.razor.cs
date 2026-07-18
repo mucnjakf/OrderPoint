@@ -97,7 +97,8 @@ public sealed partial class ItemsPage
             SelectedCategory?.Id);
     }
 
-    private async Task<IEnumerable<CategoryDto>>? OnCategorySearchAsync(string? value,
+    private async Task<IEnumerable<CategoryDto>>? OnCategorySearchAsync(
+        string? value,
         CancellationToken cancellationToken)
         => await CategoryApiClient.SearchCategoriesAsync(value, cancellationToken);
 

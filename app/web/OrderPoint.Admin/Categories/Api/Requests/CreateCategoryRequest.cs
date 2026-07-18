@@ -10,7 +10,7 @@ internal sealed class CreateCategoryRequest
     public string Name { get; set; } = null!;
 
     [Required(ErrorMessage = "Description is required.")]
-    [StringLength(100, ErrorMessage = "Name must be at most 100 characters.")]
+    [StringLength(100, ErrorMessage = "Description must be at most 100 characters.")]
     public string Description { get; set; } = null!;
 
     [Required(ErrorMessage = "Status is required.")]

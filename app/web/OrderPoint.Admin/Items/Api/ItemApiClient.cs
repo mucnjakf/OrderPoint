@@ -1,4 +1,5 @@
-﻿using OrderPoint.Admin.Items.Api.Responses;
+﻿using OrderPoint.Admin.Items.Api.Requests;
+using OrderPoint.Admin.Items.Api.Responses;
 using OrderPoint.Admin.Items.Dtos;
 using OrderPoint.Admin.Shared.Dtos;
 using OrderPoint.Admin.Shared.Errors;
@@ -57,6 +58,19 @@ internal sealed class ItemApiClient(IHttpClientFactory httpClientFactory)
             ?? throw new InvalidOperationException($"Unable to parse {nameof(GetItemResponse)}");
 
         return result.Data;
+    }
+
+    internal async Task CreateItemAsync(
+        CreateItemRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await _httpClient
+            .PostAsJsonAsync("api/items", request, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
     }
 
     internal async Task DeleteItemAsync(Guid id, CancellationToken cancellationToken = default)
