@@ -165,6 +165,44 @@ public sealed partial class CategoriesPage
         }
     }
 
+    private async Task ShowUpdateCategoryDialogAsync(CategoryDto category)
+    {
+        var parameters = new DialogParameters<UpdateCategoryDialog>
+        {
+            { dialog => dialog.Category, category }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true
+        };
+
+        IDialogReference dialogReference = await DialogService
+            .ShowAsync<UpdateCategoryDialog>(string.Empty, parameters, options);
+
+        DialogResult dialogResult = (await dialogReference.Result)!;
+
+        if (!dialogResult.Canceled)
+        {
+            var request = (dialogResult.Data as UpdateCategoryRequest)!;
+
+            await ApiService.ExecuteAsync(async ()
+                => await CategoryApiClient.UpdateCategoryAsync(category.Id, request));
+
+            Snackbar.Add($"Category {request.Name} edited successfully", Severity.Success);
+
+            await GetTopCategoriesAsync();
+
+            await GetCategoriesAsync(
+                1,
+                10,
+                SelectedSortBy,
+                SearchQuery,
+                SelectedStatus);
+        }
+    }
+
     private async Task ShowDeleteCategoryDialogAsync(Guid id, string categoryName)
     {
         var parameters = new DialogParameters<DeleteCategoryDialog>

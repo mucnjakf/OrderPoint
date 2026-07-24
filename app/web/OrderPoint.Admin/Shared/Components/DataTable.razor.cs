@@ -65,16 +65,19 @@ public sealed partial class DataTable<TItem>
     public RenderFragment? FilterContent { get; set; }
 
     [Parameter]
-    public string? CreateButtonText { get; set; }
+    [EditorRequired]
+    public string CreateButtonText { get; set; }
 
     [Parameter]
+    [EditorRequired]
     public EventCallback OnCreateClick { get; set; }
 
     [Parameter]
     public Func<TItem, string>? DetailsButtonHref { get; set; }
 
     [Parameter]
-    public Func<TItem, string>? UpdateButtonHref { get; set; }
+    [EditorRequired]
+    public EventCallback<TItem> OnUpdateClick { get; set; }
 
     [Parameter]
     public Func<TItem, bool>? DeleteButtonDisabled { get; set; }
@@ -116,6 +119,11 @@ public sealed partial class DataTable<TItem>
     private async Task OnCreateClickAsync()
     {
         await OnCreateClick.InvokeAsync();
+    }
+
+    private async Task OnUpdateClickAsync(TItem item)
+    {
+        await OnUpdateClick.InvokeAsync(item);
     }
 
     private async Task OnDeleteClickAsync(TItem item)

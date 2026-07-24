@@ -1,0 +1,83 @@
+﻿<EditForm Model="@Request" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator/>
+
+    <MudDialog ActionsClass="pa-6">
+        <TitleContent>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudIcon Icon="@Icons.Material.Filled.Category"/>
+                <MudText Typo="Typo.h6">Edit category</MudText>
+            </MudStack>
+        </TitleContent>
+
+        <DialogContent>
+            <MudGrid>
+                <MudItem md="8">
+                    <MudTextField Label="Name"
+                                  @bind-Value="Request.Name"
+                                  For="@(() => Request.Name)"
+                                  Class="mb-5 mt-0"
+                                  HelperText="The display name of the category shown to customers."
+                                  Variant="Variant.Outlined"
+                                  Immediate="true"/>
+
+                    <MudTextField Label="Description"
+                                  @bind-Value="Request.Description"
+                                  For="@(() => Request.Description)"
+                                  HelperText="A brief description of what this category contains."
+                                  Variant="Variant.Outlined"
+                                  Class="mb-5"
+                                  Lines="5"
+                                  Immediate="true"/>
+
+                    <MudStack Row="true">
+                        <MudSelect Label="Status"
+                                   T="CategoryStatus"
+                                   @bind-Value="Request.Status"
+                                   For="@(() => Request.Status)"
+                                   HelperText="Controls whether this category is visible to customers."
+                                   Variant="Variant.Outlined">
+                            @foreach (CategoryStatus status in Enum.GetValues<CategoryStatus>())
+                            {
+                                <MudSelectItem Value="@status" T="CategoryStatus">
+                                    <MudText>
+                                        @status.ToString()
+                                    </MudText>
+                                </MudSelectItem>
+                            }
+                        </MudSelect>
+
+                        <MudTextField Label="Image URL"
+                                      Disabled="true"
+                                      @bind-Value="Request.ImageUrl"
+                                      For="@(() => Request.ImageUrl)"
+                                      HelperText="Image upload will be available in a future update."
+                                      Variant="Variant.Outlined"/>
+                    </MudStack>
+                </MudItem>
+
+                <MudItem md="4">
+                    <CategoryPreviewPaper ImageUrl="@Request.ImageUrl"
+                                          Name="@Request.Name"
+                                          Description="@Request.Description"
+                                          Status="@Request.Status"
+                                          NamePlaceholder="Category name"
+                                          DescriptionPlaceholder="Category description"/>
+
+                </MudItem>
+            </MudGrid>
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton OnClick="Cancel" Variant="Variant.Text" Class="mr-5">
+                Cancel
+            </MudButton>
+
+            <MudButton ButtonType="ButtonType.Submit"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Edit">
+                Confirm
+            </MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>

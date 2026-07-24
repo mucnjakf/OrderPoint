@@ -18,7 +18,7 @@
            CreateButtonText="@("New category")"
            OnCreateClick="@ShowCreateCategoryDialogAsync"
            DetailsButtonHref="@(category => $"/categories/{category.Id}")"
-           UpdateButtonHref="@(category => $"/categories/{category.Id}/update?returnUrl=/categories")"
+           OnUpdateClick="@(ShowUpdateCategoryDialogAsync)"
            DeleteButtonDisabled="@(category => category.ItemsCount > 0)"
            DeleteButtonDisabledTooltipText="@("Category contains items")"
            OnDeleteClick="@(category => ShowDeleteCategoryDialogAsync(category.Id, category.Name))"

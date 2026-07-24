@@ -1,12 +1,11 @@
 ﻿<MudText Typo="Typo.h5">Items</MudText>
 
-@* TODO: add create *@
 <DataTable TItem="ItemDto"
            Items="Items"
            Pagination="Pagination"
            IsLoading="IsLoading"
            DetailsButtonHref="@(item => $"/items/{item.Id}")"
-           UpdateButtonHref="@(item => $"/items/{item.Id}/update")"
+           OnUpdateClick="@(ShowUpdateItemDialogAsync)"
            DeleteButtonDisabled="@(item => false)"
            DeleteButtonDisabledTooltipText="@string.Empty"
            OnDeleteClick="@(item => ShowDeleteItemDialogAsync(item.Id, item.Name))"
@@ -22,7 +21,9 @@
            OnSortChanged="OnSortChanged"
            OnPageChanged="OnPageChanged"
            EmptyStateIcon="@Icons.Material.Filled.MenuBook"
-           EmptyStateText="No items found">
+           EmptyStateText="No items found"
+           CreateButtonText="New item"
+           OnCreateClick="@ShowCreateItemDialogAsync">
     <HeaderContent>
         <MudTh Style="width: 100px"></MudTh>
         <MudTh>Name</MudTh>

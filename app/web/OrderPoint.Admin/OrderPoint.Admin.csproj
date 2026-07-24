@@ -31,6 +31,8 @@
       <_ContentIncludedByDefault Remove="Features\Dashboard\DashboardPage.razor" />
       <_ContentIncludedByDefault Remove="Categories\Pages\Create\Components\CreateCategoryAlert.razor" />
       <_ContentIncludedByDefault Remove="Categories\Pages\Create\CreateCategoryPage.razor" />
+      <_ContentIncludedByDefault Remove="Categories\Pages\Update\Components\UpdateCategoryDeletePaper.razor" />
+      <_ContentIncludedByDefault Remove="Categories\Pages\Update\UpdateCategoryPage.razor" />
     </ItemGroup>
 
     <ItemGroup>
@@ -40,7 +42,6 @@
     <ItemGroup>
       <AdditionalFiles Include="Categories\Pages\Details\CategoryPage.razor" />
       <AdditionalFiles Include="Categories\Pages\Main\CategoriesPage.razor" />
-      <AdditionalFiles Include="Categories\Pages\Update\UpdateCategoryPage.razor" />
       <AdditionalFiles Include="Dashboard\DashboardPage.razor" />
       <AdditionalFiles Include="Shared\Layout\MainLayout.razor" />
       <AdditionalFiles Include="Shared\Pages\NotFound.razor" />

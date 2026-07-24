@@ -34,15 +34,12 @@
         }
     </MudStack>
 
-    @if (CreateButtonText is not null)
-    {
-        <MudButton Variant="Variant.Filled"
-                   StartIcon="@Icons.Material.Filled.Add"
-                   Color="Color.Primary"
-                   OnClick="OnCreateClickAsync">
-            @CreateButtonText
-        </MudButton>
-    }
+    <MudButton Variant="Variant.Filled"
+               StartIcon="@Icons.Material.Filled.Add"
+               Color="Color.Primary"
+               OnClick="OnCreateClickAsync">
+        @CreateButtonText
+    </MudButton>
 </MudStack>
 
 <StatefulView IsLoading="@IsLoading"
@@ -70,16 +67,13 @@
                     </MudTooltip>
                 }
 
-                @if (UpdateButtonHref is not null)
-                {
-                    <MudTooltip Text="Edit">
-                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                       Color="Color.Secondary"
-                                       Size="Size.Small"
-                                       Class="mx-2"
-                                       Href="@UpdateButtonHref(context)"/>
-                    </MudTooltip>
-                }
+                <MudTooltip Text="Edit">
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                   Color="Color.Secondary"
+                                   Size="Size.Small"
+                                   Class="mx-2"
+                                   OnClick="() => OnUpdateClickAsync(context)"/>
+                </MudTooltip>
 
                 @if (DeleteButtonDisabled is not null && DeleteButtonDisabledTooltipText is not null)
                 {
