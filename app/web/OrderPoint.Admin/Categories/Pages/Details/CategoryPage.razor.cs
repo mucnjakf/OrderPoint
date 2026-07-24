@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using OrderPoint.Admin.Categories.Api;
+using OrderPoint.Admin.Categories.Api.Requests;
 using OrderPoint.Admin.Categories.Dialogs;
 using OrderPoint.Admin.Categories.Dtos;
 using OrderPoint.Admin.Items.Api;
@@ -136,6 +137,37 @@ public sealed partial class CategoryPage
             SelectedSortBy,
             SearchQuery,
             Id);
+    }
+
+    private async Task ShowUpdateCategoryDialogAsync()
+    {
+        var parameters = new DialogParameters<UpdateCategoryDialog>
+        {
+            { dialog => dialog.Category, Category }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true
+        };
+
+        IDialogReference dialogReference = await DialogService
+            .ShowAsync<UpdateCategoryDialog>(string.Empty, parameters, options);
+
+        DialogResult dialogResult = (await dialogReference.Result)!;
+
+        if (!dialogResult.Canceled)
+        {
+            var request = (dialogResult.Data as UpdateCategoryRequest)!;
+
+            await ApiService.ExecuteAsync(async ()
+                => await CategoryApiClient.UpdateCategoryAsync(Category.Id, request));
+
+            Snackbar.Add($"Category {request.Name} edited successfully", Severity.Success);
+
+            await OnParametersSetAsync();
+        }
     }
 
     private async Task ShowDeleteCategoryDialogAsync()

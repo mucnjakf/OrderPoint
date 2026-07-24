@@ -32,9 +32,9 @@
                         ShowDivider="true"/>
 
         <DetailsActionsStack
-            UpdateButtonHref="@($"/categories/{Category.Id}/update?returnUrl=/categories/{Category.Id}")"
+            OnUpdateClick="OnUpdateClickAsync"
             DeleteButtonDisabled="@(Category.ItemsCount > 0)"
             DeleteButtonDisabledTooltipText="Category contains items"
-            OnDeleteClick="OnDeleteClickedAsync"/>
+            OnDeleteClick="OnDeleteClickAsync"/>
     </MudStack>
 </MudPaper>

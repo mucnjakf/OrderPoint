@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using OrderPoint.Admin.Categories.Enumerations;
 
-namespace OrderPoint.Admin.Categories.Pages.Shared;
+namespace OrderPoint.Admin.Categories.Components;
 
 public sealed partial class CategoryPreviewPaper
 {

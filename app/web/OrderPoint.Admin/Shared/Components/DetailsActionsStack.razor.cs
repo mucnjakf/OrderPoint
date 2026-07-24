@@ -5,8 +5,7 @@ namespace OrderPoint.Admin.Shared.Components;
 public sealed partial class DetailsActionsStack
 {
     [Parameter]
-    [EditorRequired]
-    public string UpdateButtonHref { get; set; }
+    public EventCallback OnUpdateClick { get; set; }
 
     [Parameter]
     public bool DeleteButtonDisabled { get; set; }
@@ -16,6 +15,11 @@ public sealed partial class DetailsActionsStack
 
     [Parameter]
     public EventCallback OnDeleteClick { get; set; }
+
+    private async Task OnUpdateClickAsync()
+    {
+        await OnUpdateClick.InvokeAsync();
+    }
 
     private async Task OnDeleteClickAsync()
     {

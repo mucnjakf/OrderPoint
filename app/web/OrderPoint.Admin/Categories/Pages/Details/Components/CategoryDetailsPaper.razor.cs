@@ -10,9 +10,17 @@ public sealed partial class CategoryDetailsPaper
     public CategoryDto Category { get; set; }
 
     [Parameter]
+    public EventCallback OnUpdateClick { get; set; }
+
+    [Parameter]
     public EventCallback OnDeleteClick { get; set; }
 
-    private async Task OnDeleteClickedAsync()
+    private async Task OnUpdateClickAsync()
+    {
+        await OnUpdateClick.InvokeAsync();
+    }
+
+    private async Task OnDeleteClickAsync()
     {
         await OnDeleteClick.InvokeAsync();
     }

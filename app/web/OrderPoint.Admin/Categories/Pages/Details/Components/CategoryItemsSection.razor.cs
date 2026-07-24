@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using OrderPoint.Admin.Categories.Dtos;
 using OrderPoint.Admin.Items.Api;
 using OrderPoint.Admin.Items.Dialogs;
 using OrderPoint.Admin.Items.Dtos;

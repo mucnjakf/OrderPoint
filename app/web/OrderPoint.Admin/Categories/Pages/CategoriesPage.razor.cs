@@ -8,7 +8,7 @@ using OrderPoint.Admin.Categories.Enumerations;
 using OrderPoint.Admin.Shared.Dtos;
 using OrderPoint.Admin.Shared.Services;
 
-namespace OrderPoint.Admin.Categories.Pages.Main;
+namespace OrderPoint.Admin.Categories.Pages;
 
 public sealed partial class CategoriesPage
 {
@@ -154,14 +154,7 @@ public sealed partial class CategoriesPage
 
             Snackbar.Add($"Category {request.Name} created successfully", Severity.Success);
 
-            await GetTopCategoriesAsync();
-
-            await GetCategoriesAsync(
-                1,
-                10,
-                SelectedSortBy,
-                SearchQuery,
-                SelectedStatus);
+            await OnInitializedAsync();
         }
     }
 
@@ -192,14 +185,7 @@ public sealed partial class CategoriesPage
 
             Snackbar.Add($"Category {request.Name} edited successfully", Severity.Success);
 
-            await GetTopCategoriesAsync();
-
-            await GetCategoriesAsync(
-                1,
-                10,
-                SelectedSortBy,
-                SearchQuery,
-                SelectedStatus);
+            await OnInitializedAsync();
         }
     }
 
@@ -228,14 +214,7 @@ public sealed partial class CategoriesPage
 
             Snackbar.Add($"Category {categoryName} deleted successfully", Severity.Success);
 
-            await GetTopCategoriesAsync();
-
-            await GetCategoriesAsync(
-                1,
-                10,
-                SelectedSortBy,
-                SearchQuery,
-                SelectedStatus);
+            await OnInitializedAsync();
         }
     }
 }

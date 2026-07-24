@@ -41,7 +41,6 @@
 
     <ItemGroup>
       <AdditionalFiles Include="Categories\Pages\Details\CategoryPage.razor" />
-      <AdditionalFiles Include="Categories\Pages\Main\CategoriesPage.razor" />
       <AdditionalFiles Include="Dashboard\DashboardPage.razor" />
       <AdditionalFiles Include="Shared\Layout\MainLayout.razor" />
       <AdditionalFiles Include="Shared\Pages\NotFound.razor" />
