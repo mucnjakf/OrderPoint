@@ -34,12 +34,12 @@
         }
     </MudStack>
 
-    @if (CreateButtonText is not null && CreateButtonHref is not null)
+    @if (CreateButtonText is not null)
     {
         <MudButton Variant="Variant.Filled"
                    StartIcon="@Icons.Material.Filled.Add"
                    Color="Color.Primary"
-                   Href="@CreateButtonHref">
+                   OnClick="OnCreateClickAsync">
             @CreateButtonText
         </MudButton>
     }
@@ -88,7 +88,7 @@
                                        Color="Color.Error"
                                        Size="Size.Small"
                                        Disabled="DeleteButtonDisabled(context)"
-                                       OnClick="() => OnDeleteClickedAsync(context)"/>
+                                       OnClick="() => OnDeleteClickAsync(context)"/>
                     </MudTooltip>
                 }
             </MudTd>

@@ -16,7 +16,7 @@
            Pagination="@Pagination"
            IsLoading="@IsLoading"
            CreateButtonText="@("New category")"
-           CreateButtonHref="@("/categories/create")"
+           OnCreateClick="@ShowCreateCategoryDialogAsync"
            DetailsButtonHref="@(category => $"/categories/{category.Id}")"
            UpdateButtonHref="@(category => $"/categories/{category.Id}/update?returnUrl=/categories")"
            DeleteButtonDisabled="@(category => category.ItemsCount > 0)"

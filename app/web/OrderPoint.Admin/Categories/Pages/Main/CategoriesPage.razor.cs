@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using OrderPoint.Admin.Categories.Api;
+using OrderPoint.Admin.Categories.Api.Requests;
 using OrderPoint.Admin.Categories.Dialogs;
 using OrderPoint.Admin.Categories.Dtos;
 using OrderPoint.Admin.Categories.Enumerations;
@@ -129,6 +130,39 @@ public sealed partial class CategoriesPage
             SelectedSortBy,
             SearchQuery,
             SelectedStatus);
+    }
+
+    private async Task ShowCreateCategoryDialogAsync()
+    {
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true
+        };
+
+        IDialogReference dialogReference = await DialogService
+            .ShowAsync<CreateCategoryDialog>(string.Empty, options);
+
+        DialogResult dialogResult = (await dialogReference.Result)!;
+
+        if (!dialogResult.Canceled)
+        {
+            var request = (dialogResult.Data as CreateCategoryRequest)!;
+
+            await ApiService.ExecuteAsync(async ()
+                => await CategoryApiClient.CreateCategoryAsync(request));
+
+            Snackbar.Add($"Category {request.Name} created successfully", Severity.Success);
+
+            await GetTopCategoriesAsync();
+
+            await GetCategoriesAsync(
+                1,
+                10,
+                SelectedSortBy,
+                SearchQuery,
+                SelectedStatus);
+        }
     }
 
     private async Task ShowDeleteCategoryDialogAsync(Guid id, string categoryName)

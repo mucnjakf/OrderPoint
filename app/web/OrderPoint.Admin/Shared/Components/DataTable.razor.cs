@@ -68,6 +68,9 @@ public sealed partial class DataTable<TItem>
     public string? CreateButtonText { get; set; }
 
     [Parameter]
+    public EventCallback OnCreateClick { get; set; }
+
+    [Parameter]
     public Func<TItem, string>? DetailsButtonHref { get; set; }
 
     [Parameter]
@@ -81,9 +84,6 @@ public sealed partial class DataTable<TItem>
 
     [Parameter]
     public EventCallback<TItem> OnDeleteClick { get; set; }
-
-    [Parameter]
-    public string? CreateButtonHref { get; set; }
 
     [Parameter]
     [EditorRequired]
@@ -113,7 +113,12 @@ public sealed partial class DataTable<TItem>
         await OnSortChanged.InvokeAsync();
     }
 
-    private async Task OnDeleteClickedAsync(TItem item)
+    private async Task OnCreateClickAsync()
+    {
+        await OnCreateClick.InvokeAsync();
+    }
+
+    private async Task OnDeleteClickAsync(TItem item)
     {
         await OnDeleteClick.InvokeAsync(item);
     }

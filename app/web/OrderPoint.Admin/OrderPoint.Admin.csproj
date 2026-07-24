@@ -29,6 +29,8 @@
       <_ContentIncludedByDefault Remove="Features\Categories\Pages\Main\Components\TopCategoryStack.razor" />
       <_ContentIncludedByDefault Remove="Features\Categories\Pages\Update\UpdateCategoryPage.razor" />
       <_ContentIncludedByDefault Remove="Features\Dashboard\DashboardPage.razor" />
+      <_ContentIncludedByDefault Remove="Categories\Pages\Create\Components\CreateCategoryAlert.razor" />
+      <_ContentIncludedByDefault Remove="Categories\Pages\Create\CreateCategoryPage.razor" />
     </ItemGroup>
 
     <ItemGroup>
@@ -36,7 +38,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="Categories\Pages\Create\CreateCategoryPage.razor" />
       <AdditionalFiles Include="Categories\Pages\Details\CategoryPage.razor" />
       <AdditionalFiles Include="Categories\Pages\Main\CategoriesPage.razor" />
       <AdditionalFiles Include="Categories\Pages\Update\UpdateCategoryPage.razor" />

@@ -9,6 +9,7 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Categories;
 
+// TODO: get all categories and query parameter name
 internal sealed record SearchCategoriesResponse(IReadOnlyList<CategoryDto> Data);
 
 internal sealed class SearchCategoriesEndpoint : IEndpoint
