@@ -4,13 +4,20 @@ using MudBlazor;
 using OrderPoint.Admin.Categories.Api;
 using OrderPoint.Admin.Categories.Dtos;
 using OrderPoint.Admin.Items.Api.Requests;
+using OrderPoint.Admin.Shared.Services;
 
 namespace OrderPoint.Admin.Items.Dialogs;
 
 public sealed partial class CreateItemDialog
 {
+    [Parameter]
+    public CategoryDto? Category { get; set; }
+
     [CascadingParameter]
     private IMudDialogInstance MudDialogInstance { get; set; } = null!;
+
+    [Inject]
+    private ApiService ApiService { get; set; } = null!;
 
     [Inject]
     private CategoryApiClient CategoryApiClient { get; set; } = null!;
@@ -21,10 +28,21 @@ public sealed partial class CreateItemDialog
 
     private bool IsFormSubmitted { get; set; }
 
+    protected override void OnParametersSet()
+    {
+        if (Category is not null)
+        {
+            Request.CategoryId = Category.Id;
+            SelectedCategory = Category;
+        }
+    }
+
     private async Task<IEnumerable<CategoryDto>>? OnCategorySearchAsync(
         string? value,
         CancellationToken cancellationToken)
-        => await CategoryApiClient.SearchCategoriesAsync(value, cancellationToken);
+        => await ApiService
+            .ExecuteAsync(async () => await CategoryApiClient
+                .SearchCategoriesAsync(value, cancellationToken));
 
     private void OnInvalidSubmit()
     {

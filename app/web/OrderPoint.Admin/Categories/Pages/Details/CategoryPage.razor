@@ -24,7 +24,8 @@
     </MudGrid>
 </StatefulView>
 
-<CategoryItemsSection Items="Items"
+<CategoryItemsSection Category="Category"
+                      Items="Items"
                       Pagination="Pagination"
                       IsLoading="IsLoadingItems"
                       SearchQuery="@SearchQuery"
@@ -34,4 +35,6 @@
                       OnSearchChanged="OnSearchChangedAsync"
                       OnSortChanged="OnSortChangedAsync"
                       OnPageChanged="OnPageChanged"
+                      OnItemCreated="OnItemCreatedAsync"
+                      OnItemUpdated="OnItemUpdatedAsync"
                       OnItemDeleted="OnItemDeletedAsync"/>

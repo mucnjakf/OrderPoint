@@ -59,7 +59,8 @@
                                          ShowProgressIndicator="@true"
                                          ToStringFunc="@(category => category?.Name)"
                                          Error="@(IsFormSubmitted && Request.CategoryId == Guid.Empty)"
-                                         ErrorText="Category is required.">
+                                         ErrorText="Category is required."
+                                         Disabled="@(Category is not null)">
                             <NoItemsTemplate>
                                 <MudText Align="Align.Center" Class="px-3 py-1">
                                     No items found
