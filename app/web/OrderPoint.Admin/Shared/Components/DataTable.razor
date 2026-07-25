@@ -57,15 +57,12 @@
             @RowTemplate(context)
 
             <MudTd>
-                @if (DetailsButtonHref is not null)
-                {
-                    <MudTooltip Text="Details">
-                        <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye"
-                                       Color="Color.Primary"
-                                       Size="Size.Small"
-                                       Href="@DetailsButtonHref(context)"/>
-                    </MudTooltip>
-                }
+                <MudTooltip Text="Details">
+                    <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye"
+                                   Color="Color.Primary"
+                                   Size="Size.Small"
+                                   OnClick="() => OnDetailsClickAsync(context)"/>
+                </MudTooltip>
 
                 <MudTooltip Text="Edit">
                     <MudIconButton Icon="@Icons.Material.Filled.Edit"

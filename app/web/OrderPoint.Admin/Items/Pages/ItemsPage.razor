@@ -21,7 +21,7 @@
           GetSortByIcon="@ItemSorting.GetSortByIcon"
           CreateButtonText="@("New item")"
           OnCreateClick="ShowCreateItemDialogAsync"
-          DetailsButtonHref="@(item => $"/items/{item.Id}")"
+          OnDetailsClick="@ShowItemDetailsDialogAsync"
           OnUpdateClick="ShowUpdateItemDialogAsync"
           DeleteButtonDisabled="@(item => false)"
           DeleteButtonDisabledTooltipText="@string.Empty"

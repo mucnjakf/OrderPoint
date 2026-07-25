@@ -73,7 +73,8 @@ public sealed partial class DataGrid<TItem>
     public EventCallback OnCreateClick { get; set; }
 
     [Parameter]
-    public Func<TItem, string>? DetailsButtonHref { get; set; }
+    [EditorRequired]
+    public EventCallback<TItem> OnDetailsClick { get; set; }
 
     [Parameter]
     [EditorRequired]
@@ -115,6 +116,11 @@ public sealed partial class DataGrid<TItem>
     private async Task OnCreateClickAsync()
     {
         await OnCreateClick.InvokeAsync();
+    }
+
+    private async Task OnDetailsClickAsync(TItem item)
+    {
+        await OnDetailsClick.InvokeAsync(item);
     }
 
     private async Task OnUpdateClickAsync(TItem item)

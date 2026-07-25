@@ -58,15 +58,12 @@
                 @RowTemplate(item)
 
                 <MudCardActions Class="d-flex justify-center pa-4" Style="border-top: 1px solid #4e4e4e">
-                    @if (DetailsButtonHref is not null)
-                    {
-                        <MudTooltip Text="Details">
-                            <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye"
-                                           Color="Color.Primary"
-                                           Size="Size.Small"
-                                           Href="@DetailsButtonHref(item)"/>
-                        </MudTooltip>
-                    }
+                    <MudTooltip Text="Details">
+                        <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye"
+                                       Color="Color.Primary"
+                                       Size="Size.Small"
+                                       OnClick="() => OnDetailsClickAsync(item)"/>
+                    </MudTooltip>
 
                     <MudTooltip Text="Edit">
                         <MudIconButton Icon="@Icons.Material.Filled.Edit"

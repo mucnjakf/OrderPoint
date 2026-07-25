@@ -8,7 +8,32 @@
               ShowContent="@TopCategories.Any()"
               EmptyStateIcon="@Icons.Material.Filled.Category"
               EmptyStateText="@("No categories found")">
-    <TopCategoryStack Categories="@TopCategories"/>
+    <MudStack Row="true" Spacing="3" Class="flex-1 mb-5">
+        @foreach (CategoryDto category in TopCategories)
+        {
+            <MudPaper Class="pa-10 d-flex flex-column align-center justify-center flex-1"
+                      Style="cursor: pointer; transition: all 0.2s ease-in-out; height: 180px;"
+                      Elevation="@(HoveredCategoryId == category.Id ? 10 : 1)"
+                      @onclick="@(() => ShowCategoryDetailsDialogAsync(category))"
+                      @onmouseover="() => HoveredCategoryId = category.Id"
+                      @onmouseout="() => HoveredCategoryId = null">
+
+                <MudImage Src="@(category.ImageUrl ?? "images/image-placeholder.svg")"
+                          Alt="Category image"
+                          Class="mb-3"
+                          Width="55"
+                          Height="55"/>
+
+                <MudText Typo="Typo.body1" Class="mb-1" Align="Align.Center">
+                    @category.Name
+                </MudText>
+
+                <MudText Typo="Typo.body2">
+                    @category.ItemsCount @(category.ItemsCount == 1 ? "item" : "items")
+                </MudText>
+            </MudPaper>
+        }
+    </MudStack>
 </StatefulView>
 
 <DataTable TItem="@CategoryDto"
@@ -17,7 +42,7 @@
            IsLoading="@IsLoading"
            CreateButtonText="@("New category")"
            OnCreateClick="@ShowCreateCategoryDialogAsync"
-           DetailsButtonHref="@(category => $"/categories/{category.Id}")"
+           OnDetailsClick="@ShowCategoryDetailsDialogAsync"
            OnUpdateClick="@(ShowUpdateCategoryDialogAsync)"
            DeleteButtonDisabled="@(category => category.ItemsCount > 0)"
            DeleteButtonDisabledTooltipText="@("Category contains items")"

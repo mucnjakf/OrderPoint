@@ -1,0 +1,64 @@
+﻿<MudDialog ActionsClass="pa-6">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.Category"/>
+            <MudText Typo="Typo.h6">Category details</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudGrid Spacing="3" Class="mb-5">
+            <MudItem xs="12" md="4">
+                <CategoryPreviewPaper ImageUrl="@Category.ImageUrl"
+                                      Name="@Category.Name"
+                                      Description="@Category.Description"
+                                      Status="@Category.Status"/>
+            </MudItem>
+
+            <MudItem xs="12" md="8">
+                <MudPaper Class="pa-5" Style="height: 100%">
+                    <TextDisplayRow Icon="@Icons.Material.Filled.Numbers"
+                                    Label="ID"
+                                    Text="@Category.Id.ToString()"
+                                    ShowDivider="true"/>
+
+                    <TextDisplayRow Icon="@Icons.Material.Filled.ShortText"
+                                    Label="Name"
+                                    Text="@Category.Name"
+                                    ShowDivider="true"/>
+
+                    <TextDisplayRow Icon="@Icons.Material.Filled.Description"
+                                    Label="Description"
+                                    Text="@Category.Description"
+                                    ShowDivider="true"/>
+
+                    <ChipDisplayRow Icon="@Icons.Material.Filled.MonitorHeart"
+                                    Label="Status"
+                                    Text="@Category.Status.ToString()"
+                                    Color="@(Category.Status is CategoryStatus.Active ? Color.Success : Color.Error)"
+                                    ShowDivider="true"/>
+
+                    <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
+                                    Label="Created"
+                                    Text="@Category.CreatedAtUtc.ToString("G")"
+                                    ShowDivider="true"/>
+
+                    <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
+                                    Label="Updated"
+                                    Text="@(Category.UpdatedAtUtc.HasValue ? Category.UpdatedAtUtc.Value.ToString("G") : "-")"/>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+        
+        @* TODO: add items list *@
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Variant="Variant.Filled"
+                   OnClick="Close"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Close">
+            Close
+        </MudButton>
+    </DialogActions>
+</MudDialog>

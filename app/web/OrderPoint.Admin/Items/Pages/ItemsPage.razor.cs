@@ -154,6 +154,23 @@ public sealed partial class ItemsPage
         }
     }
 
+    private async Task ShowItemDetailsDialogAsync(ItemDto item)
+    {
+        var parameters = new DialogParameters<ItemDetailsDialog>
+        {
+            { dialog => dialog.Item, item }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true
+        };
+
+        await DialogService
+            .ShowAsync<ItemDetailsDialog>(string.Empty, parameters, options);
+    }
+
     private async Task ShowUpdateItemDialogAsync(ItemDto item)
     {
         var parameters = new DialogParameters<UpdateItemDialog>

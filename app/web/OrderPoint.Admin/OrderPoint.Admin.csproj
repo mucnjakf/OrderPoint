@@ -37,6 +37,8 @@
       <_ContentIncludedByDefault Remove="Items\Pages\Create\CreateItemPage.razor" />
       <_ContentIncludedByDefault Remove="Items\Pages\Update\Components\UpdateItemDeletePaper.razor" />
       <_ContentIncludedByDefault Remove="Items\Pages\Update\UpdateItemPage.razor" />
+      <_ContentIncludedByDefault Remove="Items\Pages\Details\Components\ItemDetailsPaper.razor" />
+      <_ContentIncludedByDefault Remove="Items\Pages\Details\ItemPage.razor" />
     </ItemGroup>
 
     <ItemGroup>
@@ -44,7 +46,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="Categories\Pages\Details\CategoryPage.razor" />
       <AdditionalFiles Include="Dashboard\DashboardPage.razor" />
       <AdditionalFiles Include="Shared\Layout\MainLayout.razor" />
       <AdditionalFiles Include="Shared\Pages\NotFound.razor" />

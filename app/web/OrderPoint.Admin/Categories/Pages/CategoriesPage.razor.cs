@@ -24,6 +24,11 @@ public sealed partial class CategoriesPage
     [Inject]
     private CategoryApiClient CategoryApiClient { get; set; } = null!;
 
+    [Inject]
+    public NavigationManager NavigationManager { get; set; } = null!;
+
+    private Guid? HoveredCategoryId { get; set; }
+
     private List<BreadcrumbItem> Breadcrumbs { get; set; } =
     [
         new("Dashboard", href: "/", icon: Icons.Material.Filled.Dashboard),
@@ -156,6 +161,23 @@ public sealed partial class CategoriesPage
 
             await OnInitializedAsync();
         }
+    }
+
+    private async Task ShowCategoryDetailsDialogAsync(CategoryDto category)
+    {
+        var parameters = new DialogParameters<CategoryDetailsDialog>
+        {
+            { dialog => dialog.Category, category }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true
+        };
+
+        await DialogService
+            .ShowAsync<CategoryDetailsDialog>(string.Empty, parameters, options);
     }
 
     private async Task ShowUpdateCategoryDialogAsync(CategoryDto category)
