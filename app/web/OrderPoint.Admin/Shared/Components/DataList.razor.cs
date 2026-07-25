@@ -63,6 +63,14 @@ public sealed partial class DataList<TItem>
 
     [Parameter]
     [EditorRequired]
+    public string CreateButtonText { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public EventCallback OnCreateClick { get; set; }
+
+    [Parameter]
+    [EditorRequired]
     public RenderFragment<TItem> RowTemplate { get; set; }
 
     [Parameter]
@@ -83,5 +91,10 @@ public sealed partial class DataList<TItem>
     {
         await SelectedSortByChanged.InvokeAsync(SelectedSortBy);
         await OnSortChanged.InvokeAsync();
+    }
+
+    private async Task OnCreateClickAsync()
+    {
+        await OnCreateClick.InvokeAsync();
     }
 }

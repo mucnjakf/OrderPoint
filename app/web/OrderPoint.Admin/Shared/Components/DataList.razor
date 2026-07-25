@@ -30,6 +30,13 @@
             }
         </MudSelect>
     </MudStack>
+
+    <MudButton Variant="Variant.Filled"
+               StartIcon="@Icons.Material.Filled.Add"
+               Color="Color.Primary"
+               OnClick="OnCreateClickAsync">
+        @CreateButtonText
+    </MudButton>
 </MudStack>
 
 <StatefulView IsLoading="IsLoading"

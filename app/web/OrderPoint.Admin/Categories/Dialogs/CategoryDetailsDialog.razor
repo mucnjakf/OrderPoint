@@ -54,6 +54,8 @@
                   Items="Items"
                   Pagination="Pagination"
                   IsLoading="IsLoading"
+                  CreateButtonText="New item"
+                  OnCreateClick="@ShowCreateItemDialogAsync"
                   SelectedSortBy="@SelectedSortBy"
                   SelectedSortByChanged="@(value => SelectedSortBy = value)"
                   SearchLabel="Search by name"
@@ -83,17 +85,27 @@
                                 @context.Description
                             </MudText>
                         </MudStack>
-
                     </MudStack>
 
-                    <MudStack Spacing="1" Class="align-end">
-                        <MudText Typo="Typo.body1">
-                            @context.Portion x @context.Price.ToString("C", CultureInfo.CurrentCulture)
-                        </MudText>
+                    <MudStack Row="true" Class="align-center">
+                        <MudStack Spacing="1" Class="align-end">
+                            <MudText Typo="Typo.body1">
+                                @context.Portion x @context.Price.ToString("C", CultureInfo.CurrentCulture)
+                            </MudText>
 
-                        <MudText Typo="Typo.caption">
-                            @context.CreatedAtUtc.ToString("G")
-                        </MudText>
+                            <MudText Typo="Typo.caption">
+                                @context.CreatedAtUtc.ToString("G")
+                            </MudText>
+                        </MudStack>
+
+                        <MudDivider Vertical="true"/>
+
+                        <MudTooltip Text="Delete">
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                           Color="Color.Error"
+                                           Size="Size.Small"
+                                           OnClick="() => ShowDeleteItemDialogAsync(context.Id, context.Name)"/>
+                        </MudTooltip>
                     </MudStack>
                 </MudStack>
             </RowTemplate>
