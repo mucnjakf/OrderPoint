@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using OrderPoint.Admin.Categories.Dtos;
+using OrderPoint.Admin.Items.Api;
+using OrderPoint.Admin.Items.Dtos;
+using OrderPoint.Admin.Shared.Dtos;
+using OrderPoint.Admin.Shared.Services;
 
 namespace OrderPoint.Admin.Categories.Dialogs;
 
@@ -11,6 +15,79 @@ public sealed partial class CategoryDetailsDialog
 
     [CascadingParameter]
     private IMudDialogInstance MudDialogInstance { get; set; } = null!;
+
+    [Inject]
+    private ApiService ApiService { get; set; } = null!;
+
+    [Inject]
+    private ItemApiClient ItemApiClient { get; set; } = null!;
+
+    private string SelectedSortBy { get; set; } = "CreatedAtUtcDesc";
+
+    private string? SearchQuery { get; set; }
+
+    private bool IsLoading { get; set; } = true;
+
+    private PaginationDto<ItemDto>? Pagination { get; set; }
+
+    private IReadOnlyList<ItemDto> Items { get; set; } = [];
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await GetItemsAsync(
+            1,
+            5,
+            SelectedSortBy,
+            SearchQuery);
+    }
+
+    private async Task GetItemsAsync(
+        int pageNumber,
+        int pageSize,
+        string sortBy,
+        string? searchQuery)
+    {
+        IsLoading = true;
+
+        Pagination = await ApiService.ExecuteAsync(async ()
+            => await ItemApiClient.GetItemsAsync(
+                pageNumber,
+                pageSize,
+                sortBy,
+                searchQuery,
+                Category.Id));
+
+        Items = Pagination.Items;
+
+        IsLoading = false;
+    }
+
+    private async Task OnSearchChangedAsync()
+    {
+        await GetItemsAsync(
+            1,
+            5,
+            SelectedSortBy,
+            SearchQuery);
+    }
+
+    private async Task OnSortChangedAsync()
+    {
+        await GetItemsAsync(
+            1,
+            5,
+            SelectedSortBy,
+            SearchQuery);
+    }
+
+    private async Task OnPageChanged(int pageNumber)
+    {
+        await GetItemsAsync(
+            pageNumber,
+            5,
+            SelectedSortBy,
+            SearchQuery);
+    }
 
     private void Close()
     {

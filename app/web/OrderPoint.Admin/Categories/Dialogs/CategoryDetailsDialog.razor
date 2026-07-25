@@ -1,4 +1,4 @@
-﻿<MudDialog ActionsClass="pa-6">
+﻿<MudDialog ActionsClass="pa-6" Style="background-color: #32333d">
     <TitleContent>
         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
             <MudIcon Icon="@Icons.Material.Filled.Category"/>
@@ -49,8 +49,55 @@
                 </MudPaper>
             </MudItem>
         </MudGrid>
-        
-        @* TODO: add items list *@
+
+        <DataList TItem="ItemDto"
+                  Items="Items"
+                  Pagination="Pagination"
+                  IsLoading="IsLoading"
+                  SelectedSortBy="@SelectedSortBy"
+                  SelectedSortByChanged="@(value => SelectedSortBy = value)"
+                  SearchLabel="Search by name"
+                  SearchQuery="@SearchQuery"
+                  SearchQueryChanged="@(value => SearchQuery = value)"
+                  OnSearchChanged="@OnSearchChangedAsync"
+                  OnSortChanged="@OnSortChangedAsync"
+                  OnPageChanged="@OnPageChanged"
+                  SortByOptions="@Enum.GetNames(typeof(ItemSortBy))"
+                  GetSortByLabel="@ItemSorting.GetSortByLabel"
+                  GetSortByIcon="@ItemSorting.GetSortByIcon"
+                  EmptyStateIcon="@Icons.Material.Filled.MenuBook"
+                  EmptyStateText="@("No items found")">
+
+            <RowTemplate>
+                <MudStack Row="true" Class="d-flex justify-space-between">
+                    <MudStack Row="true">
+                        <MudCardMedia Image="@(context.ImageUrl ?? "images/image-placeholder.svg")"
+                                      Style="@(context.ImageUrl is null ? "width: 50px; height: 50px;" : string.Empty)"/>
+
+                        <MudStack Spacing="1">
+                            <MudText Typo="Typo.body1">
+                                @context.Name
+                            </MudText>
+
+                            <MudText Typo="Typo.caption">
+                                @context.Description
+                            </MudText>
+                        </MudStack>
+
+                    </MudStack>
+
+                    <MudStack Spacing="1" Class="align-end">
+                        <MudText Typo="Typo.body1">
+                            @context.Portion x @context.Price.ToString("C", CultureInfo.CurrentCulture)
+                        </MudText>
+
+                        <MudText Typo="Typo.caption">
+                            @context.CreatedAtUtc.ToString("G")
+                        </MudText>
+                    </MudStack>
+                </MudStack>
+            </RowTemplate>
+        </DataList>
     </DialogContent>
 
     <DialogActions>
