@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using OrderPoint.Admin.Items.Api;
+using OrderPoint.Admin.Items.Api.Requests;
 using OrderPoint.Admin.Items.Dialogs;
 using OrderPoint.Admin.Items.Dtos;
 using OrderPoint.Admin.Shared.Services;
@@ -51,6 +52,37 @@ public sealed partial class ItemPage
             => await ItemApiClient.GetItemAsync(Id));
 
         IsLoading = false;
+    }
+
+    private async Task ShowUpdateItemDialogAsync()
+    {
+        var parameters = new DialogParameters<UpdateItemDialog>
+        {
+            { dialog => dialog.Item, Item }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true
+        };
+
+        IDialogReference dialogReference = await DialogService
+            .ShowAsync<UpdateItemDialog>(string.Empty, parameters, options);
+
+        DialogResult dialogResult = (await dialogReference.Result)!;
+
+        if (!dialogResult.Canceled)
+        {
+            var request = (dialogResult.Data as UpdateItemRequest)!;
+
+            await ApiService.ExecuteAsync(async ()
+                => await ItemApiClient.UpdateItemAsync(Item.Id, request));
+
+            Snackbar.Add($"Item {request.Name} edited successfully", Severity.Success);
+
+            await GetItemAsync();
+        }
     }
 
     private async Task ShowDeleteItemDialogAsync()

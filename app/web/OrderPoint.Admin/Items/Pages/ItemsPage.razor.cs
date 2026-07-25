@@ -9,7 +9,7 @@ using OrderPoint.Admin.Items.Dtos;
 using OrderPoint.Admin.Shared.Dtos;
 using OrderPoint.Admin.Shared.Services;
 
-namespace OrderPoint.Admin.Items.Pages.Main;
+namespace OrderPoint.Admin.Items.Pages;
 
 public sealed partial class ItemsPage
 {

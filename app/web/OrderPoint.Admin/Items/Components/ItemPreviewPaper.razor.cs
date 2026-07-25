@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace OrderPoint.Admin.Items.Pages.Shared;
+namespace OrderPoint.Admin.Items.Components;
 
 public sealed partial class ItemPreviewPaper
 {

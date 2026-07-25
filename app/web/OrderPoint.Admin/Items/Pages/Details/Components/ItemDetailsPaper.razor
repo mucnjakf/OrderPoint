@@ -41,7 +41,7 @@
                         ShowDivider="true"/>
 
         <DetailsActionsStack
-            UpdateButtonHref="@($"/items/{Item.Id}/update?returnUrl=/items/{Item.Id}")"
+            OnUpdateClick="OnUpdateClickAsync"
             DeleteButtonDisabled="@false"
             DeleteButtonDisabledTooltipText="@string.Empty"
             OnDeleteClick="@OnDeleteClickedAsync"/>

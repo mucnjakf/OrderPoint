@@ -35,6 +35,8 @@
       <_ContentIncludedByDefault Remove="Categories\Pages\Update\UpdateCategoryPage.razor" />
       <_ContentIncludedByDefault Remove="Items\Pages\Create\Components\CreateItemAlert.razor" />
       <_ContentIncludedByDefault Remove="Items\Pages\Create\CreateItemPage.razor" />
+      <_ContentIncludedByDefault Remove="Items\Pages\Update\Components\UpdateItemDeletePaper.razor" />
+      <_ContentIncludedByDefault Remove="Items\Pages\Update\UpdateItemPage.razor" />
     </ItemGroup>
 
     <ItemGroup>

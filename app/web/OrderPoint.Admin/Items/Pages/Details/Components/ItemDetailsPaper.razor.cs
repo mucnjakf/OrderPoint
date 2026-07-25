@@ -10,7 +10,15 @@ public sealed partial class ItemDetailsPaper
     public ItemDto Item { get; set; }
 
     [Parameter]
+    public EventCallback OnUpdateClick { get; set; }
+
+    [Parameter]
     public EventCallback OnDeleteClick { get; set; }
+
+    private async Task OnUpdateClickAsync()
+    {
+        await OnUpdateClick.InvokeAsync();
+    }
 
     private async Task OnDeleteClickedAsync()
     {
