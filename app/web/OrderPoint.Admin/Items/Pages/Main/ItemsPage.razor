@@ -20,12 +20,12 @@
           GetSortByLabel="@ItemSorting.GetSortByLabel"
           GetSortByIcon="@ItemSorting.GetSortByIcon"
           CreateButtonText="@("New item")"
+          OnCreateClick="ShowCreateItemDialogAsync"
           DetailsButtonHref="@(item => $"/items/{item.Id}")"
-          UpdateButtonHref="@(item => $"/items/{item.Id}/update?returnUrl=/items")"
+          OnUpdateClick="ShowUpdateItemDialogAsync"
           DeleteButtonDisabled="@(item => false)"
           DeleteButtonDisabledTooltipText="@string.Empty"
           OnDeleteClick="@(item => ShowDeleteItemDialogAsync(item.Id, item.Name))"
-          CreateButtonHref="@("/items/create")"
           EmptyStateIcon="@Icons.Material.Filled.MenuBook"
           EmptyStateText="@("No items found")">
 

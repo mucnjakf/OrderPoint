@@ -3,6 +3,7 @@ using MudBlazor;
 using OrderPoint.Admin.Categories.Api;
 using OrderPoint.Admin.Categories.Dtos;
 using OrderPoint.Admin.Items.Api;
+using OrderPoint.Admin.Items.Api.Requests;
 using OrderPoint.Admin.Items.Dialogs;
 using OrderPoint.Admin.Items.Dtos;
 using OrderPoint.Admin.Shared.Dtos;
@@ -120,6 +121,73 @@ public sealed partial class ItemsPage
             SelectedSortBy,
             SearchQuery,
             SelectedCategory?.Id);
+    }
+
+    private async Task ShowCreateItemDialogAsync()
+    {
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true
+        };
+
+        IDialogReference dialogReference = await DialogService
+            .ShowAsync<CreateItemDialog>(string.Empty, options);
+
+        DialogResult dialogResult = (await dialogReference.Result)!;
+
+        if (!dialogResult.Canceled)
+        {
+            var request = (dialogResult.Data as CreateItemRequest)!;
+
+            await ApiService.ExecuteAsync(async ()
+                => await ItemApiClient.CreateItemAsync(request));
+
+            Snackbar.Add($"Item {request.Name} created successfully", Severity.Success);
+
+            await GetItemsAsync(
+                1,
+                9,
+                SelectedSortBy,
+                SearchQuery,
+                SelectedCategory?.Id);
+        }
+    }
+
+    private async Task ShowUpdateItemDialogAsync(ItemDto item)
+    {
+        var parameters = new DialogParameters<UpdateItemDialog>
+        {
+            { dialog => dialog.Item, item }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true
+        };
+
+        IDialogReference dialogReference = await DialogService
+            .ShowAsync<UpdateItemDialog>(string.Empty, parameters, options);
+
+        DialogResult dialogResult = (await dialogReference.Result)!;
+
+        if (!dialogResult.Canceled)
+        {
+            var request = (dialogResult.Data as UpdateItemRequest)!;
+
+            await ApiService.ExecuteAsync(async ()
+                => await ItemApiClient.UpdateItemAsync(item.Id, request));
+
+            Snackbar.Add($"Item {request.Name} edited successfully", Severity.Success);
+
+            await GetItemsAsync(
+                1,
+                9,
+                SelectedSortBy,
+                SearchQuery,
+                SelectedCategory?.Id);
+        }
     }
 
     private async Task ShowDeleteItemDialogAsync(Guid id, string itemName)

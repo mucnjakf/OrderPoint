@@ -36,15 +36,12 @@
         }
     </MudStack>
 
-    @if (CreateButtonText is not null && CreateButtonHref is not null)
-    {
-        <MudButton Variant="@Variant.Filled"
-                   StartIcon="@Icons.Material.Filled.Add"
-                   Color="@Color.Primary"
-                   Href="@CreateButtonHref">
-            @CreateButtonText
-        </MudButton>
-    }
+    <MudButton Variant="@Variant.Filled"
+               StartIcon="@Icons.Material.Filled.Add"
+               Color="@Color.Primary"
+               OnClick="@OnCreateClickAsync">
+        @CreateButtonText
+    </MudButton>
 </MudStack>
 
 
@@ -71,16 +68,13 @@
                         </MudTooltip>
                     }
 
-                    @if (UpdateButtonHref is not null)
-                    {
-                        <MudTooltip Text="Edit">
-                            <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                           Color="Color.Secondary"
-                                           Size="Size.Small"
-                                           Class="mx-3"
-                                           Href="@UpdateButtonHref(item)"/>
-                        </MudTooltip>
-                    }
+                    <MudTooltip Text="Edit">
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                       Color="Color.Secondary"
+                                       Size="Size.Small"
+                                       Class="mx-3"
+                                       OnClick="() => OnUpdateClickAsync(item)"/>
+                    </MudTooltip>
 
                     @if (DeleteButtonDisabled is not null && DeleteButtonDisabledTooltipText is not null)
                     {
