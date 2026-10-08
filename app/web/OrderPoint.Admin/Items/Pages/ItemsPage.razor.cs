@@ -17,10 +17,6 @@ public sealed partial class ItemsPage
 {
     private const int PageSize = 9;
 
-    private const int CardImageHeight = 160;
-
-    private const int PlaceholderImageSize = 100;
-
     [Inject]
     private IDialogService DialogService { get; set; } = null!;
 

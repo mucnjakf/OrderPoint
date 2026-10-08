@@ -1,0 +1,19 @@
+﻿<div class="d-flex align-center justify-center" style="@ContainerStyle">
+    @if (ImageUrl is null)
+    {
+        <MudImage Src="images/image-placeholder.svg"
+                  Alt="Item image"
+                  Width="@PlaceholderSize"
+                  Height="@PlaceholderSize"/>
+    }
+    else
+    {
+        <div style="@BackdropStyle"></div>
+
+        <MudImage Src="@ImageUrl"
+                  Alt="Item image"
+                  Height="@ImageHeight"
+                  ObjectFit="ObjectFit.Contain"
+                  Style="position: relative; max-width: 100%;"/>
+    }
+</div>
