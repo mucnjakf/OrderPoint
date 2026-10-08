@@ -1,0 +1,14 @@
+﻿<MudAvatar Color="@AvatarColor" Size="@Size" Class="@Class">
+    @if (ImageUrl is not null)
+    {
+        <MudImage Src="@ImageUrl" Alt="Bartender image"/>
+    }
+    else if (string.IsNullOrEmpty(Initials))
+    {
+        <MudIcon Icon="@Icons.Material.Filled.Person"/>
+    }
+    else
+    {
+        @Initials
+    }
+</MudAvatar>

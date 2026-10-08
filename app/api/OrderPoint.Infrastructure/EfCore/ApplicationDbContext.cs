@@ -11,6 +11,8 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
 
     internal DbSet<Item> Items { get; init; } = null!;
 
+    internal DbSet<Bartender> Bartenders { get; init; } = null!;
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(InfrastructureModule).Assembly);

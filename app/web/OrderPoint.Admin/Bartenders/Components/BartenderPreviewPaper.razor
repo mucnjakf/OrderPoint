@@ -1,0 +1,21 @@
+﻿<MudPaper Class="d-flex flex-column flex-grow-1 align-center justify-center pa-10" Style="height: 100%">
+    <BartenderAvatar FirstName="@FirstName"
+                     LastName="@LastName"
+                     ImageUrl="@ImageUrl"
+                     Size="Size.Large"
+                     Class="mb-3"/>
+
+    <MudText Typo="Typo.body1" Class="mb-1">
+        @(string.IsNullOrWhiteSpace(FullName) ? NamePlaceholder : FullName)
+    </MudText>
+
+    <MudText Typo="Typo.body2" Class="mb-5" Style="max-width: 100%; word-wrap: break-word; text-align: center;">
+        @(string.IsNullOrWhiteSpace(Email) ? EmailPlaceholder : Email)
+    </MudText>
+
+    <MudChip T="string"
+             Variant="Variant.Text"
+             Color="@(Status is BartenderStatus.Active ? Color.Success : Color.Error)">
+        @Status.ToString()
+    </MudChip>
+</MudPaper>

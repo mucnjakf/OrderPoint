@@ -1,0 +1,111 @@
+﻿@page "/bartenders"
+
+<PageTitle>Bartenders</PageTitle>
+
+<PageHeader Text="Bartenders" Breadcrumbs="@Breadcrumbs"/>
+
+<BartenderTeamStrip ActiveBartenders="@ActiveBartenders"
+                    ActiveCount="@ActiveCount"
+                    InactiveCount="@InactiveCount"
+                    NewestBartender="@NewestBartender"
+                    IsLoadingActiveTeam="@IsLoadingActiveTeam"
+                    IsLoadingInactiveCount="@IsLoadingInactiveCount"
+                    IsLoadingNewestBartender="@IsLoadingNewestBartender"/>
+
+<DataAccordion TItem="BartenderDto"
+               Items="@Bartenders"
+               Pagination="@Pagination"
+               IsLoading="@IsLoading"
+               SearchLabel="Search by name or email"
+               SearchQuery="@SearchQuery"
+               SearchQueryChanged="@(value => SearchQuery = value)"
+               SelectedSortBy="@SelectedSortBy"
+               SelectedSortByChanged="@(value => SelectedSortBy = value)"
+               OnSearchChanged="@OnSearchChangedAsync"
+               OnSortChanged="@OnSortChangedAsync"
+               OnPageChanged="@OnPageChangedAsync"
+               SortByOptions="@Enum.GetNames(typeof(BartenderSortBy))"
+               GetSortByLabel="@BartenderSorting.GetSortByLabel"
+               GetSortByIcon="@BartenderSorting.GetSortByIcon"
+               CreateButtonText="New bartender"
+               OnCreateClick="@ShowCreateBartenderDialogAsync"
+               OnUpdateClick="@ShowUpdateBartenderDialogAsync"
+               OnDeleteClick="@ShowDeleteBartenderDialogAsync"
+               EmptyStateIcon="@Icons.Material.Filled.People"
+               EmptyStateText="No bartenders found">
+
+    <FilterContent>
+        <MudSelect @bind-Value="@SelectedStatus"
+                   @bind-Value:after="@OnStatusChangedAsync"
+                   T="BartenderStatus?"
+                   Variant="Variant.Outlined"
+                   Label="Status"
+                   FitContent="true">
+
+            <MudSelectItem Value="@(null)" T="BartenderStatus?">
+                <MudText>All</MudText>
+            </MudSelectItem>
+
+            @foreach (BartenderStatus status in Enum.GetValues<BartenderStatus>())
+            {
+                <MudSelectItem Value="@status" T="BartenderStatus?">
+                    <MudText>
+                        @status.ToString()
+                    </MudText>
+                </MudSelectItem>
+            }
+        </MudSelect>
+    </FilterContent>
+
+    <HeaderTemplate>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Class="flex-1">
+            <BartenderAvatar FirstName="@context.FirstName"
+                             LastName="@context.LastName"
+                             ImageUrl="@context.ImageUrl"/>
+
+            <MudStack Spacing="0">
+                <MudText Typo="Typo.body1">
+                    @context.FirstName @context.LastName
+                </MudText>
+
+                <MudText Typo="Typo.caption">
+                    @context.Email
+                </MudText>
+            </MudStack>
+
+            <MudSpacer/>
+
+            <MudChip T="string"
+                     Variant="Variant.Text"
+                     Color="@(context.Status is BartenderStatus.Active ? Color.Success : Color.Error)">
+                @context.Status.ToString()
+            </MudChip>
+        </MudStack>
+    </HeaderTemplate>
+
+    <DetailsTemplate>
+        <TextDisplayRow Icon="@Icons.Material.Filled.Numbers"
+                        Label="ID"
+                        Text="@context.Id.ToString()"
+                        ShowDivider="true"/>
+
+        <TextDisplayRow Icon="@Icons.Material.Filled.Phone"
+                        Label="Phone"
+                        Text="@(context.PhoneNumber ?? "-")"
+                        ShowDivider="true"/>
+
+        <TextDisplayRow Icon="@Icons.Material.Filled.Notes"
+                        Label="Notes"
+                        Text="@(context.Notes ?? "-")"
+                        ShowDivider="true"/>
+
+        <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
+                        Label="Created"
+                        Text="@context.CreatedAtUtc.ToString("G")"
+                        ShowDivider="true"/>
+
+        <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
+                        Label="Updated"
+                        Text="@(context.UpdatedAtUtc?.ToString("G") ?? "-")"/>
+    </DetailsTemplate>
+</DataAccordion>

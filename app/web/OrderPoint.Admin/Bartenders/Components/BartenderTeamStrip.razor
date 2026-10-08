@@ -1,0 +1,84 @@
+﻿<MudPaper Class="pa-5 mb-5">
+    <MudStack Row="true" Spacing="5" Style="min-height: 110px;">
+        <MudStack AlignItems="AlignItems.Center" Spacing="2" Class="flex-1">
+            <MudText Typo="Typo.overline">Active team</MudText>
+
+            <StatefulView IsLoading="@IsLoadingActiveTeam"
+                          ShowContent="@ActiveBartenders.Any()"
+                          EmptyStateIcon="@Icons.Material.Filled.Groups"
+                          EmptyStateText="No active bartenders"
+                          Compact="true">
+                <MudAvatarGroup Spacing="3" Outlined="true" Class="my-auto">
+                    @foreach (BartenderDto bartender in ActiveBartenders)
+                    {
+                        <BartenderAvatar FirstName="@bartender.FirstName"
+                                         LastName="@bartender.LastName"
+                                         ImageUrl="@bartender.ImageUrl"/>
+                    }
+
+                    @if (HiddenActiveCount > 0)
+                    {
+                        <MudAvatar>+@HiddenActiveCount</MudAvatar>
+                    }
+                </MudAvatarGroup>
+            </StatefulView>
+        </MudStack>
+
+        <MudDivider Vertical="true" FlexItem="true"/>
+
+        <MudStack AlignItems="AlignItems.Center" Spacing="2" Class="flex-1">
+            <MudText Typo="Typo.overline">Team balance</MudText>
+
+            <StatefulView IsLoading="@IsLoadingBalance"
+                          ShowContent="@(TotalCount > 0)"
+                          EmptyStateIcon="@Icons.Material.Filled.Balance"
+                          EmptyStateText="No bartenders yet"
+                          Compact="true">
+                <MudText Typo="Typo.body1">
+                    @ActiveCount active · @InactiveCount inactive
+                </MudText>
+
+                <MudProgressLinear Color="Color.Success"
+                                   Value="@ActivePercentage"
+                                   Rounded="true"
+                                   Size="Size.Large"
+                                   Style="width: 100%;"/>
+
+                <MudText Typo="Typo.caption">
+                    @($"{ActivePercentage:0}% active")
+                </MudText>
+            </StatefulView>
+        </MudStack>
+
+        <MudDivider Vertical="true" FlexItem="true"/>
+
+        <MudStack AlignItems="AlignItems.Center" Spacing="2" Class="flex-1">
+            <MudText Typo="Typo.overline">Newest member</MudText>
+
+            <StatefulView IsLoading="@IsLoadingNewestBartender"
+                          ShowContent="@(NewestBartender is not null)"
+                          EmptyStateIcon="@Icons.Material.Filled.PersonAdd"
+                          EmptyStateText="No bartenders yet"
+                          Compact="true">
+                @if (NewestBartender is not null)
+                {
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Class="my-auto">
+                        <BartenderAvatar FirstName="@NewestBartender.FirstName"
+                                         LastName="@NewestBartender.LastName"
+                                         ImageUrl="@NewestBartender.ImageUrl"/>
+
+                        <MudStack Spacing="0">
+                            <MudText Typo="Typo.body1">
+                                @NewestBartender.FirstName @NewestBartender.LastName
+                            </MudText>
+
+                            <MudText Typo="Typo.caption">
+                                Joined @NewestBartender.CreatedAtUtc.ToRelativeTime()
+                            </MudText>
+                        </MudStack>
+                    </MudStack>
+                }
+            </StatefulView>
+        </MudStack>
+    </MudStack>
+</MudPaper>

@@ -1,0 +1,35 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Error"/>
+            <MudText Typo="Typo.h6">Delete bartender</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudStack Class="mb-3">
+            <MudAlert Severity="Severity.Error" Variant="Variant.Text" Dense="true" Class="mb-3">
+                <MudText Typo="Typo.body2">
+                    This action cannot be undone.
+                </MudText>
+            </MudAlert>
+
+            <MudText Typo="Typo.body1">
+                @($"Are you sure you want to delete {BartenderName}?")
+            </MudText>
+        </MudStack>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
+            Cancel
+        </MudButton>
+
+        <MudButton OnClick="@Confirm"
+                   Variant="Variant.Filled"
+                   Color="Color.Error"
+                   StartIcon="@Icons.Material.Filled.Delete">
+            Confirm
+        </MudButton>
+    </DialogActions>
+</MudDialog>

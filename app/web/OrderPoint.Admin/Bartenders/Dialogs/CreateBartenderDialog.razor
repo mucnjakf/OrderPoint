@@ -1,0 +1,112 @@
+﻿<EditForm Model="@Request" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator/>
+
+    <MudDialog ActionsClass="pa-6" Class="mud-background">
+        <TitleContent>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudIcon Icon="@Icons.Material.Filled.People"/>
+                <MudText Typo="Typo.h6">New bartender</MudText>
+            </MudStack>
+        </TitleContent>
+
+        <DialogContent>
+            <MudGrid>
+                <MudItem md="8">
+                    <MudStack Row="true">
+                        <MudTextField Label="First name"
+                                      @bind-Value="@Request.FirstName"
+                                      For="@(() => Request.FirstName)"
+                                      Class="mb-5 mt-0"
+                                      HelperText="The bartender's first name."
+                                      Variant="Variant.Outlined"
+                                      Immediate="true"/>
+
+                        <MudTextField Label="Last name"
+                                      @bind-Value="@Request.LastName"
+                                      For="@(() => Request.LastName)"
+                                      Class="mb-5 mt-0"
+                                      HelperText="The bartender's last name."
+                                      Variant="Variant.Outlined"
+                                      Immediate="true"/>
+                    </MudStack>
+
+                    <MudStack Row="true">
+                        <MudTextField Label="Email"
+                                      @bind-Value="@Request.Email"
+                                      For="@(() => Request.Email)"
+                                      Class="mb-5"
+                                      HelperText="Used to log into the bartender app."
+                                      Variant="Variant.Outlined"
+                                      Immediate="true"/>
+
+                        <MudTextField Label="Phone number"
+                                      @bind-Value="@Request.PhoneNumber"
+                                      For="@(() => Request.PhoneNumber)"
+                                      Class="mb-5"
+                                      HelperText="Optional contact number."
+                                      Variant="Variant.Outlined"
+                                      Immediate="true"/>
+                    </MudStack>
+
+                    <MudStack Row="true">
+                        <MudSelect Label="Status"
+                                   T="BartenderStatus"
+                                   @bind-Value="@Request.Status"
+                                   For="@(() => Request.Status)"
+                                   Class="mb-5"
+                                   HelperText="Inactive bartenders cannot log into the bartender app."
+                                   Variant="Variant.Outlined">
+                            @foreach (BartenderStatus status in Enum.GetValues<BartenderStatus>())
+                            {
+                                <MudSelectItem Value="@status" T="BartenderStatus">
+                                    <MudText>
+                                        @status.ToString()
+                                    </MudText>
+                                </MudSelectItem>
+                            }
+                        </MudSelect>
+
+                        <MudTextField Label="Image URL"
+                                      Disabled="true"
+                                      @bind-Value="@Request.ImageUrl"
+                                      For="@(() => Request.ImageUrl)"
+                                      Class="mb-5"
+                                      HelperText="Image upload will be available in a future update."
+                                      Variant="Variant.Outlined"/>
+                    </MudStack>
+
+                    <MudTextField Label="Notes"
+                                  @bind-Value="@Request.Notes"
+                                  For="@(() => Request.Notes)"
+                                  HelperText="Optional notes, e.g. responsibilities or availability."
+                                  Variant="Variant.Outlined"
+                                  Lines="3"
+                                  Immediate="true"/>
+                </MudItem>
+
+                <MudItem md="4">
+                    <BartenderPreviewPaper ImageUrl="@Request.ImageUrl"
+                                           FirstName="@Request.FirstName"
+                                           LastName="@Request.LastName"
+                                           Email="@Request.Email"
+                                           Status="@Request.Status"
+                                           NamePlaceholder="Bartender name"
+                                           EmailPlaceholder="Bartender email"/>
+                </MudItem>
+            </MudGrid>
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
+                Cancel
+            </MudButton>
+
+            <MudButton ButtonType="ButtonType.Submit"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Add">
+                Confirm
+            </MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
