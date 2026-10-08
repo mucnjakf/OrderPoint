@@ -75,11 +75,12 @@
     </HeaderContent>
 
     <RowTemplate>
-        <MudTd Class="d-flex justify-end">
+        <MudTd>
             <MudImage Src="@(context.ImageUrl ?? "images/image-placeholder.svg")"
                       Alt="Category image"
-                      Width="55"
-                      Height="55"/>
+                      Width="36"
+                      Height="36"
+                      Class="d-block ml-auto"/>
         </MudTd>
 
         <MudTd DataLabel="Name">
