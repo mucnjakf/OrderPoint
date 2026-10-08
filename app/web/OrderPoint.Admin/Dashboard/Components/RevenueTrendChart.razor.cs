@@ -111,6 +111,14 @@ public sealed partial class RevenueTrendChart
         return $"position: absolute; top: 0; bottom: 0; left: {Format(left)}%; width: {Format(right - left)}%;";
     }
 
+    private string GetTooltipAnchorStyle(int index)
+    {
+        double leftPercent = GetXValue(index) / ViewBoxSize * 100;
+
+        return $"position: absolute; top: 0; bottom: 0; left: {Format(leftPercent)}%; width: 1px; " +
+               "pointer-events: none;";
+    }
+
     private string GetXAxisLabelStyle(int index)
     {
         double leftPercent = GetXValue(index) / ViewBoxSize * 100;

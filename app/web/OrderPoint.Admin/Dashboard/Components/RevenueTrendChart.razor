@@ -61,24 +61,33 @@
             @for (int i = 0; i < Points.Count; i++)
             {
                 int index = i;
-                RevenueTrendPointDto point = Points[index];
 
-                <MudTooltip Placement="Placement.Top"
+                <div style="@GetSlotStyle(index)" @onmouseenter="@(() => HoveredIndex = index)"></div>
+            }
+
+            @if (HoveredIndex is not null)
+            {
+                RevenueTrendPointDto hoveredPoint = Points[HoveredIndex.Value];
+
+                <MudTooltip @key="@HoveredIndex"
+                            Visible="true"
+                            ShowOnHover="false"
+                            Placement="Placement.Top"
                             Arrow="true"
                             Inline="false"
-                            RootStyle="@GetSlotStyle(index)">
+                            RootStyle="@GetTooltipAnchorStyle(HoveredIndex.Value)">
                     <ChildContent>
-                        <div style="height: 100%;" @onmouseenter="@(() => HoveredIndex = index)"></div>
+                        <div style="height: 100%;"></div>
                     </ChildContent>
 
                     <TooltipContent>
-                        <div class="pa-2">
-                            <MudText Typo="Typo.body2">
-                                @GetTooltipLabel(point.BucketStartUtc)
+                        <div class="pa-1">
+                            <MudText Typo="Typo.caption">
+                                @GetTooltipLabel(hoveredPoint.BucketStartUtc)
                             </MudText>
 
-                            <MudText Typo="Typo.h6">
-                                @point.Revenue.ToString("C", CultureInfo.CurrentCulture)
+                            <MudText Typo="Typo.subtitle2">
+                                @hoveredPoint.Revenue.ToString("C", CultureInfo.CurrentCulture)
                             </MudText>
                         </div>
                     </TooltipContent>

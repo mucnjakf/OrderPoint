@@ -19,12 +19,12 @@
                     </ChildContent>
 
                     <TooltipContent>
-                        <div class="pa-2">
-                            <MudText Typo="Typo.body2">
+                        <div class="pa-1">
+                            <MudText Typo="Typo.caption">
                                 @GetDayName(rowDay), @($"{cellHour:00}:00 – {cellHour + 1:00}:00")
                             </MudText>
 
-                            <MudText Typo="Typo.h6">
+                            <MudText Typo="Typo.subtitle2">
                                 @ordersCount @(ordersCount == 1 ? "order" : "orders")
                             </MudText>
                         </div>
