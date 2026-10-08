@@ -1,0 +1,24 @@
+﻿<HighlightCard Label="@($"#{Rank}")"
+               Icon="@Icons.Material.Filled.EmojiEvents"
+               Color="Color.Primary"
+               IsLoading="false"
+               ShowContent="true"
+               OnClick="@OnCardClickAsync">
+    <MudImage Src="@(Category.ImageUrl ?? "images/image-placeholder.svg")"
+              Alt="Category image"
+              Class="mb-3"
+              Width="55"
+              Height="55"/>
+
+    <MudText Typo="Typo.body1" Align="Align.Center">
+        @Category.Name
+    </MudText>
+
+    <MudText Typo="Typo.caption" Class="mb-2">
+        @Category.Status.ToString()
+    </MudText>
+
+    <MudText Typo="Typo.h6">
+        @Category.ItemsCount @(Category.ItemsCount == 1 ? "item" : "items")
+    </MudText>
+</HighlightCard>

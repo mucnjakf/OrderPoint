@@ -1,50 +1,35 @@
-﻿<MudPaper Class="@($"pa-5 d-flex flex-column align-center flex-1 {CursorClass}")"
-          Style="transition: all 0.2s ease-in-out; height: 250px;"
-          Elevation="@(IsHovered && Item is not null ? 10 : 1)"
-          @onclick="@OnCardClickAsync"
-          @onmouseover="@(() => IsHovered = true)"
-          @onmouseout="@(() => IsHovered = false)">
+﻿<HighlightCard Label="@Label"
+               Icon="@Icon"
+               Color="@Color"
+               IsLoading="@IsLoading"
+               ShowContent="@(Item is not null)"
+               EmptyText="@EmptyText"
+               OnClick="@OnCardClickAsync">
+    @if (Item is not null)
+    {
+        <MudImage Src="@(Item.ImageUrl ?? "images/image-placeholder.svg")"
+                  Alt="Item image"
+                  Class="mb-3"
+                  Width="55"
+                  Height="55"/>
 
-    <MudChip T="string"
-             Variant="Variant.Text"
-             Color="@Color"
-             Icon="@Icon"
-             Size="Size.Small"
-             Class="align-self-start ma-0 mb-3">
-        @Label
-    </MudChip>
+        <MudText Typo="Typo.body1" Align="Align.Center">
+            @Item.Name
+        </MudText>
 
-    <StatefulView IsLoading="@IsLoading"
-                  ShowContent="@(Item is not null)"
-                  EmptyStateIcon="@Icon"
-                  EmptyStateText="@EmptyText"
-                  Compact="true">
-        @if (Item is not null)
+        <MudText Typo="Typo.caption" Class="mb-2">
+            @Item.Category.Name
+        </MudText>
+
+        <MudText Typo="Typo.h6">
+            @Item.Price.ToString("C", CultureInfo.CurrentCulture)
+        </MudText>
+
+        @if (Caption is not null)
         {
-            <MudImage Src="@(Item.ImageUrl ?? "images/image-placeholder.svg")"
-                      Alt="Item image"
-                      Class="mb-3"
-                      Width="55"
-                      Height="55"/>
-
-            <MudText Typo="Typo.body1" Align="Align.Center">
-                @Item.Name
+            <MudText Typo="Typo.caption" Class="mt-1">
+                @Caption
             </MudText>
-
-            <MudText Typo="Typo.caption" Class="mb-2">
-                @Item.Category.Name
-            </MudText>
-
-            <MudText Typo="Typo.h6">
-                @Item.Price.ToString("C", CultureInfo.CurrentCulture)
-            </MudText>
-
-            @if (Caption is not null)
-            {
-                <MudText Typo="Typo.caption" Class="mt-1">
-                    @Caption
-                </MudText>
-            }
         }
-    </StatefulView>
-</MudPaper>
+    }
+</HighlightCard>

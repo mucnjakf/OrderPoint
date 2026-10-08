@@ -37,10 +37,6 @@ public sealed partial class ItemSpotlightCard
     [EditorRequired]
     public EventCallback<ItemDto> OnClick { get; set; }
 
-    private bool IsHovered { get; set; }
-
-    private string CursorClass => Item is null ? string.Empty : "cursor-pointer";
-
     private async Task OnCardClickAsync()
     {
         if (Item is null)

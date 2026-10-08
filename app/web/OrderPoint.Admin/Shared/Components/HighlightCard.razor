@@ -1,0 +1,24 @@
+﻿<MudPaper Class="@($"pa-5 d-flex flex-column align-center flex-1 {CursorClass}")"
+          Style="transition: all 0.2s ease-in-out; height: 250px;"
+          Elevation="@(IsHovered && IsClickable ? 10 : 1)"
+          @onclick="@OnCardClickAsync"
+          @onmouseover="@(() => IsHovered = true)"
+          @onmouseout="@(() => IsHovered = false)">
+
+    <MudChip T="string"
+             Variant="Variant.Text"
+             Color="@Color"
+             Icon="@Icon"
+             Size="Size.Small"
+             Class="ma-0 mb-3">
+        @Label
+    </MudChip>
+
+    <StatefulView IsLoading="@IsLoading"
+                  ShowContent="@ShowContent"
+                  EmptyStateIcon="@Icon"
+                  EmptyStateText="@EmptyText"
+                  Compact="true">
+        @ChildContent
+    </StatefulView>
+</MudPaper>
