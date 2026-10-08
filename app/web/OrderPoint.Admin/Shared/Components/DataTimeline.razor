@@ -1,36 +1,33 @@
 ﻿@typeparam TItem
 
-<MudStack Row="true" AlignItems="AlignItems.End" Class="mb-3">
-    <MudTextField @bind-Value="@SearchQuery"
-                  @bind-Value:after="@OnSearchChangedAsync"
-                  T="string"
-                  Label="@SearchLabel"
-                  Variant="Variant.Outlined"
-                  Clearable="true"
-                  DebounceInterval="500"
-                  Immediate="false"/>
+<MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.End" Class="mb-3">
+    <MudStack Row="true">
+        <MudTextField @bind-Value="@SearchQuery"
+                      @bind-Value:after="@OnSearchChangedAsync"
+                      T="string"
+                      Label="@SearchLabel"
+                      Variant="Variant.Outlined"
+                      Clearable="true"
+                      DebounceInterval="500"
+                      Immediate="false"/>
 
-    <MudSelect @bind-Value="@SelectedSortBy"
-               @bind-Value:after="@OnSortChangedAsync"
-               T="string"
-               Variant="Variant.Outlined"
-               Label="Sort by"
-               FitContent="true">
-        @foreach (string sortBy in SortByOptions)
-        {
-            <MudSelectItem Value="@sortBy">
-                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
-                    <MudText Typo="Typo.body1">@GetSortByLabel(sortBy)</MudText>
-                    <MudIcon Icon="@GetSortByIcon(sortBy)" Size="Size.Small"/>
-                </MudStack>
-            </MudSelectItem>
-        }
-    </MudSelect>
-
-    @if (FilterContent is not null)
-    {
-        @FilterContent
-    }
+        <MudSelect @bind-Value="@SelectedSortBy"
+                   @bind-Value:after="@OnSortChangedAsync"
+                   T="string"
+                   Variant="Variant.Outlined"
+                   Label="Sort by"
+                   FitContent="true">
+            @foreach (string sortBy in SortByOptions)
+            {
+                <MudSelectItem Value="@sortBy">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                        <MudText Typo="Typo.body1">@GetSortByLabel(sortBy)</MudText>
+                        <MudIcon Icon="@GetSortByIcon(sortBy)" Size="Size.Small"/>
+                    </MudStack>
+                </MudSelectItem>
+            }
+        </MudSelect>
+    </MudStack>
 </MudStack>
 
 <StatefulView IsLoading="@IsLoading"

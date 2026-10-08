@@ -30,29 +30,6 @@
               EmptyStateIcon="@Icons.Material.Filled.Receipt"
               EmptyStateText="No orders found">
 
-    <FilterContent>
-        <MudSelect @bind-Value="@SelectedStatus"
-                   @bind-Value:after="@OnStatusChangedAsync"
-                   T="OrderStatus?"
-                   Variant="Variant.Outlined"
-                   Label="Status"
-                   FitContent="true">
-
-            <MudSelectItem Value="@(null)" T="OrderStatus?">
-                <MudText>All</MudText>
-            </MudSelectItem>
-
-            @foreach (OrderStatus status in Enum.GetValues<OrderStatus>())
-            {
-                <MudSelectItem Value="@status" T="OrderStatus?">
-                    <MudText>
-                        @status.ToString()
-                    </MudText>
-                </MudSelectItem>
-            }
-        </MudSelect>
-    </FilterContent>
-
     <ItemTemplate>
         <MudStack Row="true" AlignItems="AlignItems.Center">
             <MudText Typo="Typo.h6">

@@ -103,11 +103,6 @@ public sealed partial class OrdersPage
         await GetOrdersAsync(pageNumber: 1);
     }
 
-    private async Task OnStatusChangedAsync()
-    {
-        await GetOrdersAsync(pageNumber: 1);
-    }
-
     private async Task OnStatusClickAsync(OrderStatus status)
     {
         SelectedStatus = SelectedStatus == status ? null : status;
