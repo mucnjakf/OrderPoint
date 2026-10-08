@@ -11,8 +11,6 @@ IResourceBuilder<PostgresDatabaseResource> database = postgres
 
 IResourceBuilder<ProjectResource> api = builder
     .AddProject<Projects.OrderPoint_Api>("order-point-api")
-    .WithUrlForEndpoint("http", url => url.Url += "/scalar")
-    .WithUrlForEndpoint("https", url => url.Url += "/scalar")
     .WithHttpHealthCheck("/health")
     .WithReference(database)
     .WaitFor(database);

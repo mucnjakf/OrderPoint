@@ -104,6 +104,10 @@ public sealed partial class DataAccordion<TItem>
     [EditorRequired]
     public string EmptyStateText { get; set; }
 
+    private TItem? HoveredItem { get; set; }
+
+    private TItem? ExpandedItem { get; set; }
+
     private async Task OnSearchChangedAsync()
     {
         await SearchQueryChanged.InvokeAsync(SearchQuery);
@@ -139,6 +143,28 @@ public sealed partial class DataAccordion<TItem>
     private bool IsDeleteButtonDisabled(TItem item)
     {
         return DeleteButtonDisabled?.Invoke(item) ?? false;
+    }
+
+    private void OnExpandedChanged(TItem item, bool isExpanded)
+    {
+        if (isExpanded)
+        {
+            ExpandedItem = item;
+            return;
+        }
+
+        if (EqualityComparer<TItem>.Default.Equals(item, ExpandedItem))
+        {
+            ExpandedItem = default;
+        }
+    }
+
+    private string? GetPanelStyle(TItem item)
+    {
+        bool isHovered = EqualityComparer<TItem>.Default.Equals(item, HoveredItem);
+        bool isExpanded = EqualityComparer<TItem>.Default.Equals(item, ExpandedItem);
+
+        return isHovered && !isExpanded ? "background-color: var(--mud-palette-table-hover);" : null;
     }
 
     private string GetDeleteButtonTooltipText(TItem item)

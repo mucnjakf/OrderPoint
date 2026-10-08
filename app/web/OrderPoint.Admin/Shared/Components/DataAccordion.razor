@@ -50,7 +50,11 @@
     <MudExpansionPanels Elevation="1">
         @foreach (TItem item in Items)
         {
-            <MudExpansionPanel @key="@item">
+            <MudExpansionPanel @key="@item"
+                               Style="@GetPanelStyle(item)"
+                               ExpandedChanged="@((bool isExpanded) => OnExpandedChanged(item, isExpanded))"
+                               @onmouseenter="@(() => HoveredItem = item)"
+                               @onmouseleave="@(() => HoveredItem = default)">
                 <TitleContent>
                     @HeaderTemplate(item)
                 </TitleContent>
