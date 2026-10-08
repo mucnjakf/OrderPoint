@@ -12,7 +12,7 @@ public sealed record GetBartenderLeaderboardQuery(DashboardPeriod Period)
 internal sealed class GetBartenderLeaderboardQueryHandler(IDashboardRepository dashboardRepository)
     : IQueryHandler<GetBartenderLeaderboardQuery, IReadOnlyList<BartenderLeaderboardEntryDto>>
 {
-    private const int LeaderboardSize = 7;
+    private const int LeaderboardSize = 5;
 
     public async Task<Result<IReadOnlyList<BartenderLeaderboardEntryDto>>> Handle(
         GetBartenderLeaderboardQuery query,
