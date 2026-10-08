@@ -1,8 +1,8 @@
 ﻿<MudStack Spacing="3" Class="flex-1">
     @foreach (OrderStatus status in OpenStatuses)
     {
-        <MudPaper Outlined="true" Class="pa-4">
-            <MudStack Row="true" AlignItems="AlignItems.Center">
+        <MudPaper Outlined="true" Class="pa-4 flex-1 d-flex align-center">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Class="flex-1">
                 <MudAvatar Color="@status.GetColor()" Rounded="true">
                     <MudIcon Icon="@status.GetIcon()"/>
                 </MudAvatar>
@@ -18,28 +18,32 @@
         </MudPaper>
     }
 
-    <MudDivider Class="my-2"/>
+    <MudPaper Outlined="true" Class="pa-4 flex-1 d-flex align-center">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Class="flex-1">
+            <MudAvatar Color="Color.Secondary" Rounded="true">
+                <MudIcon Icon="@Icons.Material.Filled.Timer"/>
+            </MudAvatar>
 
-    <MudStack Spacing="0">
-        <MudText Typo="Typo.overline">
-            Longest wait
-        </MudText>
+            <MudText Typo="Typo.body1" Class="flex-1">
+                Longest wait
+            </MudText>
 
-        <MudText Typo="Typo.h6">
-            @(Live.OldestOpenOrderCreatedAtUtc?.ToRelativeTime() ?? "Nobody is waiting")
+            <MudText Typo="Typo.h6">
+                @(Live.OldestOpenOrderCreatedAtUtc?.ToRelativeTime() ?? "None")
+            </MudText>
+        </MudStack>
+    </MudPaper>
+
+    <MudStack Spacing="0" AlignItems="AlignItems.Center">
+        <MudButton Href="/orders"
+                   Variant="Variant.Text"
+                   Color="Color.Primary"
+                   EndIcon="@Icons.Material.Filled.ArrowForward">
+            View orders
+        </MudButton>
+
+        <MudText Typo="Typo.caption">
+            Refreshes every 30 seconds · updated @UpdatedAtUtc.ToString("T")
         </MudText>
     </MudStack>
-
-    <MudSpacer/>
-
-    <MudButton Href="/orders"
-               Variant="Variant.Text"
-               Color="Color.Primary"
-               EndIcon="@Icons.Material.Filled.ArrowForward">
-        View orders
-    </MudButton>
-
-    <MudText Typo="Typo.caption" Align="Align.Center">
-        Refreshes every 30 seconds · updated @UpdatedAtUtc.ToString("T")
-    </MudText>
 </MudStack>

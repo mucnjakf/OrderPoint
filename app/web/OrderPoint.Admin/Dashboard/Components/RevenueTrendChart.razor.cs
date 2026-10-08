@@ -9,16 +9,9 @@ public sealed partial class RevenueTrendChart
 {
     private const string ChartHeight = "280px";
 
-    private const int MaxVisibleLabels = 8;
+    private const int HourlyLabelStepInHours = 3;
 
-    private static readonly LineChartOptions Options = new()
-    {
-        LineDisplayType = LineDisplayType.Area,
-        InterpolationOption = InterpolationOption.NaturalSpline,
-        ShowLegend = false,
-        YAxisRequireZeroPoint = true,
-        YAxisToStringFunc = value => value.ToString("C0", CultureInfo.CurrentCulture)
-    };
+    private const int MaxDailyLabels = 8;
 
     [Parameter]
     [EditorRequired]
@@ -30,7 +23,7 @@ public sealed partial class RevenueTrendChart
 
     private List<ChartSeries<double>> Series { get; set; } = [];
 
-    private string[] Labels { get; set; } = [];
+    private TimeSeriesChartOptions Options { get; set; } = new();
 
     protected override void OnParametersSet()
     {
@@ -39,21 +32,29 @@ public sealed partial class RevenueTrendChart
             new ChartSeries<double>
             {
                 Name = "Revenue",
-                Data = Points.Select(point => (double)point.Revenue).ToArray()
+                Data = Points
+                    .Select(point => (point.BucketStartUtc.UtcDateTime, (double)point.Revenue))
+                    .ToArray(),
+                TooltipYValueFormat = "C"
             }
         ];
 
-        int labelStep = Math.Max(1, Points.Count / MaxVisibleLabels);
+        int dailyLabelStep = Math.Max(1, Points.Count / MaxDailyLabels);
 
-        Labels = Points
-            .Select((point, index) => index % labelStep == 0 ? GetLabel(point.BucketStartUtc) : string.Empty)
-            .ToArray();
-    }
-
-    private string GetLabel(DateTimeOffset bucketStartUtc)
-    {
-        return IsHourly
-            ? bucketStartUtc.ToString("HH:mm", CultureInfo.CurrentCulture)
-            : bucketStartUtc.ToString("dd MMM", CultureInfo.CurrentCulture);
+        Options = new TimeSeriesChartOptions
+        {
+            LineDisplayType = LineDisplayType.Area,
+            InterpolationOption = InterpolationOption.NaturalSpline,
+            ShowLegend = false,
+            YAxisRequireZeroPoint = true,
+            YAxisToStringFunc = value => value.ToString("C0", CultureInfo.CurrentCulture),
+            TimeLabelFormat = IsHourly ? "HH:mm" : "dd MMM",
+            TooltipTimeLabelFormat = IsHourly ? "HH:mm" : "ddd, dd MMM",
+            TimeLabelSpacing = IsHourly
+                ? TimeSpan.FromHours(HourlyLabelStepInHours)
+                : TimeSpan.FromDays(dailyLabelStep),
+            TooltipTitleFormat = "{{X_VALUE}}",
+            TooltipSubtitleFormat = "{{Y_VALUE}}"
+        };
     }
 }

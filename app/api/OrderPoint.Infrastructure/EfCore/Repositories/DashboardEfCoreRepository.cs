@@ -42,32 +42,48 @@ internal sealed class DashboardEfCoreRepository(ApplicationDbContext dbContext) 
         DateTimeOffset fromUtc,
         DateTimeOffset toUtc,
         CancellationToken cancellationToken = default)
-        => await GetCompletedOrderItemsInRange(fromUtc, toUtc)
+    {
+        var categories = await GetCompletedOrderItemsInRange(fromUtc, toUtc)
             .GroupBy(orderItem => new { orderItem.Item.CategoryId, orderItem.Item.Category.Name })
-            .Select(group => new CategoryRevenueDto(
+            .Select(group => new
+            {
                 group.Key.CategoryId,
                 group.Key.Name,
-                group.Sum(orderItem => orderItem.Quantity * orderItem.UnitPrice)))
-            .OrderByDescending(categoryRevenue => categoryRevenue.Revenue)
+                Revenue = group.Sum(orderItem => orderItem.Quantity * orderItem.UnitPrice)
+            })
+            .OrderByDescending(category => category.Revenue)
             .ToListAsync(cancellationToken);
+
+        return categories
+            .Select(category => new CategoryRevenueDto(category.CategoryId, category.Name, category.Revenue))
+            .ToList();
+    }
 
     public async Task<IReadOnlyList<TopItemDto>> GetTopItemsAsync(
         DateTimeOffset fromUtc,
         DateTimeOffset toUtc,
         int count,
         CancellationToken cancellationToken = default)
-        => await GetCompletedOrderItemsInRange(fromUtc, toUtc)
+    {
+        var items = await GetCompletedOrderItemsInRange(fromUtc, toUtc)
             .GroupBy(orderItem => new { orderItem.ItemId, orderItem.Item.Name, orderItem.Item.ImageUrl })
-            .Select(group => new TopItemDto(
+            .Select(group => new
+            {
                 group.Key.ItemId,
                 group.Key.Name,
                 group.Key.ImageUrl,
-                group.Sum(orderItem => orderItem.Quantity),
-                group.Sum(orderItem => orderItem.Quantity * orderItem.UnitPrice)))
-            .OrderByDescending(topItem => topItem.Quantity)
-            .ThenByDescending(topItem => topItem.Revenue)
+                Quantity = group.Sum(orderItem => orderItem.Quantity),
+                Revenue = group.Sum(orderItem => orderItem.Quantity * orderItem.UnitPrice)
+            })
+            .OrderByDescending(item => item.Quantity)
+            .ThenByDescending(item => item.Revenue)
             .Take(count)
             .ToListAsync(cancellationToken);
+
+        return items
+            .Select(item => new TopItemDto(item.ItemId, item.Name, item.ImageUrl, item.Quantity, item.Revenue))
+            .ToList();
+    }
 
     public async Task<IReadOnlyList<BartenderLeaderboardEntryDto>> GetBartenderLeaderboardAsync(
         DateTimeOffset fromUtc,

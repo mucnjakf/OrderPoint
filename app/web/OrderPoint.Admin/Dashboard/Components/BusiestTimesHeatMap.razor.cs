@@ -11,8 +11,6 @@ public sealed partial class BusiestTimesHeatMap
 
     private const int HoursPerDay = 24;
 
-    private const int LabelHourStep = 3;
-
     private static readonly DayOfWeek[] WeekDays =
     [
         DayOfWeek.Monday,
@@ -28,7 +26,11 @@ public sealed partial class BusiestTimesHeatMap
     {
         ShowLegend = false,
         ShowLabels = false,
-        EnableSmoothGradient = true
+        EnableSmoothGradient = true,
+        ShowToolTips = true,
+        ValueFormatString = "F0",
+        TooltipTitleFormat = "{{SERIES_NAME}} {{X_VALUE}}:00",
+        TooltipSubtitleFormat = "{{Y_VALUE}} orders"
     };
 
     [Parameter]
@@ -57,7 +59,7 @@ public sealed partial class BusiestTimesHeatMap
 
         Labels = Enumerable
             .Range(0, HoursPerDay)
-            .Select(hour => hour % LabelHourStep == 0 ? $"{hour:00}" : string.Empty)
+            .Select(hour => $"{hour:00}")
             .ToArray();
     }
 }
