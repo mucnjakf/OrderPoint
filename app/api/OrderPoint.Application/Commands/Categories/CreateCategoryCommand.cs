@@ -11,8 +11,7 @@ namespace OrderPoint.Application.Commands.Categories;
 public sealed record CreateCategoryCommand(
     string Name,
     string Description,
-    CategoryStatus Status,
-    string? ImageUrl)
+    CategoryStatus Status)
     : ICommand<CategoryDto>;
 
 internal sealed class CreateCategoryCommandHandler(ICategoryRepository categoryRepository, IUnitOfWork unitOfWork)
@@ -20,7 +19,7 @@ internal sealed class CreateCategoryCommandHandler(ICategoryRepository categoryR
 {
     public async Task<Result<CategoryDto>> Handle(CreateCategoryCommand command, CancellationToken cancellationToken)
     {
-        Result<Category> result = Category.Create(command.Name, command.Description, command.Status, command.ImageUrl);
+        Result<Category> result = Category.Create(command.Name, command.Description, command.Status);
 
         if (result.IsFailure)
         {

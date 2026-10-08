@@ -14,8 +14,7 @@ namespace OrderPoint.Api.Endpoints.Categories;
 internal sealed record CreateCategoryRequest(
     string Name,
     string Description,
-    CategoryStatus Status,
-    string? ImageUrl);
+    CategoryStatus Status);
 
 internal sealed record CreateCategoryResponse(CategoryDto Data);
 
@@ -40,8 +39,7 @@ internal sealed class CreateCategoryEndpoint : IEndpoint
         CreateCategoryCommand command = new(
             request.Name,
             request.Description,
-            request.Status,
-            request.ImageUrl);
+            request.Status);
 
         Result<CategoryDto> result = await sender.Send(command, cancellationToken);
 
@@ -67,9 +65,6 @@ internal sealed class CreateCategoryEndpoint : IEndpoint
 
             RuleFor(request => request.Status)
                 .IsInEnum().WithMessage("Status is invalid");
-
-            RuleFor(request => request.ImageUrl)
-                .MaximumLength(200).WithMessage("ImageUrl must be at most 200 characters");
         }
     }
 }

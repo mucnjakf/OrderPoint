@@ -1,4 +1,5 @@
-﻿using OrderPoint.Admin.Categories.Api.Requests;
+﻿using System.Net.Http.Headers;
+using OrderPoint.Admin.Categories.Api.Requests;
 using OrderPoint.Admin.Categories.Api.Responses;
 using OrderPoint.Admin.Categories.Dtos;
 using OrderPoint.Admin.Categories.Enumerations;
@@ -11,6 +12,8 @@ namespace OrderPoint.Admin.Categories.Api;
 internal sealed class CategoryApiClient(IHttpClientFactory httpClientFactory)
 {
     private const int DefaultSearchResultsCount = 5;
+
+    private const string ImageFormFieldName = "image";
 
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient("OrderPointApi");
 
@@ -95,7 +98,7 @@ internal sealed class CategoryApiClient(IHttpClientFactory httpClientFactory)
         return result.Data;
     }
 
-    internal async Task CreateCategoryAsync(
+    internal async Task<CategoryDto> CreateCategoryAsync(
         CreateCategoryRequest request,
         CancellationToken cancellationToken = default)
     {
@@ -106,6 +109,12 @@ internal sealed class CategoryApiClient(IHttpClientFactory httpClientFactory)
         {
             await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
         }
+
+        CreateCategoryResponse result =
+            await response.Content.ReadFromJsonAsync<CreateCategoryResponse>(cancellationToken)
+            ?? throw new InvalidOperationException($"Unable to parse {nameof(CreateCategoryResponse)}");
+
+        return result.Data;
     }
 
     internal async Task UpdateCategoryAsync(
@@ -115,6 +124,37 @@ internal sealed class CategoryApiClient(IHttpClientFactory httpClientFactory)
     {
         HttpResponseMessage response = await _httpClient
             .PutAsJsonAsync($"api/categories/{id}", request, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+    }
+
+    internal async Task UpdateCategoryImageAsync(
+        Guid id,
+        ImageFileDto image,
+        CancellationToken cancellationToken = default)
+    {
+        using var fileContent = new ByteArrayContent(image.Content);
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue(image.ContentType);
+
+        using var formContent = new MultipartFormDataContent();
+        formContent.Add(fileContent, ImageFormFieldName, image.FileName);
+
+        HttpResponseMessage response = await _httpClient
+            .PutAsync($"api/categories/{id}/image", formContent, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+    }
+
+    internal async Task DeleteCategoryImageAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await _httpClient
+            .DeleteAsync($"api/categories/{id}/image", cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {

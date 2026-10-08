@@ -24,20 +24,17 @@ public sealed class Category : Entity
         string name,
         string description,
         CategoryStatus status,
-        string? imageUrl,
         DateTimeOffset createdAtUtc) : base(id, createdAtUtc)
     {
         Name = name;
         Description = description;
         Status = status;
-        ImageUrl = imageUrl;
     }
 
     public static Result<Category> Create(
         string name,
         string description,
-        CategoryStatus status,
-        string? imageUrl)
+        CategoryStatus status)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -49,7 +46,7 @@ public sealed class Category : Entity
             return Result.Failure<Category>(CategoryErrors.DescriptionIsRequired);
         }
 
-        Category category = new(Guid.CreateVersion7(), name, description, status, imageUrl, DateTimeOffset.UtcNow);
+        Category category = new(Guid.CreateVersion7(), name, description, status, DateTimeOffset.UtcNow);
 
         return Result.Success(category);
     }
@@ -57,8 +54,7 @@ public sealed class Category : Entity
     public Result Update(
         string name,
         string description,
-        CategoryStatus status,
-        string? imageUrl)
+        CategoryStatus status)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -73,10 +69,30 @@ public sealed class Category : Entity
         Name = name;
         Description = description;
         Status = status;
+
+        UpdatedAtUtc = DateTimeOffset.UtcNow;
+
+        return Result.Success();
+    }
+
+    public Result SetImage(string imageUrl)
+    {
+        if (string.IsNullOrWhiteSpace(imageUrl))
+        {
+            return Result.Failure(CategoryErrors.ImageUrlIsRequired);
+        }
+
         ImageUrl = imageUrl;
 
         UpdatedAtUtc = DateTimeOffset.UtcNow;
 
         return Result.Success();
+    }
+
+    public void RemoveImage()
+    {
+        ImageUrl = null;
+
+        UpdatedAtUtc = DateTimeOffset.UtcNow;
     }
 }

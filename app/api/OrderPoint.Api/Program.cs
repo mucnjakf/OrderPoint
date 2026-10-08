@@ -37,6 +37,9 @@ builder.Services.Configure<RouteHandlerOptions>(options => options.ThrowOnBadReq
 // FluentValidation
 builder.Services.AddValidatorsFromAssemblyContaining<Program>(includeInternalTypes: true);
 
+// Storage
+builder.AddAzureBlobContainerClient("images");
+
 // Modules
 builder.Services.AddApplicationModule(builder.Configuration);
 builder.Services.AddInfrastructureModule(builder.Configuration);
@@ -47,6 +50,9 @@ WebApplication app = builder.Build();
 
 // Database
 app.ApplyMigrations();
+
+// Storage
+app.CreateImageContainer();
 
 // Error handling
 app.UseExceptionHandler();

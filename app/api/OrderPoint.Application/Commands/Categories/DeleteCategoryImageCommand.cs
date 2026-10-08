@@ -7,16 +7,15 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Commands.Categories;
 
-public sealed record DeleteCategoryCommand(Guid Id) : ICommand;
+public sealed record DeleteCategoryImageCommand(Guid Id) : ICommand;
 
-internal sealed class DeleteCategoryCommandHandler(
+internal sealed class DeleteCategoryImageCommandHandler(
     ICategoryRepository categoryRepository,
-    IItemRepository itemRepository,
     IImageStorage imageStorage,
     IUnitOfWork unitOfWork)
-    : ICommandHandler<DeleteCategoryCommand>
+    : ICommandHandler<DeleteCategoryImageCommand>
 {
-    public async Task<Result> Handle(DeleteCategoryCommand command, CancellationToken cancellationToken)
+    public async Task<Result> Handle(DeleteCategoryImageCommand command, CancellationToken cancellationToken)
     {
         Category? category = await categoryRepository.GetAsync(command.Id, cancellationToken);
 
@@ -25,20 +24,17 @@ internal sealed class DeleteCategoryCommandHandler(
             return Result.Failure(CategoryErrors.NotFound);
         }
 
-        bool containsItems = await itemRepository.ExistsAsync(category.Id, cancellationToken);
-
-        if (containsItems)
+        if (category.ImageUrl is null)
         {
-            return Result.Failure(CategoryErrors.CannotDeleteCategoryWithItems);
+            return Result.Success();
         }
 
-        categoryRepository.Delete(category);
+        string imageUrl = category.ImageUrl;
+
+        category.RemoveImage();
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        if (category.ImageUrl is not null)
-        {
-            await imageStorage.DeleteAsync(category.ImageUrl, cancellationToken);
-        }
+        await imageStorage.DeleteAsync(imageUrl, cancellationToken);
 
         return Result.Success();
     }

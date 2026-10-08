@@ -2,8 +2,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OrderPoint.Application.Repositories;
+using OrderPoint.Application.Storage;
 using OrderPoint.Infrastructure.EfCore;
 using OrderPoint.Infrastructure.EfCore.Repositories;
+using OrderPoint.Infrastructure.Storage;
 
 namespace OrderPoint.Infrastructure;
 
@@ -24,6 +26,8 @@ public static class InfrastructureModule
         services.AddScoped<IItemRepository, ItemEfCoreRepository>();
         services.AddScoped<IBartenderRepository, BartenderEfCoreRepository>();
         services.AddScoped<IOrderRepository, OrderEfCoreRepository>();
+
+        services.AddScoped<IImageStorage, BlobImageStorage>();
 
         return services;
     }

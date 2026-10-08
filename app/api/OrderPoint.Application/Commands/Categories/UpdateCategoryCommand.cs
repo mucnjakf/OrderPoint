@@ -11,8 +11,7 @@ public sealed record UpdateCategoryCommand(
     Guid Id,
     string Name,
     string Description,
-    CategoryStatus Status,
-    string? ImageUrl) : ICommand;
+    CategoryStatus Status) : ICommand;
 
 internal sealed class UpdateCategoryCommandHandler(ICategoryRepository categoryRepository, IUnitOfWork unitOfWork)
     : ICommandHandler<UpdateCategoryCommand>
@@ -26,7 +25,7 @@ internal sealed class UpdateCategoryCommandHandler(ICategoryRepository categoryR
             return Result.Failure(CategoryErrors.NotFound);
         }
 
-        Result result = category.Update(command.Name, command.Description, command.Status, command.ImageUrl);
+        Result result = category.Update(command.Name, command.Description, command.Status);
 
         if (result.IsFailure)
         {

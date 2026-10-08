@@ -16,6 +16,10 @@ public static class CategoryErrors
         "Category.DescriptionIsRequired",
         "Category description is required");
 
+    internal static readonly Error ImageUrlIsRequired = Error.Validation(
+        "Category.ImageUrlIsRequired",
+        "Category image URL is required");
+
     public static readonly Error CannotDeleteCategoryWithItems = Error.Conflict(
         "Category.CannotDeleteCategoryWithItems",
         "Cannot delete category with items");

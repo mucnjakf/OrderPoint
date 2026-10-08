@@ -13,8 +13,7 @@ namespace OrderPoint.Api.Endpoints.Categories;
 internal sealed record UpdateCategoryRequest(
     string Name,
     string Description,
-    CategoryStatus Status,
-    string? ImageUrl);
+    CategoryStatus Status);
 
 internal sealed class UpdateCategoryEndpoint : IEndpoint
 {
@@ -35,7 +34,7 @@ internal sealed class UpdateCategoryEndpoint : IEndpoint
     {
         await validator.ValidateAndThrowAsync(request, cancellationToken);
 
-        UpdateCategoryCommand command = new(id, request.Name, request.Description, request.Status, request.ImageUrl);
+        UpdateCategoryCommand command = new(id, request.Name, request.Description, request.Status);
 
         Result result = await sender.Send(command, cancellationToken);
 
@@ -58,9 +57,6 @@ internal sealed class UpdateCategoryEndpoint : IEndpoint
 
             RuleFor(request => request.Status)
                 .IsInEnum().WithMessage("Status is invalid");
-
-            RuleFor(request => request.ImageUrl)
-                .MaximumLength(200).WithMessage("ImageUrl must be at most 200 characters");
         }
     }
 }

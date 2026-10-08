@@ -138,7 +138,7 @@ public sealed partial class CategoriesPage
         var request = (dialogResult.Data as CreateCategoryRequest)!;
 
         bool isSuccess = await ApiService.ExecuteAsync(
-            () => CategoryApiClient.CreateCategoryAsync(request),
+            () => CreateCategoryWithImageAsync(request),
             $"Category {request.Name} created successfully");
 
         if (isSuccess)
@@ -147,6 +147,18 @@ public sealed partial class CategoriesPage
                 GetTopCategoriesAsync(),
                 GetCategoriesAsync(pageNumber: 1));
         }
+    }
+
+    private async Task CreateCategoryWithImageAsync(CreateCategoryRequest request)
+    {
+        CategoryDto category = await CategoryApiClient.CreateCategoryAsync(request);
+
+        if (request.Image is null)
+        {
+            return;
+        }
+
+        await CategoryApiClient.UpdateCategoryImageAsync(category.Id, request.Image);
     }
 
     private async Task ShowCategoryDetailsDialogAsync(CategoryDto category)
@@ -193,7 +205,7 @@ public sealed partial class CategoriesPage
         var request = (dialogResult.Data as UpdateCategoryRequest)!;
 
         bool isSuccess = await ApiService.ExecuteAsync(
-            () => CategoryApiClient.UpdateCategoryAsync(category.Id, request),
+            () => UpdateCategoryWithImageAsync(category.Id, request),
             $"Category {request.Name} edited successfully");
 
         if (isSuccess)
@@ -201,6 +213,22 @@ public sealed partial class CategoriesPage
             await Task.WhenAll(
                 GetTopCategoriesAsync(),
                 GetCategoriesAsync(pageNumber: 1));
+        }
+    }
+
+    private async Task UpdateCategoryWithImageAsync(Guid id, UpdateCategoryRequest request)
+    {
+        await CategoryApiClient.UpdateCategoryAsync(id, request);
+
+        if (request.Image is not null)
+        {
+            await CategoryApiClient.UpdateCategoryImageAsync(id, request.Image);
+            return;
+        }
+
+        if (request.RemoveImage)
+        {
+            await CategoryApiClient.DeleteCategoryImageAsync(id);
         }
     }
 

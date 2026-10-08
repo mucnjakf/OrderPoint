@@ -14,7 +14,7 @@ Order management system for a bar: customers order from their phones via QR code
 
 ## Tech stack
 
-.NET 10, C# (latest), Aspire 13 for local orchestration, PostgreSQL via EF Core (Npgsql), Minimal API, MediatR 14 (CQRS), FluentValidation 12, Scalar (API docs), OpenTelemetry. Admin web is Blazor Web App with Interactive Server render mode and MudBlazor 9.
+.NET 10, C# (latest), Aspire 13 for local orchestration, PostgreSQL via EF Core (Npgsql), Azure Blob Storage for images (Azurite emulator locally), Minimal API, MediatR 14 (CQRS), FluentValidation 12, Scalar (API docs), OpenTelemetry. Admin web is Blazor Web App with Interactive Server render mode and MudBlazor 9.
 
 ## Repository layout
 
@@ -24,7 +24,7 @@ Order management system for a bar: customers order from their phones via QR code
 app/
   OrderPoint.slnx                     solution file
   .editorconfig                       formatting rules (UTF-8 BOM, 4 spaces, 120 columns)
-  host/OrderPoint.AppHost             Aspire host: Postgres + API + Admin
+  host/OrderPoint.AppHost             Aspire host: Postgres + Azure Storage emulator (blob container "images") + API + Admin
   host/OrderPoint.ServiceDefaults     shared Aspire defaults (telemetry, health, service discovery)
   api/OrderPoint.Domain               entities, errors, Result type (Outcomes/), enums, sort enums
   api/OrderPoint.Application          commands/queries + handlers, DTOs, mappers, repository interfaces
@@ -56,7 +56,7 @@ dotnet ef migrations add <Name> \
 - There is no test project yet. Do not add one unless asked.
 - "Done" means the build succeeds with no new warnings. Known baseline: NuGet vulnerability warnings for `MessagePack` (AppHost, via Aspire) and `Microsoft.OpenApi` (Api); these will be fixed separately, so ignore them.
 - Secrets live in user secrets, not appsettings (e.g. `MediatR:LicenseKey` for the Api).
-- Running the app needs Docker (Aspire starts Postgres on port 59286). The design-time `ApplicationDbContextFactory` points at `localhost:5432`; that is fine for `migrations add`, which does not connect.
+- Running the app needs Docker (Aspire starts Postgres on port 59286 and the Azurite blob endpoint on port 59287, both as persistent containers with data volumes; the blob port is fixed because image URLs are stored with it). The design-time `ApplicationDbContextFactory` points at `localhost:5432`; that is fine for `migrations add`, which does not connect.
 
 ## Backend conventions
 
@@ -104,6 +104,14 @@ dotnet ef migrations add <Name> \
 - Flow: `await validator.ValidateAndThrowAsync(request, ct)` → build command/query → `sender.Send` → `result.IsSuccess ? TypedResults.X(...) : result.ToProblemDetails()`.
 - Responses wrap payloads as `{ Data }`: create → `CreatedAtRoute` to the Get route, update/delete → `NoContent`, get → `Ok`.
 - Errors are ProblemDetails with an `errors` array; status mapping lives in `Extensions/ResultExtensions.cs`. Exception handlers in `Exceptions/` (registered in `Program.cs`, in order): `RequestValidationExceptionHandler` (FluentValidation → 400), `BadHttpRequestExceptionHandler` (missing/unparsable parameters or malformed JSON → 400; `ThrowOnBadRequest` is on so this applies in every environment), `GlobalExceptionHandler` (logs the exception, → 500 without exposing exception details). In .NET 10 the exception middleware does not log exceptions a handler reports as handled, so any new handler for unexpected errors must log itself.
+
+### Images
+
+- Images live in the blob container `images` and the entity stores the full public URL in `ImageUrl` (UI uses it directly). The API gets a `BlobContainerClient` from `builder.AddAzureBlobContainerClient("images")` and `app.CreateImageContainer()` makes the container publicly readable at startup.
+- `IImageStorage` (Application `Storage/`, implemented by Infrastructure `Storage/BlobImageStorage`): `UploadAsync(stream, contentType, folder)` stores `<folder>/<guid>` and returns the URL; `DeleteAsync(imageUrl)`. A new upload always gets a new name, so browsers never show a cached old image.
+- Images are not part of create/update. Each entity with an image gets `PUT api/<plural>/{id}/image` (multipart form field `image`, `[FromForm]` request record, `.DisableAntiforgery()`) and `DELETE api/<plural>/{id}/image`, backed by `Update<Entity>ImageCommand`/`Delete<Entity>ImageCommand` and domain `SetImage(url)`/`RemoveImage()`. Replacing an image deletes the old blob after saving; deleting the entity deletes its blob. Limits: JPEG, PNG or WebP, at most 2 MB (API validator and Admin `ImageUploadField` both check).
+- Admin: dialogs use the shared `ImageUploadField` (upload button, optional remove, inline error) which reads the file into an `ImageFileDto`; the preview paper shows it via `ImageFileDto.ToDataUrl()`. The request carries it as `[JsonIgnore] Image` (update also `[JsonIgnore] RemoveImage`), and the page sends create/update and then the image call inside one `ApiService.ExecuteAsync` (see `CategoriesPage`).
+- Categories have uploads; Items and Bartenders still have `ImageUrl` in create/update and get the same treatment next.
 
 ### Validation is duplicated on purpose; keep it in sync
 

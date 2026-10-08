@@ -46,17 +46,14 @@
                             }
                         </MudSelect>
 
-                        <MudTextField Label="Image URL"
-                                      Disabled="true"
-                                      @bind-Value="@Request.ImageUrl"
-                                      For="@(() => Request.ImageUrl)"
-                                      HelperText="Image upload will be available in a future update."
-                                      Variant="Variant.Outlined"/>
+                        <ImageUploadField CanRemove="@(Request.Image is not null)"
+                                          OnImageSelected="@OnImageSelected"
+                                          OnImageRemoved="@OnImageRemoved"/>
                     </MudStack>
                 </MudItem>
 
                 <MudItem md="4">
-                    <CategoryPreviewPaper ImageUrl="@Request.ImageUrl"
+                    <CategoryPreviewPaper ImageUrl="@PreviewImageUrl"
                                           Name="@Request.Name"
                                           Description="@Request.Description"
                                           Status="@Request.Status"
