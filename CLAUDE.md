@@ -113,7 +113,7 @@ Field rules live in several places. Changing one means changing all of them:
 
 ### Structure
 
-- Feature folders: `<Feature>/Api` (`<Feature>ApiClient`, `Requests/`, `Responses/`), `Components/`, `Dialogs/`, `Dtos/`, `Enumerations/`, `Pages/`, `Sorting/`. Cross-feature code is in `Shared/`.
+- Feature folders: `<Feature>/Api` (`<Feature>ApiClient`, `Requests/`, `Responses/`), `Components/`, `Dialogs/`, `Dtos/`, `Enumerations/`, `Pages/`, `Sorting/`. Cross-feature code is in `Shared/` (`Components/`, `Dtos/`, `Errors/`, `Extensions/`, `Layout/`, `Pages/`, `Services/`). Reusable formatting helpers are `internal static` extension methods in `Shared/Extensions/<Type>Extensions.cs` (e.g. `DateTimeOffset.ToRelativeTime()` → "2 h ago"), not private methods on a page.
 - Every component is split into `X.razor` (markup only) and `X.razor.cs` (`public sealed partial class X`). No `@code` blocks (`Dashboard/DashboardPage.razor` is an untouched template, not an example).
 - Visibility: components are `public` (Razor requires it), so DTOs, enums and `PaginationDto` used as component parameters are `public`. Everything else (API clients, requests, responses, sort enums, `XSorting` helpers, services) is `internal`.
 - Inject with `[Inject] private T Name { get; set; } = null!;`. Parameters use `[Parameter]` and `[EditorRequired]` where mandatory.
@@ -143,7 +143,7 @@ Field rules live in several places. Changing one means changing all of them:
 ### Components and styling
 
 - Each page has exactly one `<h1>`: the `PageHeader` title (rendered as `h1`, styled `Typo.h4`). `Routes.razor` focuses it after navigation, so nothing else (e.g. drawer labels) may render as `h1`.
-- Reuse shared components: `PageHeader` (title + breadcrumbs), `DataTable` (tabular list, see Categories), `DataGrid` (card grid, see Items), `DataList` (list inside a dialog), `StatefulView` (loading/empty states), `TextDisplayRow`, `ChipDisplayRow`. Extend them rather than building parallel ones. `DataTable`/`DataGrid` show the delete button when `OnDeleteClick` is set; `DeleteButtonDisabled` and `DeleteButtonDisabledTooltipText` are optional.
+- Reuse shared components: `PageHeader` (title + breadcrumbs), `DataTable` (tabular list, see Categories), `DataGrid` (card grid, see Items), `DataList` (list inside a dialog), `StatefulView` (loading/empty states for every independently loaded section; `Compact="true"` renders them without the surrounding paper, for use inside a card such as `ItemSpotlightCard`), `TextDisplayRow`, `ChipDisplayRow`. Extend them rather than building parallel ones. `DataTable`/`DataGrid` show the delete button when `OnDeleteClick` is set; `DeleteButtonDisabled` and `DeleteButtonDisabledTooltipText` are optional.
 - Admin DTOs, enums and sort enums mirror the API ones by hand. When an API contract changes, update the Admin copy too.
 - Use MudBlazor components and `Icons.Material.Filled.*`; avoid custom CSS. Colours come from the theme in `Shared/Layout/MainLayout.razor.cs` (`PaletteDark`), never hardcoded hex: dialogs use `Class="mud-background"`, borders use `var(--mud-palette-lines-default)`.
 - Razor attribute style:

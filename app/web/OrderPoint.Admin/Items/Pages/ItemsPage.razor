@@ -4,6 +4,42 @@
 
 <PageHeader Text="Items" Breadcrumbs="@Breadcrumbs"/>
 
+<MudStack Row="true" Spacing="3" Class="mb-5">
+    <ItemSpotlightCard Label="Newest"
+                       Icon="@Icons.Material.Filled.AutoAwesome"
+                       Color="Color.Info"
+                       Item="@NewestItem"
+                       IsLoading="@IsLoadingNewestItem"
+                       Caption="@NewestItemCaption"
+                       EmptyText="No items yet"
+                       OnClick="@ShowItemDetailsDialogAsync"/>
+
+    <ItemSpotlightCard Label="Last edited"
+                       Icon="@Icons.Material.Filled.Edit"
+                       Color="Color.Secondary"
+                       Item="@LastEditedItem"
+                       IsLoading="@IsLoadingLastEditedItem"
+                       Caption="@LastEditedItemCaption"
+                       EmptyText="No edits yet"
+                       OnClick="@ShowItemDetailsDialogAsync"/>
+
+    <ItemSpotlightCard Label="Highest price"
+                       Icon="@Icons.Material.Filled.TrendingUp"
+                       Color="Color.Warning"
+                       Item="@HighestPriceItem"
+                       IsLoading="@IsLoadingHighestPriceItem"
+                       EmptyText="No items yet"
+                       OnClick="@ShowItemDetailsDialogAsync"/>
+
+    <ItemSpotlightCard Label="Lowest price"
+                       Icon="@Icons.Material.Filled.TrendingDown"
+                       Color="Color.Success"
+                       Item="@LowestPriceItem"
+                       IsLoading="@IsLoadingLowestPriceItem"
+                       EmptyText="No items yet"
+                       OnClick="@ShowItemDetailsDialogAsync"/>
+</MudStack>
+
 <DataGrid TItem="ItemDto"
           Items="@Items"
           Pagination="@Pagination"

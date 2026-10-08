@@ -1,12 +1,19 @@
 ﻿@if (IsLoading)
 {
-    <MudPaper Class="pa-10 d-flex justify-center mb-3">
-        <MudProgressCircular Indeterminate="true" Style="height: 100px; width: 100px;">
-            <ChildContent>
-                Loading...
-            </ChildContent>
-        </MudProgressCircular>
-    </MudPaper>
+    if (Compact)
+    {
+        <MudProgressCircular Indeterminate="true" Class="my-auto"/>
+    }
+    else
+    {
+        <MudPaper Class="pa-10 d-flex justify-center mb-3">
+            <MudProgressCircular Indeterminate="true" Style="height: 100px; width: 100px;">
+                <ChildContent>
+                    Loading...
+                </ChildContent>
+            </MudProgressCircular>
+        </MudPaper>
+    }
 }
 else if (ShowContent)
 {
@@ -14,13 +21,26 @@ else if (ShowContent)
 }
 else if (EmptyStateIcon is not null && EmptyStateText is not null)
 {
-    <MudPaper Class="pa-10 mb-3">
-        <MudStack AlignItems="AlignItems.Center">
-            <MudIcon Icon="@EmptyStateIcon" Size="Size.Large" Class="mb-1"/>
+    if (Compact)
+    {
+        <MudStack AlignItems="AlignItems.Center" Spacing="1" Class="my-auto">
+            <MudIcon Icon="@EmptyStateIcon"/>
 
-            <MudText Typo="Typo.body1">
+            <MudText Typo="Typo.body2">
                 @EmptyStateText
             </MudText>
         </MudStack>
-    </MudPaper>
+    }
+    else
+    {
+        <MudPaper Class="pa-10 mb-3">
+            <MudStack AlignItems="AlignItems.Center">
+                <MudIcon Icon="@EmptyStateIcon" Size="Size.Large" Class="mb-1"/>
+
+                <MudText Typo="Typo.body1">
+                    @EmptyStateText
+                </MudText>
+            </MudStack>
+        </MudPaper>
+    }
 }

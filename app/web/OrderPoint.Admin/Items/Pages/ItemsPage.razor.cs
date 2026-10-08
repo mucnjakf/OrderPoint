@@ -8,6 +8,7 @@ using OrderPoint.Admin.Items.Dialogs;
 using OrderPoint.Admin.Items.Dtos;
 using OrderPoint.Admin.Items.Sorting;
 using OrderPoint.Admin.Shared.Dtos;
+using OrderPoint.Admin.Shared.Extensions;
 using OrderPoint.Admin.Shared.Services;
 
 namespace OrderPoint.Admin.Items.Pages;
@@ -34,6 +35,30 @@ public sealed partial class ItemsPage
         new("Items", href: null, disabled: true, icon: Icons.Material.Filled.MenuBook)
     ];
 
+    private ItemDto? NewestItem { get; set; }
+
+    private ItemDto? LastEditedItem { get; set; }
+
+    private ItemDto? HighestPriceItem { get; set; }
+
+    private ItemDto? LowestPriceItem { get; set; }
+
+    private bool IsLoadingNewestItem { get; set; } = true;
+
+    private bool IsLoadingLastEditedItem { get; set; } = true;
+
+    private bool IsLoadingHighestPriceItem { get; set; } = true;
+
+    private bool IsLoadingLowestPriceItem { get; set; } = true;
+
+    private string? NewestItemCaption => NewestItem is null
+        ? null
+        : $"Added {NewestItem.CreatedAtUtc.ToRelativeTime()}";
+
+    private string? LastEditedItemCaption => LastEditedItem?.UpdatedAtUtc is null
+        ? null
+        : $"Edited {LastEditedItem.UpdatedAtUtc.Value.ToRelativeTime()}";
+
     private PaginationDto<ItemDto>? Pagination { get; set; }
 
     private IReadOnlyList<ItemDto> Items { get; set; } = [];
@@ -48,7 +73,72 @@ public sealed partial class ItemsPage
 
     protected override async Task OnInitializedAsync()
     {
-        await GetItemsAsync(pageNumber: 1);
+        await Task.WhenAll(
+            GetSpotlightAsync(),
+            GetItemsAsync(pageNumber: 1));
+    }
+
+    private async Task GetSpotlightAsync()
+    {
+        await Task.WhenAll(
+            GetNewestItemAsync(),
+            GetLastEditedItemAsync(),
+            GetHighestPriceItemAsync(),
+            GetLowestPriceItemAsync());
+    }
+
+    private async Task GetNewestItemAsync()
+    {
+        IsLoadingNewestItem = true;
+
+        NewestItem = await GetSpotlightItemAsync(ItemSortBy.CreatedAtUtcDesc);
+
+        IsLoadingNewestItem = false;
+
+        StateHasChanged();
+    }
+
+    private async Task GetLastEditedItemAsync()
+    {
+        IsLoadingLastEditedItem = true;
+
+        ItemDto? item = await GetSpotlightItemAsync(ItemSortBy.UpdatedAtUtcDesc);
+
+        LastEditedItem = item?.UpdatedAtUtc is null ? null : item;
+
+        IsLoadingLastEditedItem = false;
+
+        StateHasChanged();
+    }
+
+    private async Task GetHighestPriceItemAsync()
+    {
+        IsLoadingHighestPriceItem = true;
+
+        HighestPriceItem = await GetSpotlightItemAsync(ItemSortBy.PriceDesc);
+
+        IsLoadingHighestPriceItem = false;
+
+        StateHasChanged();
+    }
+
+    private async Task GetLowestPriceItemAsync()
+    {
+        IsLoadingLowestPriceItem = true;
+
+        LowestPriceItem = await GetSpotlightItemAsync(ItemSortBy.PriceAsc);
+
+        IsLoadingLowestPriceItem = false;
+
+        StateHasChanged();
+    }
+
+    private async Task<ItemDto?> GetSpotlightItemAsync(ItemSortBy sortBy)
+    {
+        PaginationDto<ItemDto>? pagination = await ApiService.ExecuteAsync(
+            () => ItemApiClient.GetItemsAsync(pageNumber: 1, pageSize: 1, sortBy.ToString()));
+
+        return pagination?.Items.FirstOrDefault();
     }
 
     private async Task GetItemsAsync(int pageNumber)
@@ -65,6 +155,8 @@ public sealed partial class ItemsPage
         Items = Pagination?.Items ?? [];
 
         IsLoading = false;
+
+        StateHasChanged();
     }
 
     private async Task OnSearchChangedAsync()
@@ -124,7 +216,9 @@ public sealed partial class ItemsPage
 
         if (isSuccess)
         {
-            await GetItemsAsync(pageNumber: 1);
+            await Task.WhenAll(
+                GetSpotlightAsync(),
+                GetItemsAsync(pageNumber: 1));
         }
     }
 
@@ -176,7 +270,9 @@ public sealed partial class ItemsPage
 
         if (isSuccess)
         {
-            await GetItemsAsync(pageNumber: 1);
+            await Task.WhenAll(
+                GetSpotlightAsync(),
+                GetItemsAsync(pageNumber: 1));
         }
     }
 
@@ -209,7 +305,10 @@ public sealed partial class ItemsPage
 
         if (isSuccess)
         {
-            await GetItemsAsync(pageNumber: 1);
+            await Task.WhenAll(
+                GetSpotlightAsync(),
+                GetItemsAsync(pageNumber: 1));
         }
     }
+
 }
