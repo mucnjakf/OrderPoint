@@ -2,12 +2,12 @@
 
 <PageTitle>Categories</PageTitle>
 
-<PageHeader Text="Categories" Breadcrumbs="Breadcrumbs"/>
+<PageHeader Text="Categories" Breadcrumbs="@Breadcrumbs"/>
 
 <StatefulView IsLoading="@IsLoadingTop"
               ShowContent="@TopCategories.Any()"
               EmptyStateIcon="@Icons.Material.Filled.Category"
-              EmptyStateText="@("No categories found")">
+              EmptyStateText="No categories found">
     <MudStack Row="true" Spacing="3" Class="flex-1 mb-5">
         @foreach (CategoryDto category in TopCategories)
         {
@@ -15,8 +15,8 @@
                       Style="cursor: pointer; transition: all 0.2s ease-in-out; height: 180px;"
                       Elevation="@(HoveredCategoryId == category.Id ? 10 : 1)"
                       @onclick="@(() => ShowCategoryDetailsDialogAsync(category))"
-                      @onmouseover="() => HoveredCategoryId = category.Id"
-                      @onmouseout="() => HoveredCategoryId = null">
+                      @onmouseover="@(() => HoveredCategoryId = category.Id)"
+                      @onmouseout="@(() => HoveredCategoryId = null)">
 
                 <MudImage Src="@(category.ImageUrl ?? "images/image-placeholder.svg")"
                           Alt="Category image"
@@ -36,36 +36,37 @@
     </MudStack>
 </StatefulView>
 
-<DataTable TItem="@CategoryDto"
+<DataTable TItem="CategoryDto"
            Items="@Categories"
            Pagination="@Pagination"
            IsLoading="@IsLoading"
-           CreateButtonText="@("New category")"
-           OnCreateClick="@ShowCreateCategoryDialogAsync"
-           OnDetailsClick="@ShowCategoryDetailsDialogAsync"
-           OnUpdateClick="@(ShowUpdateCategoryDialogAsync)"
-           DeleteButtonDisabled="@(category => category.ItemsCount > 0)"
-           DeleteButtonDisabledTooltipText="@("Category contains items")"
-           OnDeleteClick="@(category => ShowDeleteCategoryDialogAsync(category.Id, category.Name))"
-           SearchLabel="@("Search by name")"
+           SearchLabel="Search by name"
            SearchQuery="@SearchQuery"
            SearchQueryChanged="@(value => SearchQuery = value)"
            SelectedSortBy="@SelectedSortBy"
            SelectedSortByChanged="@(value => SelectedSortBy = value)"
+           OnSearchChanged="@OnSearchChangedAsync"
+           OnSortChanged="@OnSortChangedAsync"
+           OnPageChanged="@OnPageChangedAsync"
            SortByOptions="@Enum.GetNames(typeof(CategorySortBy))"
            GetSortByLabel="@CategorySorting.GetSortByLabel"
            GetSortByIcon="@CategorySorting.GetSortByIcon"
-           OnSearchChanged="@OnSearchChangedAsync"
-           OnSortChanged="@OnSortChangedAsync"
-           OnPageChanged="@OnPageChanged"
+           CreateButtonText="New category"
+           OnCreateClick="@ShowCreateCategoryDialogAsync"
+           OnDetailsClick="@ShowCategoryDetailsDialogAsync"
+           OnUpdateClick="@ShowUpdateCategoryDialogAsync"
+           DeleteButtonDisabled="@(category => category.ItemsCount > 0)"
+           DeleteButtonDisabledTooltipText="Category contains items"
+           OnDeleteClick="@(category => ShowDeleteCategoryDialogAsync(category.Id, category.Name))"
            EmptyStateIcon="@Icons.Material.Filled.Category"
-           EmptyStateText="@("No categories found")">
+           EmptyStateText="No categories found">
+
     <FilterContent>
-        <MudSelect @bind-Value="SelectedStatus"
-                   @bind-Value:after="OnStatusChangedAsync"
+        <MudSelect @bind-Value="@SelectedStatus"
+                   @bind-Value:after="@OnStatusChangedAsync"
                    T="CategoryStatus?"
                    Variant="Variant.Outlined"
-                   Label="@("Status")"
+                   Label="Status"
                    FitContent="true">
 
             <MudSelectItem Value="@(null)" T="CategoryStatus?">
@@ -74,14 +75,13 @@
 
             @foreach (CategoryStatus status in Enum.GetValues<CategoryStatus>())
             {
-                <MudSelectItem Value="@(status)" T="CategoryStatus?">
+                <MudSelectItem Value="@status" T="CategoryStatus?">
                     <MudText>
                         @status.ToString()
                     </MudText>
                 </MudSelectItem>
             }
         </MudSelect>
-
     </FilterContent>
 
     <HeaderContent>

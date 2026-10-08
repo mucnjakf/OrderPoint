@@ -41,7 +41,7 @@ internal sealed class CategoryEfCoreRepository(ApplicationDbContext dbContext) :
             .Include(category => category.Items);
 
         query = SearchCategories(query, searchQuery);
-        query = SortCategories(query, CategorySortBy.NameDesc);
+        query = SortCategories(query, CategorySortBy.NameAsc);
 
         return await query.ToListAsync(cancellationToken);
     }

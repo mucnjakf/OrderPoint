@@ -1,4 +1,4 @@
-IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
+﻿IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
 
 IResourceBuilder<PostgresServerResource> postgres = builder
     .AddPostgres("postgres")

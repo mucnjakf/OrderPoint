@@ -2,8 +2,8 @@
 
 <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.End" Class="mb-3">
     <MudStack Row="true">
-        <MudTextField @bind-Value="SearchQuery"
-                      @bind-Value:after="OnSearchChangedAsync"
+        <MudTextField @bind-Value="@SearchQuery"
+                      @bind-Value:after="@OnSearchChangedAsync"
                       T="string"
                       Label="@SearchLabel"
                       Variant="Variant.Outlined"
@@ -11,15 +11,15 @@
                       DebounceInterval="500"
                       Immediate="false"/>
 
-        <MudSelect @bind-Value="SelectedSortBy"
-                   @bind-Value:after="OnSortChangedAsync"
+        <MudSelect @bind-Value="@SelectedSortBy"
+                   @bind-Value:after="@OnSortChangedAsync"
                    T="string"
                    Variant="Variant.Outlined"
                    Label="Sort by"
                    FitContent="true">
             @foreach (string sortBy in SortByOptions)
             {
-                <MudSelectItem Value="@(sortBy)">
+                <MudSelectItem Value="@sortBy">
                     <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
                         <MudText Typo="Typo.body1">@GetSortByLabel(sortBy)</MudText>
                         <MudIcon Icon="@GetSortByIcon(sortBy)" Size="Size.Small"/>
@@ -37,7 +37,7 @@
     <MudButton Variant="Variant.Filled"
                StartIcon="@Icons.Material.Filled.Add"
                Color="Color.Primary"
-               OnClick="OnCreateClickAsync">
+               OnClick="@OnCreateClickAsync">
         @CreateButtonText
     </MudButton>
 </MudStack>
@@ -47,7 +47,7 @@
               EmptyStateIcon="@EmptyStateIcon"
               EmptyStateText="@EmptyStateText">
 
-    <MudTable Items="Items" Hover="true">
+    <MudTable Items="@Items" Hover="true">
         <HeaderContent>
             @HeaderContent
             <MudTh Style="width: 150px;"></MudTh>
@@ -61,7 +61,7 @@
                     <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye"
                                    Color="Color.Primary"
                                    Size="Size.Small"
-                                   OnClick="() => OnDetailsClickAsync(context)"/>
+                                   OnClick="@(() => OnDetailsClickAsync(context))"/>
                 </MudTooltip>
 
                 <MudTooltip Text="Edit">
@@ -69,17 +69,17 @@
                                    Color="Color.Secondary"
                                    Size="Size.Small"
                                    Class="mx-2"
-                                   OnClick="() => OnUpdateClickAsync(context)"/>
+                                   OnClick="@(() => OnUpdateClickAsync(context))"/>
                 </MudTooltip>
 
-                @if (DeleteButtonDisabled is not null && DeleteButtonDisabledTooltipText is not null)
+                @if (OnDeleteClick.HasDelegate)
                 {
-                    <MudTooltip Text="@(DeleteButtonDisabled(context) ? DeleteButtonDisabledTooltipText : "Delete")">
+                    <MudTooltip Text="@GetDeleteButtonTooltipText(context)">
                         <MudIconButton Icon="@Icons.Material.Filled.Delete"
                                        Color="Color.Error"
                                        Size="Size.Small"
-                                       Disabled="DeleteButtonDisabled(context)"
-                                       OnClick="() => OnDeleteClickAsync(context)"/>
+                                       Disabled="@IsDeleteButtonDisabled(context)"
+                                       OnClick="@(() => OnDeleteClickAsync(context))"/>
                     </MudTooltip>
                 }
             </MudTd>
@@ -95,9 +95,9 @@
                 of @Pagination.TotalCount items
             </MudText>
 
-            <MudPagination Count="Pagination.TotalPages"
-                           Selected="Pagination.PageNumber"
-                           SelectedChanged="OnPageChanged"
+            <MudPagination Count="@Pagination.TotalPages"
+                           Selected="@Pagination.PageNumber"
+                           SelectedChanged="@OnPageChanged"
                            BoundaryCount="1"
                            MiddleCount="3"
                            ShowFirstButton="true"

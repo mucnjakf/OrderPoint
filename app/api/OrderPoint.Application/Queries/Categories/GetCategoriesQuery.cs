@@ -17,7 +17,7 @@ public sealed record GetCategoriesQuery(
     CategorySortBy? SortBy)
     : IQuery<PaginationDto<CategoryDto>>;
 
-internal sealed class GetCategoriesQueryHandler(ICategoryRepository categoryRepository, IItemRepository itemRepository)
+internal sealed class GetCategoriesQueryHandler(ICategoryRepository categoryRepository)
     : IQueryHandler<GetCategoriesQuery, PaginationDto<CategoryDto>>
 {
     public async Task<Result<PaginationDto<CategoryDto>>> Handle(

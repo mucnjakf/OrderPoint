@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 using OrderPoint.Admin.Categories.Api.Requests;
 using OrderPoint.Admin.Categories.Dtos;
@@ -16,12 +15,7 @@ public sealed partial class UpdateCategoryDialog
 
     private UpdateCategoryRequest Request { get; set; } = null!;
 
-    protected override void OnParametersSet()
-    {
-        InitializeRequest();
-    }
-
-    private void InitializeRequest()
+    protected override void OnInitialized()
     {
         Request = new UpdateCategoryRequest
         {
@@ -32,10 +26,8 @@ public sealed partial class UpdateCategoryDialog
         };
     }
 
-    private void OnValidSubmit(EditContext editContext)
+    private void OnValidSubmit()
     {
-        StateHasChanged();
-
         MudDialogInstance.Close(DialogResult.Ok(Request));
     }
 

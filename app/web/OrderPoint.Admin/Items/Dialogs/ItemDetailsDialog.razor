@@ -1,4 +1,4 @@
-﻿<MudDialog ActionsClass="pa-6" Style="background-color: #32333d">
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
     <TitleContent>
         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
             <MudIcon Icon="@Icons.Material.Filled.MenuBook"/>
@@ -64,13 +64,10 @@
 
     <DialogActions>
         <MudButton Variant="Variant.Filled"
-                   OnClick="Close"
+                   OnClick="@Close"
                    Color="Color.Primary"
                    StartIcon="@Icons.Material.Filled.Close">
             Close
         </MudButton>
     </DialogActions>
 </MudDialog>
-
-
-

@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 using OrderPoint.Admin.Categories.Api;
 using OrderPoint.Admin.Categories.Dtos;
 using OrderPoint.Admin.Items.Api.Requests;
 using OrderPoint.Admin.Items.Dtos;
+using OrderPoint.Admin.Shared.Services;
 
 namespace OrderPoint.Admin.Items.Dialogs;
 
@@ -17,20 +17,18 @@ public sealed partial class UpdateItemDialog
     private IMudDialogInstance MudDialogInstance { get; set; } = null!;
 
     [Inject]
+    private ApiService ApiService { get; set; } = null!;
+
+    [Inject]
     private CategoryApiClient CategoryApiClient { get; set; } = null!;
+
+    private UpdateItemRequest Request { get; set; } = null!;
 
     private CategoryDto? SelectedCategory { get; set; }
 
     private bool IsFormSubmitted { get; set; }
 
-    private UpdateItemRequest Request { get; set; } = null!;
-
-    protected override void OnParametersSet()
-    {
-        InitializeRequest();
-    }
-
-    private void InitializeRequest()
+    protected override void OnInitialized()
     {
         Request = new UpdateItemRequest
         {
@@ -55,21 +53,24 @@ public sealed partial class UpdateItemDialog
             category.UpdatedAtUtc);
     }
 
-    private async Task<IEnumerable<CategoryDto>>? OnCategorySearchAsync(
+    private async Task<IEnumerable<CategoryDto>> OnCategorySearchAsync(
         string? value,
         CancellationToken cancellationToken)
-        => await CategoryApiClient.SearchCategoriesAsync(value, cancellationToken);
+    {
+        IReadOnlyList<CategoryDto>? categories = await ApiService.ExecuteAsync(
+            () => CategoryApiClient.SearchCategoriesAsync(value, cancellationToken),
+            cancellationToken);
+
+        return categories ?? [];
+    }
 
     private void OnInvalidSubmit()
     {
         IsFormSubmitted = true;
-        StateHasChanged();
     }
 
-    private void OnValidSubmit(EditContext editContext)
+    private void OnValidSubmit()
     {
-        StateHasChanged();
-
         MudDialogInstance.Close(DialogResult.Ok(Request));
     }
 

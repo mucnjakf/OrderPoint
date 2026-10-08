@@ -2,43 +2,41 @@
 
 <PageTitle>Items</PageTitle>
 
-<PageHeader Text="@("Items")" Breadcrumbs="@Breadcrumbs"/>
+<PageHeader Text="Items" Breadcrumbs="@Breadcrumbs"/>
 
-<DataGrid TItem="@ItemDto"
+<DataGrid TItem="ItemDto"
           Items="@Items"
           Pagination="@Pagination"
           IsLoading="@IsLoading"
-          SearchLabel="@("Search by name")"
+          SearchLabel="Search by name"
           SearchQuery="@SearchQuery"
           SearchQueryChanged="@(value => SearchQuery = value)"
           SelectedSortBy="@SelectedSortBy"
           SelectedSortByChanged="@(value => SelectedSortBy = value)"
           OnSearchChanged="@OnSearchChangedAsync"
           OnSortChanged="@OnSortChangedAsync"
-          OnPageChanged="@OnPageChanged"
+          OnPageChanged="@OnPageChangedAsync"
           SortByOptions="@Enum.GetNames(typeof(ItemSortBy))"
           GetSortByLabel="@ItemSorting.GetSortByLabel"
           GetSortByIcon="@ItemSorting.GetSortByIcon"
-          CreateButtonText="@("New item")"
-          OnCreateClick="ShowCreateItemDialogAsync"
+          CreateButtonText="New item"
+          OnCreateClick="@ShowCreateItemDialogAsync"
           OnDetailsClick="@ShowItemDetailsDialogAsync"
-          OnUpdateClick="ShowUpdateItemDialogAsync"
-          DeleteButtonDisabled="@(item => false)"
-          DeleteButtonDisabledTooltipText="@string.Empty"
+          OnUpdateClick="@ShowUpdateItemDialogAsync"
           OnDeleteClick="@(item => ShowDeleteItemDialogAsync(item.Id, item.Name))"
           EmptyStateIcon="@Icons.Material.Filled.MenuBook"
-          EmptyStateText="@("No items found")">
+          EmptyStateText="No items found">
 
     <FilterContent>
         <MudAutocomplete @bind-Value="@SelectedCategory"
                          @bind-Value:after="@OnCategoryChangedAsync"
                          T="CategoryDto"
-                         SearchFunc="OnCategorySearchAsync"
-                         Variant="@Variant.Outlined"
-                         Label="@("Filter by category")"
-                         Clearable="@true"
-                         ShowProgressIndicator="@true"
-                         Class="@("mt-0")"
+                         SearchFunc="@OnCategorySearchAsync"
+                         Variant="Variant.Outlined"
+                         Label="Filter by category"
+                         Clearable="true"
+                         ShowProgressIndicator="true"
+                         Class="mt-0"
                          ToStringFunc="@(category => category?.Name)">
             <NoItemsTemplate>
                 <MudText Align="Align.Center" Class="px-3 py-1">
@@ -53,7 +51,7 @@
                       Style="@(context.ImageUrl is null ? "width:100px; height: 100px; align-self: center; margin: 30px 0;" : string.Empty)"/>
 
         <MudCardContent Class="pt-0">
-            <MudStack Row="@true" Class="mb-2 d-flex justify-space-between">
+            <MudStack Row="true" Class="mb-2 d-flex justify-space-between">
                 <MudText Typo="Typo.h6">
                     @context.Name
                 </MudText>

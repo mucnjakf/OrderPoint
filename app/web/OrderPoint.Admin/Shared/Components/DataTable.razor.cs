@@ -136,4 +136,16 @@ public sealed partial class DataTable<TItem>
     {
         await OnDeleteClick.InvokeAsync(item);
     }
+
+    private bool IsDeleteButtonDisabled(TItem item)
+    {
+        return DeleteButtonDisabled?.Invoke(item) ?? false;
+    }
+
+    private string GetDeleteButtonTooltipText(TItem item)
+    {
+        return IsDeleteButtonDisabled(item) && DeleteButtonDisabledTooltipText is not null
+            ? DeleteButtonDisabledTooltipText
+            : "Delete";
+    }
 }

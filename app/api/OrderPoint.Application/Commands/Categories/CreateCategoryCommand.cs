@@ -15,10 +15,7 @@ public sealed record CreateCategoryCommand(
     string? ImageUrl)
     : ICommand<CategoryDto>;
 
-internal sealed class CreateCategoryCommandHandler(
-    ICategoryRepository categoryRepository,
-    IItemRepository itemRepository,
-    IUnitOfWork unitOfWork)
+internal sealed class CreateCategoryCommandHandler(ICategoryRepository categoryRepository, IUnitOfWork unitOfWork)
     : ICommandHandler<CreateCategoryCommand, CategoryDto>
 {
     public async Task<Result<CategoryDto>> Handle(CreateCategoryCommand command, CancellationToken cancellationToken)
@@ -33,9 +30,7 @@ internal sealed class CreateCategoryCommandHandler(
         await categoryRepository.CreateAsync(result.Value, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        int itemsCount = await itemRepository.CountAsync(result.Value.Id, cancellationToken);
-
-        var categoryDto = result.Value.ToCategoryDto(itemsCount);
+        var categoryDto = result.Value.ToCategoryDto(itemsCount: 0);
 
         return Result.Success(categoryDto);
     }

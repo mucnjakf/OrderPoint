@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using FluentValidation;
 using OrderPoint.Api.Configuration;
 using OrderPoint.Api.Exceptions;

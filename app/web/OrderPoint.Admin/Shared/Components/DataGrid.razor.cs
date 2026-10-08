@@ -66,7 +66,7 @@ public sealed partial class DataGrid<TItem>
 
     [Parameter]
     [EditorRequired]
-    public string? CreateButtonText { get; set; }
+    public string CreateButtonText { get; set; }
 
     [Parameter]
     [EditorRequired]
@@ -128,8 +128,20 @@ public sealed partial class DataGrid<TItem>
         await OnUpdateClick.InvokeAsync(item);
     }
 
-    private async Task OnDeleteClickedAsync(TItem item)
+    private async Task OnDeleteClickAsync(TItem item)
     {
         await OnDeleteClick.InvokeAsync(item);
+    }
+
+    private bool IsDeleteButtonDisabled(TItem item)
+    {
+        return DeleteButtonDisabled?.Invoke(item) ?? false;
+    }
+
+    private string GetDeleteButtonTooltipText(TItem item)
+    {
+        return IsDeleteButtonDisabled(item) && DeleteButtonDisabledTooltipText is not null
+            ? DeleteButtonDisabledTooltipText
+            : "Delete";
     }
 }

@@ -1,4 +1,4 @@
-﻿<MudDialog ActionsClass="pa-6" Style="background-color: #32333d">
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
     <TitleContent>
         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
             <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Error"/>
@@ -21,11 +21,11 @@
     </DialogContent>
 
     <DialogActions>
-        <MudButton OnClick="Cancel" Variant="Variant.Text" Class="mr-5">
+        <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
             Cancel
         </MudButton>
 
-        <MudButton OnClick="Confirm"
+        <MudButton OnClick="@Confirm"
                    Variant="Variant.Filled"
                    Color="Color.Error"
                    StartIcon="@Icons.Material.Filled.Delete">

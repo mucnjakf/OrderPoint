@@ -1,7 +1,7 @@
-﻿<EditForm Model="@Request" OnValidSubmit="OnValidSubmit">
+﻿<EditForm Model="@Request" OnValidSubmit="@OnValidSubmit">
     <DataAnnotationsValidator/>
 
-    <MudDialog ActionsClass="pa-6" Style="background-color: #32333d">
+    <MudDialog ActionsClass="pa-6" Class="mud-background">
         <TitleContent>
             <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
                 <MudIcon Icon="@Icons.Material.Filled.Category"/>
@@ -13,7 +13,7 @@
             <MudGrid>
                 <MudItem md="8">
                     <MudTextField Label="Name"
-                                  @bind-Value="Request.Name"
+                                  @bind-Value="@Request.Name"
                                   For="@(() => Request.Name)"
                                   Class="mb-5 mt-0"
                                   HelperText="The display name of the category shown to customers."
@@ -21,7 +21,7 @@
                                   Immediate="true"/>
 
                     <MudTextField Label="Description"
-                                  @bind-Value="Request.Description"
+                                  @bind-Value="@Request.Description"
                                   For="@(() => Request.Description)"
                                   HelperText="A brief description of what this category contains."
                                   Variant="Variant.Outlined"
@@ -32,7 +32,7 @@
                     <MudStack Row="true">
                         <MudSelect Label="Status"
                                    T="CategoryStatus"
-                                   @bind-Value="Request.Status"
+                                   @bind-Value="@Request.Status"
                                    For="@(() => Request.Status)"
                                    HelperText="Controls whether this category is visible to customers."
                                    Variant="Variant.Outlined">
@@ -48,7 +48,7 @@
 
                         <MudTextField Label="Image URL"
                                       Disabled="true"
-                                      @bind-Value="Request.ImageUrl"
+                                      @bind-Value="@Request.ImageUrl"
                                       For="@(() => Request.ImageUrl)"
                                       HelperText="Image upload will be available in a future update."
                                       Variant="Variant.Outlined"/>
@@ -68,7 +68,7 @@
         </DialogContent>
 
         <DialogActions>
-            <MudButton OnClick="Cancel" Variant="Variant.Text" Class="mr-5">
+            <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
                 Cancel
             </MudButton>
 

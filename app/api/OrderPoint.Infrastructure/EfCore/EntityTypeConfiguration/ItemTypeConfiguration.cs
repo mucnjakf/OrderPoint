@@ -27,10 +27,12 @@ internal sealed class ItemTypeConfiguration : IEntityTypeConfiguration<Item>
             .HasMaxLength(200)
             .IsRequired();
 
-        builder.Property(item => item.Portion)
+        builder
+            .Property(item => item.Portion)
             .IsRequired();
 
-        builder.Property(item => item.Price)
+        builder
+            .Property(item => item.Price)
             .IsRequired();
 
         builder
@@ -50,6 +52,7 @@ internal sealed class ItemTypeConfiguration : IEntityTypeConfiguration<Item>
             .HasOne(item => item.Category)
             .WithMany(category => category.Items)
             .HasForeignKey(item => item.CategoryId)
+            .OnDelete(DeleteBehavior.Restrict)
             .IsRequired();
     }
 }

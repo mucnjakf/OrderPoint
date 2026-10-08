@@ -89,22 +89,22 @@ public sealed class Item : Entity
     {
         if (string.IsNullOrWhiteSpace(name))
         {
-            return Result.Failure<Item>(ItemErrors.NameIsRequired);
+            return Result.Failure(ItemErrors.NameIsRequired);
         }
 
         if (string.IsNullOrWhiteSpace(description))
         {
-            return Result.Failure<Item>(ItemErrors.DescriptionIsRequired);
+            return Result.Failure(ItemErrors.DescriptionIsRequired);
         }
 
         if (portion <= 0)
         {
-            return Result.Failure<Item>(ItemErrors.PortionMustBePositive);
+            return Result.Failure(ItemErrors.PortionMustBePositive);
         }
 
         if (price <= 0)
         {
-            return Result.Failure<Item>(ItemErrors.PriceMustBePositive);
+            return Result.Failure(ItemErrors.PriceMustBePositive);
         }
 
         Name = name;

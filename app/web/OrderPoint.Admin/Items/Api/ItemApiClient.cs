@@ -18,7 +18,7 @@ internal sealed class ItemApiClient(IHttpClientFactory httpClientFactory)
         Guid? categoryId = null,
         CancellationToken cancellationToken = default)
     {
-        var requestUri = $"/api/items?pageNumber={pageNumber}&pageSize={pageSize}&sortBy={sortBy}";
+        string requestUri = $"/api/items?pageNumber={pageNumber}&pageSize={pageSize}&sortBy={sortBy}";
 
         if (searchQuery is not null)
         {

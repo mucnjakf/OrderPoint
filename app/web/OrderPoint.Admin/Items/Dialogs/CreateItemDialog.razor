@@ -1,7 +1,7 @@
-﻿<EditForm Model="@Request" OnValidSubmit="OnValidSubmit" OnInvalidSubmit="OnInvalidSubmit">
+﻿<EditForm Model="@Request" OnValidSubmit="@OnValidSubmit" OnInvalidSubmit="@OnInvalidSubmit">
     <DataAnnotationsValidator/>
 
-    <MudDialog ActionsClass="pa-6" Style="background-color: #32333d">
+    <MudDialog ActionsClass="pa-6" Class="mud-background">
         <TitleContent>
             <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
                 <MudIcon Icon="@Icons.Material.Filled.MenuBook"/>
@@ -13,7 +13,7 @@
             <MudGrid>
                 <MudItem md="8">
                     <MudTextField Label="Name"
-                                  @bind-Value="Request.Name"
+                                  @bind-Value="@Request.Name"
                                   For="@(() => Request.Name)"
                                   Class="mb-5 mt-0"
                                   HelperText="The display name of the item shown to customers."
@@ -21,7 +21,7 @@
                                   Immediate="true"/>
 
                     <MudTextField Label="Description"
-                                  @bind-Value="Request.Description"
+                                  @bind-Value="@Request.Description"
                                   For="@(() => Request.Description)"
                                   HelperText="A brief description of the item and its ingredients."
                                   Variant="Variant.Outlined"
@@ -31,7 +31,7 @@
 
                     <MudStack Row="true">
                         <MudNumericField Label="Portion"
-                                         @bind-Value="Request.Portion"
+                                         @bind-Value="@Request.Portion"
                                          For="@(() => Request.Portion)"
                                          HelperText="Serving size."
                                          Variant="Variant.Outlined"
@@ -39,7 +39,7 @@
                                          Immediate="true"/>
 
                         <MudNumericField Label="Price"
-                                         @bind-Value="Request.Price"
+                                         @bind-Value="@Request.Price"
                                          For="@(() => Request.Price)"
                                          HelperText="Price in euros."
                                          Variant="Variant.Outlined"
@@ -51,12 +51,12 @@
                         <MudAutocomplete @bind-Value="@SelectedCategory"
                                          @bind-Value:after="@(() => Request.CategoryId = SelectedCategory?.Id ?? Guid.Empty)"
                                          T="CategoryDto"
-                                         SearchFunc="OnCategorySearchAsync"
-                                         Variant="@Variant.Outlined"
+                                         SearchFunc="@OnCategorySearchAsync"
+                                         Variant="Variant.Outlined"
                                          HelperText="The category this item belongs to."
-                                         Label="@("Category")"
-                                         Clearable="@true"
-                                         ShowProgressIndicator="@true"
+                                         Label="Category"
+                                         Clearable="true"
+                                         ShowProgressIndicator="true"
                                          ToStringFunc="@(category => category?.Name)"
                                          Error="@(IsFormSubmitted && Request.CategoryId == Guid.Empty)"
                                          ErrorText="Category is required."
@@ -70,7 +70,7 @@
 
                         <MudTextField Label="Image URL"
                                       Disabled="true"
-                                      @bind-Value="Request.ImageUrl"
+                                      @bind-Value="@Request.ImageUrl"
                                       For="@(() => Request.ImageUrl)"
                                       HelperText="Image upload will be available in a future update."
                                       Variant="Variant.Outlined"/>
@@ -90,7 +90,7 @@
         </DialogContent>
 
         <DialogActions>
-            <MudButton OnClick="Cancel" Variant="Variant.Text" Class="mr-5">
+            <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
                 Cancel
             </MudButton>
 

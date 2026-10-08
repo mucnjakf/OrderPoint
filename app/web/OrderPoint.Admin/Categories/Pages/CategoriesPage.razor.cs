@@ -5,6 +5,7 @@ using OrderPoint.Admin.Categories.Api.Requests;
 using OrderPoint.Admin.Categories.Dialogs;
 using OrderPoint.Admin.Categories.Dtos;
 using OrderPoint.Admin.Categories.Enumerations;
+using OrderPoint.Admin.Categories.Sorting;
 using OrderPoint.Admin.Shared.Dtos;
 using OrderPoint.Admin.Shared.Services;
 
@@ -12,22 +13,18 @@ namespace OrderPoint.Admin.Categories.Pages;
 
 public sealed partial class CategoriesPage
 {
-    [Inject]
-    private IDialogService DialogService { get; set; } = null!;
+    private const int PageSize = 10;
+
+    private const int TopCategoriesCount = 5;
 
     [Inject]
-    private ISnackbar Snackbar { get; set; } = null!;
+    private IDialogService DialogService { get; set; } = null!;
 
     [Inject]
     private ApiService ApiService { get; set; } = null!;
 
     [Inject]
     private CategoryApiClient CategoryApiClient { get; set; } = null!;
-
-    [Inject]
-    public NavigationManager NavigationManager { get; set; } = null!;
-
-    private Guid? HoveredCategoryId { get; set; }
 
     private List<BreadcrumbItem> Breadcrumbs { get; set; } =
     [
@@ -37,11 +34,13 @@ public sealed partial class CategoriesPage
 
     private IReadOnlyList<CategoryDto> TopCategories { get; set; } = [];
 
+    private Guid? HoveredCategoryId { get; set; }
+
     private PaginationDto<CategoryDto>? Pagination { get; set; }
 
     private IReadOnlyList<CategoryDto> Categories { get; set; } = [];
 
-    private string SelectedSortBy { get; set; } = "CreatedAtUtcDesc";
+    private string SelectedSortBy { get; set; } = nameof(CategorySortBy.CreatedAtUtcDesc);
 
     private string? SearchQuery { get; set; }
 
@@ -54,87 +53,58 @@ public sealed partial class CategoriesPage
     protected override async Task OnInitializedAsync()
     {
         await GetTopCategoriesAsync();
-
-        await GetCategoriesAsync(
-            1,
-            10,
-            SelectedSortBy,
-            SearchQuery,
-            SelectedStatus);
+        await GetCategoriesAsync(pageNumber: 1);
     }
 
     private async Task GetTopCategoriesAsync()
     {
         IsLoadingTop = true;
 
-        PaginationDto<CategoryDto> pagination = await ApiService.ExecuteAsync(async ()
-            => await CategoryApiClient.GetCategoriesAsync(1, 5, "ItemsCountDesc"));
+        PaginationDto<CategoryDto>? pagination = await ApiService.ExecuteAsync(
+            () => CategoryApiClient.GetCategoriesAsync(
+                1,
+                TopCategoriesCount,
+                nameof(CategorySortBy.ItemsCountDesc)));
 
-        TopCategories = pagination.Items;
+        TopCategories = pagination?.Items ?? [];
 
         IsLoadingTop = false;
     }
 
-    private async Task GetCategoriesAsync(
-        int pageNumber,
-        int pageSize,
-        string sortBy,
-        string? searchQuery,
-        CategoryStatus? status)
+    private async Task GetCategoriesAsync(int pageNumber)
     {
         IsLoading = true;
 
-        Pagination = await ApiService.ExecuteAsync(async ()
-            => await CategoryApiClient.GetCategoriesAsync(
-                pageNumber,
-                pageSize,
-                sortBy,
-                searchQuery,
-                status));
+        Pagination = await ApiService.ExecuteAsync(() => CategoryApiClient.GetCategoriesAsync(
+            pageNumber,
+            PageSize,
+            SelectedSortBy,
+            SearchQuery,
+            SelectedStatus));
 
-        Categories = Pagination.Items;
+        Categories = Pagination?.Items ?? [];
 
         IsLoading = false;
     }
 
     private async Task OnSearchChangedAsync()
     {
-        await GetCategoriesAsync(
-            1,
-            10,
-            SelectedSortBy,
-            SearchQuery,
-            SelectedStatus);
+        await GetCategoriesAsync(pageNumber: 1);
     }
 
     private async Task OnSortChangedAsync()
     {
-        await GetCategoriesAsync(
-            1,
-            10,
-            SelectedSortBy,
-            SearchQuery,
-            SelectedStatus);
+        await GetCategoriesAsync(pageNumber: 1);
     }
 
     private async Task OnStatusChangedAsync()
     {
-        await GetCategoriesAsync(
-            1,
-            10,
-            SelectedSortBy,
-            SearchQuery,
-            SelectedStatus);
+        await GetCategoriesAsync(pageNumber: 1);
     }
 
-    private async Task OnPageChanged(int pageNumber)
+    private async Task OnPageChangedAsync(int pageNumber)
     {
-        await GetCategoriesAsync(
-            pageNumber,
-            10,
-            SelectedSortBy,
-            SearchQuery,
-            SelectedStatus);
+        await GetCategoriesAsync(pageNumber);
     }
 
     private async Task ShowCreateCategoryDialogAsync()
@@ -150,16 +120,21 @@ public sealed partial class CategoriesPage
 
         DialogResult dialogResult = (await dialogReference.Result)!;
 
-        if (!dialogResult.Canceled)
+        if (dialogResult.Canceled)
         {
-            var request = (dialogResult.Data as CreateCategoryRequest)!;
+            return;
+        }
 
-            await ApiService.ExecuteAsync(async ()
-                => await CategoryApiClient.CreateCategoryAsync(request));
+        var request = (dialogResult.Data as CreateCategoryRequest)!;
 
-            Snackbar.Add($"Category {request.Name} created successfully", Severity.Success);
+        bool isSuccess = await ApiService.ExecuteAsync(
+            () => CategoryApiClient.CreateCategoryAsync(request),
+            $"Category {request.Name} created successfully");
 
-            await OnInitializedAsync();
+        if (isSuccess)
+        {
+            await GetTopCategoriesAsync();
+            await GetCategoriesAsync(pageNumber: 1);
         }
     }
 
@@ -198,16 +173,21 @@ public sealed partial class CategoriesPage
 
         DialogResult dialogResult = (await dialogReference.Result)!;
 
-        if (!dialogResult.Canceled)
+        if (dialogResult.Canceled)
         {
-            var request = (dialogResult.Data as UpdateCategoryRequest)!;
+            return;
+        }
 
-            await ApiService.ExecuteAsync(async ()
-                => await CategoryApiClient.UpdateCategoryAsync(category.Id, request));
+        var request = (dialogResult.Data as UpdateCategoryRequest)!;
 
-            Snackbar.Add($"Category {request.Name} edited successfully", Severity.Success);
+        bool isSuccess = await ApiService.ExecuteAsync(
+            () => CategoryApiClient.UpdateCategoryAsync(category.Id, request),
+            $"Category {request.Name} edited successfully");
 
-            await OnInitializedAsync();
+        if (isSuccess)
+        {
+            await GetTopCategoriesAsync();
+            await GetCategoriesAsync(pageNumber: 1);
         }
     }
 
@@ -229,14 +209,19 @@ public sealed partial class CategoriesPage
 
         DialogResult dialogResult = (await dialogReference.Result)!;
 
-        if (!dialogResult.Canceled)
+        if (dialogResult.Canceled)
         {
-            await ApiService.ExecuteAsync(async ()
-                => await CategoryApiClient.DeleteCategoryAsync(id));
+            return;
+        }
 
-            Snackbar.Add($"Category {categoryName} deleted successfully", Severity.Success);
+        bool isSuccess = await ApiService.ExecuteAsync(
+            () => CategoryApiClient.DeleteCategoryAsync(id),
+            $"Category {categoryName} deleted successfully");
 
-            await OnInitializedAsync();
+        if (isSuccess)
+        {
+            await GetTopCategoriesAsync();
+            await GetCategoriesAsync(pageNumber: 1);
         }
     }
 }

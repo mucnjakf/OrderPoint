@@ -4,6 +4,15 @@ namespace OrderPoint.Admin.Shared.Layout;
 
 public sealed partial class MainLayout
 {
+    private MudTheme Theme { get; } = new()
+    {
+        PaletteDark = new PaletteDark
+        {
+            Background = "#32333d",
+            LinesDefault = "#4e4e4e"
+        }
+    };
+
     private bool DrawerOpen { get; set; } = true;
 
     private bool IsDarkMode { get; set; } = true;

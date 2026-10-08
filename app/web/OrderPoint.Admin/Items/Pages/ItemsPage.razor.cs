@@ -6,6 +6,7 @@ using OrderPoint.Admin.Items.Api;
 using OrderPoint.Admin.Items.Api.Requests;
 using OrderPoint.Admin.Items.Dialogs;
 using OrderPoint.Admin.Items.Dtos;
+using OrderPoint.Admin.Items.Sorting;
 using OrderPoint.Admin.Shared.Dtos;
 using OrderPoint.Admin.Shared.Services;
 
@@ -13,11 +14,10 @@ namespace OrderPoint.Admin.Items.Pages;
 
 public sealed partial class ItemsPage
 {
-    [Inject]
-    private IDialogService DialogService { get; set; } = null!;
+    private const int PageSize = 9;
 
     [Inject]
-    private ISnackbar Snackbar { get; set; } = null!;
+    private IDialogService DialogService { get; set; } = null!;
 
     [Inject]
     private ApiService ApiService { get; set; } = null!;
@@ -38,7 +38,7 @@ public sealed partial class ItemsPage
 
     private IReadOnlyList<ItemDto> Items { get; set; } = [];
 
-    private string SelectedSortBy { get; set; } = "CreatedAtUtcDesc";
+    private string SelectedSortBy { get; set; } = nameof(ItemSortBy.CreatedAtUtcDesc);
 
     private string? SearchQuery { get; set; }
 
@@ -48,79 +48,54 @@ public sealed partial class ItemsPage
 
     protected override async Task OnInitializedAsync()
     {
-        await GetItemsAsync(
-            1,
-            9,
-            SelectedSortBy,
-            SearchQuery,
-            SelectedCategory?.Id);
+        await GetItemsAsync(pageNumber: 1);
     }
 
-    private async Task GetItemsAsync(
-        int pageNumber,
-        int pageSize,
-        string sortBy,
-        string? searchQuery,
-        Guid? categoryId)
+    private async Task GetItemsAsync(int pageNumber)
     {
         IsLoading = true;
 
-        Pagination = await ApiService.ExecuteAsync(async ()
-            => await ItemApiClient.GetItemsAsync(
-                pageNumber,
-                pageSize,
-                sortBy,
-                searchQuery,
-                categoryId));
+        Pagination = await ApiService.ExecuteAsync(() => ItemApiClient.GetItemsAsync(
+            pageNumber,
+            PageSize,
+            SelectedSortBy,
+            SearchQuery,
+            SelectedCategory?.Id));
 
-        Items = Pagination.Items;
+        Items = Pagination?.Items ?? [];
 
         IsLoading = false;
     }
 
     private async Task OnSearchChangedAsync()
     {
-        await GetItemsAsync(
-            1,
-            9,
-            SelectedSortBy,
-            SearchQuery,
-            SelectedCategory?.Id);
+        await GetItemsAsync(pageNumber: 1);
     }
 
     private async Task OnSortChangedAsync()
     {
-        await GetItemsAsync(
-            1,
-            9,
-            SelectedSortBy,
-            SearchQuery,
-            SelectedCategory?.Id);
+        await GetItemsAsync(pageNumber: 1);
     }
-
-    private async Task<IEnumerable<CategoryDto>>? OnCategorySearchAsync(
-        string? value,
-        CancellationToken cancellationToken)
-        => await CategoryApiClient.SearchCategoriesAsync(value, cancellationToken);
 
     private async Task OnCategoryChangedAsync()
     {
-        await GetItemsAsync(
-            1,
-            9,
-            SelectedSortBy,
-            SearchQuery,
-            SelectedCategory?.Id);
+        await GetItemsAsync(pageNumber: 1);
     }
 
-    private async Task OnPageChanged(int pageNumber)
+    private async Task OnPageChangedAsync(int pageNumber)
     {
-        await GetItemsAsync(
-            pageNumber,
-            9,
-            SelectedSortBy,
-            SearchQuery,
-            SelectedCategory?.Id);
+        await GetItemsAsync(pageNumber);
+    }
+
+    private async Task<IEnumerable<CategoryDto>> OnCategorySearchAsync(
+        string? value,
+        CancellationToken cancellationToken)
+    {
+        IReadOnlyList<CategoryDto>? categories = await ApiService.ExecuteAsync(
+            () => CategoryApiClient.SearchCategoriesAsync(value, cancellationToken),
+            cancellationToken);
+
+        return categories ?? [];
     }
 
     private async Task ShowCreateItemDialogAsync()
@@ -136,21 +111,20 @@ public sealed partial class ItemsPage
 
         DialogResult dialogResult = (await dialogReference.Result)!;
 
-        if (!dialogResult.Canceled)
+        if (dialogResult.Canceled)
         {
-            var request = (dialogResult.Data as CreateItemRequest)!;
+            return;
+        }
 
-            await ApiService.ExecuteAsync(async ()
-                => await ItemApiClient.CreateItemAsync(request));
+        var request = (dialogResult.Data as CreateItemRequest)!;
 
-            Snackbar.Add($"Item {request.Name} created successfully", Severity.Success);
+        bool isSuccess = await ApiService.ExecuteAsync(
+            () => ItemApiClient.CreateItemAsync(request),
+            $"Item {request.Name} created successfully");
 
-            await GetItemsAsync(
-                1,
-                9,
-                SelectedSortBy,
-                SearchQuery,
-                SelectedCategory?.Id);
+        if (isSuccess)
+        {
+            await GetItemsAsync(pageNumber: 1);
         }
     }
 
@@ -189,21 +163,20 @@ public sealed partial class ItemsPage
 
         DialogResult dialogResult = (await dialogReference.Result)!;
 
-        if (!dialogResult.Canceled)
+        if (dialogResult.Canceled)
         {
-            var request = (dialogResult.Data as UpdateItemRequest)!;
+            return;
+        }
 
-            await ApiService.ExecuteAsync(async ()
-                => await ItemApiClient.UpdateItemAsync(item.Id, request));
+        var request = (dialogResult.Data as UpdateItemRequest)!;
 
-            Snackbar.Add($"Item {request.Name} edited successfully", Severity.Success);
+        bool isSuccess = await ApiService.ExecuteAsync(
+            () => ItemApiClient.UpdateItemAsync(item.Id, request),
+            $"Item {request.Name} edited successfully");
 
-            await GetItemsAsync(
-                1,
-                9,
-                SelectedSortBy,
-                SearchQuery,
-                SelectedCategory?.Id);
+        if (isSuccess)
+        {
+            await GetItemsAsync(pageNumber: 1);
         }
     }
 
@@ -225,19 +198,18 @@ public sealed partial class ItemsPage
 
         DialogResult dialogResult = (await dialogReference.Result)!;
 
-        if (!dialogResult.Canceled)
+        if (dialogResult.Canceled)
         {
-            await ApiService.ExecuteAsync(async ()
-                => await ItemApiClient.DeleteItemAsync(id));
+            return;
+        }
 
-            Snackbar.Add($"Item {itemName} deleted successfully", Severity.Success);
+        bool isSuccess = await ApiService.ExecuteAsync(
+            () => ItemApiClient.DeleteItemAsync(id),
+            $"Item {itemName} deleted successfully");
 
-            await GetItemsAsync(
-                1,
-                9,
-                SelectedSortBy,
-                SearchQuery,
-                SelectedCategory?.Id);
+        if (isSuccess)
+        {
+            await GetItemsAsync(pageNumber: 1);
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 using OrderPoint.Admin.Categories.Api;
 using OrderPoint.Admin.Categories.Dtos;
@@ -28,7 +27,7 @@ public sealed partial class CreateItemDialog
 
     private bool IsFormSubmitted { get; set; }
 
-    protected override void OnParametersSet()
+    protected override void OnInitialized()
     {
         if (Category is not null)
         {
@@ -37,25 +36,24 @@ public sealed partial class CreateItemDialog
         }
     }
 
-    private async Task<IEnumerable<CategoryDto>>? OnCategorySearchAsync(
+    private async Task<IEnumerable<CategoryDto>> OnCategorySearchAsync(
         string? value,
         CancellationToken cancellationToken)
-        => await ApiService
-            .ExecuteAsync(async () => await CategoryApiClient
-                .SearchCategoriesAsync(value, cancellationToken));
+    {
+        IReadOnlyList<CategoryDto>? categories = await ApiService.ExecuteAsync(
+            () => CategoryApiClient.SearchCategoriesAsync(value, cancellationToken),
+            cancellationToken);
+
+        return categories ?? [];
+    }
 
     private void OnInvalidSubmit()
     {
         IsFormSubmitted = true;
-        StateHasChanged();
     }
 
-    private void OnValidSubmit(EditContext editContext)
+    private void OnValidSubmit()
     {
-        IsFormSubmitted = true;
-
-        StateHasChanged();
-
         MudDialogInstance.Close(DialogResult.Ok(Request));
     }
 

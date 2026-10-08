@@ -1,27 +1,27 @@
 ﻿@typeparam TItem
 
-<MudStack Row="@true" Justify="@Justify.SpaceBetween" AlignItems="@AlignItems.End" Class="@("mb-3")">
-    <MudStack Row="@true">
+<MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.End" Class="mb-3">
+    <MudStack Row="true">
         <MudTextField @bind-Value="@SearchQuery"
                       @bind-Value:after="@OnSearchChangedAsync"
-                      T="@string"
+                      T="string"
                       Label="@SearchLabel"
-                      Variant="@Variant.Outlined"
-                      Clearable="@true"
-                      Class="@("mt-0")"
-                      DebounceInterval="@(500)"
-                      Immediate="@false"/>
+                      Variant="Variant.Outlined"
+                      Clearable="true"
+                      Class="mt-0"
+                      DebounceInterval="500"
+                      Immediate="false"/>
 
         <MudSelect @bind-Value="@SelectedSortBy"
                    @bind-Value:after="@OnSortChangedAsync"
-                   T="@string"
-                   Variant="@Variant.Outlined"
-                   Label="@("Sort by")"
-                   Class="@("mt-0")"
-                   FitContent="@true">
+                   T="string"
+                   Variant="Variant.Outlined"
+                   Label="Sort by"
+                   Class="mt-0"
+                   FitContent="true">
             @foreach (string sortBy in SortByOptions)
             {
-                <MudSelectItem Value="@(sortBy)">
+                <MudSelectItem Value="@sortBy">
                     <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
                         <MudText Typo="Typo.body1">@GetSortByLabel(sortBy)</MudText>
                         <MudIcon Icon="@GetSortByIcon(sortBy)" Size="Size.Small"/>
@@ -36,17 +36,16 @@
         }
     </MudStack>
 
-    <MudButton Variant="@Variant.Filled"
+    <MudButton Variant="Variant.Filled"
                StartIcon="@Icons.Material.Filled.Add"
-               Color="@Color.Primary"
+               Color="Color.Primary"
                OnClick="@OnCreateClickAsync">
         @CreateButtonText
     </MudButton>
 </MudStack>
 
-
-<StatefulView IsLoading="IsLoading"
-              ShowContent="Items.Any()"
+<StatefulView IsLoading="@IsLoading"
+              ShowContent="@Items.Any()"
               EmptyStateIcon="@EmptyStateIcon"
               EmptyStateText="@EmptyStateText">
 
@@ -57,12 +56,13 @@
             <MudCard>
                 @RowTemplate(item)
 
-                <MudCardActions Class="d-flex justify-center pa-4" Style="border-top: 1px solid #4e4e4e">
+                <MudCardActions Class="d-flex justify-center pa-4"
+                                Style="border-top: 1px solid var(--mud-palette-lines-default)">
                     <MudTooltip Text="Details">
                         <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye"
                                        Color="Color.Primary"
                                        Size="Size.Small"
-                                       OnClick="() => OnDetailsClickAsync(item)"/>
+                                       OnClick="@(() => OnDetailsClickAsync(item))"/>
                     </MudTooltip>
 
                     <MudTooltip Text="Edit">
@@ -70,17 +70,17 @@
                                        Color="Color.Secondary"
                                        Size="Size.Small"
                                        Class="mx-3"
-                                       OnClick="() => OnUpdateClickAsync(item)"/>
+                                       OnClick="@(() => OnUpdateClickAsync(item))"/>
                     </MudTooltip>
 
-                    @if (DeleteButtonDisabled is not null && DeleteButtonDisabledTooltipText is not null)
+                    @if (OnDeleteClick.HasDelegate)
                     {
-                        <MudTooltip Text="@(DeleteButtonDisabled(item) ? DeleteButtonDisabledTooltipText : "Delete")">
+                        <MudTooltip Text="@GetDeleteButtonTooltipText(item)">
                             <MudIconButton Icon="@Icons.Material.Filled.Delete"
                                            Color="Color.Error"
                                            Size="Size.Small"
-                                           Disabled="DeleteButtonDisabled(item)"
-                                           OnClick="() => OnDeleteClickedAsync(item)"/>
+                                           Disabled="@IsDeleteButtonDisabled(item)"
+                                           OnClick="@(() => OnDeleteClickAsync(item))"/>
                         </MudTooltip>
                     }
                 </MudCardActions>
@@ -97,9 +97,9 @@
                 of @Pagination.TotalCount items
             </MudText>
 
-            <MudPagination Count="Pagination.TotalPages"
-                           Selected="Pagination.PageNumber"
-                           SelectedChanged="OnPageChanged"
+            <MudPagination Count="@Pagination.TotalPages"
+                           Selected="@Pagination.PageNumber"
+                           SelectedChanged="@OnPageChanged"
                            BoundaryCount="1"
                            MiddleCount="3"
                            ShowFirstButton="true"

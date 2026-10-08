@@ -1,4 +1,4 @@
-namespace OrderPoint.Admin.Items.Dtos;
+﻿namespace OrderPoint.Admin.Items.Dtos;
 
 public sealed record ItemDto(
     Guid Id,

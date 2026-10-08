@@ -1,6 +1,6 @@
 ﻿namespace OrderPoint.Admin.Items.Sorting;
 
-public enum ItemSortBy
+internal enum ItemSortBy
 {
     NameAsc,
     NameDesc,

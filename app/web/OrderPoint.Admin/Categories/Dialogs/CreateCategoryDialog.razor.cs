@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 using OrderPoint.Admin.Categories.Api.Requests;
 
@@ -12,10 +11,8 @@ public sealed partial class CreateCategoryDialog
 
     private CreateCategoryRequest Request { get; set; } = new();
 
-    private void OnValidSubmit(EditContext editContext)
+    private void OnValidSubmit()
     {
-        StateHasChanged();
-
         MudDialogInstance.Close(DialogResult.Ok(Request));
     }
 

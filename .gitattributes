@@ -1,0 +1,2 @@
+# Normalise text files to LF in the repository and check them out as CRLF.
+* text=auto eol=crlf
