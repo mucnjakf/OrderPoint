@@ -10,6 +10,9 @@ public sealed record OrderDto(
     OrderStatus Status,
     decimal Total,
     IReadOnlyList<OrderItemDto> Items,
+    DateTimeOffset? AcceptedAtUtc,
+    DateTimeOffset? DeclinedAtUtc,
+    DateTimeOffset? ActivatedAtUtc,
     DateTimeOffset? CompletedAtUtc,
     DateTimeOffset CreatedAtUtc,
     DateTimeOffset? UpdatedAtUtc);

@@ -15,6 +15,12 @@ public sealed class Order : Entity
 
     public OrderStatus Status { get; private set; }
 
+    public DateTimeOffset? AcceptedAtUtc { get; private set; }
+
+    public DateTimeOffset? DeclinedAtUtc { get; private set; }
+
+    public DateTimeOffset? ActivatedAtUtc { get; private set; }
+
     public DateTimeOffset? CompletedAtUtc { get; private set; }
 
     private readonly List<OrderItem> _items = [];

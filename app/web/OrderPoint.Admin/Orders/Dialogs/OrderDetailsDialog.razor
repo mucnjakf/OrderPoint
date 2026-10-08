@@ -8,7 +8,7 @@
 
     <DialogContent>
         <MudGrid Spacing="3">
-            <MudItem xs="12" md="5">
+            <MudItem xs="12" md="6">
                 <MudPaper Class="pa-5" Style="height: 100%">
                     <TextDisplayRow Icon="@Icons.Material.Filled.Tag"
                                     Label="Number"
@@ -33,22 +33,37 @@
 
                     <TextDisplayRow Icon="@Icons.Material.Filled.Notes"
                                     Label="Note"
-                                    Text="@(Order.Note ?? "-")"
-                                    ShowDivider="true"/>
-
-                    <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
-                                    Label="Created"
-                                    Text="@Order.CreatedAtUtc.ToString("G")"
-                                    ShowDivider="true"/>
-
-                    <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
-                                    Label="Completed"
-                                    Text="@(Order.CompletedAtUtc?.ToString("G") ?? "-")"/>
+                                    Text="@(Order.Note ?? "-")"/>
                 </MudPaper>
             </MudItem>
 
-            <MudItem xs="12" md="7">
+            <MudItem xs="12" md="6">
                 <MudPaper Class="pa-5" Style="height: 100%">
+                    <MudTimeline TimelineOrientation="TimelineOrientation.Vertical"
+                                 TimelinePosition="TimelinePosition.Start">
+                        @foreach ((OrderStatus status, DateTimeOffset? reachedAtUtc) in TimelineSteps)
+                        {
+                            <MudTimelineItem Color="@(reachedAtUtc is null ? Color.Default : status.GetColor())"
+                                             Icon="@status.GetIcon()"
+                                             Variant="@(reachedAtUtc is null ? Variant.Outlined : Variant.Filled)"
+                                             Size="Size.Medium">
+                                <ItemContent>
+                                    <MudText Typo="Typo.body1">
+                                        @status.ToString()
+                                    </MudText>
+
+                                    <MudText Typo="Typo.caption">
+                                        @(reachedAtUtc?.ToString("G") ?? "Not yet")
+                                    </MudText>
+                                </ItemContent>
+                            </MudTimelineItem>
+                        }
+                    </MudTimeline>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12">
+                <MudPaper Class="pa-5">
                     <MudSimpleTable Elevation="0">
                         <thead>
                             <tr>

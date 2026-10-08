@@ -12,6 +12,9 @@ internal static class OrderMapper
         order.Status,
         order.Items.Sum(orderItem => orderItem.Quantity * orderItem.UnitPrice),
         order.Items.Select(orderItem => orderItem.ToOrderItemDto()).ToList(),
+        order.AcceptedAtUtc,
+        order.DeclinedAtUtc,
+        order.ActivatedAtUtc,
         order.CompletedAtUtc,
         order.CreatedAtUtc,
         order.UpdatedAtUtc);

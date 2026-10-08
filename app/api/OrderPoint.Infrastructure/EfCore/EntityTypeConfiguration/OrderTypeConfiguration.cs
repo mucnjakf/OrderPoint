@@ -41,6 +41,18 @@ internal sealed class OrderTypeConfiguration : IEntityTypeConfiguration<Order>
             .IsRequired();
 
         builder
+            .Property(order => order.AcceptedAtUtc)
+            .IsRequired(false);
+
+        builder
+            .Property(order => order.DeclinedAtUtc)
+            .IsRequired(false);
+
+        builder
+            .Property(order => order.ActivatedAtUtc)
+            .IsRequired(false);
+
+        builder
             .Property(order => order.CompletedAtUtc)
             .IsRequired(false);
 
