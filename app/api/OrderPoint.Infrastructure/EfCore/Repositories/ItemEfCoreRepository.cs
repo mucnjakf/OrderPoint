@@ -17,8 +17,7 @@ internal sealed class ItemEfCoreRepository(ApplicationDbContext dbContext) : IIt
     {
         IQueryable<Item> query = dbContext.Items
             .AsNoTracking()
-            .Include(item => item.Category)
-            .Include(item => item.OrderItems);
+            .Include(item => item.Category);
 
         query = SearchItems(query, searchQuery);
         query = FilterItems(query, categoryId);

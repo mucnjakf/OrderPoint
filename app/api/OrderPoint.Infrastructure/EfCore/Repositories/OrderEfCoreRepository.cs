@@ -50,6 +50,16 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
             order => order.Items.Any(orderItem => orderItem.ItemId == itemId),
             cancellationToken);
 
+    public async Task<IReadOnlyDictionary<Guid, int>> CountAsync(
+        IReadOnlyList<Guid> itemIds,
+        CancellationToken cancellationToken = default)
+        => await dbContext.Orders
+            .SelectMany(order => order.Items)
+            .Where(orderItem => itemIds.Contains(orderItem.ItemId))
+            .GroupBy(orderItem => orderItem.ItemId)
+            .Select(group => new { ItemId = group.Key, OrdersCount = group.Count() })
+            .ToDictionaryAsync(itemCount => itemCount.ItemId, itemCount => itemCount.OrdersCount, cancellationToken);
+
     public async Task<bool> ExistsAsync(Guid itemId, CancellationToken cancellationToken = default)
         => await dbContext.Orders.AnyAsync(
             order => order.Items.Any(orderItem => orderItem.ItemId == itemId),

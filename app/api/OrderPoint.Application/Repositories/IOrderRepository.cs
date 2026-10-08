@@ -21,5 +21,9 @@ public interface IOrderRepository
 
     Task<int> CountAsync(Guid itemId, CancellationToken cancellationToken = default);
 
+    Task<IReadOnlyDictionary<Guid, int>> CountAsync(
+        IReadOnlyList<Guid> itemIds,
+        CancellationToken cancellationToken = default);
+
     Task<bool> ExistsAsync(Guid itemId, CancellationToken cancellationToken = default);
 }

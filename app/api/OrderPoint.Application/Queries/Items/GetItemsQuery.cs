@@ -16,7 +16,7 @@ public sealed record GetItemsQuery(
     ItemSortBy? SortBy)
     : IQuery<PaginationDto<ItemDto>>;
 
-internal sealed class GetItemsQueryHandler(IItemRepository itemRepository)
+internal sealed class GetItemsQueryHandler(IItemRepository itemRepository, IOrderRepository orderRepository)
     : IQueryHandler<GetItemsQuery, PaginationDto<ItemDto>>
 {
     public async Task<Result<PaginationDto<ItemDto>>> Handle(
@@ -32,8 +32,12 @@ internal sealed class GetItemsQueryHandler(IItemRepository itemRepository)
                 query.SortBy,
                 cancellationToken);
 
+        IReadOnlyDictionary<Guid, int> ordersCounts = await orderRepository.CountAsync(
+            items.Select(item => item.Id).ToList(),
+            cancellationToken);
+
         return new PaginationDto<ItemDto>(
-            items.Select(item => item.ToItemDto(item.OrderItems.Count)).ToList(),
+            items.Select(item => item.ToItemDto(ordersCounts.GetValueOrDefault(item.Id))).ToList(),
             query.PageNumber,
             query.PageSize,
             totalCount);
