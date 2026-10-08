@@ -14,6 +14,7 @@ public interface IDashboardRepository
     Task<IReadOnlyList<CategoryRevenueDto>> GetCategoryRevenueAsync(
         DateTimeOffset fromUtc,
         DateTimeOffset toUtc,
+        int count,
         CancellationToken cancellationToken = default);
 
     Task<IReadOnlyList<TopItemDto>> GetTopItemsAsync(

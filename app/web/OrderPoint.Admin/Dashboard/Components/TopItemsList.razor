@@ -1,10 +1,17 @@
-﻿<MudStack Spacing="3">
+﻿<MudStack Spacing="1">
     @for (int i = 0; i < Items.Count; i++)
     {
         TopItemDto item = Items[i];
         bool isLast = i == Items.Count - 1;
 
-        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+        <MudStack Row="true"
+                  AlignItems="AlignItems.Center"
+                  Spacing="3"
+                  Class="pa-2 rounded cursor-pointer"
+                  Style="@GetRowStyle(item)"
+                  @onclick="@(() => OnItemClickAsync(item))"
+                  @onmouseenter="@(() => HoveredItemId = item.ItemId)"
+                  @onmouseleave="@(() => HoveredItemId = null)">
             <MudImage Src="@(item.ImageUrl ?? "images/image-placeholder.svg")"
                       Alt="Item image"
                       Width="40"

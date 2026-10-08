@@ -6,4 +6,6 @@ public sealed record DashboardLiveDto(
     int ActiveCount,
     DateTimeOffset? OldestOpenOrderCreatedAtUtc,
     int TodayOrdersCount,
-    decimal TodayRevenue);
+    decimal TodayRevenue,
+    int TodayCompletedCount,
+    decimal TodayAverageOrderValue);

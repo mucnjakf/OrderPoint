@@ -51,11 +51,33 @@
 
         <MudPaper Outlined="true" Class="pa-3 flex-1">
             <MudText Typo="Typo.caption">
+                Completed
+            </MudText>
+
+            <MudText Typo="Typo.h6">
+                @Live.TodayCompletedCount
+            </MudText>
+        </MudPaper>
+    </MudStack>
+
+    <MudStack Row="true" Spacing="2">
+        <MudPaper Outlined="true" Class="pa-3 flex-1">
+            <MudText Typo="Typo.caption">
                 Revenue
             </MudText>
 
             <MudText Typo="Typo.h6">
                 @Live.TodayRevenue.ToString("C", CultureInfo.CurrentCulture)
+            </MudText>
+        </MudPaper>
+
+        <MudPaper Outlined="true" Class="pa-3 flex-1">
+            <MudText Typo="Typo.caption">
+                Average order
+            </MudText>
+
+            <MudText Typo="Typo.h6">
+                @Live.TodayAverageOrderValue.ToString("C", CultureInfo.CurrentCulture)
             </MudText>
         </MudPaper>
     </MudStack>

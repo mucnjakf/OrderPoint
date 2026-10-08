@@ -36,18 +36,25 @@ internal sealed class DashboardEfCoreRepository(ApplicationDbContext dbContext) 
 
         IReadOnlyList<DashboardOrderDto> todayOrders = await GetOrdersAsync(todayStartUtc, nowUtc, cancellationToken);
 
+        List<DashboardOrderDto> todayCompletedOrders = todayOrders
+            .Where(order => order.Status == OrderStatus.Completed)
+            .ToList();
+
         return new DashboardLiveDto(
             openOrders.Count(order => order.Status == OrderStatus.Pending),
             openOrders.Count(order => order.Status == OrderStatus.Accepted),
             openOrders.Count(order => order.Status == OrderStatus.Active),
             openOrders.Count == 0 ? null : openOrders.Min(order => order.CreatedAtUtc),
             todayOrders.Count,
-            todayOrders.Where(order => order.Status == OrderStatus.Completed).Sum(order => order.Total));
+            todayCompletedOrders.Sum(order => order.Total),
+            todayCompletedOrders.Count,
+            todayCompletedOrders.Count == 0 ? 0 : todayCompletedOrders.Average(order => order.Total));
     }
 
     public async Task<IReadOnlyList<CategoryRevenueDto>> GetCategoryRevenueAsync(
         DateTimeOffset fromUtc,
         DateTimeOffset toUtc,
+        int count,
         CancellationToken cancellationToken = default)
     {
         var categories = await GetCompletedOrderItemsInRange(fromUtc, toUtc)
@@ -59,6 +66,7 @@ internal sealed class DashboardEfCoreRepository(ApplicationDbContext dbContext) 
                 Revenue = group.Sum(orderItem => orderItem.Quantity * orderItem.UnitPrice)
             })
             .OrderByDescending(category => category.Revenue)
+            .Take(count)
             .ToListAsync(cancellationToken);
 
         return categories

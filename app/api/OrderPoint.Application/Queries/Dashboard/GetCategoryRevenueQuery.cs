@@ -11,6 +11,8 @@ public sealed record GetCategoryRevenueQuery(DashboardPeriod Period) : IQuery<IR
 internal sealed class GetCategoryRevenueQueryHandler(IDashboardRepository dashboardRepository)
     : IQueryHandler<GetCategoryRevenueQuery, IReadOnlyList<CategoryRevenueDto>>
 {
+    private const int TopCategoriesCount = 5;
+
     public async Task<Result<IReadOnlyList<CategoryRevenueDto>>> Handle(
         GetCategoryRevenueQuery query,
         CancellationToken cancellationToken)
@@ -20,6 +22,7 @@ internal sealed class GetCategoryRevenueQueryHandler(IDashboardRepository dashbo
         IReadOnlyList<CategoryRevenueDto> categoryRevenue = await dashboardRepository.GetCategoryRevenueAsync(
             range.FromUtc,
             range.ToUtc,
+            TopCategoriesCount,
             cancellationToken);
 
         return Result.Success(categoryRevenue);

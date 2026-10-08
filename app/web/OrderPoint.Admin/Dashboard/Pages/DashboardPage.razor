@@ -110,7 +110,7 @@
                        IsLoading="@IsLoadingTopItems"
                        ShowContent="@TopItems.Any()"
                        EmptyStateText="No items sold in this period">
-            <TopItemsList Items="@TopItems"/>
+            <TopItemsList Items="@TopItems" OnItemClick="@ShowItemDetailsDialogAsync"/>
         </DashboardTile>
     </MudItem>
 
@@ -120,7 +120,7 @@
                        IsLoading="@IsLoadingLeaderboard"
                        ShowContent="@Leaderboard.Any()"
                        EmptyStateText="No handled orders in this period">
-            <BartenderLeaderboard Entries="@Leaderboard"/>
+            <BartenderLeaderboard Entries="@Leaderboard" OnBartenderClick="@ShowBartenderOrdersDialogAsync"/>
         </DashboardTile>
     </MudItem>
 

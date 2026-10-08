@@ -9,6 +9,22 @@ public sealed partial class BartenderLeaderboard
     [EditorRequired]
     public IReadOnlyList<BartenderLeaderboardEntryDto> Entries { get; set; } = [];
 
+    [Parameter]
+    [EditorRequired]
+    public EventCallback<BartenderLeaderboardEntryDto> OnBartenderClick { get; set; }
+
+    private Guid? HoveredBartenderId { get; set; }
+
+    private string? GetRowStyle(BartenderLeaderboardEntryDto entry)
+    {
+        return entry.BartenderId == HoveredBartenderId ? "background-color: var(--mud-palette-table-hover);" : null;
+    }
+
+    private async Task OnBartenderClickAsync(BartenderLeaderboardEntryDto entry)
+    {
+        await OnBartenderClick.InvokeAsync(entry);
+    }
+
     private static string GetDeclineRateText(BartenderLeaderboardEntryDto entry)
     {
         double declineRate = entry.HandledOrdersCount == 0

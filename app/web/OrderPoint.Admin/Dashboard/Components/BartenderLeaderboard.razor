@@ -1,11 +1,18 @@
-﻿<MudStack Spacing="2">
+﻿<MudStack Spacing="1">
     @for (int i = 0; i < Entries.Count; i++)
     {
         BartenderLeaderboardEntryDto entry = Entries[i];
         int rank = i + 1;
         bool isLast = rank == Entries.Count;
 
-        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+        <MudStack Row="true"
+                  AlignItems="AlignItems.Center"
+                  Spacing="3"
+                  Class="pa-2 rounded cursor-pointer"
+                  Style="@GetRowStyle(entry)"
+                  @onclick="@(() => OnBartenderClickAsync(entry))"
+                  @onmouseenter="@(() => HoveredBartenderId = entry.BartenderId)"
+                  @onmouseleave="@(() => HoveredBartenderId = null)">
             <MudText Typo="Typo.subtitle1" Class="mud-text-secondary" Style="width: 20px;">
                 @rank
             </MudText>

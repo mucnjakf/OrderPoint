@@ -1,8 +1,14 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using OrderPoint.Admin.Bartenders.Api;
+using OrderPoint.Admin.Bartenders.Dialogs;
+using OrderPoint.Admin.Bartenders.Dtos;
 using OrderPoint.Admin.Dashboard.Api;
 using OrderPoint.Admin.Dashboard.Dtos;
 using OrderPoint.Admin.Dashboard.Enumerations;
+using OrderPoint.Admin.Items.Api;
+using OrderPoint.Admin.Items.Dialogs;
+using OrderPoint.Admin.Items.Dtos;
 using OrderPoint.Admin.Orders.Api;
 using OrderPoint.Admin.Orders.Dialogs;
 using OrderPoint.Admin.Orders.Dtos;
@@ -31,6 +37,12 @@ public sealed partial class DashboardPage : IDisposable
 
     [Inject]
     private OrderApiClient OrderApiClient { get; set; } = null!;
+
+    [Inject]
+    private ItemApiClient ItemApiClient { get; set; } = null!;
+
+    [Inject]
+    private BartenderApiClient BartenderApiClient { get; set; } = null!;
 
     private DashboardPeriod SelectedPeriod { get; set; } = DashboardPeriod.Last7Days;
 
@@ -217,6 +229,55 @@ public sealed partial class DashboardPage : IDisposable
         IsLoadingRecentOrders = false;
 
         StateHasChanged();
+    }
+
+    private async Task ShowItemDetailsDialogAsync(TopItemDto topItem)
+    {
+        ItemDto? item = await ApiService.ExecuteAsync(() => ItemApiClient.GetItemAsync(topItem.ItemId));
+
+        if (item is null)
+        {
+            return;
+        }
+
+        var parameters = new DialogParameters<ItemDetailsDialog>
+        {
+            { dialog => dialog.Item, item }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true
+        };
+
+        await DialogService
+            .ShowAsync<ItemDetailsDialog>(string.Empty, parameters, options);
+    }
+
+    private async Task ShowBartenderOrdersDialogAsync(BartenderLeaderboardEntryDto entry)
+    {
+        BartenderDto? bartender = await ApiService.ExecuteAsync(
+            () => BartenderApiClient.GetBartenderAsync(entry.BartenderId));
+
+        if (bartender is null)
+        {
+            return;
+        }
+
+        var parameters = new DialogParameters<BartenderOrdersDialog>
+        {
+            { dialog => dialog.Bartender, bartender }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true
+        };
+
+        await DialogService
+            .ShowAsync<BartenderOrdersDialog>(string.Empty, parameters, options);
     }
 
     private async Task ShowOrderDetailsDialogAsync(OrderDto order)
