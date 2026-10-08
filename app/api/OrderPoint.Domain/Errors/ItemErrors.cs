@@ -23,4 +23,8 @@ public static class ItemErrors
     internal static readonly Error PriceMustBePositive = Error.Validation(
         "Item.PriceMustBePositive",
         "Item price must be positive");
+
+    public static readonly Error CannotDeleteItemWithOrders = Error.Conflict(
+        "Item.CannotDeleteItemWithOrders",
+        "Cannot delete item with orders");
 }

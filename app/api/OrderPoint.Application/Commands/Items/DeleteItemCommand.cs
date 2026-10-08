@@ -8,7 +8,10 @@ namespace OrderPoint.Application.Commands.Items;
 
 public sealed record DeleteItemCommand(Guid Id) : ICommand;
 
-internal sealed class DeleteItemCommandHandler(IItemRepository itemRepository, IUnitOfWork unitOfWork)
+internal sealed class DeleteItemCommandHandler(
+    IItemRepository itemRepository,
+    IOrderRepository orderRepository,
+    IUnitOfWork unitOfWork)
     : ICommandHandler<DeleteItemCommand>
 {
     public async Task<Result> Handle(DeleteItemCommand command, CancellationToken cancellationToken)
@@ -18,6 +21,13 @@ internal sealed class DeleteItemCommandHandler(IItemRepository itemRepository, I
         if (item is null)
         {
             return Result.Failure(ItemErrors.NotFound);
+        }
+
+        bool hasOrders = await orderRepository.ExistsAsync(item.Id, cancellationToken);
+
+        if (hasOrders)
+        {
+            return Result.Failure(ItemErrors.CannotDeleteItemWithOrders);
         }
 
         itemRepository.Delete(item);

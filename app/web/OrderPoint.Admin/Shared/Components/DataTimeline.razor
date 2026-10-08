@@ -1,0 +1,81 @@
+﻿@typeparam TItem
+
+<MudStack Row="true" AlignItems="AlignItems.End" Class="mb-3">
+    <MudTextField @bind-Value="@SearchQuery"
+                  @bind-Value:after="@OnSearchChangedAsync"
+                  T="string"
+                  Label="@SearchLabel"
+                  Variant="Variant.Outlined"
+                  Clearable="true"
+                  DebounceInterval="500"
+                  Immediate="false"/>
+
+    <MudSelect @bind-Value="@SelectedSortBy"
+               @bind-Value:after="@OnSortChangedAsync"
+               T="string"
+               Variant="Variant.Outlined"
+               Label="Sort by"
+               FitContent="true">
+        @foreach (string sortBy in SortByOptions)
+        {
+            <MudSelectItem Value="@sortBy">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                    <MudText Typo="Typo.body1">@GetSortByLabel(sortBy)</MudText>
+                    <MudIcon Icon="@GetSortByIcon(sortBy)" Size="Size.Small"/>
+                </MudStack>
+            </MudSelectItem>
+        }
+    </MudSelect>
+
+    @if (FilterContent is not null)
+    {
+        @FilterContent
+    }
+</MudStack>
+
+<StatefulView IsLoading="@IsLoading"
+              ShowContent="@Items.Any()"
+              EmptyStateIcon="@EmptyStateIcon"
+              EmptyStateText="@EmptyStateText">
+
+    <MudTimeline TimelineOrientation="TimelineOrientation.Vertical" TimelinePosition="TimelinePosition.Start">
+        @foreach (TItem item in Items)
+        {
+            <MudTimelineItem @key="@item"
+                             Color="@GetItemColor(item)"
+                             Icon="@GetItemIcon(item)"
+                             Variant="Variant.Filled"
+                             Size="Size.Medium">
+                <ItemContent>
+                    <MudPaper Class="pa-4 cursor-pointer"
+                              Style="transition: all 0.2s ease-in-out;"
+                              Elevation="@(IsHovered(item) ? 10 : 1)"
+                              @onclick="@(() => OnItemClickAsync(item))"
+                              @onmouseenter="@(() => HoveredItem = item)"
+                              @onmouseleave="@(() => HoveredItem = default)">
+                        @ItemTemplate(item)
+                    </MudPaper>
+                </ItemContent>
+            </MudTimelineItem>
+        }
+    </MudTimeline>
+
+    @if (Pagination is not null && Pagination.TotalPages > 1)
+    {
+        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mt-3">
+            <MudText Typo="Typo.caption">
+                Showing @((Pagination.PageNumber - 1) * Pagination.PageSize + 1)
+                to @(Math.Min(Pagination.PageNumber * Pagination.PageSize, Pagination.TotalCount))
+                of @Pagination.TotalCount items
+            </MudText>
+
+            <MudPagination Count="@Pagination.TotalPages"
+                           Selected="@Pagination.PageNumber"
+                           SelectedChanged="@OnPageChanged"
+                           BoundaryCount="1"
+                           MiddleCount="3"
+                           ShowFirstButton="true"
+                           ShowLastButton="true"/>
+        </MudStack>
+    }
+</StatefulView>

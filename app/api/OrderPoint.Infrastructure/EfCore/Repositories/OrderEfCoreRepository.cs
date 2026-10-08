@@ -1,0 +1,102 @@
+﻿using Microsoft.EntityFrameworkCore;
+using OrderPoint.Application.Repositories;
+using OrderPoint.Domain.Entities;
+using OrderPoint.Domain.Enumerations;
+using OrderPoint.Domain.Sorting;
+
+namespace OrderPoint.Infrastructure.EfCore.Repositories;
+
+internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IOrderRepository
+{
+    public async Task<(IReadOnlyList<Order>, int)> GetPaginatedAsync(
+        int pageNumber = 1,
+        int pageSize = 10,
+        string? searchQuery = null,
+        OrderStatus? status = null,
+        Guid? itemId = null,
+        OrderSortBy? sortBy = null,
+        CancellationToken cancellationToken = default)
+    {
+        IQueryable<Order> query = dbContext.Orders
+            .AsNoTracking()
+            .Include(order => order.Items)
+            .ThenInclude(orderItem => orderItem.Item);
+
+        query = SearchOrders(query, searchQuery);
+        query = FilterOrders(query, status, itemId);
+        query = SortOrders(query, sortBy);
+
+        int totalCount = await query.CountAsync(cancellationToken);
+
+        List<Order> orders = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return (orders.AsReadOnly(), totalCount);
+    }
+
+    public async Task<Order?> GetAsync(Guid id, CancellationToken cancellationToken = default)
+        => await dbContext.Orders
+            .Include(order => order.Items)
+            .ThenInclude(orderItem => orderItem.Item)
+            .SingleOrDefaultAsync(order => order.Id == id, cancellationToken);
+
+    public async Task CreateAsync(Order order, CancellationToken cancellationToken = default)
+        => await dbContext.Orders.AddAsync(order, cancellationToken);
+
+    public async Task<int> CountAsync(Guid itemId, CancellationToken cancellationToken = default)
+        => await dbContext.Orders.CountAsync(
+            order => order.Items.Any(orderItem => orderItem.ItemId == itemId),
+            cancellationToken);
+
+    public async Task<bool> ExistsAsync(Guid itemId, CancellationToken cancellationToken = default)
+        => await dbContext.Orders.AnyAsync(
+            order => order.Items.Any(orderItem => orderItem.ItemId == itemId),
+            cancellationToken);
+
+    private static IQueryable<Order> SearchOrders(IQueryable<Order> query, string? searchQuery)
+    {
+        if (!string.IsNullOrWhiteSpace(searchQuery))
+        {
+            string normalizedSearchQuery = searchQuery.ToLower();
+
+            query = query.Where(order =>
+                order.TableCode.ToLower().Contains(normalizedSearchQuery) ||
+                order.Number.ToString().Contains(normalizedSearchQuery));
+        }
+
+        return query;
+    }
+
+    private static IQueryable<Order> FilterOrders(IQueryable<Order> query, OrderStatus? status, Guid? itemId)
+    {
+        if (status.HasValue)
+        {
+            query = query.Where(order => order.Status == status.Value);
+        }
+
+        if (itemId.HasValue)
+        {
+            query = query.Where(order => order.Items.Any(orderItem => orderItem.ItemId == itemId.Value));
+        }
+
+        return query;
+    }
+
+    private static IQueryable<Order> SortOrders(IQueryable<Order> query, OrderSortBy? sortBy)
+    {
+        IOrderedQueryable<Order> orderedQuery = sortBy switch
+        {
+            OrderSortBy.TotalAsc => query
+                .OrderBy(order => order.Items.Sum(orderItem => orderItem.Quantity * orderItem.UnitPrice)),
+            OrderSortBy.TotalDesc => query
+                .OrderByDescending(order => order.Items.Sum(orderItem => orderItem.Quantity * orderItem.UnitPrice)),
+            OrderSortBy.CreatedAtUtcAsc => query.OrderBy(order => order.CreatedAtUtc),
+            OrderSortBy.CreatedAtUtcDesc => query.OrderByDescending(order => order.CreatedAtUtc),
+            _ => query.OrderByDescending(order => order.CreatedAtUtc)
+        };
+
+        return orderedQuery.ThenBy(order => order.Id);
+    }
+}

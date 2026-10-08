@@ -62,11 +62,9 @@ public sealed partial class DataList<TItem>
     public Func<string, string> GetSortByIcon { get; set; }
 
     [Parameter]
-    [EditorRequired]
-    public string CreateButtonText { get; set; }
+    public string? CreateButtonText { get; set; }
 
     [Parameter]
-    [EditorRequired]
     public EventCallback OnCreateClick { get; set; }
 
     [Parameter]

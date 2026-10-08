@@ -100,10 +100,11 @@
 
                         <MudDivider Vertical="true"/>
 
-                        <MudTooltip Text="Delete">
+                        <MudTooltip Text="@(context.OrdersCount > 0 ? "Item has orders" : "Delete")">
                             <MudIconButton Icon="@Icons.Material.Filled.Delete"
                                            Color="Color.Error"
                                            Size="Size.Small"
+                                           Disabled="@(context.OrdersCount > 0)"
                                            OnClick="@(() => ShowDeleteItemDialogAsync(context.Id, context.Name))"/>
                         </MudTooltip>
                     </MudStack>

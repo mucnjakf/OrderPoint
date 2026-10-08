@@ -1,0 +1,16 @@
+﻿<HighlightCard Label="@Status.ToString()"
+               Icon="@Status.GetIcon()"
+               Color="@Status.GetColor()"
+               IsLoading="@IsLoading"
+               ShowContent="true"
+               Height="@CardHeight"
+               IsSelected="@IsSelected"
+               OnClick="@OnCardClickAsync">
+    <MudText Typo="Typo.h4">
+        @Count
+    </MudText>
+
+    <MudText Typo="Typo.caption">
+        @(Count == 1 ? "order" : "orders")
+    </MudText>
+</HighlightCard>

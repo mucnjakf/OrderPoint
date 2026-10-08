@@ -15,6 +15,8 @@ public interface IItemRepository
 
     Task<Item?> GetAsync(Guid id, CancellationToken cancellationToken = default);
 
+    Task<IReadOnlyList<Item>> GetAsync(IReadOnlyList<Guid> ids, CancellationToken cancellationToken = default);
+
     Task CreateAsync(Item item, CancellationToken cancellationToken = default);
 
     void Delete(Item item);

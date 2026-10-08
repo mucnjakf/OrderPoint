@@ -33,7 +33,7 @@ internal sealed class GetItemsQueryHandler(IItemRepository itemRepository)
                 cancellationToken);
 
         return new PaginationDto<ItemDto>(
-            items.Select(item => item.ToItemDto()).ToList(),
+            items.Select(item => item.ToItemDto(item.OrderItems.Count)).ToList(),
             query.PageNumber,
             query.PageSize,
             totalCount);

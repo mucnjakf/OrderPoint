@@ -50,7 +50,7 @@ internal sealed class CreateItemCommandHandler(
 
         Item item = (await itemRepository.GetAsync(result.Value.Id, cancellationToken))!;
 
-        var itemDto = item.ToItemDto();
+        var itemDto = item.ToItemDto(ordersCount: 0);
 
         return Result.Success(itemDto);
     }

@@ -8,5 +8,6 @@ public sealed record ItemDto(
     decimal Price,
     string? ImageUrl,
     ItemCategoryDto Category,
+    int OrdersCount,
     DateTimeOffset CreatedAtUtc,
     DateTimeOffset? UpdatedAtUtc);

@@ -1,0 +1,99 @@
+﻿@page "/orders"
+
+<PageTitle>Orders</PageTitle>
+
+<PageHeader Text="Orders" Breadcrumbs="@Breadcrumbs"/>
+
+<OrderStatusPipeline StatusCounts="@StatusCounts"
+                     LoadingStatuses="@LoadingStatuses"
+                     SelectedStatus="@SelectedStatus"
+                     OnStatusClick="@OnStatusClickAsync"/>
+
+<DataTimeline TItem="OrderDto"
+              Items="@Orders"
+              Pagination="@Pagination"
+              IsLoading="@IsLoading"
+              SearchLabel="Search by table or number"
+              SearchQuery="@SearchQuery"
+              SearchQueryChanged="@(value => SearchQuery = value)"
+              SelectedSortBy="@SelectedSortBy"
+              SelectedSortByChanged="@(value => SelectedSortBy = value)"
+              OnSearchChanged="@OnSearchChangedAsync"
+              OnSortChanged="@OnSortChangedAsync"
+              OnPageChanged="@OnPageChangedAsync"
+              SortByOptions="@Enum.GetNames(typeof(OrderSortBy))"
+              GetSortByLabel="@OrderSorting.GetSortByLabel"
+              GetSortByIcon="@OrderSorting.GetSortByIcon"
+              GetItemColor="@(order => order.Status.GetColor())"
+              GetItemIcon="@(order => order.Status.GetIcon())"
+              OnItemClick="@ShowOrderDetailsDialogAsync"
+              EmptyStateIcon="@Icons.Material.Filled.Receipt"
+              EmptyStateText="No orders found">
+
+    <FilterContent>
+        <MudSelect @bind-Value="@SelectedStatus"
+                   @bind-Value:after="@OnStatusChangedAsync"
+                   T="OrderStatus?"
+                   Variant="Variant.Outlined"
+                   Label="Status"
+                   FitContent="true">
+
+            <MudSelectItem Value="@(null)" T="OrderStatus?">
+                <MudText>All</MudText>
+            </MudSelectItem>
+
+            @foreach (OrderStatus status in Enum.GetValues<OrderStatus>())
+            {
+                <MudSelectItem Value="@status" T="OrderStatus?">
+                    <MudText>
+                        @status.ToString()
+                    </MudText>
+                </MudSelectItem>
+            }
+        </MudSelect>
+    </FilterContent>
+
+    <ItemTemplate>
+        <MudStack Row="true" AlignItems="AlignItems.Center">
+            <MudText Typo="Typo.h6">
+                #@context.Number
+            </MudText>
+
+            <MudChip T="string"
+                     Variant="Variant.Outlined"
+                     Icon="@Icons.Material.Filled.TableBar"
+                     Size="Size.Small">
+                @context.TableCode
+            </MudChip>
+
+            <MudSpacer/>
+
+            <MudChip T="string"
+                     Variant="Variant.Text"
+                     Color="@context.Status.GetColor()">
+                @context.Status.ToString()
+            </MudChip>
+        </MudStack>
+
+        <MudText Typo="Typo.body1" Class="mt-1">
+            @(string.Join(" · ", context.Items.Select(orderItem => $"{orderItem.Quantity}× {orderItem.Name}")))
+        </MudText>
+
+        @if (context.Note is not null)
+        {
+            <MudText Typo="Typo.body2" Class="mt-1">
+                "@context.Note"
+            </MudText>
+        }
+
+        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mt-2">
+            <MudText Typo="Typo.caption">
+                @context.CreatedAtUtc.ToString("G") · @context.CreatedAtUtc.ToRelativeTime()
+            </MudText>
+
+            <MudText Typo="Typo.h6">
+                @context.Total.ToString("C", CultureInfo.CurrentCulture)
+            </MudText>
+        </MudStack>
+    </ItemTemplate>
+</DataTimeline>

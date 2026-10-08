@@ -1,0 +1,108 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.Receipt"/>
+            <MudText Typo="Typo.h6">Order details</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudGrid Spacing="3">
+            <MudItem xs="12" md="5">
+                <MudPaper Class="pa-5" Style="height: 100%">
+                    <TextDisplayRow Icon="@Icons.Material.Filled.Tag"
+                                    Label="Number"
+                                    Text="@($"#{Order.Number}")"
+                                    ShowDivider="true"/>
+
+                    <TextDisplayRow Icon="@Icons.Material.Filled.Numbers"
+                                    Label="ID"
+                                    Text="@Order.Id.ToString()"
+                                    ShowDivider="true"/>
+
+                    <TextDisplayRow Icon="@Icons.Material.Filled.TableBar"
+                                    Label="Table"
+                                    Text="@Order.TableCode"
+                                    ShowDivider="true"/>
+
+                    <ChipDisplayRow Icon="@Icons.Material.Filled.MonitorHeart"
+                                    Label="Status"
+                                    Text="@Order.Status.ToString()"
+                                    Color="@Order.Status.GetColor()"
+                                    ShowDivider="true"/>
+
+                    <TextDisplayRow Icon="@Icons.Material.Filled.Notes"
+                                    Label="Note"
+                                    Text="@(Order.Note ?? "-")"
+                                    ShowDivider="true"/>
+
+                    <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
+                                    Label="Created"
+                                    Text="@Order.CreatedAtUtc.ToString("G")"
+                                    ShowDivider="true"/>
+
+                    <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
+                                    Label="Completed"
+                                    Text="@(Order.CompletedAtUtc?.ToString("G") ?? "-")"/>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" md="7">
+                <MudPaper Class="pa-5" Style="height: 100%">
+                    <MudSimpleTable Elevation="0">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Qty</th>
+                                <th>Unit price</th>
+                                <th>Subtotal</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (OrderItemDto orderItem in Order.Items)
+                            {
+                                <tr>
+                                    <td>
+                                        <MudStack Row="true" AlignItems="AlignItems.Center">
+                                            <MudImage Src="@(orderItem.ImageUrl ?? "images/image-placeholder.svg")"
+                                                      Alt="Item image"
+                                                      Width="40"
+                                                      Height="40"/>
+
+                                            <MudText Typo="Typo.body2">
+                                                @orderItem.Name
+                                            </MudText>
+                                        </MudStack>
+                                    </td>
+                                    <td>@orderItem.Quantity</td>
+                                    <td>@orderItem.UnitPrice.ToString("C", CultureInfo.CurrentCulture)</td>
+                                    <td>@GetSubtotal(orderItem).ToString("C", CultureInfo.CurrentCulture)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </MudSimpleTable>
+
+                    <MudDivider Class="my-3"/>
+
+                    <MudStack Row="true" Justify="Justify.SpaceBetween">
+                        <MudText Typo="Typo.h6">Total</MudText>
+
+                        <MudText Typo="Typo.h6">
+                            @Order.Total.ToString("C", CultureInfo.CurrentCulture)
+                        </MudText>
+                    </MudStack>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Variant="Variant.Filled"
+                   OnClick="@Close"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Close">
+            Close
+        </MudButton>
+    </DialogActions>
+</MudDialog>

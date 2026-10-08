@@ -10,7 +10,7 @@ namespace OrderPoint.Application.Queries.Items;
 
 public sealed record GetItemQuery(Guid Id) : IQuery<ItemDto>;
 
-internal sealed class GetItemQueryHandler(IItemRepository itemRepository)
+internal sealed class GetItemQueryHandler(IItemRepository itemRepository, IOrderRepository orderRepository)
     : IQueryHandler<GetItemQuery, ItemDto>
 {
     public async Task<Result<ItemDto>> Handle(GetItemQuery query, CancellationToken cancellationToken)
@@ -22,7 +22,9 @@ internal sealed class GetItemQueryHandler(IItemRepository itemRepository)
             return Result.Failure<ItemDto>(ItemErrors.NotFound);
         }
 
-        var itemDto = item.ToItemDto();
+        int ordersCount = await orderRepository.CountAsync(item.Id, cancellationToken);
+
+        var itemDto = item.ToItemDto(ordersCount);
 
         return Result.Success(itemDto);
     }

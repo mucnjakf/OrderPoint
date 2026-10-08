@@ -5,6 +5,8 @@ namespace OrderPoint.Admin.Shared.Components;
 
 public sealed partial class HighlightCard
 {
+    private const int DefaultHeight = 250;
+
     [Parameter]
     [EditorRequired]
     public string Label { get; set; }
@@ -29,6 +31,12 @@ public sealed partial class HighlightCard
     public string? EmptyText { get; set; }
 
     [Parameter]
+    public int Height { get; set; } = DefaultHeight;
+
+    [Parameter]
+    public bool IsSelected { get; set; }
+
+    [Parameter]
     [EditorRequired]
     public EventCallback OnClick { get; set; }
 
@@ -39,6 +47,8 @@ public sealed partial class HighlightCard
     private bool IsHovered { get; set; }
 
     private bool IsClickable => ShowContent && !IsLoading;
+
+    private bool IsRaised => IsSelected || (IsHovered && IsClickable);
 
     private string CursorClass => IsClickable ? "cursor-pointer" : string.Empty;
 

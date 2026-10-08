@@ -23,6 +23,7 @@ public static class InfrastructureModule
         services.AddScoped<ICategoryRepository, CategoryEfCoreRepository>();
         services.AddScoped<IItemRepository, ItemEfCoreRepository>();
         services.AddScoped<IBartenderRepository, BartenderEfCoreRepository>();
+        services.AddScoped<IOrderRepository, OrderEfCoreRepository>();
 
         return services;
     }

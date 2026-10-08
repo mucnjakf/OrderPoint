@@ -17,7 +17,8 @@ internal sealed class ItemEfCoreRepository(ApplicationDbContext dbContext) : IIt
     {
         IQueryable<Item> query = dbContext.Items
             .AsNoTracking()
-            .Include(item => item.Category);
+            .Include(item => item.Category)
+            .Include(item => item.OrderItems);
 
         query = SearchItems(query, searchQuery);
         query = FilterItems(query, categoryId);
@@ -37,6 +38,13 @@ internal sealed class ItemEfCoreRepository(ApplicationDbContext dbContext) : IIt
         => await dbContext.Items
             .Include(item => item.Category)
             .SingleOrDefaultAsync(item => item.Id == id, cancellationToken);
+
+    public async Task<IReadOnlyList<Item>> GetAsync(
+        IReadOnlyList<Guid> ids,
+        CancellationToken cancellationToken = default)
+        => await dbContext.Items
+            .Where(item => ids.Contains(item.Id))
+            .ToListAsync(cancellationToken);
 
     public async Task CreateAsync(Item item, CancellationToken cancellationToken = default)
         => await dbContext.Items.AddAsync(item, cancellationToken);

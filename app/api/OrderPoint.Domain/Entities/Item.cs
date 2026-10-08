@@ -20,6 +20,10 @@ public sealed class Item : Entity
 
     public Category Category { get; private set; } = null!;
 
+    private readonly List<OrderItem> _orderItems = [];
+
+    public IReadOnlyList<OrderItem> OrderItems => _orderItems.AsReadOnly();
+
     private Item(
         Guid id,
         string name,

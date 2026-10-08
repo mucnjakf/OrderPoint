@@ -1,0 +1,25 @@
+﻿<MudStack Row="true" Class="mb-5">
+    @for (int i = 0; i < FlowStatuses.Length; i++)
+    {
+        OrderStatus status = FlowStatuses[i];
+
+        <OrderStatusCard Status="@status"
+                         Count="@GetCount(status)"
+                         IsLoading="@IsLoading(status)"
+                         IsSelected="@IsSelected(status)"
+                         OnClick="@OnStatusClick"/>
+
+        if (i < FlowStatuses.Length - 1)
+        {
+            <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Color="Color.Surface" Class="align-self-center"/>
+        }
+    }
+
+    <MudDivider Vertical="true" FlexItem="true" Class="mx-2"/>
+
+    <OrderStatusCard Status="OrderStatus.Declined"
+                     Count="@GetCount(OrderStatus.Declined)"
+                     IsLoading="@IsLoading(OrderStatus.Declined)"
+                     IsSelected="@IsSelected(OrderStatus.Declined)"
+                     OnClick="@OnStatusClick"/>
+</MudStack>
