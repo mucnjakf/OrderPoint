@@ -7,15 +7,15 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Commands.Bartenders;
 
-public sealed record DeleteBartenderCommand(Guid Id) : ICommand;
+public sealed record DeleteBartenderImageCommand(Guid Id) : ICommand;
 
-internal sealed class DeleteBartenderCommandHandler(
+internal sealed class DeleteBartenderImageCommandHandler(
     IBartenderRepository bartenderRepository,
     IImageStorage imageStorage,
     IUnitOfWork unitOfWork)
-    : ICommandHandler<DeleteBartenderCommand>
+    : ICommandHandler<DeleteBartenderImageCommand>
 {
-    public async Task<Result> Handle(DeleteBartenderCommand command, CancellationToken cancellationToken)
+    public async Task<Result> Handle(DeleteBartenderImageCommand command, CancellationToken cancellationToken)
     {
         Bartender? bartender = await bartenderRepository.GetAsync(command.Id, cancellationToken);
 
@@ -24,13 +24,17 @@ internal sealed class DeleteBartenderCommandHandler(
             return Result.Failure(BartenderErrors.NotFound);
         }
 
-        bartenderRepository.Delete(bartender);
+        if (bartender.ImageUrl is null)
+        {
+            return Result.Success();
+        }
+
+        string imageUrl = bartender.ImageUrl;
+
+        bartender.RemoveImage();
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        if (bartender.ImageUrl is not null)
-        {
-            await imageStorage.DeleteAsync(bartender.ImageUrl, cancellationToken);
-        }
+        await imageStorage.DeleteAsync(imageUrl, cancellationToken);
 
         return Result.Success();
     }

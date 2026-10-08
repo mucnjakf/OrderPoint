@@ -14,8 +14,7 @@ public sealed record UpdateBartenderCommand(
     string Email,
     string? PhoneNumber,
     BartenderStatus Status,
-    string? Notes,
-    string? ImageUrl) : ICommand;
+    string? Notes) : ICommand;
 
 internal sealed class UpdateBartenderCommandHandler(IBartenderRepository bartenderRepository, IUnitOfWork unitOfWork)
     : ICommandHandler<UpdateBartenderCommand>
@@ -45,8 +44,7 @@ internal sealed class UpdateBartenderCommandHandler(IBartenderRepository bartend
             command.Email,
             command.PhoneNumber,
             command.Status,
-            command.Notes,
-            command.ImageUrl);
+            command.Notes);
 
         if (result.IsFailure)
         {

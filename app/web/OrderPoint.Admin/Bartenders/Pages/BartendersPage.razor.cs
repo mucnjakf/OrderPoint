@@ -186,7 +186,7 @@ public sealed partial class BartendersPage
         var request = (dialogResult.Data as CreateBartenderRequest)!;
 
         bool isSuccess = await ApiService.ExecuteAsync(
-            () => BartenderApiClient.CreateBartenderAsync(request),
+            () => CreateBartenderWithImageAsync(request),
             $"Bartender {request.FirstName} {request.LastName} created successfully");
 
         if (isSuccess)
@@ -195,6 +195,18 @@ public sealed partial class BartendersPage
                 GetTeamStripAsync(),
                 GetBartendersAsync(pageNumber: 1));
         }
+    }
+
+    private async Task CreateBartenderWithImageAsync(CreateBartenderRequest request)
+    {
+        BartenderDto bartender = await BartenderApiClient.CreateBartenderAsync(request);
+
+        if (request.Image is null)
+        {
+            return;
+        }
+
+        await BartenderApiClient.UpdateBartenderImageAsync(bartender.Id, request.Image);
     }
 
     private async Task ShowUpdateBartenderDialogAsync(BartenderDto bartender)
@@ -223,7 +235,7 @@ public sealed partial class BartendersPage
         var request = (dialogResult.Data as UpdateBartenderRequest)!;
 
         bool isSuccess = await ApiService.ExecuteAsync(
-            () => BartenderApiClient.UpdateBartenderAsync(bartender.Id, request),
+            () => UpdateBartenderWithImageAsync(bartender.Id, request),
             $"Bartender {request.FirstName} {request.LastName} edited successfully");
 
         if (isSuccess)
@@ -231,6 +243,22 @@ public sealed partial class BartendersPage
             await Task.WhenAll(
                 GetTeamStripAsync(),
                 GetBartendersAsync(pageNumber: 1));
+        }
+    }
+
+    private async Task UpdateBartenderWithImageAsync(Guid id, UpdateBartenderRequest request)
+    {
+        await BartenderApiClient.UpdateBartenderAsync(id, request);
+
+        if (request.Image is not null)
+        {
+            await BartenderApiClient.UpdateBartenderImageAsync(id, request.Image);
+            return;
+        }
+
+        if (request.RemoveImage)
+        {
+            await BartenderApiClient.DeleteBartenderImageAsync(id);
         }
     }
 

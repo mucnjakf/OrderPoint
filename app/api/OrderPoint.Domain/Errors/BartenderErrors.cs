@@ -20,6 +20,10 @@ public static class BartenderErrors
         "Bartender.EmailIsRequired",
         "Bartender email is required");
 
+    internal static readonly Error ImageUrlIsRequired = Error.Validation(
+        "Bartender.ImageUrlIsRequired",
+        "Bartender image URL is required");
+
     public static readonly Error EmailAlreadyExists = Error.Conflict(
         "Bartender.EmailAlreadyExists",
         "Bartender with this email already exists");

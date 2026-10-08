@@ -15,8 +15,7 @@ public sealed record CreateBartenderCommand(
     string Email,
     string? PhoneNumber,
     BartenderStatus Status,
-    string? Notes,
-    string? ImageUrl)
+    string? Notes)
     : ICommand<BartenderDto>;
 
 internal sealed class CreateBartenderCommandHandler(IBartenderRepository bartenderRepository, IUnitOfWork unitOfWork)
@@ -37,8 +36,7 @@ internal sealed class CreateBartenderCommandHandler(IBartenderRepository bartend
             command.Email,
             command.PhoneNumber,
             command.Status,
-            command.Notes,
-            command.ImageUrl);
+            command.Notes);
 
         if (result.IsFailure)
         {

@@ -16,8 +16,7 @@ internal sealed record UpdateBartenderRequest(
     string Email,
     string? PhoneNumber,
     BartenderStatus Status,
-    string? Notes,
-    string? ImageUrl);
+    string? Notes);
 
 internal sealed class UpdateBartenderEndpoint : IEndpoint
 {
@@ -45,8 +44,7 @@ internal sealed class UpdateBartenderEndpoint : IEndpoint
             request.Email,
             request.PhoneNumber,
             request.Status,
-            request.Notes,
-            request.ImageUrl);
+            request.Notes);
 
         Result result = await sender.Send(command, cancellationToken);
 
@@ -80,9 +78,6 @@ internal sealed class UpdateBartenderEndpoint : IEndpoint
 
             RuleFor(request => request.Notes)
                 .MaximumLength(500).WithMessage("Notes must be at most 500 characters");
-
-            RuleFor(request => request.ImageUrl)
-                .MaximumLength(200).WithMessage("ImageUrl must be at most 200 characters");
         }
     }
 }

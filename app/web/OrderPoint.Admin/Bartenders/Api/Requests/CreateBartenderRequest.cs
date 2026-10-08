@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using OrderPoint.Admin.Bartenders.Enumerations;
+using OrderPoint.Admin.Shared.Dtos;
 
 namespace OrderPoint.Admin.Bartenders.Api.Requests;
 
@@ -27,6 +29,6 @@ internal sealed class CreateBartenderRequest
     [StringLength(500, ErrorMessage = "Notes must be at most 500 characters.")]
     public string? Notes { get; set; }
 
-    [StringLength(200, ErrorMessage = "Image URL must be at most 200 characters.")]
-    public string? ImageUrl { get; set; }
+    [JsonIgnore]
+    public ImageFileDto? Image { get; set; }
 }

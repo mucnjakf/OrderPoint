@@ -4,28 +4,28 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using OrderPoint.Api.Configuration;
 using OrderPoint.Api.Extensions;
-using OrderPoint.Application.Commands.Items;
+using OrderPoint.Application.Commands.Bartenders;
 using OrderPoint.Domain.Outcomes;
 
-namespace OrderPoint.Api.Endpoints.Items;
+namespace OrderPoint.Api.Endpoints.Bartenders;
 
-internal sealed record UpdateItemImageRequest(IFormFile Image);
+internal sealed record UpdateBartenderImageRequest(IFormFile Image);
 
-internal sealed class UpdateItemImageEndpoint : IEndpoint
+internal sealed class UpdateBartenderImageEndpoint : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
         app
-            .MapPut("api/items/{id:guid}/image", HandleAsync)
-            .WithName("UpdateItemImage")
-            .WithTags("Items")
+            .MapPut("api/bartenders/{id:guid}/image", HandleAsync)
+            .WithName("UpdateBartenderImage")
+            .WithTags("Bartenders")
             .DisableAntiforgery();
     }
 
     private static async Task<Results<NoContent, ProblemHttpResult>> HandleAsync(
         [FromRoute] Guid id,
-        [FromForm] UpdateItemImageRequest request,
-        [FromServices] IValidator<UpdateItemImageRequest> validator,
+        [FromForm] UpdateBartenderImageRequest request,
+        [FromServices] IValidator<UpdateBartenderImageRequest> validator,
         [FromServices] ISender sender,
         CancellationToken cancellationToken)
     {
@@ -33,7 +33,7 @@ internal sealed class UpdateItemImageEndpoint : IEndpoint
 
         await using Stream content = request.Image.OpenReadStream();
 
-        UpdateItemImageCommand command = new(id, content, request.Image.ContentType);
+        UpdateBartenderImageCommand command = new(id, content, request.Image.ContentType);
 
         Result result = await sender.Send(command, cancellationToken);
 
@@ -42,9 +42,9 @@ internal sealed class UpdateItemImageEndpoint : IEndpoint
             : result.ToProblemDetails();
     }
 
-    internal sealed class UpdateItemImageRequestValidator : AbstractValidator<UpdateItemImageRequest>
+    internal sealed class UpdateBartenderImageRequestValidator : AbstractValidator<UpdateBartenderImageRequest>
     {
-        public UpdateItemImageRequestValidator()
+        public UpdateBartenderImageRequestValidator()
         {
             RuleFor(request => request.Image).MustBeValidImage();
         }

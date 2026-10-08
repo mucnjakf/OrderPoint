@@ -29,7 +29,6 @@ public sealed class Bartender : Entity
         string? phoneNumber,
         BartenderStatus status,
         string? notes,
-        string? imageUrl,
         DateTimeOffset createdAtUtc) : base(id, createdAtUtc)
     {
         FirstName = firstName;
@@ -38,7 +37,6 @@ public sealed class Bartender : Entity
         PhoneNumber = phoneNumber;
         Status = status;
         Notes = notes;
-        ImageUrl = imageUrl;
     }
 
     public static Result<Bartender> Create(
@@ -47,8 +45,7 @@ public sealed class Bartender : Entity
         string email,
         string? phoneNumber,
         BartenderStatus status,
-        string? notes,
-        string? imageUrl)
+        string? notes)
     {
         if (string.IsNullOrWhiteSpace(firstName))
         {
@@ -73,7 +70,6 @@ public sealed class Bartender : Entity
             phoneNumber,
             status,
             notes,
-            imageUrl,
             DateTimeOffset.UtcNow);
 
         return Result.Success(bartender);
@@ -85,8 +81,7 @@ public sealed class Bartender : Entity
         string email,
         string? phoneNumber,
         BartenderStatus status,
-        string? notes,
-        string? imageUrl)
+        string? notes)
     {
         if (string.IsNullOrWhiteSpace(firstName))
         {
@@ -109,10 +104,30 @@ public sealed class Bartender : Entity
         PhoneNumber = phoneNumber;
         Status = status;
         Notes = notes;
+
+        UpdatedAtUtc = DateTimeOffset.UtcNow;
+
+        return Result.Success();
+    }
+
+    public Result SetImage(string imageUrl)
+    {
+        if (string.IsNullOrWhiteSpace(imageUrl))
+        {
+            return Result.Failure(BartenderErrors.ImageUrlIsRequired);
+        }
+
         ImageUrl = imageUrl;
 
         UpdatedAtUtc = DateTimeOffset.UtcNow;
 
         return Result.Success();
+    }
+
+    public void RemoveImage()
+    {
+        ImageUrl = null;
+
+        UpdatedAtUtc = DateTimeOffset.UtcNow;
     }
 }

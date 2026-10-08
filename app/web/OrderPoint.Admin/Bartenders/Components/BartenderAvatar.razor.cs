@@ -35,6 +35,13 @@ public sealed partial class BartenderAvatar
 
     private string Initials => $"{GetInitial(FirstName)}{GetInitial(LastName)}";
 
+    private Typo InitialsTypo => Size switch
+    {
+        Size.Small => Typo.caption,
+        Size.Large => Typo.h6,
+        _ => Typo.body2
+    };
+
     private Color AvatarColor => AvatarColors[GetStableHash($"{FirstName} {LastName}") % AvatarColors.Length];
 
     private static string GetInitial(string? name)

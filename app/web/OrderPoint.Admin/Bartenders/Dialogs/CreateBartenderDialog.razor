@@ -48,32 +48,32 @@
                                       Immediate="true"/>
                     </MudStack>
 
-                    <MudStack Row="true">
-                        <MudSelect Label="Status"
-                                   T="BartenderStatus"
-                                   @bind-Value="@Request.Status"
-                                   For="@(() => Request.Status)"
-                                   Class="mb-5"
-                                   HelperText="Inactive bartenders cannot log into the bartender app."
-                                   Variant="Variant.Outlined">
-                            @foreach (BartenderStatus status in Enum.GetValues<BartenderStatus>())
-                            {
-                                <MudSelectItem Value="@status" T="BartenderStatus">
-                                    <MudText>
-                                        @status.ToString()
-                                    </MudText>
-                                </MudSelectItem>
-                            }
-                        </MudSelect>
+                    <MudGrid Spacing="3">
+                        <MudItem xs="6">
+                            <MudSelect Label="Status"
+                                       T="BartenderStatus"
+                                       @bind-Value="@Request.Status"
+                                       For="@(() => Request.Status)"
+                                       Class="mb-5"
+                                       HelperText="Inactive bartenders cannot log into the bartender app."
+                                       Variant="Variant.Outlined">
+                                @foreach (BartenderStatus status in Enum.GetValues<BartenderStatus>())
+                                {
+                                    <MudSelectItem Value="@status" T="BartenderStatus">
+                                        <MudText>
+                                            @status.ToString()
+                                        </MudText>
+                                    </MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
 
-                        <MudTextField Label="Image URL"
-                                      Disabled="true"
-                                      @bind-Value="@Request.ImageUrl"
-                                      For="@(() => Request.ImageUrl)"
-                                      Class="mb-5"
-                                      HelperText="Image upload will be available in a future update."
-                                      Variant="Variant.Outlined"/>
-                    </MudStack>
+                        <MudItem xs="6">
+                            <ImageUploadField FileName="@Request.Image?.FileName"
+                                              OnImageSelected="@OnImageSelected"
+                                              OnImageRemoved="@OnImageRemoved"/>
+                        </MudItem>
+                    </MudGrid>
 
                     <MudTextField Label="Notes"
                                   @bind-Value="@Request.Notes"
@@ -85,7 +85,7 @@
                 </MudItem>
 
                 <MudItem md="4">
-                    <BartenderPreviewPaper ImageUrl="@Request.ImageUrl"
+                    <BartenderPreviewPaper ImageUrl="@PreviewImageUrl"
                                            FirstName="@Request.FirstName"
                                            LastName="@Request.LastName"
                                            Email="@Request.Email"
