@@ -1,0 +1,32 @@
+﻿<MudPaper Class="pa-5 d-flex flex-column" Style="height: 100%;">
+    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start">
+        <MudText Typo="Typo.overline">
+            @Label
+        </MudText>
+
+        <MudAvatar Color="@Color" Rounded="true">
+            <MudIcon Icon="@Icon"/>
+        </MudAvatar>
+    </MudStack>
+
+    <StatefulView IsLoading="@IsLoading" ShowContent="true" Compact="true">
+        <MudText Typo="Typo.h4" Class="mb-2">
+            @Value
+        </MudText>
+
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+            <MudChip T="string"
+                     Variant="Variant.Text"
+                     Size="Size.Small"
+                     Color="@ChangeColor"
+                     Icon="@ChangeIcon"
+                     Class="ma-0">
+                @ChangeText
+            </MudChip>
+
+            <MudText Typo="Typo.caption">
+                vs previous period
+            </MudText>
+        </MudStack>
+    </StatefulView>
+</MudPaper>

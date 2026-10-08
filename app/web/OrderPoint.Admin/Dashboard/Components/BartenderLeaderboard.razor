@@ -1,0 +1,30 @@
+﻿<MudStack Spacing="4">
+    @for (int i = 0; i < Entries.Count; i++)
+    {
+        BartenderLeaderboardEntryDto entry = Entries[i];
+
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudText Typo="Typo.subtitle1" Class="mud-text-secondary" Style="width: 20px;">
+                @(i + 1)
+            </MudText>
+
+            <BartenderAvatar FirstName="@entry.FirstName"
+                             LastName="@entry.LastName"
+                             ImageUrl="@entry.ImageUrl"/>
+
+            <MudStack Spacing="0" Class="flex-1">
+                <MudText Typo="Typo.body2">
+                    @entry.FirstName @entry.LastName
+                </MudText>
+
+                <MudText Typo="Typo.caption">
+                    @entry.CompletedOrdersCount completed · @GetDeclineRateText(entry) declined
+                </MudText>
+            </MudStack>
+
+            <MudText Typo="Typo.body1">
+                @entry.Revenue.ToString("C", CultureInfo.CurrentCulture)
+            </MudText>
+        </MudStack>
+    }
+</MudStack>

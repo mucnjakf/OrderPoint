@@ -1,0 +1,8 @@
+﻿namespace OrderPoint.Admin.Dashboard.Dtos;
+
+public sealed record TopItemDto(
+    Guid ItemId,
+    string Name,
+    string? ImageUrl,
+    int Quantity,
+    decimal Revenue);

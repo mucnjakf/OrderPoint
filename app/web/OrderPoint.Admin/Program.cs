@@ -3,6 +3,7 @@ using MudBlazor.Services;
 using OrderPoint.Admin;
 using OrderPoint.Admin.Bartenders.Api;
 using OrderPoint.Admin.Categories.Api;
+using OrderPoint.Admin.Dashboard.Api;
 using OrderPoint.Admin.Items.Api;
 using OrderPoint.Admin.Orders.Api;
 using OrderPoint.Admin.Shared.Services;
@@ -26,6 +27,7 @@ builder.Services.AddScoped<CategoryApiClient>();
 builder.Services.AddScoped<ItemApiClient>();
 builder.Services.AddScoped<BartenderApiClient>();
 builder.Services.AddScoped<OrderApiClient>();
+builder.Services.AddScoped<DashboardApiClient>();
 
 builder.Services.AddMudServices(configuration =>
 {

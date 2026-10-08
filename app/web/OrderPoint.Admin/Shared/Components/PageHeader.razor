@@ -1,3 +1,7 @@
 ﻿<MudBreadcrumbs Items="@Breadcrumbs" Class="pl-0 pt-0 pb-5" Style="font-size: 14px"/>
 
-<MudText Typo="Typo.h4" HtmlTag="h1" Class="mb-3">@Text</MudText>
+<MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mb-3">
+    <MudText Typo="Typo.h4" HtmlTag="h1">@Text</MudText>
+
+    @ChildContent
+</MudStack>

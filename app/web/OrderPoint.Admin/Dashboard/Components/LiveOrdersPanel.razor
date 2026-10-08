@@ -1,0 +1,45 @@
+﻿<MudStack Spacing="3" Class="flex-1">
+    @foreach (OrderStatus status in OpenStatuses)
+    {
+        <MudPaper Outlined="true" Class="pa-4">
+            <MudStack Row="true" AlignItems="AlignItems.Center">
+                <MudAvatar Color="@status.GetColor()" Rounded="true">
+                    <MudIcon Icon="@status.GetIcon()"/>
+                </MudAvatar>
+
+                <MudText Typo="Typo.body1" Class="flex-1">
+                    @status.ToString()
+                </MudText>
+
+                <MudText Typo="Typo.h5">
+                    @GetCount(status)
+                </MudText>
+            </MudStack>
+        </MudPaper>
+    }
+
+    <MudDivider Class="my-2"/>
+
+    <MudStack Spacing="0">
+        <MudText Typo="Typo.overline">
+            Longest wait
+        </MudText>
+
+        <MudText Typo="Typo.h6">
+            @(Live.OldestOpenOrderCreatedAtUtc?.ToRelativeTime() ?? "Nobody is waiting")
+        </MudText>
+    </MudStack>
+
+    <MudSpacer/>
+
+    <MudButton Href="/orders"
+               Variant="Variant.Text"
+               Color="Color.Primary"
+               EndIcon="@Icons.Material.Filled.ArrowForward">
+        View orders
+    </MudButton>
+
+    <MudText Typo="Typo.caption" Align="Align.Center">
+        Refreshes every 30 seconds · updated @UpdatedAtUtc.ToString("T")
+    </MudText>
+</MudStack>

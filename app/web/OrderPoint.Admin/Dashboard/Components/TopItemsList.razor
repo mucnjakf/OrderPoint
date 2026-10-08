@@ -1,0 +1,33 @@
+﻿<MudStack Spacing="4">
+    @foreach (TopItemDto item in Items)
+    {
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudImage Src="@(item.ImageUrl ?? "images/image-placeholder.svg")"
+                      Alt="Item image"
+                      Width="40"
+                      Height="40"
+                      ObjectFit="ObjectFit.Cover"/>
+
+            <MudStack Spacing="1" Class="flex-1">
+                <MudStack Row="true" Justify="Justify.SpaceBetween">
+                    <MudText Typo="Typo.body2">
+                        @item.Name
+                    </MudText>
+
+                    <MudText Typo="Typo.body2">
+                        @item.Quantity sold
+                    </MudText>
+                </MudStack>
+
+                <MudProgressLinear Color="Color.Primary"
+                                   Value="@GetShareOfTop(item)"
+                                   Rounded="true"
+                                   Size="Size.Small"/>
+
+                <MudText Typo="Typo.caption">
+                    @item.Revenue.ToString("C", CultureInfo.CurrentCulture)
+                </MudText>
+            </MudStack>
+        </MudStack>
+    }
+</MudStack>

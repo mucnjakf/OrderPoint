@@ -1,0 +1,21 @@
+﻿<MudPaper Class="pa-5 d-flex flex-column" Style="height: 100%;">
+    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mb-4">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icon" Size="Size.Small" Color="Color.Primary"/>
+
+            <MudText Typo="Typo.subtitle1">
+                @Title
+            </MudText>
+        </MudStack>
+
+        @HeaderContent
+    </MudStack>
+
+    <StatefulView IsLoading="@IsLoading"
+                  ShowContent="@ShowContent"
+                  EmptyStateIcon="@Icon"
+                  EmptyStateText="@EmptyStateText"
+                  Compact="true">
+        @ChildContent
+    </StatefulView>
+</MudPaper>

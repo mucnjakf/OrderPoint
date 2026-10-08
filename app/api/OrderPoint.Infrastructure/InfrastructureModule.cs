@@ -26,6 +26,7 @@ public static class InfrastructureModule
         services.AddScoped<IItemRepository, ItemEfCoreRepository>();
         services.AddScoped<IBartenderRepository, BartenderEfCoreRepository>();
         services.AddScoped<IOrderRepository, OrderEfCoreRepository>();
+        services.AddScoped<IDashboardRepository, DashboardEfCoreRepository>();
 
         services.AddScoped<IImageStorage, BlobImageStorage>();
 

@@ -1,0 +1,136 @@
+﻿@page "/"
+
+<PageTitle>Dashboard</PageTitle>
+
+<PageHeader Text="Dashboard" Breadcrumbs="@Breadcrumbs">
+    <MudToggleGroup T="DashboardPeriod"
+                    @bind-Value="@SelectedPeriod"
+                    @bind-Value:after="@OnPeriodChangedAsync"
+                    Color="Color.Primary"
+                    Size="Size.Small">
+        @foreach (DashboardPeriod period in Enum.GetValues<DashboardPeriod>())
+        {
+            <MudToggleItem Value="@period" Text="@period.GetLabel()"/>
+        }
+    </MudToggleGroup>
+</PageHeader>
+
+<MudGrid Spacing="3">
+    <MudItem xs="12" sm="6" lg="3">
+        <DashboardKpiCard Label="Revenue"
+                          Icon="@Icons.Material.Filled.Payments"
+                          Color="Color.Success"
+                          Value="@(Summary?.Revenue.ToString("C", CultureInfo.CurrentCulture) ?? "-")"
+                          CurrentValue="@((double?)Summary?.Revenue)"
+                          PreviousValue="@((double?)Summary?.PreviousRevenue)"
+                          IsLoading="@IsLoadingSummary"/>
+    </MudItem>
+
+    <MudItem xs="12" sm="6" lg="3">
+        <DashboardKpiCard Label="Orders"
+                          Icon="@Icons.Material.Filled.Receipt"
+                          Color="Color.Primary"
+                          Value="@(Summary?.OrdersCount.ToString(CultureInfo.CurrentCulture) ?? "-")"
+                          CurrentValue="@Summary?.OrdersCount"
+                          PreviousValue="@Summary?.PreviousOrdersCount"
+                          IsLoading="@IsLoadingSummary"/>
+    </MudItem>
+
+    <MudItem xs="12" sm="6" lg="3">
+        <DashboardKpiCard Label="Average order"
+                          Icon="@Icons.Material.Filled.ShoppingBasket"
+                          Color="Color.Info"
+                          Value="@(Summary?.AverageOrderValue.ToString("C", CultureInfo.CurrentCulture) ?? "-")"
+                          CurrentValue="@((double?)Summary?.AverageOrderValue)"
+                          PreviousValue="@((double?)Summary?.PreviousAverageOrderValue)"
+                          IsLoading="@IsLoadingSummary"/>
+    </MudItem>
+
+    <MudItem xs="12" sm="6" lg="3">
+        <DashboardKpiCard Label="Service time"
+                          Icon="@Icons.Material.Filled.Timer"
+                          Color="Color.Warning"
+                          Value="@ServiceTimeText"
+                          CurrentValue="@Summary?.AverageServiceMinutes"
+                          PreviousValue="@Summary?.PreviousAverageServiceMinutes"
+                          IsLowerBetter="true"
+                          IsLoading="@IsLoadingSummary"/>
+    </MudItem>
+
+    <MudItem xs="12" lg="9">
+        <MudGrid Spacing="3">
+            <MudItem xs="12">
+                <DashboardTile Title="@($"Revenue · {SelectedPeriod.GetLabel()}")"
+                               Icon="@Icons.Material.Filled.ShowChart"
+                               IsLoading="@IsLoadingRevenueTrend"
+                               ShowContent="@RevenueTrend.Any(point => point.Revenue > 0)"
+                               EmptyStateText="No completed orders in this period">
+                    <RevenueTrendChart Points="@RevenueTrend" IsHourly="@(SelectedPeriod is DashboardPeriod.Today)"/>
+                </DashboardTile>
+            </MudItem>
+
+            <MudItem xs="12" md="7">
+                <DashboardTile Title="Busiest times · last 4 weeks"
+                               Icon="@Icons.Material.Filled.LocalFireDepartment"
+                               IsLoading="@IsLoadingBusiestTimes"
+                               ShowContent="@BusiestTimes.Any(slot => slot.OrdersCount > 0)"
+                               EmptyStateText="No orders in the last 4 weeks">
+                    <BusiestTimesHeatMap BusiestTimes="@BusiestTimes"/>
+                </DashboardTile>
+            </MudItem>
+
+            <MudItem xs="12" md="5">
+                <DashboardTile Title="Revenue by category"
+                               Icon="@Icons.Material.Filled.DonutLarge"
+                               IsLoading="@IsLoadingCategoryRevenue"
+                               ShowContent="@CategoryRevenue.Any()"
+                               EmptyStateText="No completed orders in this period">
+                    <CategoryRevenueDonut CategoryRevenue="@CategoryRevenue"/>
+                </DashboardTile>
+            </MudItem>
+        </MudGrid>
+    </MudItem>
+
+    <MudItem xs="12" lg="3">
+        <DashboardTile Title="Right now"
+                       Icon="@Icons.Material.Filled.Bolt"
+                       IsLoading="@IsLoadingLive"
+                       ShowContent="@(Live is not null)"
+                       EmptyStateText="Live data unavailable">
+            @if (Live is not null)
+            {
+                <LiveOrdersPanel Live="@Live" UpdatedAtUtc="@LiveUpdatedAtUtc"/>
+            }
+        </DashboardTile>
+    </MudItem>
+
+    <MudItem xs="12" md="6" lg="4">
+        <DashboardTile Title="Top items"
+                       Icon="@Icons.Material.Filled.EmojiEvents"
+                       IsLoading="@IsLoadingTopItems"
+                       ShowContent="@TopItems.Any()"
+                       EmptyStateText="No items sold in this period">
+            <TopItemsList Items="@TopItems"/>
+        </DashboardTile>
+    </MudItem>
+
+    <MudItem xs="12" md="6" lg="4">
+        <DashboardTile Title="Bartender leaderboard"
+                       Icon="@Icons.Material.Filled.MilitaryTech"
+                       IsLoading="@IsLoadingLeaderboard"
+                       ShowContent="@Leaderboard.Any()"
+                       EmptyStateText="No handled orders in this period">
+            <BartenderLeaderboard Entries="@Leaderboard"/>
+        </DashboardTile>
+    </MudItem>
+
+    <MudItem xs="12" lg="4">
+        <DashboardTile Title="Recent orders"
+                       Icon="@Icons.Material.Filled.History"
+                       IsLoading="@IsLoadingRecentOrders"
+                       ShowContent="@RecentOrders.Any()"
+                       EmptyStateText="No orders yet">
+            <RecentOrdersList Orders="@RecentOrders" OnOrderClick="@ShowOrderDetailsDialogAsync"/>
+        </DashboardTile>
+    </MudItem>
+</MudGrid>

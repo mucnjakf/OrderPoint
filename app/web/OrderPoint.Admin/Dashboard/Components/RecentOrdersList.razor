@@ -1,0 +1,28 @@
+﻿<MudStack Spacing="2">
+    @foreach (OrderDto order in Orders)
+    {
+        <MudPaper Outlined="true"
+                  Class="pa-3 cursor-pointer"
+                  @onclick="@(() => OnOrderClickAsync(order))">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudAvatar Color="@order.Status.GetColor()" Size="Size.Small" Rounded="true">
+                    <MudIcon Icon="@order.Status.GetIcon()" Size="Size.Small"/>
+                </MudAvatar>
+
+                <MudStack Spacing="0" Class="flex-1">
+                    <MudText Typo="Typo.body2">
+                        #@order.Number · @order.TableCode
+                    </MudText>
+
+                    <MudText Typo="Typo.caption">
+                        @order.CreatedAtUtc.ToRelativeTime()
+                    </MudText>
+                </MudStack>
+
+                <MudText Typo="Typo.body1">
+                    @order.Total.ToString("C", CultureInfo.CurrentCulture)
+                </MudText>
+            </MudStack>
+        </MudPaper>
+    }
+</MudStack>
