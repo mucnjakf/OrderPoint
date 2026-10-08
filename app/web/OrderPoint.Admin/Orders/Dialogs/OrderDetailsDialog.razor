@@ -37,8 +37,7 @@
                         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
                             <BartenderAvatar FirstName="@Order.Bartender?.FirstName"
                                              LastName="@Order.Bartender?.LastName"
-                                             ImageUrl="@Order.Bartender?.ImageUrl"
-                                             Size="Size.Small"/>
+                                             ImageUrl="@Order.Bartender?.ImageUrl"/>
 
                             @if (Order.Bartender is null)
                             {
