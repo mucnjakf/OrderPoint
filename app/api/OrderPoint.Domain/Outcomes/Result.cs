@@ -25,7 +25,7 @@ public class Result
     {
         if ((isSuccess && error != Error.None) || (!isSuccess && error == Error.None))
         {
-            throw new InvalidOperationException();
+            throw new InvalidOperationException("Success must have no error and failure must have one");
         }
 
         IsSuccess = isSuccess;

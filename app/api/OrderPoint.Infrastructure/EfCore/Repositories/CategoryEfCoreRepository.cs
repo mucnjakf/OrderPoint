@@ -83,7 +83,8 @@ internal sealed class CategoryEfCoreRepository(ApplicationDbContext dbContext) :
     }
 
     private static IQueryable<Category> SortCategories(IQueryable<Category> query, CategorySortBy? sortBy)
-        => sortBy switch
+    {
+        IOrderedQueryable<Category> orderedQuery = sortBy switch
         {
             CategorySortBy.NameAsc => query.OrderBy(category => category.Name),
             CategorySortBy.NameDesc => query.OrderByDescending(category => category.Name),
@@ -93,4 +94,7 @@ internal sealed class CategoryEfCoreRepository(ApplicationDbContext dbContext) :
             CategorySortBy.CreatedAtUtcDesc => query.OrderByDescending(category => category.CreatedAtUtc),
             _ => query.OrderByDescending(category => category.CreatedAtUtc)
         };
+
+        return orderedQuery.ThenBy(category => category.Id);
+    }
 }

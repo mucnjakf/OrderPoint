@@ -45,6 +45,18 @@ builder.Services.AddInfrastructureModule(builder.Configuration);
 
 WebApplication app = builder.Build();
 
+// Database
+app.ApplyMigrations();
+
+// Error handling
+app.UseExceptionHandler();
+
+// HTTP
+app.UseHttpsRedirection();
+
+// Cors
+app.UseCors("AllowAll");
+
 // Minimal API
 app.MapEndpoints();
 
@@ -61,18 +73,6 @@ app.MapScalarApiReference(options =>
 
     options.HideClientButton = true;
 });
-
-// Cors
-app.UseCors("AllowAll");
-
-// Database
-app.ApplyMigrations();
-
-// HTTP
-app.UseHttpsRedirection();
-
-// Error handling
-app.UseExceptionHandler();
 
 // Aspire
 app.MapDefaultEndpoints();

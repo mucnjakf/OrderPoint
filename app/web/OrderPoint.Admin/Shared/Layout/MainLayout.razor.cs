@@ -17,7 +17,7 @@ public sealed partial class MainLayout
 
     private bool IsDarkMode { get; set; } = true;
 
-    private string IconButton { get; set; } = Icons.Material.Filled.LightMode;
+    private string DarkModeIcon => IsDarkMode ? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode;
 
     private void ToggleDrawer()
     {
@@ -27,13 +27,5 @@ public sealed partial class MainLayout
     private void ToggleDarkMode()
     {
         IsDarkMode = !IsDarkMode;
-
-        if (IsDarkMode)
-        {
-            IconButton = Icons.Material.Filled.LightMode;
-            return;
-        }
-
-        IconButton = Icons.Material.Filled.DarkMode;
     }
 }

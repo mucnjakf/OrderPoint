@@ -87,10 +87,11 @@ dotnet ef migrations add <Name> \
 
 - `ApplicationDbContext` implements `IUnitOfWork`; `DbSet`s are `internal`.
 - One `IEntityTypeConfiguration<T>` per entity in `EfCore/EntityTypeConfiguration/` (table name, `ValueGeneratedNever()` on Id, `HasMaxLength`, `IsRequired`, relationships). Each property is configured as `builder` / `.Property(...)` / `...` on separate lines. Relationships use `.OnDelete(DeleteBehavior.Restrict)`. Picked up by assembly scan.
-- Repositories are `internal sealed class <Entity>EfCoreRepository(ApplicationDbContext dbContext)` in `EfCore/Repositories/`, using private static `Search<X>`/`Filter<X>`/`Sort<X>` helpers for paginated queries (search is case-insensitive via `ToLower().Contains`; default sort `CreatedAtUtc` descending; unpaged search sorts by name ascending). Read-only queries (`GetPaginatedAsync`, `SearchAsync`) use `AsNoTracking()`; `GetAsync` stays tracked because commands update and delete what it returns, and it includes the navigations its DTO needs. Register in `InfrastructureModule`.
+- Repositories are `internal sealed class <Entity>EfCoreRepository(ApplicationDbContext dbContext)` in `EfCore/Repositories/`, using private static `Search<X>`/`Filter<X>`/`Sort<X>` helpers for paginated queries (search is case-insensitive via `ToLower().Contains`; default sort `CreatedAtUtc` descending; unpaged search sorts by name ascending). `Sort<X>` builds an `IOrderedQueryable` and always ends with `.ThenBy(x => x.Id)` so paging is stable when sort values tie. Read-only queries (`GetPaginatedAsync`, `SearchAsync`) use `AsNoTracking()`; `GetAsync` stays tracked because commands update and delete what it returns, and it includes the navigations its DTO needs. Register in `InfrastructureModule`.
 
 ### API (`OrderPoint.Api`)
 
+- `Program.cs` pipeline order: `ApplyMigrations` → `UseExceptionHandler` (first middleware) → `UseHttpsRedirection` → `UseCors` → endpoint and docs mapping. `launchSettings.json` URLs never contain a path (Kestrel refuses them); use `launchUrl` instead.
 - One endpoint per file in `Endpoints/<Feature>/<Action><Entity>Endpoint.cs`: `internal sealed class XEndpoint : IEndpoint`, discovered automatically.
 - Request and response records (`internal sealed record`) are declared in the same file above the endpoint; the FluentValidation validator is a nested `internal sealed class XRequestValidator` inside the endpoint class (auto-registered). Every endpoint that takes a body or query string has a request record and a validator.
 - Query-string input is bound into a request record with `[AsParameters] XRequest request`; its constructor parameters carry `[FromQuery]` (see `GetItemsEndpoint`, `SearchCategoriesEndpoint`). Paged lists validate `PageNumber > 0` and `PageSize` between 1 and 100; search text is at most 100 characters (a search that cannot match returns no results, not an error); required search text uses `NotEmpty()` (also rejects whitespace). Route values (`{id:guid}`) stay as `[FromRoute]` parameters.
@@ -126,6 +127,7 @@ Field rules live in several places. Changing one means changing all of them:
   - Mutations: `bool isSuccess = await ApiService.ExecuteAsync(() => client.CreateXAsync(request), $"Item {request.Name} created successfully");`. Shows the success snackbar on success and the error snackbar on failure; reload the list only when `isSuccess`.
   - Autocomplete `SearchFunc`s pass MudBlazor's `CancellationToken` to both the client and `ExecuteAsync`, so cancelled searches are silent: `return categories ?? [];`.
   - Pages never inject `ISnackbar` for API results.
+  - `ApiService` logs unexpected exceptions (network, parsing); expected API errors (ProblemDetails) and cancellations are not logged.
 
 ### Pages and dialogs
 
@@ -138,6 +140,7 @@ Field rules live in several places. Changing one means changing all of them:
 
 ### Components and styling
 
+- Each page has exactly one `<h1>`: the `PageHeader` title (rendered as `h1`, styled `Typo.h4`). `Routes.razor` focuses it after navigation, so nothing else (e.g. drawer labels) may render as `h1`.
 - Reuse shared components: `PageHeader` (title + breadcrumbs), `DataTable` (tabular list, see Categories), `DataGrid` (card grid, see Items), `DataList` (list inside a dialog), `StatefulView` (loading/empty states), `TextDisplayRow`, `ChipDisplayRow`. Extend them rather than building parallel ones. `DataTable`/`DataGrid` show the delete button when `OnDeleteClick` is set; `DeleteButtonDisabled` and `DeleteButtonDisabledTooltipText` are optional.
 - Admin DTOs, enums and sort enums mirror the API ones by hand. When an API contract changes, update the Admin copy too.
 - Use MudBlazor components and `Icons.Material.Filled.*`; avoid custom CSS. Colours come from the theme in `Shared/Layout/MainLayout.razor.cs` (`PaletteDark`), never hardcoded hex: dialogs use `Class="mud-background"`, borders use `var(--mud-palette-lines-default)`.

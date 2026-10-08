@@ -3,7 +3,7 @@ using OrderPoint.Admin.Shared.Errors;
 
 namespace OrderPoint.Admin.Shared.Services;
 
-internal sealed class ApiService(ISnackbar snackbar)
+internal sealed class ApiService(ISnackbar snackbar, ILogger<ApiService> logger)
 {
     internal async Task<bool> ExecuteAsync(
         Func<Task> apiCall,
@@ -30,6 +30,8 @@ internal sealed class ApiService(ISnackbar snackbar)
         }
         catch (Exception ex)
         {
+            logger.LogError(ex, "Unexpected error while calling the API");
+
             snackbar.Add(ex.Message, Severity.Error);
 
             return false;
@@ -54,6 +56,8 @@ internal sealed class ApiService(ISnackbar snackbar)
         }
         catch (Exception ex)
         {
+            logger.LogError(ex, "Unexpected error while calling the API");
+
             snackbar.Add(ex.Message, Severity.Error);
 
             return default;

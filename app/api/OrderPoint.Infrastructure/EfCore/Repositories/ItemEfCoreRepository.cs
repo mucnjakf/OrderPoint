@@ -73,7 +73,8 @@ internal sealed class ItemEfCoreRepository(ApplicationDbContext dbContext) : IIt
     }
 
     private static IQueryable<Item> SortItems(IQueryable<Item> query, ItemSortBy? sortBy)
-        => sortBy switch
+    {
+        IOrderedQueryable<Item> orderedQuery = sortBy switch
         {
             ItemSortBy.NameAsc => query.OrderBy(item => item.Name),
             ItemSortBy.NameDesc => query.OrderByDescending(item => item.Name),
@@ -83,4 +84,7 @@ internal sealed class ItemEfCoreRepository(ApplicationDbContext dbContext) : IIt
             ItemSortBy.CreatedAtUtcDesc => query.OrderByDescending(item => item.CreatedAtUtc),
             _ => query.OrderByDescending(item => item.CreatedAtUtc)
         };
+
+        return orderedQuery.ThenBy(item => item.Id);
+    }
 }

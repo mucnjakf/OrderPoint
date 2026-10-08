@@ -40,7 +40,7 @@
                          ToStringFunc="@(category => category?.Name)">
             <NoItemsTemplate>
                 <MudText Align="Align.Center" Class="px-3 py-1">
-                    No items found
+                    No categories found
                 </MudText>
             </NoItemsTemplate>
         </MudAutocomplete>
@@ -48,7 +48,7 @@
 
     <RowTemplate>
         <MudCardMedia Image="@(context.ImageUrl ?? "images/image-placeholder.svg")"
-                      Style="@(context.ImageUrl is null ? "width:100px; height: 100px; align-self: center; margin: 30px 0;" : string.Empty)"/>
+                      Style="@(context.ImageUrl is null ? "width: 100px; height: 100px; align-self: center; margin: 30px 0;" : string.Empty)"/>
 
         <MudCardContent Class="pt-0">
             <MudStack Row="true" Class="mb-2 d-flex justify-space-between">

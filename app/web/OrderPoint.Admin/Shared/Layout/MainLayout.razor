@@ -14,7 +14,7 @@
             Icon="@Icons.Material.Filled.Menu"
             Color="Color.Inherit"
             Edge="Edge.Start"
-            OnClick="@(_ => ToggleDrawer())"/>
+            OnClick="@ToggleDrawer"/>
 
         <MudStack Class="ml-3" Row="true" AlignItems="AlignItems.Center">
             <MudIcon Icon="@Icons.Material.Filled.CropOriginal" Title="Placeholder" Size="Size.Large"/>
@@ -28,7 +28,7 @@
         <MudSpacer/>
 
         <MudTooltip Text="@(IsDarkMode ? "Light mode" : "Dark mode")">
-            <MudIconButton Icon="@IconButton" OnClick="@(_ => ToggleDarkMode())" Color="Color.Inherit"/>
+            <MudIconButton Icon="@DarkModeIcon" OnClick="@ToggleDarkMode" Color="Color.Inherit"/>
         </MudTooltip>
     </MudAppBar>
 
@@ -36,7 +36,7 @@
         <MudNavMenu Bordered="true">
             @if (DrawerOpen)
             {
-                <MudText Typo="Typo.button" HtmlTag="h1" Class="px-3 pt-3 pb-1" Style="font-size: 12px">
+                <MudText Typo="Typo.button" HtmlTag="p" Class="px-3 pt-3 pb-1" Style="font-size: 12px">
                     Overview
                 </MudText>
             }
@@ -53,7 +53,7 @@
 
             @if (DrawerOpen)
             {
-                <MudText Typo="Typo.button" HtmlTag="h1" Class="px-3 pt-1 pb-1" Style="font-size: 12px">
+                <MudText Typo="Typo.button" HtmlTag="p" Class="px-3 pt-1 pb-1" Style="font-size: 12px">
                     Management
                 </MudText>
             }
