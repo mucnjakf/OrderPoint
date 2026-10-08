@@ -10,7 +10,7 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Categories;
 
-public sealed record UpdateCategoryRequest(
+internal sealed record UpdateCategoryRequest(
     string Name,
     string Description,
     CategoryStatus Status,

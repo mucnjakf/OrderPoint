@@ -92,12 +92,13 @@ dotnet ef migrations add <Name> \
 ### API (`OrderPoint.Api`)
 
 - One endpoint per file in `Endpoints/<Feature>/<Action><Entity>Endpoint.cs`: `internal sealed class XEndpoint : IEndpoint`, discovered automatically.
-- Request and response records (`internal sealed record`) are declared in the same file above the endpoint; the FluentValidation validator is a nested `internal sealed class XRequestValidator` inside the endpoint class (auto-registered).
+- Request and response records (`internal sealed record`) are declared in the same file above the endpoint; the FluentValidation validator is a nested `internal sealed class XRequestValidator` inside the endpoint class (auto-registered). Every endpoint that takes a body or query string has a request record and a validator.
+- Query-string input is bound into a request record with `[AsParameters] XRequest request`; its constructor parameters carry `[FromQuery]` (see `GetItemsEndpoint`, `SearchCategoriesEndpoint`). Paged lists validate `PageNumber > 0` and `PageSize` between 1 and 100; required search text uses `NotEmpty()` (also rejects whitespace). Route values (`{id:guid}`) stay as `[FromRoute]` parameters.
 - `MapEndpoint` uses route `api/<plural>`, `api/<plural>/{id:guid}`, `api/<plural>/search?searchQuery=...` (unpaged lookup), plus `.WithName("<Action><Entity>")` and `.WithTags("<Plural>")`.
 - `private static async Task<Results<..., ProblemHttpResult>> HandleAsync(...)` with explicit `[FromBody]`/`[FromRoute]`/`[FromQuery]`/`[FromServices]` attributes and a `CancellationToken`.
 - Flow: `await validator.ValidateAndThrowAsync(request, ct)` → build command/query → `sender.Send` → `result.IsSuccess ? TypedResults.X(...) : result.ToProblemDetails()`.
 - Responses wrap payloads as `{ Data }`: create → `CreatedAtRoute` to the Get route, update/delete → `NoContent`, get → `Ok`.
-- Errors are ProblemDetails with an `errors` array; status mapping lives in `Extensions/ResultExtensions.cs`.
+- Errors are ProblemDetails with an `errors` array; status mapping lives in `Extensions/ResultExtensions.cs`. Exception handlers in `Exceptions/` (registered in `Program.cs`, in order): `RequestValidationExceptionHandler` (FluentValidation → 400), `BadHttpRequestExceptionHandler` (missing/unparsable parameters or malformed JSON → 400; `ThrowOnBadRequest` is on so this applies in every environment), `GlobalExceptionHandler` (→ 500).
 
 ### Validation is duplicated on purpose; keep it in sync
 
@@ -131,6 +132,7 @@ Field rules live in several places. Changing one means changing all of them:
 - List pages: `private const int PageSize` (10 for `DataTable`, 9 for the 3-column `DataGrid`, 5 for `DataList` in a dialog); one `Get<Plural>Async(int pageNumber)` that reads the current search/sort/filter properties; search, sort and filter changes call it with `pageNumber: 1`; `OnPageChangedAsync(int pageNumber)`.
 - Sorting is passed as the sort enum's name: `SelectedSortBy = nameof(ItemSortBy.CreatedAtUtcDesc)`; labels and icons come from `<Feature>Sorting.GetSortByLabel/GetSortByIcon`.
 - Create/update/delete/details are MudBlazor dialogs opened from the list page (not separate pages). Dialogs return the request object via `MudDialogInstance.Close(DialogResult.Ok(Request))`; the page performs the API call and reloads. Use early returns: `if (dialogResult.Canceled) { return; }`.
+- A dialog that changes data the page shows (e.g. items inside `CategoryDetailsDialog`) exposes an `EventCallback On<Thing>Changed` parameter and invokes it after a successful mutation; the page passes `EventCallback.Factory.Create(this, ...)` in the `DialogParameters` and reloads. Do not rely on the dialog result for this: closing with X/Escape returns `Canceled`.
 - Dialogs and components initialise state and load data in `OnInitialized`/`OnInitializedAsync` (parameters are already set). Do not use `OnParametersSet`: it runs again whenever the dialog provider re-renders, which resets forms and reloads lists.
 - Forms: `EditForm` + `DataAnnotationsValidator`, MudBlazor inputs with `Variant.Outlined`, `HelperText`, `Immediate="true"`. `OnValidSubmit` only closes the dialog. Add `OnInvalidSubmit` + `IsFormSubmitted` only for inputs not covered by DataAnnotations `For` (e.g. a `MudAutocomplete` showing `Error`/`ErrorText`).
 

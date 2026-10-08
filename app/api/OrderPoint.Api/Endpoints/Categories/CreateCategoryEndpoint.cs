@@ -11,7 +11,7 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Categories;
 
-public sealed record CreateCategoryRequest(
+internal sealed record CreateCategoryRequest(
     string Name,
     string Description,
     CategoryStatus Status,

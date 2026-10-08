@@ -18,6 +18,9 @@ public sealed partial class CategoryDetailsDialog
     [Parameter]
     public CategoryDto Category { get; set; } = null!;
 
+    [Parameter]
+    public EventCallback OnItemsChanged { get; set; }
+
     [CascadingParameter]
     private IMudDialogInstance MudDialogInstance { get; set; } = null!;
 
@@ -108,6 +111,7 @@ public sealed partial class CategoryDetailsDialog
         if (isSuccess)
         {
             await GetItemsAsync(pageNumber: 1);
+            await OnItemsChanged.InvokeAsync();
         }
     }
 
@@ -141,6 +145,7 @@ public sealed partial class CategoryDetailsDialog
         if (isSuccess)
         {
             await GetItemsAsync(pageNumber: 1);
+            await OnItemsChanged.InvokeAsync();
         }
     }
 

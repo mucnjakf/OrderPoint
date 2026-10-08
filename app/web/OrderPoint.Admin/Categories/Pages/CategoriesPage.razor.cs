@@ -107,6 +107,12 @@ public sealed partial class CategoriesPage
         await GetCategoriesAsync(pageNumber);
     }
 
+    private async Task OnCategoryItemsChangedAsync()
+    {
+        await GetTopCategoriesAsync();
+        await GetCategoriesAsync(Pagination?.PageNumber ?? 1);
+    }
+
     private async Task ShowCreateCategoryDialogAsync()
     {
         var options = new DialogOptions
@@ -142,7 +148,8 @@ public sealed partial class CategoriesPage
     {
         var parameters = new DialogParameters<CategoryDetailsDialog>
         {
-            { dialog => dialog.Category, category }
+            { dialog => dialog.Category, category },
+            { dialog => dialog.OnItemsChanged, EventCallback.Factory.Create(this, OnCategoryItemsChangedAsync) }
         };
 
         var options = new DialogOptions

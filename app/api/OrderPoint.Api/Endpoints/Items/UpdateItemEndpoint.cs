@@ -9,7 +9,7 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Items;
 
-public sealed record UpdateItemRequest(
+internal sealed record UpdateItemRequest(
     string Name,
     string Description,
     double Portion,

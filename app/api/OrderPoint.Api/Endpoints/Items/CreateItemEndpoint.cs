@@ -10,7 +10,7 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Items;
 
-public sealed record CreateItemRequest(
+internal sealed record CreateItemRequest(
     string Name,
     string Description,
     double Portion,

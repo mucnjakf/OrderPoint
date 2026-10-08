@@ -20,7 +20,7 @@ internal sealed class CategoryApiClient(IHttpClientFactory httpClientFactory)
         CategoryStatus? status = null,
         CancellationToken cancellationToken = default)
     {
-        var requestUri = $"/api/categories?pageNumber={pageNumber}&pageSize={pageSize}&sortBy={sortBy}";
+        string requestUri = $"/api/categories?pageNumber={pageNumber}&pageSize={pageSize}&sortBy={sortBy}";
 
         if (searchQuery is not null)
         {
@@ -64,7 +64,7 @@ internal sealed class CategoryApiClient(IHttpClientFactory httpClientFactory)
         }
 
         HttpResponseMessage response = await _httpClient
-            .GetAsync($"api/categories/{searchQuery}", cancellationToken);
+            .GetAsync($"api/categories/search?searchQuery={searchQuery}", cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {
