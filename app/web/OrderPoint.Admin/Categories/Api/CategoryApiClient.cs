@@ -10,6 +10,8 @@ namespace OrderPoint.Admin.Categories.Api;
 
 internal sealed class CategoryApiClient(IHttpClientFactory httpClientFactory)
 {
+    private const int DefaultSearchResultsCount = 5;
+
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient("OrderPointApi");
 
     internal async Task<PaginationDto<CategoryDto>> GetCategoriesAsync(
@@ -20,11 +22,11 @@ internal sealed class CategoryApiClient(IHttpClientFactory httpClientFactory)
         CategoryStatus? status = null,
         CancellationToken cancellationToken = default)
     {
-        string requestUri = $"/api/categories?pageNumber={pageNumber}&pageSize={pageSize}&sortBy={sortBy}";
+        string requestUri = $"api/categories?pageNumber={pageNumber}&pageSize={pageSize}&sortBy={sortBy}";
 
-        if (searchQuery is not null)
+        if (!string.IsNullOrWhiteSpace(searchQuery))
         {
-            requestUri += $"&searchQuery={searchQuery}";
+            requestUri += $"&searchQuery={Uri.EscapeDataString(searchQuery)}";
         }
 
         if (status is not null)
@@ -48,23 +50,22 @@ internal sealed class CategoryApiClient(IHttpClientFactory httpClientFactory)
 
     internal async Task<IReadOnlyList<CategoryDto>> SearchCategoriesAsync(
         string? searchQuery,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(searchQuery))
         {
             PaginationDto<CategoryDto> result = await GetCategoriesAsync(
                 1,
-                5,
+                DefaultSearchResultsCount,
                 nameof(CategorySortBy.NameAsc),
-                null,
-                null,
-                cancellationToken);
+                cancellationToken: cancellationToken);
 
             return result.Items;
         }
 
-        HttpResponseMessage response = await _httpClient
-            .GetAsync($"api/categories/search?searchQuery={searchQuery}", cancellationToken);
+        HttpResponseMessage response = await _httpClient.GetAsync(
+            $"api/categories/search?searchQuery={Uri.EscapeDataString(searchQuery)}",
+            cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {

@@ -13,7 +13,7 @@ internal static class CategorySorting
             CategorySortBy.NameAsc or CategorySortBy.NameDesc => "Name",
             CategorySortBy.ItemsCountAsc or CategorySortBy.ItemsCountDesc => "Items",
             CategorySortBy.CreatedAtUtcAsc or CategorySortBy.CreatedAtUtcDesc => "Created",
-            _ => throw new ArgumentOutOfRangeException()
+            _ => throw new ArgumentOutOfRangeException(nameof(sortBy), sortBy, null)
         };
     }
 
@@ -27,7 +27,7 @@ internal static class CategorySorting
                 => Icons.Material.Filled.ArrowUpward,
             CategorySortBy.NameDesc or CategorySortBy.ItemsCountDesc or CategorySortBy.CreatedAtUtcDesc
                 => Icons.Material.Filled.ArrowDownward,
-            _ => throw new ArgumentOutOfRangeException()
+            _ => throw new ArgumentOutOfRangeException(nameof(sortBy), sortBy, null)
         };
     }
 }

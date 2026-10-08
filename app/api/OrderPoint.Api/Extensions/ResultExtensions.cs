@@ -16,7 +16,7 @@ internal static class ResultExtensions
             statusCode: GetStatusCode(result.Error.Type),
             title: GetTitle(result.Error.Type),
             type: result.Error.Type.ToString(),
-            detail: "Known error occured while processing your request",
+            detail: "Known error occurred while processing your request",
             extensions: new Dictionary<string, object?>
             {
                 { "errors", new[] { result.Error } }

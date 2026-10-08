@@ -113,7 +113,7 @@
         </MudTd>
 
         <MudTd DataLabel="Items">
-            @context.ItemsCount items
+            @context.ItemsCount @(context.ItemsCount == 1 ? "item" : "items")
         </MudTd>
 
         <MudTd DataLabel="Created">

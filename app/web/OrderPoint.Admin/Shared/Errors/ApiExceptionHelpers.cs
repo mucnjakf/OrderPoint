@@ -1,4 +1,6 @@
-﻿namespace OrderPoint.Admin.Shared.Errors;
+﻿using System.Text.Json;
+
+namespace OrderPoint.Admin.Shared.Errors;
 
 internal static class ApiExceptionHelpers
 {
@@ -6,8 +8,7 @@ internal static class ApiExceptionHelpers
         HttpResponseMessage response,
         CancellationToken cancellationToken)
     {
-        var problemDetails = await response.Content
-            .ReadFromJsonAsync<ProblemDetails>(cancellationToken);
+        ProblemDetails? problemDetails = await ReadProblemDetailsAsync(response, cancellationToken);
 
         if (problemDetails is not null)
         {
@@ -21,5 +22,19 @@ internal static class ApiExceptionHelpers
             $"An error occurred: {response.ReasonPhrase}",
             [],
             string.Empty));
+    }
+
+    private static async Task<ProblemDetails?> ReadProblemDetailsAsync(
+        HttpResponseMessage response,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            return await response.Content.ReadFromJsonAsync<ProblemDetails>(cancellationToken);
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
     }
 }

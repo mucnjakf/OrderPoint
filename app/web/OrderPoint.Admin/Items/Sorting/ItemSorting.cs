@@ -13,7 +13,7 @@ internal static class ItemSorting
             ItemSortBy.NameAsc or ItemSortBy.NameDesc => "Name",
             ItemSortBy.PriceAsc or ItemSortBy.PriceDesc => "Price",
             ItemSortBy.CreatedAtUtcAsc or ItemSortBy.CreatedAtUtcDesc => "Created",
-            _ => throw new ArgumentOutOfRangeException()
+            _ => throw new ArgumentOutOfRangeException(nameof(sortBy), sortBy, null)
         };
     }
 
@@ -27,7 +27,7 @@ internal static class ItemSorting
                 => Icons.Material.Filled.ArrowUpward,
             ItemSortBy.NameDesc or ItemSortBy.PriceDesc or ItemSortBy.CreatedAtUtcDesc
                 => Icons.Material.Filled.ArrowDownward,
-            _ => throw new ArgumentOutOfRangeException()
+            _ => throw new ArgumentOutOfRangeException(nameof(sortBy), sortBy, null)
         };
     }
 }

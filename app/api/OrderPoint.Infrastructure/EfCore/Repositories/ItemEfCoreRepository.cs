@@ -16,6 +16,7 @@ internal sealed class ItemEfCoreRepository(ApplicationDbContext dbContext) : IIt
         CancellationToken cancellationToken = default)
     {
         IQueryable<Item> query = dbContext.Items
+            .AsNoTracking()
             .Include(item => item.Category);
 
         query = SearchItems(query, searchQuery);

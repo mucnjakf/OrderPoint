@@ -17,6 +17,7 @@ internal sealed class CategoryEfCoreRepository(ApplicationDbContext dbContext) :
         CancellationToken cancellationToken = default)
     {
         IQueryable<Category> query = dbContext.Categories
+            .AsNoTracking()
             .Include(category => category.Items);
 
         query = SearchCategories(query, searchQuery);
@@ -38,6 +39,7 @@ internal sealed class CategoryEfCoreRepository(ApplicationDbContext dbContext) :
         CancellationToken cancellationToken = default)
     {
         IQueryable<Category> query = dbContext.Categories
+            .AsNoTracking()
             .Include(category => category.Items);
 
         query = SearchCategories(query, searchQuery);

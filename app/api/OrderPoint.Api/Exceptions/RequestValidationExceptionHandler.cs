@@ -35,7 +35,7 @@ internal sealed class RequestValidationExceptionHandler(IProblemDetailsService p
                 Status = StatusCodes.Status400BadRequest,
                 Title = "Bad Request",
                 Type = nameof(ErrorType.RequestValidation),
-                Detail = "Request validation error occured while processing your request",
+                Detail = "Request validation error occurred while processing your request",
                 Extensions = new Dictionary<string, object?>
                 {
                     { "errors", errors }

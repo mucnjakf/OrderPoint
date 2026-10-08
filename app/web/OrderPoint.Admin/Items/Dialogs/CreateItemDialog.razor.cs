@@ -47,6 +47,11 @@ public sealed partial class CreateItemDialog
         return categories ?? [];
     }
 
+    private void OnSelectedCategoryChanged()
+    {
+        Request.CategoryId = SelectedCategory?.Id ?? Guid.Empty;
+    }
+
     private void OnInvalidSubmit()
     {
         IsFormSubmitted = true;

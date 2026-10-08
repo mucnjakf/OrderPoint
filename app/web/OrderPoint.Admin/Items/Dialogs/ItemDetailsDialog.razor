@@ -54,7 +54,7 @@
 
                     <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
                                     Label="Updated"
-                                    Text="@(Item.UpdatedAtUtc.HasValue ? Item.UpdatedAtUtc.Value.ToString("G") : "-")"/>
+                                    Text="@(Item.UpdatedAtUtc?.ToString("G") ?? "-")"/>
                 </MudPaper>
             </MudItem>
         </MudGrid>

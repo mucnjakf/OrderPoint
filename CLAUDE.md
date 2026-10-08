@@ -87,18 +87,18 @@ dotnet ef migrations add <Name> \
 
 - `ApplicationDbContext` implements `IUnitOfWork`; `DbSet`s are `internal`.
 - One `IEntityTypeConfiguration<T>` per entity in `EfCore/EntityTypeConfiguration/` (table name, `ValueGeneratedNever()` on Id, `HasMaxLength`, `IsRequired`, relationships). Each property is configured as `builder` / `.Property(...)` / `...` on separate lines. Relationships use `.OnDelete(DeleteBehavior.Restrict)`. Picked up by assembly scan.
-- Repositories are `internal sealed class <Entity>EfCoreRepository(ApplicationDbContext dbContext)` in `EfCore/Repositories/`, using private static `Search<X>`/`Filter<X>`/`Sort<X>` helpers for paginated queries (search is case-insensitive via `ToLower().Contains`; default sort `CreatedAtUtc` descending; unpaged search sorts by name ascending). `GetAsync` includes the navigations its DTO needs. Register in `InfrastructureModule`.
+- Repositories are `internal sealed class <Entity>EfCoreRepository(ApplicationDbContext dbContext)` in `EfCore/Repositories/`, using private static `Search<X>`/`Filter<X>`/`Sort<X>` helpers for paginated queries (search is case-insensitive via `ToLower().Contains`; default sort `CreatedAtUtc` descending; unpaged search sorts by name ascending). Read-only queries (`GetPaginatedAsync`, `SearchAsync`) use `AsNoTracking()`; `GetAsync` stays tracked because commands update and delete what it returns, and it includes the navigations its DTO needs. Register in `InfrastructureModule`.
 
 ### API (`OrderPoint.Api`)
 
 - One endpoint per file in `Endpoints/<Feature>/<Action><Entity>Endpoint.cs`: `internal sealed class XEndpoint : IEndpoint`, discovered automatically.
 - Request and response records (`internal sealed record`) are declared in the same file above the endpoint; the FluentValidation validator is a nested `internal sealed class XRequestValidator` inside the endpoint class (auto-registered). Every endpoint that takes a body or query string has a request record and a validator.
-- Query-string input is bound into a request record with `[AsParameters] XRequest request`; its constructor parameters carry `[FromQuery]` (see `GetItemsEndpoint`, `SearchCategoriesEndpoint`). Paged lists validate `PageNumber > 0` and `PageSize` between 1 and 100; required search text uses `NotEmpty()` (also rejects whitespace). Route values (`{id:guid}`) stay as `[FromRoute]` parameters.
+- Query-string input is bound into a request record with `[AsParameters] XRequest request`; its constructor parameters carry `[FromQuery]` (see `GetItemsEndpoint`, `SearchCategoriesEndpoint`). Paged lists validate `PageNumber > 0` and `PageSize` between 1 and 100; search text is at most 100 characters (a search that cannot match returns no results, not an error); required search text uses `NotEmpty()` (also rejects whitespace). Route values (`{id:guid}`) stay as `[FromRoute]` parameters.
 - `MapEndpoint` uses route `api/<plural>`, `api/<plural>/{id:guid}`, `api/<plural>/search?searchQuery=...` (unpaged lookup), plus `.WithName("<Action><Entity>")` and `.WithTags("<Plural>")`.
 - `private static async Task<Results<..., ProblemHttpResult>> HandleAsync(...)` with explicit `[FromBody]`/`[FromRoute]`/`[FromQuery]`/`[FromServices]` attributes and a `CancellationToken`.
 - Flow: `await validator.ValidateAndThrowAsync(request, ct)` → build command/query → `sender.Send` → `result.IsSuccess ? TypedResults.X(...) : result.ToProblemDetails()`.
 - Responses wrap payloads as `{ Data }`: create → `CreatedAtRoute` to the Get route, update/delete → `NoContent`, get → `Ok`.
-- Errors are ProblemDetails with an `errors` array; status mapping lives in `Extensions/ResultExtensions.cs`. Exception handlers in `Exceptions/` (registered in `Program.cs`, in order): `RequestValidationExceptionHandler` (FluentValidation → 400), `BadHttpRequestExceptionHandler` (missing/unparsable parameters or malformed JSON → 400; `ThrowOnBadRequest` is on so this applies in every environment), `GlobalExceptionHandler` (→ 500).
+- Errors are ProblemDetails with an `errors` array; status mapping lives in `Extensions/ResultExtensions.cs`. Exception handlers in `Exceptions/` (registered in `Program.cs`, in order): `RequestValidationExceptionHandler` (FluentValidation → 400), `BadHttpRequestExceptionHandler` (missing/unparsable parameters or malformed JSON → 400; `ThrowOnBadRequest` is on so this applies in every environment), `GlobalExceptionHandler` (logs the exception, → 500 without exposing exception details). In .NET 10 the exception middleware does not log exceptions a handler reports as handled, so any new handler for unexpected errors must log itself.
 
 ### Validation is duplicated on purpose; keep it in sync
 
@@ -120,7 +120,7 @@ Field rules live in several places. Changing one means changing all of them:
 
 ### API calls
 
-- API clients are `internal sealed`, use `httpClientFactory.CreateClient("OrderPointApi")`, call `ApiExceptionHelpers.ThrowApiExceptionAsync` on non-success, and unwrap `.Data` from the response record. Register them in `Program.cs`.
+- API clients are `internal sealed`, use relative URIs without a leading slash (`api/items?...`), escape user text with `Uri.EscapeDataString`, use `httpClientFactory.CreateClient("OrderPointApi")`, call `ApiExceptionHelpers.ThrowApiExceptionAsync` on non-success, and unwrap `.Data` from the response record. Register them in `Program.cs`.
 - Pages and dialogs call API clients **only** through `ApiService`, which owns all API error handling and snackbars:
   - Queries: `T? result = await ApiService.ExecuteAsync(() => client.GetXAsync(...))`. Returns `null` on failure (error snackbar already shown), so fall back: `Items = Pagination?.Items ?? [];`.
   - Mutations: `bool isSuccess = await ApiService.ExecuteAsync(() => client.CreateXAsync(request), $"Item {request.Name} created successfully");`. Shows the success snackbar on success and the error snackbar on failure; reload the list only when `isSuccess`.

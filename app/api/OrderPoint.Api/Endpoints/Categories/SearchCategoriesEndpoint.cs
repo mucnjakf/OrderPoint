@@ -47,7 +47,7 @@ internal sealed class SearchCategoriesEndpoint : IEndpoint
         {
             RuleFor(request => request.SearchQuery)
                 .NotEmpty().WithMessage("SearchQuery is required")
-                .MaximumLength(30).WithMessage("SearchQuery must be at most 30 characters");
+                .MaximumLength(100).WithMessage("SearchQuery must be at most 100 characters");
         }
     }
 }

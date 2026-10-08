@@ -64,7 +64,7 @@ internal sealed class GetCategoriesEndpoint : IEndpoint
                 .InclusiveBetween(1, 100).WithMessage("PageSize must be between 1 and 100");
 
             RuleFor(request => request.SearchQuery)
-                .MaximumLength(30).WithMessage("SearchQuery must be at most 30 characters");
+                .MaximumLength(100).WithMessage("SearchQuery must be at most 100 characters");
 
             RuleFor(request => request.Status)
                 .IsInEnum().WithMessage("Status is invalid");

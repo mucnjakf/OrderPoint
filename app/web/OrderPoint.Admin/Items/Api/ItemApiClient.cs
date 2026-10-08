@@ -18,11 +18,11 @@ internal sealed class ItemApiClient(IHttpClientFactory httpClientFactory)
         Guid? categoryId = null,
         CancellationToken cancellationToken = default)
     {
-        string requestUri = $"/api/items?pageNumber={pageNumber}&pageSize={pageSize}&sortBy={sortBy}";
+        string requestUri = $"api/items?pageNumber={pageNumber}&pageSize={pageSize}&sortBy={sortBy}";
 
-        if (searchQuery is not null)
+        if (!string.IsNullOrWhiteSpace(searchQuery))
         {
-            requestUri += $"&searchQuery={searchQuery}";
+            requestUri += $"&searchQuery={Uri.EscapeDataString(searchQuery)}";
         }
 
         if (categoryId is not null)

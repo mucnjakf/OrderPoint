@@ -48,7 +48,7 @@ public sealed partial class UpdateItemDialog
             category.Description,
             category.Status,
             category.ImageUrl,
-            0,
+            ItemsCount: 0,
             category.CreatedAtUtc,
             category.UpdatedAtUtc);
     }
@@ -62,6 +62,11 @@ public sealed partial class UpdateItemDialog
             cancellationToken);
 
         return categories ?? [];
+    }
+
+    private void OnSelectedCategoryChanged()
+    {
+        Request.CategoryId = SelectedCategory?.Id ?? Guid.Empty;
     }
 
     private void OnInvalidSubmit()

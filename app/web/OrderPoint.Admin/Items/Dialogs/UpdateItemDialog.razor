@@ -49,7 +49,7 @@
 
                     <MudStack Row="true">
                         <MudAutocomplete @bind-Value="@SelectedCategory"
-                                         @bind-Value:after="@(() => Request.CategoryId = SelectedCategory?.Id ?? Guid.Empty)"
+                                         @bind-Value:after="@OnSelectedCategoryChanged"
                                          T="CategoryDto"
                                          SearchFunc="@OnCategorySearchAsync"
                                          Variant="Variant.Outlined"
