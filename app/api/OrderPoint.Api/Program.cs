@@ -27,10 +27,12 @@ builder.Services.AddCors(options =>
 // Error handling
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<RequestValidationExceptionHandler>();
+builder.Services.AddExceptionHandler<BadHttpRequestExceptionHandler>();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 // Minimal API
 builder.Services.AddEndpoints(Assembly.GetExecutingAssembly());
+builder.Services.Configure<RouteHandlerOptions>(options => options.ThrowOnBadRequest = true);
 
 // FluentValidation
 builder.Services.AddValidatorsFromAssemblyContaining<Program>(includeInternalTypes: true);
