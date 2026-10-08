@@ -34,20 +34,20 @@
                     <TextDisplayRow Icon="@Icons.Material.Filled.Person"
                                     Label="Bartender"
                                     ShowDivider="true">
-                        @if (Order.Bartender is null)
-                        {
-                            <MudText Typo="Typo.body1">
-                                Unassigned
-                            </MudText>
-                        }
-                        else
-                        {
-                            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                                <BartenderAvatar FirstName="@Order.Bartender.FirstName"
-                                                 LastName="@Order.Bartender.LastName"
-                                                 ImageUrl="@Order.Bartender.ImageUrl"
-                                                 Size="Size.Small"/>
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                            <BartenderAvatar FirstName="@Order.Bartender?.FirstName"
+                                             LastName="@Order.Bartender?.LastName"
+                                             ImageUrl="@Order.Bartender?.ImageUrl"
+                                             Size="Size.Small"/>
 
+                            @if (Order.Bartender is null)
+                            {
+                                <MudText Typo="Typo.body1">
+                                    Unassigned
+                                </MudText>
+                            }
+                            else
+                            {
                                 <MudStack Spacing="0">
                                     <MudText Typo="Typo.body1">
                                         @Order.Bartender.FirstName @Order.Bartender.LastName
@@ -57,8 +57,8 @@
                                         @Order.Bartender.Email
                                     </MudText>
                                 </MudStack>
-                            </MudStack>
-                        }
+                            }
+                        </MudStack>
                     </TextDisplayRow>
 
                     <TextDisplayRow Icon="@Icons.Material.Filled.Notes"
