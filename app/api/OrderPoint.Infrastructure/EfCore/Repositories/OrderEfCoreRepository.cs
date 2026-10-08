@@ -14,16 +14,18 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
         string? searchQuery = null,
         OrderStatus? status = null,
         Guid? itemId = null,
+        Guid? bartenderId = null,
         OrderSortBy? sortBy = null,
         CancellationToken cancellationToken = default)
     {
         IQueryable<Order> query = dbContext.Orders
             .AsNoTracking()
+            .Include(order => order.Bartender)
             .Include(order => order.Items)
             .ThenInclude(orderItem => orderItem.Item);
 
         query = SearchOrders(query, searchQuery);
-        query = FilterOrders(query, status, itemId);
+        query = FilterOrders(query, status, itemId, bartenderId);
         query = SortOrders(query, sortBy);
 
         int totalCount = await query.CountAsync(cancellationToken);
@@ -38,6 +40,7 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
 
     public async Task<Order?> GetAsync(Guid id, CancellationToken cancellationToken = default)
         => await dbContext.Orders
+            .Include(order => order.Bartender)
             .Include(order => order.Items)
             .ThenInclude(orderItem => orderItem.Item)
             .SingleOrDefaultAsync(order => order.Id == id, cancellationToken);
@@ -45,12 +48,12 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
     public async Task CreateAsync(Order order, CancellationToken cancellationToken = default)
         => await dbContext.Orders.AddAsync(order, cancellationToken);
 
-    public async Task<int> CountAsync(Guid itemId, CancellationToken cancellationToken = default)
+    public async Task<int> CountByItemAsync(Guid itemId, CancellationToken cancellationToken = default)
         => await dbContext.Orders.CountAsync(
             order => order.Items.Any(orderItem => orderItem.ItemId == itemId),
             cancellationToken);
 
-    public async Task<IReadOnlyDictionary<Guid, int>> CountAsync(
+    public async Task<IReadOnlyDictionary<Guid, int>> CountByItemsAsync(
         IReadOnlyList<Guid> itemIds,
         CancellationToken cancellationToken = default)
         => await dbContext.Orders
@@ -60,10 +63,28 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
             .Select(group => new { ItemId = group.Key, OrdersCount = group.Count() })
             .ToDictionaryAsync(itemCount => itemCount.ItemId, itemCount => itemCount.OrdersCount, cancellationToken);
 
-    public async Task<bool> ExistsAsync(Guid itemId, CancellationToken cancellationToken = default)
+    public async Task<bool> ExistsByItemAsync(Guid itemId, CancellationToken cancellationToken = default)
         => await dbContext.Orders.AnyAsync(
             order => order.Items.Any(orderItem => orderItem.ItemId == itemId),
             cancellationToken);
+
+    public async Task<int> CountByBartenderAsync(Guid bartenderId, CancellationToken cancellationToken = default)
+        => await dbContext.Orders.CountAsync(order => order.BartenderId == bartenderId, cancellationToken);
+
+    public async Task<IReadOnlyDictionary<Guid, int>> CountByBartendersAsync(
+        IReadOnlyList<Guid> bartenderIds,
+        CancellationToken cancellationToken = default)
+        => await dbContext.Orders
+            .Where(order => order.BartenderId.HasValue && bartenderIds.Contains(order.BartenderId.Value))
+            .GroupBy(order => order.BartenderId!.Value)
+            .Select(group => new { BartenderId = group.Key, OrdersCount = group.Count() })
+            .ToDictionaryAsync(
+                bartenderCount => bartenderCount.BartenderId,
+                bartenderCount => bartenderCount.OrdersCount,
+                cancellationToken);
+
+    public async Task<bool> ExistsByBartenderAsync(Guid bartenderId, CancellationToken cancellationToken = default)
+        => await dbContext.Orders.AnyAsync(order => order.BartenderId == bartenderId, cancellationToken);
 
     private static IQueryable<Order> SearchOrders(IQueryable<Order> query, string? searchQuery)
     {
@@ -79,7 +100,11 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
         return query;
     }
 
-    private static IQueryable<Order> FilterOrders(IQueryable<Order> query, OrderStatus? status, Guid? itemId)
+    private static IQueryable<Order> FilterOrders(
+        IQueryable<Order> query,
+        OrderStatus? status,
+        Guid? itemId,
+        Guid? bartenderId)
     {
         if (status.HasValue)
         {
@@ -89,6 +114,11 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
         if (itemId.HasValue)
         {
             query = query.Where(order => order.Items.Any(orderItem => orderItem.ItemId == itemId.Value));
+        }
+
+        if (bartenderId.HasValue)
+        {
+            query = query.Where(order => order.BartenderId == bartenderId.Value);
         }
 
         return query;

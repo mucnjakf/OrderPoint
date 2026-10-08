@@ -32,7 +32,7 @@ internal sealed class GetItemsQueryHandler(IItemRepository itemRepository, IOrde
                 query.SortBy,
                 cancellationToken);
 
-        IReadOnlyDictionary<Guid, int> ordersCounts = await orderRepository.CountAsync(
+        IReadOnlyDictionary<Guid, int> ordersCounts = await orderRepository.CountByItemsAsync(
             items.Select(item => item.Id).ToList(),
             cancellationToken);
 

@@ -21,6 +21,10 @@ public sealed class Bartender : Entity
 
     public string? ImageUrl { get; private set; }
 
+    private readonly List<Order> _orders = [];
+
+    public IReadOnlyList<Order> Orders => _orders.AsReadOnly();
+
     private Bartender(
         Guid id,
         string firstName,

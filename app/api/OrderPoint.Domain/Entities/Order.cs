@@ -23,6 +23,10 @@ public sealed class Order : Entity
 
     public DateTimeOffset? CompletedAtUtc { get; private set; }
 
+    public Guid? BartenderId { get; private set; }
+
+    public Bartender? Bartender { get; private set; }
+
     private readonly List<OrderItem> _items = [];
 
     public IReadOnlyList<OrderItem> Items => _items.AsReadOnly();

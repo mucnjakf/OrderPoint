@@ -64,13 +64,28 @@
         }
 
         <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mt-2">
-            <MudText Typo="Typo.caption">
-                @context.CreatedAtUtc.ToString("G") · @context.CreatedAtUtc.ToRelativeTime()
-            </MudText>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                <BartenderAvatar FirstName="@context.Bartender?.FirstName"
+                                 LastName="@context.Bartender?.LastName"
+                                 ImageUrl="@context.Bartender?.ImageUrl"
+                                 Size="Size.Small"/>
 
-            <MudText Typo="Typo.h6">
-                @context.Total.ToString("C", CultureInfo.CurrentCulture)
-            </MudText>
+                <MudText Typo="Typo.body2">
+                    @(context.Bartender is null
+                        ? "Unassigned"
+                        : $"{context.Bartender.FirstName} {context.Bartender.LastName}")
+                </MudText>
+            </MudStack>
+
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudText Typo="Typo.caption">
+                    @context.CreatedAtUtc.ToString("G") · @context.CreatedAtUtc.ToRelativeTime()
+                </MudText>
+
+                <MudText Typo="Typo.h6">
+                    @context.Total.ToString("C", CultureInfo.CurrentCulture)
+                </MudText>
+            </MudStack>
         </MudStack>
     </ItemTemplate>
 </DataTimeline>

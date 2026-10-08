@@ -31,6 +31,8 @@
                OnCreateClick="@ShowCreateBartenderDialogAsync"
                OnUpdateClick="@ShowUpdateBartenderDialogAsync"
                OnDeleteClick="@ShowDeleteBartenderDialogAsync"
+               DeleteButtonDisabled="@(bartender => bartender.OrdersCount > 0)"
+               DeleteButtonDisabledTooltipText="Bartender has orders"
                EmptyStateIcon="@Icons.Material.Filled.People"
                EmptyStateText="No bartenders found">
 
@@ -82,6 +84,15 @@
             </MudChip>
         </MudStack>
     </HeaderTemplate>
+
+    <ActionsTemplate>
+        <MudTooltip Text="Orders">
+            <MudIconButton Icon="@Icons.Material.Filled.Receipt"
+                           Color="Color.Info"
+                           Size="Size.Small"
+                           OnClick="@(() => ShowBartenderOrdersDialogAsync(context))"/>
+        </MudTooltip>
+    </ActionsTemplate>
 
     <DetailsTemplate>
         <TextDisplayRow Icon="@Icons.Material.Filled.Numbers"

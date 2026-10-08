@@ -97,6 +97,9 @@ public sealed partial class DataAccordion<TItem>
     public RenderFragment<TItem> DetailsTemplate { get; set; }
 
     [Parameter]
+    public RenderFragment<TItem>? ActionsTemplate { get; set; }
+
+    [Parameter]
     [EditorRequired]
     public string EmptyStateIcon { get; set; }
 

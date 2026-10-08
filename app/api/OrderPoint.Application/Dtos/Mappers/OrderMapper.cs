@@ -12,6 +12,7 @@ internal static class OrderMapper
         order.Status,
         order.Items.Sum(orderItem => orderItem.Quantity * orderItem.UnitPrice),
         order.Items.Select(orderItem => orderItem.ToOrderItemDto()).ToList(),
+        order.Bartender?.ToOrderBartenderDto(),
         order.AcceptedAtUtc,
         order.DeclinedAtUtc,
         order.ActivatedAtUtc,
@@ -26,4 +27,11 @@ internal static class OrderMapper
         orderItem.Item.ImageUrl,
         orderItem.Quantity,
         orderItem.UnitPrice);
+
+    internal static OrderBartenderDto ToOrderBartenderDto(this Bartender bartender) => new(
+        bartender.Id,
+        bartender.FirstName,
+        bartender.LastName,
+        bartender.Email,
+        bartender.ImageUrl);
 }

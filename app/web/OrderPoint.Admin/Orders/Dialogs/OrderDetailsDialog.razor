@@ -31,6 +31,36 @@
                                     Color="@Order.Status.GetColor()"
                                     ShowDivider="true"/>
 
+                    <TextDisplayRow Icon="@Icons.Material.Filled.Person"
+                                    Label="Bartender"
+                                    ShowDivider="true">
+                        @if (Order.Bartender is null)
+                        {
+                            <MudText Typo="Typo.body1">
+                                Unassigned
+                            </MudText>
+                        }
+                        else
+                        {
+                            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                <BartenderAvatar FirstName="@Order.Bartender.FirstName"
+                                                 LastName="@Order.Bartender.LastName"
+                                                 ImageUrl="@Order.Bartender.ImageUrl"
+                                                 Size="Size.Small"/>
+
+                                <MudStack Spacing="0">
+                                    <MudText Typo="Typo.body1">
+                                        @Order.Bartender.FirstName @Order.Bartender.LastName
+                                    </MudText>
+
+                                    <MudText Typo="Typo.caption">
+                                        @Order.Bartender.Email
+                                    </MudText>
+                                </MudStack>
+                            </MudStack>
+                        }
+                    </TextDisplayRow>
+
                     <TextDisplayRow Icon="@Icons.Material.Filled.Notes"
                                     Label="Note"
                                     Text="@(Order.Note ?? "-")"/>

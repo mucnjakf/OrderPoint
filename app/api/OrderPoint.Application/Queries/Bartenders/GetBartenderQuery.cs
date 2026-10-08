@@ -10,7 +10,9 @@ namespace OrderPoint.Application.Queries.Bartenders;
 
 public sealed record GetBartenderQuery(Guid Id) : IQuery<BartenderDto>;
 
-internal sealed class GetBartenderQueryHandler(IBartenderRepository bartenderRepository)
+internal sealed class GetBartenderQueryHandler(
+    IBartenderRepository bartenderRepository,
+    IOrderRepository orderRepository)
     : IQueryHandler<GetBartenderQuery, BartenderDto>
 {
     public async Task<Result<BartenderDto>> Handle(GetBartenderQuery query, CancellationToken cancellationToken)
@@ -22,7 +24,9 @@ internal sealed class GetBartenderQueryHandler(IBartenderRepository bartenderRep
             return Result.Failure<BartenderDto>(BartenderErrors.NotFound);
         }
 
-        var bartenderDto = bartender.ToBartenderDto();
+        int ordersCount = await orderRepository.CountByBartenderAsync(bartender.Id, cancellationToken);
+
+        var bartenderDto = bartender.ToBartenderDto(ordersCount);
 
         return Result.Success(bartenderDto);
     }

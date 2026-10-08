@@ -17,7 +17,9 @@ public sealed record GetBartendersQuery(
     BartenderSortBy? SortBy)
     : IQuery<PaginationDto<BartenderDto>>;
 
-internal sealed class GetBartendersQueryHandler(IBartenderRepository bartenderRepository)
+internal sealed class GetBartendersQueryHandler(
+    IBartenderRepository bartenderRepository,
+    IOrderRepository orderRepository)
     : IQueryHandler<GetBartendersQuery, PaginationDto<BartenderDto>>
 {
     public async Task<Result<PaginationDto<BartenderDto>>> Handle(
@@ -33,8 +35,13 @@ internal sealed class GetBartendersQueryHandler(IBartenderRepository bartenderRe
                 query.SortBy,
                 cancellationToken);
 
+        IReadOnlyDictionary<Guid, int> ordersCounts = await orderRepository.CountByBartendersAsync(
+            bartenders.Select(bartender => bartender.Id).ToList(),
+            cancellationToken);
+
         return new PaginationDto<BartenderDto>(
-            bartenders.Select(bartender => bartender.ToBartenderDto()).ToList(),
+            bartenders.Select(bartender => bartender.ToBartenderDto(ordersCounts.GetValueOrDefault(bartender.Id)))
+                .ToList(),
             query.PageNumber,
             query.PageSize,
             totalCount);

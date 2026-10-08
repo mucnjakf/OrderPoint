@@ -12,6 +12,7 @@ public interface IOrderRepository
         string? searchQuery = null,
         OrderStatus? status = null,
         Guid? itemId = null,
+        Guid? bartenderId = null,
         OrderSortBy? sortBy = null,
         CancellationToken cancellationToken = default);
 
@@ -19,11 +20,19 @@ public interface IOrderRepository
 
     Task CreateAsync(Order order, CancellationToken cancellationToken = default);
 
-    Task<int> CountAsync(Guid itemId, CancellationToken cancellationToken = default);
+    Task<int> CountByItemAsync(Guid itemId, CancellationToken cancellationToken = default);
 
-    Task<IReadOnlyDictionary<Guid, int>> CountAsync(
+    Task<IReadOnlyDictionary<Guid, int>> CountByItemsAsync(
         IReadOnlyList<Guid> itemIds,
         CancellationToken cancellationToken = default);
 
-    Task<bool> ExistsAsync(Guid itemId, CancellationToken cancellationToken = default);
+    Task<bool> ExistsByItemAsync(Guid itemId, CancellationToken cancellationToken = default);
+
+    Task<int> CountByBartenderAsync(Guid bartenderId, CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyDictionary<Guid, int>> CountByBartendersAsync(
+        IReadOnlyList<Guid> bartenderIds,
+        CancellationToken cancellationToken = default);
+
+    Task<bool> ExistsByBartenderAsync(Guid bartenderId, CancellationToken cancellationToken = default);
 }

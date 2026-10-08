@@ -1,0 +1,91 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.Receipt"/>
+            <MudText Typo="Typo.h6">Bartender orders</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudPaper Class="pa-5 mb-5">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <BartenderAvatar FirstName="@Bartender.FirstName"
+                                 LastName="@Bartender.LastName"
+                                 ImageUrl="@Bartender.ImageUrl"
+                                 Size="Size.Large"/>
+
+                <MudStack Spacing="0">
+                    <MudText Typo="Typo.h6">
+                        @Bartender.FirstName @Bartender.LastName
+                    </MudText>
+
+                    <MudText Typo="Typo.body2">
+                        @Bartender.Email
+                    </MudText>
+                </MudStack>
+            </MudStack>
+        </MudPaper>
+
+        <DataList TItem="OrderDto"
+                  Items="@Orders"
+                  Pagination="@Pagination"
+                  IsLoading="@IsLoading"
+                  SelectedSortBy="@SelectedSortBy"
+                  SelectedSortByChanged="@(value => SelectedSortBy = value)"
+                  SearchLabel="Search by table or number"
+                  SearchQuery="@SearchQuery"
+                  SearchQueryChanged="@(value => SearchQuery = value)"
+                  OnSearchChanged="@OnSearchChangedAsync"
+                  OnSortChanged="@OnSortChangedAsync"
+                  OnPageChanged="@OnPageChangedAsync"
+                  SortByOptions="@Enum.GetNames(typeof(OrderSortBy))"
+                  GetSortByLabel="@OrderSorting.GetSortByLabel"
+                  GetSortByIcon="@OrderSorting.GetSortByIcon"
+                  EmptyStateIcon="@Icons.Material.Filled.Receipt"
+                  EmptyStateText="No orders found">
+
+            <RowTemplate>
+                <MudStack Row="true" Class="d-flex justify-space-between">
+                    <MudStack Spacing="1">
+                        <MudText Typo="Typo.body1">
+                            #@context.Number · @context.TableCode
+                        </MudText>
+
+                        <MudText Typo="Typo.caption">
+                            @context.CreatedAtUtc.ToString("G")
+                        </MudText>
+                    </MudStack>
+
+                    <MudStack Row="true" Class="align-center">
+                        <MudChip T="string"
+                                 Variant="Variant.Text"
+                                 Color="@context.Status.GetColor()">
+                            @context.Status.ToString()
+                        </MudChip>
+
+                        <MudDivider Vertical="true"/>
+
+                        <MudStack Spacing="1" Class="align-end">
+                            <MudText Typo="Typo.body1">
+                                @context.Total.ToString("C", CultureInfo.CurrentCulture)
+                            </MudText>
+
+                            <MudText Typo="Typo.caption">
+                                @GetItemsCountText(context)
+                            </MudText>
+                        </MudStack>
+                    </MudStack>
+                </MudStack>
+            </RowTemplate>
+        </DataList>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Variant="Variant.Filled"
+                   OnClick="@Close"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Close">
+            Close
+        </MudButton>
+    </DialogActions>
+</MudDialog>

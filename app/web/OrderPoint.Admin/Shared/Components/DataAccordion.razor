@@ -65,6 +65,11 @@
                     </div>
 
                     <MudStack Row="true" Justify="Justify.FlexEnd" Class="mt-3">
+                        @if (ActionsTemplate is not null)
+                        {
+                            @ActionsTemplate(item)
+                        }
+
                         @if (OnDetailsClick.HasDelegate)
                         {
                             <MudTooltip Text="Details">

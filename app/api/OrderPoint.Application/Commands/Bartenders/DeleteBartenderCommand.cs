@@ -11,6 +11,7 @@ public sealed record DeleteBartenderCommand(Guid Id) : ICommand;
 
 internal sealed class DeleteBartenderCommandHandler(
     IBartenderRepository bartenderRepository,
+    IOrderRepository orderRepository,
     IImageStorage imageStorage,
     IUnitOfWork unitOfWork)
     : ICommandHandler<DeleteBartenderCommand>
@@ -22,6 +23,13 @@ internal sealed class DeleteBartenderCommandHandler(
         if (bartender is null)
         {
             return Result.Failure(BartenderErrors.NotFound);
+        }
+
+        bool hasOrders = await orderRepository.ExistsByBartenderAsync(bartender.Id, cancellationToken);
+
+        if (hasOrders)
+        {
+            return Result.Failure(BartenderErrors.CannotDeleteBartenderWithOrders);
         }
 
         bartenderRepository.Delete(bartender);

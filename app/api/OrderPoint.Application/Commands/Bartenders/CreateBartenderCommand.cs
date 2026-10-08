@@ -46,7 +46,7 @@ internal sealed class CreateBartenderCommandHandler(IBartenderRepository bartend
         await bartenderRepository.CreateAsync(result.Value, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        var bartenderDto = result.Value.ToBartenderDto();
+        var bartenderDto = result.Value.ToBartenderDto(ordersCount: 0);
 
         return Result.Success(bartenderDto);
     }

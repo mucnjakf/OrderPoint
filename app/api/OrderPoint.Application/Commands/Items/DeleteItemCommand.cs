@@ -25,7 +25,7 @@ internal sealed class DeleteItemCommandHandler(
             return Result.Failure(ItemErrors.NotFound);
         }
 
-        bool hasOrders = await orderRepository.ExistsAsync(item.Id, cancellationToken);
+        bool hasOrders = await orderRepository.ExistsByItemAsync(item.Id, cancellationToken);
 
         if (hasOrders)
         {

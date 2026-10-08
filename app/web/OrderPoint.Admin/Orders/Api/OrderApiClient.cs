@@ -17,6 +17,7 @@ internal sealed class OrderApiClient(IHttpClientFactory httpClientFactory)
         string? searchQuery = null,
         OrderStatus? status = null,
         Guid? itemId = null,
+        Guid? bartenderId = null,
         CancellationToken cancellationToken = default)
     {
         string requestUri = $"api/orders?pageNumber={pageNumber}&pageSize={pageSize}&sortBy={sortBy}";
@@ -34,6 +35,11 @@ internal sealed class OrderApiClient(IHttpClientFactory httpClientFactory)
         if (itemId is not null)
         {
             requestUri += $"&itemId={itemId}";
+        }
+
+        if (bartenderId is not null)
+        {
+            requestUri += $"&bartenderId={bartenderId}";
         }
 
         HttpResponseMessage response = await _httpClient.GetAsync(requestUri, cancellationToken);

@@ -18,6 +18,7 @@ internal sealed record GetOrdersRequest(
     [FromQuery] string? SearchQuery,
     [FromQuery] OrderStatus? Status,
     [FromQuery] Guid? ItemId,
+    [FromQuery] Guid? BartenderId,
     [FromQuery] OrderSortBy? SortBy);
 
 internal sealed record GetOrdersResponse(PaginationDto<OrderDto> Data);
@@ -46,6 +47,7 @@ internal sealed class GetOrdersEndpoint : IEndpoint
             request.SearchQuery,
             request.Status,
             request.ItemId,
+            request.BartenderId,
             request.SortBy);
 
         Result<PaginationDto<OrderDto>> result = await sender.Send(query, cancellationToken);

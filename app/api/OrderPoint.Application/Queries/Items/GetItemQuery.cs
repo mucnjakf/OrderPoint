@@ -22,7 +22,7 @@ internal sealed class GetItemQueryHandler(IItemRepository itemRepository, IOrder
             return Result.Failure<ItemDto>(ItemErrors.NotFound);
         }
 
-        int ordersCount = await orderRepository.CountAsync(item.Id, cancellationToken);
+        int ordersCount = await orderRepository.CountByItemAsync(item.Id, cancellationToken);
 
         var itemDto = item.ToItemDto(ordersCount);
 

@@ -262,6 +262,23 @@ public sealed partial class BartendersPage
         }
     }
 
+    private async Task ShowBartenderOrdersDialogAsync(BartenderDto bartender)
+    {
+        var parameters = new DialogParameters<BartenderOrdersDialog>
+        {
+            { dialog => dialog.Bartender, bartender }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true
+        };
+
+        await DialogService
+            .ShowAsync<BartenderOrdersDialog>(string.Empty, parameters, options);
+    }
+
     private async Task ShowDeleteBartenderDialogAsync(BartenderDto bartender)
     {
         string bartenderName = $"{bartender.FirstName} {bartender.LastName}";

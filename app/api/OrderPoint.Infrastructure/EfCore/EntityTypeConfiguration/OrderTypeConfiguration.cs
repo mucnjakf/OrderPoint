@@ -63,5 +63,12 @@ internal sealed class OrderTypeConfiguration : IEntityTypeConfiguration<Order>
         builder
             .Property(order => order.UpdatedAtUtc)
             .IsRequired(false);
+
+        builder
+            .HasOne(order => order.Bartender)
+            .WithMany(bartender => bartender.Orders)
+            .HasForeignKey(order => order.BartenderId)
+            .OnDelete(DeleteBehavior.Restrict)
+            .IsRequired(false);
     }
 }

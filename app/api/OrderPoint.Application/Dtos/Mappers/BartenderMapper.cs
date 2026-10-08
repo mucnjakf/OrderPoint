@@ -4,7 +4,7 @@ namespace OrderPoint.Application.Dtos.Mappers;
 
 internal static class BartenderMapper
 {
-    internal static BartenderDto ToBartenderDto(this Bartender bartender) => new(
+    internal static BartenderDto ToBartenderDto(this Bartender bartender, int ordersCount) => new(
         bartender.Id,
         bartender.FirstName,
         bartender.LastName,
@@ -13,6 +13,7 @@ internal static class BartenderMapper
         bartender.Status,
         bartender.Notes,
         bartender.ImageUrl,
+        ordersCount,
         bartender.CreatedAtUtc,
         bartender.UpdatedAtUtc);
 }

@@ -27,4 +27,8 @@ public static class BartenderErrors
     public static readonly Error EmailAlreadyExists = Error.Conflict(
         "Bartender.EmailAlreadyExists",
         "Bartender with this email already exists");
+
+    public static readonly Error CannotDeleteBartenderWithOrders = Error.Conflict(
+        "Bartender.CannotDeleteBartenderWithOrders",
+        "Cannot delete bartender with orders");
 }

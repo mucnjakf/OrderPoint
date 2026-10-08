@@ -13,8 +13,10 @@ public sealed partial class TextDisplayRow
     public string Label { get; set; }
 
     [Parameter]
-    [EditorRequired]
-    public string Text { get; set; }
+    public string? Text { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
 
     [Parameter]
     public bool ShowDivider { get; set; }

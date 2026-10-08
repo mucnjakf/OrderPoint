@@ -11,5 +11,6 @@ public sealed record BartenderDto(
     BartenderStatus Status,
     string? Notes,
     string? ImageUrl,
+    int OrdersCount,
     DateTimeOffset CreatedAtUtc,
     DateTimeOffset? UpdatedAtUtc);
