@@ -7,5 +7,7 @@ internal enum ItemSortBy
     PriceAsc,
     PriceDesc,
     CreatedAtUtcAsc,
-    CreatedAtUtcDesc
+    CreatedAtUtcDesc,
+    UpdatedAtUtcAsc,
+    UpdatedAtUtcDesc
 }

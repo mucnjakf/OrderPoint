@@ -131,6 +131,8 @@ Field rules live in several places. Changing one means changing all of them:
 
 ### Pages and dialogs
 
+- **Sections load independently and in parallel.** Each section of a page (a table, a highlight card, a list in a dialog) has its own `Get<Section>Async` method and its own `IsLoading<Section>` flag; the method ends with `StateHasChanged()` so the section renders as soon as its data arrives. `OnInitializedAsync` and post-mutation reloads start independent sections with `await Task.WhenAll(...)`; never await independent loads one after another. Only dependent steps stay sequential (mutation → reload).
+- Highlight sections above a list (Categories: top 5 by item count; Items: spotlight cards for newest, last edited, highest and lowest price) reuse the list endpoint with `pageSize`/`sortBy`; they do not get their own endpoints.
 - List pages: `private const int PageSize` (10 for `DataTable`, 9 for the 3-column `DataGrid`, 5 for `DataList` in a dialog); one `Get<Plural>Async(int pageNumber)` that reads the current search/sort/filter properties; search, sort and filter changes call it with `pageNumber: 1`; `OnPageChangedAsync(int pageNumber)`.
 - Sorting is passed as the sort enum's name: `SelectedSortBy = nameof(ItemSortBy.CreatedAtUtcDesc)`; labels and icons come from `<Feature>Sorting.GetSortByLabel/GetSortByIcon`.
 - Create/update/delete/details are MudBlazor dialogs opened from the list page (not separate pages). Dialogs return the request object via `MudDialogInstance.Close(DialogResult.Ok(Request))`; the page performs the API call and reloads. Use early returns: `if (dialogResult.Canceled) { return; }`.

@@ -82,6 +82,12 @@ internal sealed class ItemEfCoreRepository(ApplicationDbContext dbContext) : IIt
             ItemSortBy.PriceDesc => query.OrderByDescending(item => item.Price),
             ItemSortBy.CreatedAtUtcAsc => query.OrderBy(item => item.CreatedAtUtc),
             ItemSortBy.CreatedAtUtcDesc => query.OrderByDescending(item => item.CreatedAtUtc),
+            ItemSortBy.UpdatedAtUtcAsc => query
+                .OrderBy(item => item.UpdatedAtUtc == null)
+                .ThenBy(item => item.UpdatedAtUtc),
+            ItemSortBy.UpdatedAtUtcDesc => query
+                .OrderBy(item => item.UpdatedAtUtc == null)
+                .ThenByDescending(item => item.UpdatedAtUtc),
             _ => query.OrderByDescending(item => item.CreatedAtUtc)
         };
 

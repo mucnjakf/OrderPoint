@@ -52,8 +52,9 @@ public sealed partial class CategoriesPage
 
     protected override async Task OnInitializedAsync()
     {
-        await GetTopCategoriesAsync();
-        await GetCategoriesAsync(pageNumber: 1);
+        await Task.WhenAll(
+            GetTopCategoriesAsync(),
+            GetCategoriesAsync(pageNumber: 1));
     }
 
     private async Task GetTopCategoriesAsync()
@@ -69,6 +70,8 @@ public sealed partial class CategoriesPage
         TopCategories = pagination?.Items ?? [];
 
         IsLoadingTop = false;
+
+        StateHasChanged();
     }
 
     private async Task GetCategoriesAsync(int pageNumber)
@@ -85,6 +88,8 @@ public sealed partial class CategoriesPage
         Categories = Pagination?.Items ?? [];
 
         IsLoading = false;
+
+        StateHasChanged();
     }
 
     private async Task OnSearchChangedAsync()
@@ -109,8 +114,9 @@ public sealed partial class CategoriesPage
 
     private async Task OnCategoryItemsChangedAsync()
     {
-        await GetTopCategoriesAsync();
-        await GetCategoriesAsync(Pagination?.PageNumber ?? 1);
+        await Task.WhenAll(
+            GetTopCategoriesAsync(),
+            GetCategoriesAsync(Pagination?.PageNumber ?? 1));
     }
 
     private async Task ShowCreateCategoryDialogAsync()
@@ -139,8 +145,9 @@ public sealed partial class CategoriesPage
 
         if (isSuccess)
         {
-            await GetTopCategoriesAsync();
-            await GetCategoriesAsync(pageNumber: 1);
+            await Task.WhenAll(
+                GetTopCategoriesAsync(),
+                GetCategoriesAsync(pageNumber: 1));
         }
     }
 
@@ -193,8 +200,9 @@ public sealed partial class CategoriesPage
 
         if (isSuccess)
         {
-            await GetTopCategoriesAsync();
-            await GetCategoriesAsync(pageNumber: 1);
+            await Task.WhenAll(
+                GetTopCategoriesAsync(),
+                GetCategoriesAsync(pageNumber: 1));
         }
     }
 
@@ -227,8 +235,9 @@ public sealed partial class CategoriesPage
 
         if (isSuccess)
         {
-            await GetTopCategoriesAsync();
-            await GetCategoriesAsync(pageNumber: 1);
+            await Task.WhenAll(
+                GetTopCategoriesAsync(),
+                GetCategoriesAsync(pageNumber: 1));
         }
     }
 }

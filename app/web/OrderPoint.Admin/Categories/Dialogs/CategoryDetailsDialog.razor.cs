@@ -62,6 +62,8 @@ public sealed partial class CategoryDetailsDialog
         Items = Pagination?.Items ?? [];
 
         IsLoading = false;
+
+        StateHasChanged();
     }
 
     private async Task OnSearchChangedAsync()
@@ -110,8 +112,9 @@ public sealed partial class CategoryDetailsDialog
 
         if (isSuccess)
         {
-            await GetItemsAsync(pageNumber: 1);
-            await OnItemsChanged.InvokeAsync();
+            await Task.WhenAll(
+                GetItemsAsync(pageNumber: 1),
+                OnItemsChanged.InvokeAsync());
         }
     }
 
@@ -144,8 +147,9 @@ public sealed partial class CategoryDetailsDialog
 
         if (isSuccess)
         {
-            await GetItemsAsync(pageNumber: 1);
-            await OnItemsChanged.InvokeAsync();
+            await Task.WhenAll(
+                GetItemsAsync(pageNumber: 1),
+                OnItemsChanged.InvokeAsync());
         }
     }
 
