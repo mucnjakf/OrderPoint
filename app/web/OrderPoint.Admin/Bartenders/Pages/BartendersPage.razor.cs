@@ -279,6 +279,38 @@ public sealed partial class BartendersPage
             .ShowAsync<BartenderOrdersDialog>(string.Empty, parameters, options);
     }
 
+    private async Task ShowResetBartenderPasswordDialogAsync(BartenderDto bartender)
+    {
+        string bartenderName = $"{bartender.FirstName} {bartender.LastName}";
+
+        var parameters = new DialogParameters<ResetBartenderPasswordDialog>
+        {
+            { dialog => dialog.BartenderName, bartenderName }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true
+        };
+
+        IDialogReference dialogReference = await DialogService
+            .ShowAsync<ResetBartenderPasswordDialog>(string.Empty, parameters, options);
+
+        DialogResult dialogResult = (await dialogReference.Result)!;
+
+        if (dialogResult.Canceled)
+        {
+            return;
+        }
+
+        var request = (dialogResult.Data as ResetBartenderPasswordRequest)!;
+
+        await ApiService.ExecuteAsync(
+            () => BartenderApiClient.ResetBartenderPasswordAsync(bartender.Id, request),
+            $"Password of {bartenderName} reset successfully");
+    }
+
     private async Task ShowDeleteBartenderDialogAsync(BartenderDto bartender)
     {
         string bartenderName = $"{bartender.FirstName} {bartender.LastName}";

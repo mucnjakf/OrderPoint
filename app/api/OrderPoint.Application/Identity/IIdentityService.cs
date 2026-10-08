@@ -28,6 +28,8 @@ public interface IIdentityService
         string newPassword,
         CancellationToken cancellationToken = default);
 
+    Task<Result> ResetPasswordAsync(Guid id, string newPassword, CancellationToken cancellationToken = default);
+
     Task<Result> UpdateEmailAsync(Guid id, string email, CancellationToken cancellationToken = default);
 
     Task DeleteUserAsync(Guid id, CancellationToken cancellationToken = default);

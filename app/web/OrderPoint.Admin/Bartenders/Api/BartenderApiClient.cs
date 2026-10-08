@@ -97,6 +97,20 @@ internal sealed class BartenderApiClient(IHttpClientFactory httpClientFactory)
         }
     }
 
+    internal async Task ResetBartenderPasswordAsync(
+        Guid id,
+        ResetBartenderPasswordRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await _httpClient
+            .PutAsJsonAsync($"api/bartenders/{id}/password", request, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+    }
+
     internal async Task UpdateBartenderImageAsync(
         Guid id,
         ImageFileDto image,

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,8 +46,7 @@ public static class InfrastructureModule
         // Identity's user-only store works on a plain DbContext and only touches the users table for what we use.
         // Without auto-save, user changes are persisted together with everything else by IUnitOfWork.
         services.AddScoped<IUserStore<ApplicationUser>>(serviceProvider =>
-            new UserOnlyStore<ApplicationUser, ApplicationDbContext, Guid>(
-                serviceProvider.GetRequiredService<ApplicationDbContext>())
+            new ApplicationUserStore(serviceProvider.GetRequiredService<ApplicationDbContext>())
             {
                 AutoSaveChanges = false
             });

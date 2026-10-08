@@ -112,6 +112,36 @@ internal sealed class IdentityService(UserManager<ApplicationUser> userManager) 
         return Result.Success();
     }
 
+    public async Task<Result> ResetPasswordAsync(
+        Guid id,
+        string newPassword,
+        CancellationToken cancellationToken = default)
+    {
+        ApplicationUser? user = await userManager.FindByIdAsync(id.ToString());
+
+        if (user is null)
+        {
+            return Result.Failure(AuthErrors.UserNotFound);
+        }
+
+        // Remove + add sets a password without the old one and without reset tokens; nothing is saved on failure
+        await userManager.RemovePasswordAsync(user);
+
+        IdentityResult result = await userManager.AddPasswordAsync(user, newPassword);
+
+        if (!result.Succeeded)
+        {
+            return Result.Failure(ToError(result));
+        }
+
+        // The new password is temporary again, and a lockout from forgotten-password attempts is lifted
+        user.MustChangePassword = true;
+        await userManager.SetLockoutEndDateAsync(user, null);
+        await userManager.ResetAccessFailedCountAsync(user);
+
+        return Result.Success();
+    }
+
     public async Task<Result> UpdateEmailAsync(Guid id, string email, CancellationToken cancellationToken = default)
     {
         ApplicationUser? user = await userManager.FindByIdAsync(id.ToString());

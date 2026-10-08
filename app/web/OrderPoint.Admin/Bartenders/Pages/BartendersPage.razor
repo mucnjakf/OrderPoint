@@ -92,6 +92,13 @@
                            Size="Size.Small"
                            OnClick="@(() => ShowBartenderOrdersDialogAsync(context))"/>
         </MudTooltip>
+
+        <MudTooltip Text="Reset password">
+            <MudIconButton Icon="@Icons.Material.Filled.LockReset"
+                           Color="Color.Warning"
+                           Size="Size.Small"
+                           OnClick="@(() => ShowResetBartenderPasswordDialogAsync(context))"/>
+        </MudTooltip>
     </ActionsTemplate>
 
     <DetailsTemplate>
