@@ -30,7 +30,6 @@ public sealed class Item : Entity
         string description,
         double portion,
         decimal price,
-        string? imageUrl,
         Guid categoryId,
         DateTimeOffset createdAtUtc) : base(id, createdAtUtc)
     {
@@ -38,7 +37,6 @@ public sealed class Item : Entity
         Description = description;
         Portion = portion;
         Price = price;
-        ImageUrl = imageUrl;
         CategoryId = categoryId;
     }
 
@@ -47,7 +45,6 @@ public sealed class Item : Entity
         string description,
         double portion,
         decimal price,
-        string? imageUrl,
         Guid categoryId)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -76,7 +73,6 @@ public sealed class Item : Entity
             description,
             portion,
             price,
-            imageUrl,
             categoryId,
             DateTimeOffset.UtcNow);
 
@@ -88,7 +84,6 @@ public sealed class Item : Entity
         string description,
         double portion,
         decimal price,
-        string? imageUrl,
         Guid categoryId)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -115,11 +110,31 @@ public sealed class Item : Entity
         Description = description;
         Portion = portion;
         Price = price;
-        ImageUrl = imageUrl;
         CategoryId = categoryId;
 
         UpdatedAtUtc = DateTimeOffset.UtcNow;
 
         return Result.Success();
+    }
+
+    public Result SetImage(string imageUrl)
+    {
+        if (string.IsNullOrWhiteSpace(imageUrl))
+        {
+            return Result.Failure(ItemErrors.ImageUrlIsRequired);
+        }
+
+        ImageUrl = imageUrl;
+
+        UpdatedAtUtc = DateTimeOffset.UtcNow;
+
+        return Result.Success();
+    }
+
+    public void RemoveImage()
+    {
+        ImageUrl = null;
+
+        UpdatedAtUtc = DateTimeOffset.UtcNow;
     }
 }

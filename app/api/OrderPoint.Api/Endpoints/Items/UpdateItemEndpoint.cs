@@ -14,7 +14,6 @@ internal sealed record UpdateItemRequest(
     string Description,
     double Portion,
     decimal Price,
-    string? ImageUrl,
     Guid CategoryId);
 
 internal sealed class UpdateItemEndpoint : IEndpoint
@@ -42,7 +41,6 @@ internal sealed class UpdateItemEndpoint : IEndpoint
             request.Description,
             request.Portion,
             request.Price,
-            request.ImageUrl,
             request.CategoryId);
 
         Result result = await sender.Send(command, cancellationToken);
@@ -69,9 +67,6 @@ internal sealed class UpdateItemEndpoint : IEndpoint
 
             RuleFor(request => request.Price)
                 .GreaterThan(0).WithMessage("Price must be positive");
-
-            RuleFor(request => request.ImageUrl)
-                .MaximumLength(200).WithMessage("ImageUrl must be at most 200 characters");
         }
     }
 }

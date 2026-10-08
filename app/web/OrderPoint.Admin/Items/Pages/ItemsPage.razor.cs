@@ -17,6 +17,10 @@ public sealed partial class ItemsPage
 {
     private const int PageSize = 9;
 
+    private const int CardImageHeight = 160;
+
+    private const int PlaceholderImageSize = 100;
+
     [Inject]
     private IDialogService DialogService { get; set; } = null!;
 
@@ -211,7 +215,7 @@ public sealed partial class ItemsPage
         var request = (dialogResult.Data as CreateItemRequest)!;
 
         bool isSuccess = await ApiService.ExecuteAsync(
-            () => ItemApiClient.CreateItemAsync(request),
+            () => CreateItemWithImageAsync(request),
             $"Item {request.Name} created successfully");
 
         if (isSuccess)
@@ -220,6 +224,18 @@ public sealed partial class ItemsPage
                 GetSpotlightAsync(),
                 GetItemsAsync(pageNumber: 1));
         }
+    }
+
+    private async Task CreateItemWithImageAsync(CreateItemRequest request)
+    {
+        ItemDto item = await ItemApiClient.CreateItemAsync(request);
+
+        if (request.Image is null)
+        {
+            return;
+        }
+
+        await ItemApiClient.UpdateItemImageAsync(item.Id, request.Image);
     }
 
     private async Task ShowItemDetailsDialogAsync(ItemDto item)
@@ -265,7 +281,7 @@ public sealed partial class ItemsPage
         var request = (dialogResult.Data as UpdateItemRequest)!;
 
         bool isSuccess = await ApiService.ExecuteAsync(
-            () => ItemApiClient.UpdateItemAsync(item.Id, request),
+            () => UpdateItemWithImageAsync(item.Id, request),
             $"Item {request.Name} edited successfully");
 
         if (isSuccess)
@@ -273,6 +289,22 @@ public sealed partial class ItemsPage
             await Task.WhenAll(
                 GetSpotlightAsync(),
                 GetItemsAsync(pageNumber: 1));
+        }
+    }
+
+    private async Task UpdateItemWithImageAsync(Guid id, UpdateItemRequest request)
+    {
+        await ItemApiClient.UpdateItemAsync(id, request);
+
+        if (request.Image is not null)
+        {
+            await ItemApiClient.UpdateItemImageAsync(id, request.Image);
+            return;
+        }
+
+        if (request.RemoveImage)
+        {
+            await ItemApiClient.DeleteItemImageAsync(id);
         }
     }
 

@@ -7,16 +7,15 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Commands.Items;
 
-public sealed record DeleteItemCommand(Guid Id) : ICommand;
+public sealed record DeleteItemImageCommand(Guid Id) : ICommand;
 
-internal sealed class DeleteItemCommandHandler(
+internal sealed class DeleteItemImageCommandHandler(
     IItemRepository itemRepository,
-    IOrderRepository orderRepository,
     IImageStorage imageStorage,
     IUnitOfWork unitOfWork)
-    : ICommandHandler<DeleteItemCommand>
+    : ICommandHandler<DeleteItemImageCommand>
 {
-    public async Task<Result> Handle(DeleteItemCommand command, CancellationToken cancellationToken)
+    public async Task<Result> Handle(DeleteItemImageCommand command, CancellationToken cancellationToken)
     {
         Item? item = await itemRepository.GetAsync(command.Id, cancellationToken);
 
@@ -25,20 +24,17 @@ internal sealed class DeleteItemCommandHandler(
             return Result.Failure(ItemErrors.NotFound);
         }
 
-        bool hasOrders = await orderRepository.ExistsAsync(item.Id, cancellationToken);
-
-        if (hasOrders)
+        if (item.ImageUrl is null)
         {
-            return Result.Failure(ItemErrors.CannotDeleteItemWithOrders);
+            return Result.Success();
         }
 
-        itemRepository.Delete(item);
+        string imageUrl = item.ImageUrl;
+
+        item.RemoveImage();
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        if (item.ImageUrl is not null)
-        {
-            await imageStorage.DeleteAsync(item.ImageUrl, cancellationToken);
-        }
+        await imageStorage.DeleteAsync(imageUrl, cancellationToken);
 
         return Result.Success();
     }

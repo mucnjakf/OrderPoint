@@ -13,7 +13,6 @@ public sealed record CreateItemCommand(
     string Description,
     double Portion,
     decimal Price,
-    string? ImageUrl,
     Guid CategoryId)
     : ICommand<ItemDto>;
 
@@ -37,7 +36,6 @@ internal sealed class CreateItemCommandHandler(
             command.Description,
             command.Portion,
             command.Price,
-            command.ImageUrl,
             command.CategoryId);
 
         if (result.IsFailure)

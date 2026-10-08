@@ -85,10 +85,21 @@
     </FilterContent>
 
     <RowTemplate>
-        <MudCardMedia Image="@(context.ImageUrl ?? "images/image-placeholder.svg")"
-                      Style="@(context.ImageUrl is null ? "width: 100px; height: 100px; align-self: center; margin: 30px 0;" : string.Empty)"/>
+        @if (context.ImageUrl is not null)
+        {
+            <MudCardMedia Image="@context.ImageUrl" Height="@CardImageHeight"/>
+        }
+        else
+        {
+            <div class="d-flex align-center justify-center" style="@($"height: {CardImageHeight}px;")">
+                <MudImage Src="images/image-placeholder.svg"
+                          Alt="Item image"
+                          Width="@PlaceholderImageSize"
+                          Height="@PlaceholderImageSize"/>
+            </div>
+        }
 
-        <MudCardContent Class="pt-0">
+        <MudCardContent>
             <MudStack Row="true" Class="mb-2 d-flex justify-space-between">
                 <MudText Typo="Typo.h6">
                     @context.Name

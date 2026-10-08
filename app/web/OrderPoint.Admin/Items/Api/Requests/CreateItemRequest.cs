@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
+using OrderPoint.Admin.Shared.Dtos;
 
 namespace OrderPoint.Admin.Items.Api.Requests;
 
@@ -20,8 +22,8 @@ internal sealed class CreateItemRequest
     [Range(0.01, double.MaxValue, ErrorMessage = "Price must be positive.")]
     public decimal Price { get; set; }
 
-    [StringLength(200, ErrorMessage = "Image URL must be at most 200 characters.")]
-    public string? ImageUrl { get; set; }
+    [JsonIgnore]
+    public ImageFileDto? Image { get; set; }
 
     [Range(
         typeof(Guid),

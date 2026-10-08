@@ -12,7 +12,6 @@ public sealed record UpdateItemCommand(
     string Description,
     double Portion,
     decimal Price,
-    string? ImageUrl,
     Guid CategoryId) : ICommand;
 
 internal sealed class UpdateItemCommandHandler(
@@ -42,7 +41,6 @@ internal sealed class UpdateItemCommandHandler(
             command.Description,
             command.Portion,
             command.Price,
-            command.ImageUrl,
             command.CategoryId);
 
         if (result.IsFailure)

@@ -1,4 +1,5 @@
-﻿using OrderPoint.Admin.Items.Api.Requests;
+﻿using System.Net.Http.Headers;
+using OrderPoint.Admin.Items.Api.Requests;
 using OrderPoint.Admin.Items.Api.Responses;
 using OrderPoint.Admin.Items.Dtos;
 using OrderPoint.Admin.Shared.Dtos;
@@ -8,6 +9,8 @@ namespace OrderPoint.Admin.Items.Api;
 
 internal sealed class ItemApiClient(IHttpClientFactory httpClientFactory)
 {
+    private const string ImageFormFieldName = "image";
+
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient("OrderPointApi");
 
     internal async Task<PaginationDto<ItemDto>> GetItemsAsync(
@@ -60,7 +63,7 @@ internal sealed class ItemApiClient(IHttpClientFactory httpClientFactory)
         return result.Data;
     }
 
-    internal async Task CreateItemAsync(
+    internal async Task<ItemDto> CreateItemAsync(
         CreateItemRequest request,
         CancellationToken cancellationToken = default)
     {
@@ -71,6 +74,12 @@ internal sealed class ItemApiClient(IHttpClientFactory httpClientFactory)
         {
             await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
         }
+
+        CreateItemResponse result =
+            await response.Content.ReadFromJsonAsync<CreateItemResponse>(cancellationToken)
+            ?? throw new InvalidOperationException($"Unable to parse {nameof(CreateItemResponse)}");
+
+        return result.Data;
     }
 
     internal async Task UpdateItemAsync(
@@ -80,6 +89,37 @@ internal sealed class ItemApiClient(IHttpClientFactory httpClientFactory)
     {
         HttpResponseMessage response = await _httpClient
             .PutAsJsonAsync($"api/items/{id}", request, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+    }
+
+    internal async Task UpdateItemImageAsync(
+        Guid id,
+        ImageFileDto image,
+        CancellationToken cancellationToken = default)
+    {
+        using var fileContent = new ByteArrayContent(image.Content);
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue(image.ContentType);
+
+        using var formContent = new MultipartFormDataContent();
+        formContent.Add(fileContent, ImageFormFieldName, image.FileName);
+
+        HttpResponseMessage response = await _httpClient
+            .PutAsync($"api/items/{id}/image", formContent, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+    }
+
+    internal async Task DeleteItemImageAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await _httpClient
+            .DeleteAsync($"api/items/{id}/image", cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {

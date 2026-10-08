@@ -24,6 +24,10 @@ public static class ItemErrors
         "Item.PriceMustBePositive",
         "Item price must be positive");
 
+    internal static readonly Error ImageUrlIsRequired = Error.Validation(
+        "Item.ImageUrlIsRequired",
+        "Item image URL is required");
+
     public static readonly Error CannotDeleteItemWithOrders = Error.Conflict(
         "Item.CannotDeleteItemWithOrders",
         "Cannot delete item with orders");

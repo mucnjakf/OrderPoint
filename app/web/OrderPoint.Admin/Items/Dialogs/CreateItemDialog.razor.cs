@@ -3,6 +3,8 @@ using MudBlazor;
 using OrderPoint.Admin.Categories.Api;
 using OrderPoint.Admin.Categories.Dtos;
 using OrderPoint.Admin.Items.Api.Requests;
+using OrderPoint.Admin.Shared.Dtos;
+using OrderPoint.Admin.Shared.Extensions;
 using OrderPoint.Admin.Shared.Services;
 
 namespace OrderPoint.Admin.Items.Dialogs;
@@ -27,6 +29,8 @@ public sealed partial class CreateItemDialog
 
     private bool IsFormSubmitted { get; set; }
 
+    private string? PreviewImageUrl => Request.Image?.ToDataUrl();
+
     protected override void OnInitialized()
     {
         if (Category is not null)
@@ -50,6 +54,16 @@ public sealed partial class CreateItemDialog
     private void OnSelectedCategoryChanged()
     {
         Request.CategoryId = SelectedCategory?.Id ?? Guid.Empty;
+    }
+
+    private void OnImageSelected(ImageFileDto image)
+    {
+        Request.Image = image;
+    }
+
+    private void OnImageRemoved()
+    {
+        Request.Image = null;
     }
 
     private void OnInvalidSubmit()

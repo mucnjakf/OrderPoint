@@ -47,38 +47,39 @@
                                          Immediate="true"/>
                     </MudStack>
 
-                    <MudStack Row="true">
-                        <MudAutocomplete @bind-Value="@SelectedCategory"
-                                         @bind-Value:after="@OnSelectedCategoryChanged"
-                                         T="CategoryDto"
-                                         SearchFunc="@OnCategorySearchAsync"
-                                         Variant="Variant.Outlined"
-                                         HelperText="The category this item belongs to."
-                                         Label="Category"
-                                         Clearable="true"
-                                         ShowProgressIndicator="true"
-                                         ToStringFunc="@(category => category?.Name)"
-                                         Error="@(IsFormSubmitted && Request.CategoryId == Guid.Empty)"
-                                         ErrorText="Category is required."
-                                         Disabled="@(Category is not null)">
-                            <NoItemsTemplate>
-                                <MudText Align="Align.Center" Class="px-3 py-1">
-                                    No categories found
-                                </MudText>
-                            </NoItemsTemplate>
-                        </MudAutocomplete>
+                    <MudGrid Spacing="3">
+                        <MudItem xs="6">
+                            <MudAutocomplete @bind-Value="@SelectedCategory"
+                                             @bind-Value:after="@OnSelectedCategoryChanged"
+                                             T="CategoryDto"
+                                             SearchFunc="@OnCategorySearchAsync"
+                                             Variant="Variant.Outlined"
+                                             HelperText="The category this item belongs to."
+                                             Label="Category"
+                                             Clearable="true"
+                                             ShowProgressIndicator="true"
+                                             ToStringFunc="@(category => category?.Name)"
+                                             Error="@(IsFormSubmitted && Request.CategoryId == Guid.Empty)"
+                                             ErrorText="Category is required."
+                                             Disabled="@(Category is not null)">
+                                <NoItemsTemplate>
+                                    <MudText Align="Align.Center" Class="px-3 py-1">
+                                        No categories found
+                                    </MudText>
+                                </NoItemsTemplate>
+                            </MudAutocomplete>
+                        </MudItem>
 
-                        <MudTextField Label="Image URL"
-                                      Disabled="true"
-                                      @bind-Value="@Request.ImageUrl"
-                                      For="@(() => Request.ImageUrl)"
-                                      HelperText="Image upload will be available in a future update."
-                                      Variant="Variant.Outlined"/>
-                    </MudStack>
+                        <MudItem xs="6">
+                            <ImageUploadField FileName="@Request.Image?.FileName"
+                                              OnImageSelected="@OnImageSelected"
+                                              OnImageRemoved="@OnImageRemoved"/>
+                        </MudItem>
+                    </MudGrid>
                 </MudItem>
 
                 <MudItem md="4">
-                    <ItemPreviewPaper ImageUrl="@Request.ImageUrl"
+                    <ItemPreviewPaper ImageUrl="@PreviewImageUrl"
                                       Name="@Request.Name"
                                       Description="@Request.Description"
                                       Price="@Request.Price"

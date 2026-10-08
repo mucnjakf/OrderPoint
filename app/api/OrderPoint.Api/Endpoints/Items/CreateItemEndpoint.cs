@@ -15,7 +15,6 @@ internal sealed record CreateItemRequest(
     string Description,
     double Portion,
     decimal Price,
-    string? ImageUrl,
     Guid CategoryId);
 
 internal sealed record CreateItemResponse(ItemDto Data);
@@ -43,7 +42,6 @@ internal sealed class CreateItemEndpoint : IEndpoint
             request.Description,
             request.Portion,
             request.Price,
-            request.ImageUrl,
             request.CategoryId);
 
         Result<ItemDto> result = await sender.Send(command, cancellationToken);
@@ -73,9 +71,6 @@ internal sealed class CreateItemEndpoint : IEndpoint
 
             RuleFor(request => request.Price)
                 .GreaterThan(0).WithMessage("Price must be positive");
-
-            RuleFor(request => request.ImageUrl)
-                .MaximumLength(200).WithMessage("ImageUrl must be at most 200 characters");
         }
     }
 }

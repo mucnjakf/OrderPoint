@@ -4,12 +4,16 @@ using OrderPoint.Admin.Categories.Api;
 using OrderPoint.Admin.Categories.Dtos;
 using OrderPoint.Admin.Items.Api.Requests;
 using OrderPoint.Admin.Items.Dtos;
+using OrderPoint.Admin.Shared.Dtos;
+using OrderPoint.Admin.Shared.Extensions;
 using OrderPoint.Admin.Shared.Services;
 
 namespace OrderPoint.Admin.Items.Dialogs;
 
 public sealed partial class UpdateItemDialog
 {
+    private const string CurrentImageFileName = "Current image";
+
     [Parameter]
     public ItemDto Item { get; set; } = null!;
 
@@ -28,6 +32,14 @@ public sealed partial class UpdateItemDialog
 
     private bool IsFormSubmitted { get; set; }
 
+    private string? PreviewImageUrl => Request.Image is not null
+        ? Request.Image.ToDataUrl()
+        : Request.RemoveImage ? null : Item.ImageUrl;
+
+    private string? ImageFileName => Request.Image is not null
+        ? Request.Image.FileName
+        : PreviewImageUrl is null ? null : CurrentImageFileName;
+
     protected override void OnInitialized()
     {
         Request = new UpdateItemRequest
@@ -36,7 +48,6 @@ public sealed partial class UpdateItemDialog
             Description = Item.Description,
             Portion = Item.Portion,
             Price = Item.Price,
-            ImageUrl = Item.ImageUrl,
             CategoryId = Item.Category.Id
         };
 
@@ -67,6 +78,18 @@ public sealed partial class UpdateItemDialog
     private void OnSelectedCategoryChanged()
     {
         Request.CategoryId = SelectedCategory?.Id ?? Guid.Empty;
+    }
+
+    private void OnImageSelected(ImageFileDto image)
+    {
+        Request.Image = image;
+        Request.RemoveImage = false;
+    }
+
+    private void OnImageRemoved()
+    {
+        Request.Image = null;
+        Request.RemoveImage = true;
     }
 
     private void OnInvalidSubmit()

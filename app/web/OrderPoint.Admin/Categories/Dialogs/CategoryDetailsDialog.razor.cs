@@ -107,7 +107,7 @@ public sealed partial class CategoryDetailsDialog
         var request = (dialogResult.Data as CreateItemRequest)!;
 
         bool isSuccess = await ApiService.ExecuteAsync(
-            () => ItemApiClient.CreateItemAsync(request),
+            () => CreateItemWithImageAsync(request),
             $"Item {request.Name} created successfully");
 
         if (isSuccess)
@@ -116,6 +116,18 @@ public sealed partial class CategoryDetailsDialog
                 GetItemsAsync(pageNumber: 1),
                 OnItemsChanged.InvokeAsync());
         }
+    }
+
+    private async Task CreateItemWithImageAsync(CreateItemRequest request)
+    {
+        ItemDto item = await ItemApiClient.CreateItemAsync(request);
+
+        if (request.Image is null)
+        {
+            return;
+        }
+
+        await ItemApiClient.UpdateItemImageAsync(item.Id, request.Image);
     }
 
     private async Task ShowDeleteItemDialogAsync(Guid id, string itemName)

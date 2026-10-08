@@ -73,8 +73,11 @@
             <RowTemplate>
                 <MudStack Row="true" Class="d-flex justify-space-between">
                     <MudStack Row="true">
-                        <MudCardMedia Image="@(context.ImageUrl ?? "images/image-placeholder.svg")"
-                                      Style="@(context.ImageUrl is null ? "width: 50px; height: 50px;" : string.Empty)"/>
+                        <MudImage Src="@(context.ImageUrl ?? "images/image-placeholder.svg")"
+                                  Alt="Item image"
+                                  Width="50"
+                                  Height="50"
+                                  ObjectFit="ObjectFit.Cover"/>
 
                         <MudStack Spacing="1">
                             <MudText Typo="Typo.body1">
