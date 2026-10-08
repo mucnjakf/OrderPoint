@@ -10,11 +10,13 @@ public sealed partial class ImageUploadField
 
     private const string AcceptedFileExtensions = ".jpg,.jpeg,.png,.webp";
 
+    private const string HelperText = "JPEG, PNG or WebP, at most 2 MB.";
+
     private static readonly string[] AllowedContentTypes = ["image/jpeg", "image/png", "image/webp"];
 
     [Parameter]
     [EditorRequired]
-    public bool CanRemove { get; set; }
+    public string? FileName { get; set; }
 
     [Parameter]
     [EditorRequired]
@@ -56,8 +58,6 @@ public sealed partial class ImageUploadField
 
     private async Task OnRemoveClickAsync()
     {
-        ErrorText = null;
-
         await OnImageRemoved.InvokeAsync();
     }
 }

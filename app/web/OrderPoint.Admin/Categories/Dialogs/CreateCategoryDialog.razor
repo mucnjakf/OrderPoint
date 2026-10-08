@@ -29,27 +29,31 @@
                                   Lines="5"
                                   Immediate="true"/>
 
-                    <MudStack Row="true">
-                        <MudSelect Label="Status"
-                                   T="CategoryStatus"
-                                   @bind-Value="@Request.Status"
-                                   For="@(() => Request.Status)"
-                                   HelperText="Controls whether this category is visible to customers."
-                                   Variant="Variant.Outlined">
-                            @foreach (CategoryStatus status in Enum.GetValues<CategoryStatus>())
-                            {
-                                <MudSelectItem Value="@status" T="CategoryStatus">
-                                    <MudText>
-                                        @status.ToString()
-                                    </MudText>
-                                </MudSelectItem>
-                            }
-                        </MudSelect>
+                    <MudGrid Spacing="3">
+                        <MudItem xs="6">
+                            <MudSelect Label="Status"
+                                       T="CategoryStatus"
+                                       @bind-Value="@Request.Status"
+                                       For="@(() => Request.Status)"
+                                       HelperText="Controls whether this category is visible to customers."
+                                       Variant="Variant.Outlined">
+                                @foreach (CategoryStatus status in Enum.GetValues<CategoryStatus>())
+                                {
+                                    <MudSelectItem Value="@status" T="CategoryStatus">
+                                        <MudText>
+                                            @status.ToString()
+                                        </MudText>
+                                    </MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudItem>
 
-                        <ImageUploadField CanRemove="@(Request.Image is not null)"
-                                          OnImageSelected="@OnImageSelected"
-                                          OnImageRemoved="@OnImageRemoved"/>
-                    </MudStack>
+                        <MudItem xs="6">
+                            <ImageUploadField FileName="@Request.Image?.FileName"
+                                              OnImageSelected="@OnImageSelected"
+                                              OnImageRemoved="@OnImageRemoved"/>
+                        </MudItem>
+                    </MudGrid>
                 </MudItem>
 
                 <MudItem md="4">

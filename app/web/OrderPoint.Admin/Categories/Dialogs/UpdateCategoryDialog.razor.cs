@@ -9,6 +9,8 @@ namespace OrderPoint.Admin.Categories.Dialogs;
 
 public sealed partial class UpdateCategoryDialog
 {
+    private const string CurrentImageFileName = "Current image";
+
     [Parameter]
     public CategoryDto Category { get; set; } = null!;
 
@@ -30,6 +32,10 @@ public sealed partial class UpdateCategoryDialog
     private string? PreviewImageUrl => Request.Image is not null
         ? Request.Image.ToDataUrl()
         : Request.RemoveImage ? null : Category.ImageUrl;
+
+    private string? ImageFileName => Request.Image is not null
+        ? Request.Image.FileName
+        : PreviewImageUrl is null ? null : CurrentImageFileName;
 
     private void OnImageSelected(ImageFileDto image)
     {

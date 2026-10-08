@@ -1,27 +1,39 @@
-﻿<MudStack Spacing="1">
-    <MudStack Row="true" AlignItems="AlignItems.Center">
-        <MudFileUpload T="IBrowserFile" Accept="@AcceptedFileExtensions" FilesChanged="@OnFileChangedAsync">
-            <CustomContent>
-                <MudButton Variant="Variant.Outlined"
-                           StartIcon="@Icons.Material.Filled.Upload"
-                           OnClick="@context.OpenFilePickerAsync">
-                    Upload image
-                </MudButton>
-            </CustomContent>
-        </MudFileUpload>
+﻿@if (FileName is null)
+{
+    <MudFileUpload T="IBrowserFile"
+                   Accept="@AcceptedFileExtensions"
+                   FilesChanged="@OnFileChangedAsync"
+                   Class="mud-width-full">
+        <CustomContent>
+            <div class="cursor-pointer" @onclick="@context.OpenFilePickerAsync">
+                <MudTextField T="string"
+                              Label="Image"
+                              Placeholder="Upload image"
+                              ReadOnly="true"
+                              HelperText="@HelperText"
+                              Error="@(ErrorText is not null)"
+                              ErrorText="@ErrorText"
+                              Variant="Variant.Outlined"
+                              Adornment="Adornment.End"
+                              AdornmentIcon="@Icons.Material.Filled.Upload"
+                              Style="pointer-events: none;"/>
+            </div>
+        </CustomContent>
 
-        @if (CanRemove)
-        {
-            <MudButton Variant="Variant.Text"
-                       Color="Color.Error"
-                       StartIcon="@Icons.Material.Filled.Delete"
-                       OnClick="@OnRemoveClickAsync">
-                Remove image
-            </MudButton>
-        }
-    </MudStack>
-
-    <MudText Typo="Typo.caption" Color="@(ErrorText is null ? Color.Default : Color.Error)">
-        @(ErrorText ?? "JPEG, PNG or WebP, at most 2 MB.")
-    </MudText>
-</MudStack>
+        <SelectedTemplate/>
+    </MudFileUpload>
+}
+else
+{
+    <MudTextField T="string"
+                  Label="Image"
+                  Value="@FileName"
+                  ReadOnly="true"
+                  HelperText="@HelperText"
+                  Variant="Variant.Outlined"
+                  Adornment="Adornment.End"
+                  AdornmentIcon="@Icons.Material.Filled.Delete"
+                  AdornmentColor="Color.Error"
+                  AdornmentAriaLabel="Remove image"
+                  OnAdornmentClick="@OnRemoveClickAsync"/>
+}
