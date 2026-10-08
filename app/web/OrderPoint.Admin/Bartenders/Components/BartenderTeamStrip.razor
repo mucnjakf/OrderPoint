@@ -1,6 +1,6 @@
-﻿<MudPaper Class="pa-5 mb-5">
-    <MudStack Row="true" Spacing="5" Style="min-height: 110px;">
-        <MudStack AlignItems="AlignItems.Center" Spacing="2" Class="flex-1">
+﻿<MudStack Row="true" Spacing="3" Class="mb-5">
+    <MudPaper Class="pa-5 flex-1">
+        <MudStack AlignItems="AlignItems.Center" Spacing="2" Style="min-height: 110px;">
             <MudText Typo="Typo.overline">Active team</MudText>
 
             <StatefulView IsLoading="@IsLoadingActiveTeam"
@@ -23,10 +23,10 @@
                 </MudAvatarGroup>
             </StatefulView>
         </MudStack>
+    </MudPaper>
 
-        <MudDivider Vertical="true" FlexItem="true"/>
-
-        <MudStack AlignItems="AlignItems.Center" Spacing="2" Class="flex-1">
+    <MudPaper Class="pa-5 flex-1">
+        <MudStack AlignItems="AlignItems.Center" Spacing="2" Style="min-height: 110px;">
             <MudText Typo="Typo.overline">Team balance</MudText>
 
             <StatefulView IsLoading="@IsLoadingBalance"
@@ -49,10 +49,10 @@
                 </MudText>
             </StatefulView>
         </MudStack>
+    </MudPaper>
 
-        <MudDivider Vertical="true" FlexItem="true"/>
-
-        <MudStack AlignItems="AlignItems.Center" Spacing="2" Class="flex-1">
+    <MudPaper Class="pa-5 flex-1">
+        <MudStack AlignItems="AlignItems.Center" Spacing="2" Style="min-height: 110px;">
             <MudText Typo="Typo.overline">Newest member</MudText>
 
             <StatefulView IsLoading="@IsLoadingNewestBartender"
@@ -80,5 +80,5 @@
                 }
             </StatefulView>
         </MudStack>
-    </MudStack>
-</MudPaper>
+    </MudPaper>
+</MudStack>
