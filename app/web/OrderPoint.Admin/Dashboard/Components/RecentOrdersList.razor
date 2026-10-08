@@ -1,26 +1,31 @@
 ﻿<MudStack Spacing="2">
     @foreach (OrderDto order in Orders)
     {
+        OrderDto rowOrder = order;
+
         <MudPaper Outlined="true"
                   Class="pa-3 cursor-pointer"
-                  @onclick="@(() => OnOrderClickAsync(order))">
+                  Style="@GetRowStyle(rowOrder)"
+                  @onclick="@(() => OnOrderClickAsync(rowOrder))"
+                  @onmouseenter="@(() => HoveredOrderId = rowOrder.Id)"
+                  @onmouseleave="@(() => HoveredOrderId = null)">
             <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
-                <MudAvatar Color="@order.Status.GetColor()" Size="Size.Small" Rounded="true">
-                    <MudIcon Icon="@order.Status.GetIcon()" Size="Size.Small"/>
+                <MudAvatar Color="@rowOrder.Status.GetColor()" Size="Size.Small" Rounded="true">
+                    <MudIcon Icon="@rowOrder.Status.GetIcon()" Size="Size.Small"/>
                 </MudAvatar>
 
                 <MudStack Spacing="0" Class="flex-1">
                     <MudText Typo="Typo.body2">
-                        #@order.Number · @order.TableCode
+                        #@rowOrder.Number · @rowOrder.TableCode
                     </MudText>
 
                     <MudText Typo="Typo.caption">
-                        @order.CreatedAtUtc.ToRelativeTime()
+                        @rowOrder.CreatedAtUtc.ToRelativeTime()
                     </MudText>
                 </MudStack>
 
                 <MudText Typo="Typo.body1">
-                    @order.Total.ToString("C", CultureInfo.CurrentCulture)
+                    @rowOrder.Total.ToString("C", CultureInfo.CurrentCulture)
                 </MudText>
             </MudStack>
         </MudPaper>

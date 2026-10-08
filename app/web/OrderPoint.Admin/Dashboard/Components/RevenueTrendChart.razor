@@ -1,7 +1,103 @@
-﻿<MudChart T="double"
-          ChartType="ChartType.Timeseries"
-          ChartSeries="@Series"
-          ChartOptions="@Options"
-          MatchBoundsToSize="true"
-          Width="100%"
-          Height="@ChartHeight"/>
+﻿<div class="d-flex" style="@ContainerStyle">
+    <div class="d-flex flex-column justify-space-between pr-3 pb-6">
+        @foreach (string label in YAxisLabels)
+        {
+            <MudText Typo="Typo.caption" Align="Align.Right">
+                @label
+            </MudText>
+        }
+    </div>
+
+    <div class="d-flex flex-column flex-1">
+        <div class="flex-1" style="position: relative;" @onmouseleave="@(() => HoveredIndex = null)">
+            <svg width="100%"
+                 height="100%"
+                 viewBox="0 0 1000 1000"
+                 preserveAspectRatio="none"
+                 style="position: absolute; inset: 0; overflow: visible;">
+                <defs>
+                    <linearGradient id="@GradientId" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" style="stop-color: var(--mud-palette-primary); stop-opacity: 0.45;"/>
+                        <stop offset="100%" style="stop-color: var(--mud-palette-primary); stop-opacity: 0;"/>
+                    </linearGradient>
+                </defs>
+
+                @foreach (string gridLineY in GridLineYs)
+                {
+                    <line x1="0"
+                          x2="1000"
+                          y1="@gridLineY"
+                          y2="@gridLineY"
+                          stroke-dasharray="4 4"
+                          vector-effect="non-scaling-stroke"
+                          style="stroke: var(--mud-palette-lines-default);"/>
+                }
+
+                <path d="@AreaPath" fill="@($"url(#{GradientId})")"/>
+
+                <path d="@LinePath"
+                      fill="none"
+                      stroke-width="3"
+                      vector-effect="non-scaling-stroke"
+                      style="stroke: var(--mud-palette-primary);"/>
+
+                @if (HoveredIndex is not null)
+                {
+                    <line x1="@GetX(HoveredIndex.Value)"
+                          x2="@GetX(HoveredIndex.Value)"
+                          y1="0"
+                          y2="1000"
+                          stroke-dasharray="4 4"
+                          vector-effect="non-scaling-stroke"
+                          style="stroke: var(--mud-palette-text-secondary);"/>
+                }
+            </svg>
+
+            @if (HoveredIndex is not null)
+            {
+                <div style="@GetDotStyle(HoveredIndex.Value)"></div>
+            }
+
+            @for (int i = 0; i < Points.Count; i++)
+            {
+                int index = i;
+                RevenueTrendPointDto point = Points[index];
+
+                <MudTooltip Placement="Placement.Top"
+                            Arrow="true"
+                            Inline="false"
+                            RootStyle="@GetSlotStyle(index)">
+                    <ChildContent>
+                        <div style="height: 100%;" @onmouseenter="@(() => HoveredIndex = index)"></div>
+                    </ChildContent>
+
+                    <TooltipContent>
+                        <div class="pa-2">
+                            <MudText Typo="Typo.body2">
+                                @GetTooltipLabel(point.BucketStartUtc)
+                            </MudText>
+
+                            <MudText Typo="Typo.h6">
+                                @point.Revenue.ToString("C", CultureInfo.CurrentCulture)
+                            </MudText>
+                        </div>
+                    </TooltipContent>
+                </MudTooltip>
+            }
+        </div>
+
+        <div style="position: relative; height: 24px;">
+            @for (int i = 0; i < Points.Count; i++)
+            {
+                int index = i;
+
+                @if (index % XAxisLabelStep == 0)
+                {
+                    <MudText Typo="Typo.caption" Style="@GetXAxisLabelStyle(index)">
+                        @GetAxisLabel(Points[index].BucketStartUtc)
+                    </MudText>
+                }
+            }
+        </div>
+    </div>
+</div>

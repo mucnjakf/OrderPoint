@@ -1,6 +1,9 @@
-﻿<MudStack Spacing="4">
-    @foreach (TopItemDto item in Items)
+﻿<MudStack Spacing="3">
+    @for (int i = 0; i < Items.Count; i++)
     {
+        TopItemDto item = Items[i];
+        bool isLast = i == Items.Count - 1;
+
         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
             <MudImage Src="@(item.ImageUrl ?? "images/image-placeholder.svg")"
                       Alt="Item image"
@@ -29,5 +32,10 @@
                 </MudText>
             </MudStack>
         </MudStack>
+
+        @if (!isLast)
+        {
+            <MudDivider/>
+        }
     }
 </MudStack>

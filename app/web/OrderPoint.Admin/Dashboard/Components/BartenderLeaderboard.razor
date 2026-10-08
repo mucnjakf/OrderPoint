@@ -1,11 +1,13 @@
-﻿<MudStack Spacing="3">
+﻿<MudStack Spacing="2">
     @for (int i = 0; i < Entries.Count; i++)
     {
         BartenderLeaderboardEntryDto entry = Entries[i];
+        int rank = i + 1;
+        bool isLast = rank == Entries.Count;
 
         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
             <MudText Typo="Typo.subtitle1" Class="mud-text-secondary" Style="width: 20px;">
-                @(i + 1)
+                @rank
             </MudText>
 
             <BartenderAvatar FirstName="@entry.FirstName"
@@ -26,5 +28,10 @@
                 @entry.Revenue.ToString("C", CultureInfo.CurrentCulture)
             </MudText>
         </MudStack>
+
+        @if (!isLast)
+        {
+            <MudDivider/>
+        }
     }
 </MudStack>

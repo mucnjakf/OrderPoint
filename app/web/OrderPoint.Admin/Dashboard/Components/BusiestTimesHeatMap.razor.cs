@@ -1,15 +1,18 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Components;
-using MudBlazor;
 using OrderPoint.Admin.Dashboard.Dtos;
 
 namespace OrderPoint.Admin.Dashboard.Components;
 
 public sealed partial class BusiestTimesHeatMap
 {
-    private const string ChartHeight = "280px";
-
     private const int HoursPerDay = 24;
+
+    private const int LabelHourStep = 3;
+
+    private const int CellHeight = 24;
+
+    private const double MinOpacity = 0.06;
 
     private static readonly DayOfWeek[] WeekDays =
     [
@@ -22,44 +25,46 @@ public sealed partial class BusiestTimesHeatMap
         DayOfWeek.Sunday
     ];
 
-    private static readonly HeatMapChartOptions Options = new()
-    {
-        ShowLegend = false,
-        ShowLabels = false,
-        EnableSmoothGradient = true,
-        ShowToolTips = true,
-        ValueFormatString = "F0",
-        TooltipTitleFormat = "{{SERIES_NAME}} {{X_VALUE}}:00",
-        TooltipSubtitleFormat = "{{Y_VALUE}} orders"
-    };
-
     [Parameter]
     [EditorRequired]
     public IReadOnlyList<BusiestTimeDto> BusiestTimes { get; set; } = [];
 
-    private List<ChartSeries<double>> Series { get; set; } = [];
+    private Dictionary<(DayOfWeek, int), int> OrdersCountBySlot { get; set; } = [];
 
-    private string[] Labels { get; set; } = [];
+    private int MaxOrdersCount { get; set; }
+
+    private static string DayLabelStyle => "width: 36px; flex-shrink: 0;";
 
     protected override void OnParametersSet()
     {
-        Dictionary<(DayOfWeek, int), int> ordersCountBySlot = BusiestTimes
-            .ToDictionary(slot => (slot.DayOfWeek, slot.Hour), slot => slot.OrdersCount);
+        OrdersCountBySlot = BusiestTimes.ToDictionary(slot => (slot.DayOfWeek, slot.Hour), slot => slot.OrdersCount);
+        MaxOrdersCount = BusiestTimes.Count == 0 ? 0 : BusiestTimes.Max(slot => slot.OrdersCount);
+    }
 
-        Series = WeekDays
-            .Select(dayOfWeek => new ChartSeries<double>
-            {
-                Name = CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedDayName(dayOfWeek),
-                Data = Enumerable
-                    .Range(0, HoursPerDay)
-                    .Select(hour => (double)ordersCountBySlot.GetValueOrDefault((dayOfWeek, hour)))
-                    .ToArray()
-            })
-            .ToList();
+    private int GetOrdersCount(DayOfWeek dayOfWeek, int hour)
+    {
+        return OrdersCountBySlot.GetValueOrDefault((dayOfWeek, hour));
+    }
 
-        Labels = Enumerable
-            .Range(0, HoursPerDay)
-            .Select(hour => $"{hour:00}")
-            .ToArray();
+    private string GetCellStyle(int ordersCount)
+    {
+        double opacity = MaxOrdersCount == 0
+            ? MinOpacity
+            : MinOpacity + (1 - MinOpacity) * ordersCount / MaxOrdersCount;
+
+        string formattedOpacity = opacity.ToString("0.##", CultureInfo.InvariantCulture);
+
+        return $"height: {CellHeight}px; border-radius: 4px; " +
+               $"background-color: rgba(var(--mud-palette-primary-rgb), {formattedOpacity});";
+    }
+
+    private static string GetDayLabel(DayOfWeek dayOfWeek)
+    {
+        return CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedDayName(dayOfWeek);
+    }
+
+    private static string GetDayName(DayOfWeek dayOfWeek)
+    {
+        return CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(dayOfWeek);
     }
 }

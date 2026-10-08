@@ -32,11 +32,6 @@ public sealed partial class DashboardPage : IDisposable
     [Inject]
     private OrderApiClient OrderApiClient { get; set; } = null!;
 
-    private List<BreadcrumbItem> Breadcrumbs { get; set; } =
-    [
-        new("Dashboard", href: null, disabled: true, icon: Icons.Material.Filled.Dashboard)
-    ];
-
     private DashboardPeriod SelectedPeriod { get; set; } = DashboardPeriod.Last7Days;
 
     private DashboardSummaryDto? Summary { get; set; }

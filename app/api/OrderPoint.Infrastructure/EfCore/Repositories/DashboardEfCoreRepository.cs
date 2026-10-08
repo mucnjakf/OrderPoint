@@ -31,11 +31,18 @@ internal sealed class DashboardEfCoreRepository(ApplicationDbContext dbContext) 
             .Select(order => new { order.Status, order.CreatedAtUtc })
             .ToListAsync(cancellationToken);
 
+        DateTimeOffset nowUtc = DateTimeOffset.UtcNow;
+        var todayStartUtc = new DateTimeOffset(nowUtc.UtcDateTime.Date, TimeSpan.Zero);
+
+        IReadOnlyList<DashboardOrderDto> todayOrders = await GetOrdersAsync(todayStartUtc, nowUtc, cancellationToken);
+
         return new DashboardLiveDto(
             openOrders.Count(order => order.Status == OrderStatus.Pending),
             openOrders.Count(order => order.Status == OrderStatus.Accepted),
             openOrders.Count(order => order.Status == OrderStatus.Active),
-            openOrders.Count == 0 ? null : openOrders.Min(order => order.CreatedAtUtc));
+            openOrders.Count == 0 ? null : openOrders.Min(order => order.CreatedAtUtc),
+            todayOrders.Count,
+            todayOrders.Where(order => order.Status == OrderStatus.Completed).Sum(order => order.Total));
     }
 
     public async Task<IReadOnlyList<CategoryRevenueDto>> GetCategoryRevenueAsync(

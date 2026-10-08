@@ -2,7 +2,7 @@
 
 <PageTitle>Dashboard</PageTitle>
 
-<PageHeader Text="Dashboard" Breadcrumbs="@Breadcrumbs">
+<PageHeader Text="Dashboard">
     <MudToggleGroup T="DashboardPeriod"
                     @bind-Value="@SelectedPeriod"
                     @bind-Value:after="@OnPeriodChangedAsync"
