@@ -54,7 +54,7 @@ dotnet ef migrations add <Name> \
 - Migrations are applied automatically on API startup (`app.ApplyMigrations()`); do not run `dotnet ef database update`.
 - Migration names describe the change as `<Verb>_<What>`: `Add_Item`, `Add_ImageUrl_To_Category`, `Add_Category_Description_And_Status`, `Remove_ShortDescription_From_Item`, `Restrict_Category_Delete`.
 - There is no test project yet. Do not add one unless asked.
-- "Done" means the build succeeds with no new warnings. Known baseline: NuGet vulnerability warnings for `MessagePack` (AppHost, via Aspire) and `Microsoft.OpenApi` (Api); these will be fixed separately, so ignore them.
+- "Done" means the build succeeds with no warnings. The AppHost suppresses `ASPIRE010` on purpose (DCP and the dashboard come from NuGet, not the Aspire CLI bundle).
 - Secrets live in user secrets, not appsettings (e.g. `MediatR:LicenseKey` for the Api).
 - Running the app needs Docker (Aspire starts Postgres on port 59286 and the Azurite blob endpoint on port 59287, both as persistent containers with data volumes; the blob port is fixed because image URLs are stored with it). The design-time `ApplicationDbContextFactory` points at `localhost:5432`; that is fine for `migrations add`, which does not connect.
 
