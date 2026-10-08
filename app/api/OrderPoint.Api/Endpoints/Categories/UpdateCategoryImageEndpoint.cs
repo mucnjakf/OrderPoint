@@ -19,7 +19,8 @@ internal sealed class UpdateCategoryImageEndpoint : IEndpoint
             .MapPut("api/categories/{id:guid}/image", HandleAsync)
             .WithName("UpdateCategoryImage")
             .WithTags("Categories")
-            .DisableAntiforgery();
+            .DisableAntiforgery()
+            .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 
     private static async Task<Results<NoContent, ProblemHttpResult>> HandleAsync(

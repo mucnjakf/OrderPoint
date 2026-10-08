@@ -22,7 +22,8 @@ internal sealed class GetCategoryRevenueEndpoint : IEndpoint
         app
             .MapGet("api/dashboard/category-revenue", HandleAsync)
             .WithName("GetCategoryRevenue")
-            .WithTags("Dashboard");
+            .WithTags("Dashboard")
+            .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 
     private static async Task<Results<Ok<GetCategoryRevenueResponse>, ProblemHttpResult>> HandleAsync(

@@ -26,7 +26,8 @@ internal sealed class CreateItemEndpoint : IEndpoint
         app
             .MapPost("api/items", HandleAsync)
             .WithName("CreateItem")
-            .WithTags("Items");
+            .WithTags("Items")
+            .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 
     private static async Task<Results<CreatedAtRoute<CreateItemResponse>, ProblemHttpResult>> HandleAsync(

@@ -20,6 +20,10 @@ internal sealed class CreateBartenderRequest
     [EmailAddress(ErrorMessage = "Email is invalid.")]
     public string Email { get; set; } = null!;
 
+    [Required(ErrorMessage = "Temporary password is required.")]
+    [StringLength(100, MinimumLength = 8, ErrorMessage = "Temporary password must be 8 to 100 characters.")]
+    public string Password { get; set; } = null!;
+
     [StringLength(20, ErrorMessage = "Phone number must be at most 20 characters.")]
     public string? PhoneNumber { get; set; }
 

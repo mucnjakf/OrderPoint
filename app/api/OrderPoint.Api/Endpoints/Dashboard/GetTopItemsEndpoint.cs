@@ -22,7 +22,8 @@ internal sealed class GetTopItemsEndpoint : IEndpoint
         app
             .MapGet("api/dashboard/top-items", HandleAsync)
             .WithName("GetTopItems")
-            .WithTags("Dashboard");
+            .WithTags("Dashboard")
+            .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 
     private static async Task<Results<Ok<GetTopItemsResponse>, ProblemHttpResult>> HandleAsync(

@@ -22,7 +22,8 @@ internal sealed class GetBartenderLeaderboardEndpoint : IEndpoint
         app
             .MapGet("api/dashboard/bartender-leaderboard", HandleAsync)
             .WithName("GetBartenderLeaderboard")
-            .WithTags("Dashboard");
+            .WithTags("Dashboard")
+            .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 
     private static async Task<Results<Ok<GetBartenderLeaderboardResponse>, ProblemHttpResult>> HandleAsync(

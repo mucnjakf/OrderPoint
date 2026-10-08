@@ -1,5 +1,6 @@
 ﻿using OrderPoint.Application.Dtos;
 using OrderPoint.Application.Dtos.Mappers;
+using OrderPoint.Application.Identity;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Domain.Entities;
@@ -13,12 +14,16 @@ public sealed record CreateBartenderCommand(
     string FirstName,
     string LastName,
     string Email,
+    string Password,
     string? PhoneNumber,
     BartenderStatus Status,
     string? Notes)
     : ICommand<BartenderDto>;
 
-internal sealed class CreateBartenderCommandHandler(IBartenderRepository bartenderRepository, IUnitOfWork unitOfWork)
+internal sealed class CreateBartenderCommandHandler(
+    IBartenderRepository bartenderRepository,
+    IIdentityService identityService,
+    IUnitOfWork unitOfWork)
     : ICommandHandler<CreateBartenderCommand, BartenderDto>
 {
     public async Task<Result<BartenderDto>> Handle(CreateBartenderCommand command, CancellationToken cancellationToken)
@@ -44,6 +49,21 @@ internal sealed class CreateBartenderCommandHandler(IBartenderRepository bartend
         }
 
         await bartenderRepository.CreateAsync(result.Value, cancellationToken);
+
+        Result userResult = await identityService.CreateUserAsync(
+            result.Value.Id,
+            command.Email,
+            command.Password,
+            UserRole.Bartender,
+            mustChangePassword: true,
+            cancellationToken);
+
+        if (userResult.IsFailure)
+        {
+            return Result.Failure<BartenderDto>(userResult.Error);
+        }
+
+        // The bartender and their login are saved together, so neither exists without the other
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         var bartenderDto = result.Value.ToBartenderDto(ordersCount: 0);

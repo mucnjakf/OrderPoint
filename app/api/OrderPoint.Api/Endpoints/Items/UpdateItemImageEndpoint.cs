@@ -19,7 +19,8 @@ internal sealed class UpdateItemImageEndpoint : IEndpoint
             .MapPut("api/items/{id:guid}/image", HandleAsync)
             .WithName("UpdateItemImage")
             .WithTags("Items")
-            .DisableAntiforgery();
+            .DisableAntiforgery()
+            .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 
     private static async Task<Results<NoContent, ProblemHttpResult>> HandleAsync(

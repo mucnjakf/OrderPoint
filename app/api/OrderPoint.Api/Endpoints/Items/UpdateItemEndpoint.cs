@@ -23,7 +23,8 @@ internal sealed class UpdateItemEndpoint : IEndpoint
         app
             .MapPut("api/items/{id:guid}", HandleAsync)
             .WithName("UpdateItem")
-            .WithTags("Items");
+            .WithTags("Items")
+            .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 
     private static async Task<Results<NoContent, ProblemHttpResult>> HandleAsync(

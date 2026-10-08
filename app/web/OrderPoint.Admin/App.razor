@@ -19,13 +19,14 @@
 
         <ImportMap/>
 
-        <HeadOutlet @rendermode="InteractiveServer"/>
+        <HeadOutlet @rendermode="@(new InteractiveServerRenderMode(prerender: false))"/>
 
         <title>OrderPoint</title>
     </head>
 
     <body>
-        <Routes @rendermode="InteractiveServer"/>
+        @* Not prerendered: the session lives in browser storage, readable only once the circuit is connected *@
+        <Routes @rendermode="@(new InteractiveServerRenderMode(prerender: false))"/>
 
         <script src="@Assets["_framework/blazor.web.js"]"></script>
         <script src="@Assets["_content/MudBlazor/MudBlazor.min.js"]"></script>

@@ -15,7 +15,8 @@ internal sealed class DeleteBartenderEndpoint : IEndpoint
         app
             .MapDelete("api/bartenders/{id:guid}", HandleAsync)
             .WithName("DeleteBartender")
-            .WithTags("Bartenders");
+            .WithTags("Bartenders")
+            .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 
     private static async Task<Results<NoContent, ProblemHttpResult>> HandleAsync(

@@ -1,6 +1,9 @@
-﻿using MudBlazor;
+﻿using Microsoft.AspNetCore.Components.Server.Circuits;
+using MudBlazor;
 using MudBlazor.Services;
 using OrderPoint.Admin;
+using OrderPoint.Admin.Auth.Api;
+using OrderPoint.Admin.Auth.Services;
 using OrderPoint.Admin.Bartenders.Api;
 using OrderPoint.Admin.Categories.Api;
 using OrderPoint.Admin.Dashboard.Api;
@@ -17,12 +20,26 @@ builder.Services
     .AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddHttpClient("OrderPointApi", client =>
+builder.Services
+    .AddHttpClient("OrderPointApi", client =>
+    {
+        client.BaseAddress = new Uri("https+http://order-point-api");
+    })
+    .AddHttpMessageHandler<AccessTokenHandler>();
+
+// The auth endpoints are anonymous and called without AccessTokenHandler, which uses them to refresh tokens
+builder.Services.AddHttpClient("OrderPointAuthApi", client =>
 {
     client.BaseAddress = new Uri("https+http://order-point-api");
 });
 
+builder.Services.AddScoped<CircuitServicesAccessor>();
+builder.Services.AddScoped<CircuitHandler, ServicesAccessorCircuitHandler>();
+builder.Services.AddTransient<AccessTokenHandler>();
+builder.Services.AddScoped<AuthService>();
+
 builder.Services.AddScoped<ApiService>();
+builder.Services.AddScoped<AuthApiClient>();
 builder.Services.AddScoped<CategoryApiClient>();
 builder.Services.AddScoped<ItemApiClient>();
 builder.Services.AddScoped<BartenderApiClient>();

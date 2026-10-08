@@ -22,7 +22,8 @@ internal sealed class GetDashboardSummaryEndpoint : IEndpoint
         app
             .MapGet("api/dashboard/summary", HandleAsync)
             .WithName("GetDashboardSummary")
-            .WithTags("Dashboard");
+            .WithTags("Dashboard")
+            .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 
     private static async Task<Results<Ok<GetDashboardSummaryResponse>, ProblemHttpResult>> HandleAsync(

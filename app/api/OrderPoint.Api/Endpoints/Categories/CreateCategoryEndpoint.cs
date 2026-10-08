@@ -25,7 +25,8 @@ internal sealed class CreateCategoryEndpoint : IEndpoint
         app
             .MapPost("api/categories", HandleAsync)
             .WithName("CreateCategory")
-            .WithTags("Categories");
+            .WithTags("Categories")
+            .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 
     private static async Task<Results<CreatedAtRoute<CreateCategoryResponse>, ProblemHttpResult>> HandleAsync(

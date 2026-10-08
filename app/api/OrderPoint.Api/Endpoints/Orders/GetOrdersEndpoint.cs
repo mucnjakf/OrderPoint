@@ -30,7 +30,8 @@ internal sealed class GetOrdersEndpoint : IEndpoint
         app
             .MapGet("api/orders", HandleAsync)
             .WithName("GetOrders")
-            .WithTags("Orders");
+            .WithTags("Orders")
+            .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 
     private static async Task<Results<Ok<GetOrdersResponse>, ProblemHttpResult>> HandleAsync(

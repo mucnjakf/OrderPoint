@@ -18,7 +18,8 @@ internal sealed class GetCategoryEndpoint : IEndpoint
         app
             .MapGet("api/categories/{id:guid}", HandleAsync)
             .WithName("GetCategory")
-            .WithTags("Categories");
+            .WithTags("Categories")
+            .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 
     private static async Task<Results<Ok<GetCategoryResponse>, ProblemHttpResult>> HandleAsync(

@@ -1,10 +1,16 @@
 ﻿using System.Reflection;
+using System.Text;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using OrderPoint.Api.Configuration;
 using OrderPoint.Api.Exceptions;
 using OrderPoint.Api.Extensions;
 using OrderPoint.Application;
+using OrderPoint.Domain.Enumerations;
 using OrderPoint.Infrastructure;
+using OrderPoint.Infrastructure.Identity;
 using OrderPoint.ServiceDefaults;
 using Scalar.AspNetCore;
 
@@ -14,7 +20,28 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 
 // API docs
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options => options.AddDocumentTransformer<BearerSecuritySchemeTransformer>());
+
+// Authentication
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer();
+
+builder.Services
+    .AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme)
+    .Configure<IOptions<JwtOptions>>((options, jwtOptions) =>
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidIssuer = jwtOptions.Value.Issuer,
+            ValidAudience = jwtOptions.Value.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Value.SigningKey)),
+            ClockSkew = TimeSpan.Zero
+        });
+
+// Authorization
+builder.Services
+    .AddAuthorizationBuilder()
+    .AddPolicy(AuthorizationPolicies.Admin, policy => policy.RequireRole(nameof(UserRole.Admin)));
 
 // Cors
 builder.Services.AddCors(options =>
@@ -50,6 +77,7 @@ WebApplication app = builder.Build();
 
 // Database
 app.ApplyMigrations();
+await app.SeedAdminAsync();
 
 // Storage
 app.CreateImageContainer();
@@ -62,6 +90,10 @@ app.UseHttpsRedirection();
 
 // Cors
 app.UseCors("AllowAll");
+
+// Authentication and authorization
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Minimal API
 app.MapEndpoints();

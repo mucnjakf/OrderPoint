@@ -15,6 +15,7 @@ internal sealed record CreateBartenderRequest(
     string FirstName,
     string LastName,
     string Email,
+    string Password,
     string? PhoneNumber,
     BartenderStatus Status,
     string? Notes);
@@ -28,7 +29,8 @@ internal sealed class CreateBartenderEndpoint : IEndpoint
         app
             .MapPost("api/bartenders", HandleAsync)
             .WithName("CreateBartender")
-            .WithTags("Bartenders");
+            .WithTags("Bartenders")
+            .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 
     private static async Task<Results<CreatedAtRoute<CreateBartenderResponse>, ProblemHttpResult>> HandleAsync(
@@ -43,6 +45,7 @@ internal sealed class CreateBartenderEndpoint : IEndpoint
             request.FirstName,
             request.LastName,
             request.Email,
+            request.Password,
             request.PhoneNumber,
             request.Status,
             request.Notes);
@@ -73,6 +76,11 @@ internal sealed class CreateBartenderEndpoint : IEndpoint
                 .NotEmpty().WithMessage("Email is required")
                 .MaximumLength(100).WithMessage("Email must be at most 100 characters")
                 .EmailAddress().WithMessage("Email is invalid");
+
+            RuleFor(request => request.Password)
+                .NotEmpty().WithMessage("Password is required")
+                .MinimumLength(8).WithMessage("Password must be at least 8 characters")
+                .MaximumLength(100).WithMessage("Password must be at most 100 characters");
 
             RuleFor(request => request.PhoneNumber)
                 .MaximumLength(20).WithMessage("PhoneNumber must be at most 20 characters");

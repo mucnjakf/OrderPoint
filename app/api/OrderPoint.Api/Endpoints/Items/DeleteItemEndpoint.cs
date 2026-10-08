@@ -15,7 +15,8 @@ internal sealed class DeleteItemEndpoint : IEndpoint
         app
             .MapDelete("api/items/{id:guid}", HandleAsync)
             .WithName("DeleteItem")
-            .WithTags("Items");
+            .WithTags("Items")
+            .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 
     private static async Task<Results<NoContent, ProblemHttpResult>> HandleAsync(

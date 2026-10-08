@@ -22,7 +22,8 @@ internal sealed class GetRevenueTrendEndpoint : IEndpoint
         app
             .MapGet("api/dashboard/revenue-trend", HandleAsync)
             .WithName("GetRevenueTrend")
-            .WithTags("Dashboard");
+            .WithTags("Dashboard")
+            .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 
     private static async Task<Results<Ok<GetRevenueTrendResponse>, ProblemHttpResult>> HandleAsync(

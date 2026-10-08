@@ -8,6 +8,19 @@
                    CloseOnEscapeKey="true"/>
 <MudSnackbarProvider/>
 
+@* Nothing renders until the session is read from the browser, then the login form replaces any page *@
+@if (!AuthService.IsLoaded)
+{
+    return;
+}
+
+@if (!AuthService.IsSignedIn)
+{
+    <LoginForm/>
+
+    return;
+}
+
 <MudLayout>
     <MudAppBar Elevation="1">
         <MudIconButton
@@ -29,6 +42,12 @@
 
         <MudTooltip Text="@(IsDarkMode ? "Light mode" : "Dark mode")">
             <MudIconButton Icon="@DarkModeIcon" OnClick="@ToggleDarkMode" Color="Color.Inherit"/>
+        </MudTooltip>
+
+        <MudText Typo="Typo.body2" Class="ml-3 mr-1">@AuthService.Email</MudText>
+
+        <MudTooltip Text="Sign out">
+            <MudIconButton Icon="@Icons.Material.Filled.Logout" OnClick="@SignOutAsync" Color="Color.Inherit"/>
         </MudTooltip>
     </MudAppBar>
 

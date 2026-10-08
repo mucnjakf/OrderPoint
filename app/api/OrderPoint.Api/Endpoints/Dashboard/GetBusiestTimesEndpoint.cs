@@ -18,7 +18,8 @@ internal sealed class GetBusiestTimesEndpoint : IEndpoint
         app
             .MapGet("api/dashboard/busiest-times", HandleAsync)
             .WithName("GetBusiestTimes")
-            .WithTags("Dashboard");
+            .WithTags("Dashboard")
+            .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 
     private static async Task<Results<Ok<GetBusiestTimesResponse>, ProblemHttpResult>> HandleAsync(

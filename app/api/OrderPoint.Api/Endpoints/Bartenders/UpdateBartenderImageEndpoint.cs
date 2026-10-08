@@ -19,7 +19,8 @@ internal sealed class UpdateBartenderImageEndpoint : IEndpoint
             .MapPut("api/bartenders/{id:guid}/image", HandleAsync)
             .WithName("UpdateBartenderImage")
             .WithTags("Bartenders")
-            .DisableAntiforgery();
+            .DisableAntiforgery()
+            .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 
     private static async Task<Results<NoContent, ProblemHttpResult>> HandleAsync(

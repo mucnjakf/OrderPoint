@@ -1,4 +1,5 @@
-﻿using OrderPoint.Application.Mediator;
+﻿using OrderPoint.Application.Identity;
+using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Application.Storage;
 using OrderPoint.Domain.Entities;
@@ -12,6 +13,8 @@ public sealed record DeleteBartenderCommand(Guid Id) : ICommand;
 internal sealed class DeleteBartenderCommandHandler(
     IBartenderRepository bartenderRepository,
     IOrderRepository orderRepository,
+    IIdentityService identityService,
+    ITokenService tokenService,
     IImageStorage imageStorage,
     IUnitOfWork unitOfWork)
     : ICommandHandler<DeleteBartenderCommand>
@@ -32,6 +35,8 @@ internal sealed class DeleteBartenderCommandHandler(
             return Result.Failure(BartenderErrors.CannotDeleteBartenderWithOrders);
         }
 
+        await tokenService.RevokeUserTokensAsync(bartender.Id, cancellationToken);
+        await identityService.DeleteUserAsync(bartender.Id, cancellationToken);
         bartenderRepository.Delete(bartender);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

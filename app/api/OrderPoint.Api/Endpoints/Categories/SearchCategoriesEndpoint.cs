@@ -21,7 +21,8 @@ internal sealed class SearchCategoriesEndpoint : IEndpoint
         app
             .MapGet("api/categories/search", HandleAsync)
             .WithName("SearchCategories")
-            .WithTags("Categories");
+            .WithTags("Categories")
+            .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 
     private static async Task<Results<Ok<SearchCategoriesResponse>, ProblemHttpResult>> HandleAsync(

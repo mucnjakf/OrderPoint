@@ -55,7 +55,7 @@ dotnet ef migrations add <Name> \
 - Migration names describe the change as `<Verb>_<What>`: `Add_Item`, `Add_ImageUrl_To_Category`, `Add_Category_Description_And_Status`, `Remove_ShortDescription_From_Item`, `Restrict_Category_Delete`.
 - There is no test project yet. Do not add one unless asked.
 - "Done" means the build succeeds with no warnings. The AppHost suppresses `ASPIRE010` on purpose (DCP and the dashboard come from NuGet, not the Aspire CLI bundle).
-- Secrets live in user secrets, not appsettings (e.g. `MediatR:LicenseKey` for the Api).
+- Secrets live in user secrets, not appsettings. The Api needs `MediatR:LicenseKey`, `Jwt:SigningKey` (at least 32 characters; the API refuses to start without it) and `Admin:Email` + `Admin:Password` (the seeded admin). `appsettings.json` lists these keys with empty values.
 - Running the app needs Docker (Aspire starts Postgres on port 59286 and the Azurite blob endpoint on port 59287, both as persistent containers with data volumes; the blob port is fixed because image URLs are stored with it). The design-time `ApplicationDbContextFactory` points at `localhost:5432`; that is fine for `migrations add`, which does not connect.
 
 ## Backend conventions
@@ -66,7 +66,7 @@ dotnet ef migrations add <Name> \
 - Creation goes through `public static Result<T> Create(...)` (failures: `Result.Failure<T>(...)`); changes through `public Result Update(...)` (failures: `Result.Failure(...)`). Both validate invariants instead of throwing. `Update` sets `UpdatedAtUtc = DateTimeOffset.UtcNow`.
 - IDs are `Guid.CreateVersion7()`, timestamps are `DateTimeOffset.UtcNow`.
 - Navigation collections: `private readonly List<T> _items = []` exposed as `IReadOnlyList<T>`.
-- Errors live in `Errors/<Entity>Errors.cs` as `static readonly Error` fields built with `Error.NotFound/Validation/Conflict/Failure`, code format `"<Entity>.<Reason>"`. Errors used only inside Domain are `internal`, errors used by handlers are `public`. (`Error.RequestValidation` is reserved for the API's FluentValidation exception handler.)
+- Errors live in `Errors/<Entity>Errors.cs` as `static readonly Error` fields built with `Error.NotFound/Validation/Conflict/Unauthorized/Forbidden/Failure` (401/403 are used by `AuthErrors` only), code format `"<Entity>.<Reason>"`. Errors used only inside Domain are `internal`, errors used by handlers are `public`. (`Error.RequestValidation` is reserved for the API's FluentValidation exception handler.)
 - Sort options are enums in `Sorting/<Entity>SortBy.cs` (`NameAsc`, `NameDesc`, ..., `CreatedAtUtcDesc`). Other enums go in `Enumerations/`.
 
 ### Application (`OrderPoint.Application`)
@@ -78,7 +78,6 @@ dotnet ef migrations add <Name> \
 - Handlers return `Result`/`Result<T>`, never throw for business failures. Typical flow: load → `Result.Failure(XErrors.NotFound)` if null → check related entities exist → call domain `Create`/`Update` → propagate failure → repository → `unitOfWork.SaveChangesAsync`.
 - Create handlers that return a DTO with navigation data reload the entity after saving (`itemRepository.GetAsync(id)`, which includes `Category`) and map that. If nothing needs loading, map directly (a new category has `itemsCount: 0`).
 - Uniqueness rules (e.g. bartender email) are checked in the handler before the domain `Create`/`Update` with `repository.ExistsBy<Field>Async(value)` (e.g. `ExistsByEmailAsync`) and return a `Conflict` error; on update the check only runs when the value changed. A unique index in the EF configuration backs them up. Values are stored as entered (no trimming or lower-casing).
-- Bartender passwords, login and "last login" are deliberately not implemented yet; they will be designed together with authentication and the bartender app.
 - Orders are read-only in the Admin. `POST api/orders` exists for the future customer app. Status changes (accept, decline, activate, complete) and the `<Status>AtUtc` timestamps they set are deliberately not implemented yet; they come with the bartender app. Order lines (`OrderItem`) copy the item's price into `UnitPrice` when the order is placed, so later price changes do not rewrite history; the order total is calculated in the mapper, not stored.
 - Deleting a parent that still has children is blocked in the handler with a `Conflict` error (e.g. `CategoryErrors.CannotDeleteCategoryWithItems`), backed by `DeleteBehavior.Restrict` on the foreign key.
 - DTOs: `public sealed record XDto(...)` in `Dtos/`. Mapping is manual via extension methods in `Dtos/Mappers/<Entity>Mapper.cs` (`ToXDto()`). No AutoMapper.
@@ -96,11 +95,11 @@ dotnet ef migrations add <Name> \
 
 ### API (`OrderPoint.Api`)
 
-- `Program.cs` pipeline order: `ApplyMigrations` → `UseExceptionHandler` (first middleware) → `UseHttpsRedirection` → `UseCors` → endpoint and docs mapping. `launchSettings.json` URLs never contain a path (Kestrel refuses them); use `launchUrl` instead.
+- `Program.cs` pipeline order: `ApplyMigrations` → `SeedAdminAsync` → `UseExceptionHandler` (first middleware) → `UseHttpsRedirection` → `UseCors` → `UseAuthentication` → `UseAuthorization` → endpoint and docs mapping. `launchSettings.json` URLs never contain a path (Kestrel refuses them); use `launchUrl` instead.
 - One endpoint per file in `Endpoints/<Feature>/<Action><Entity>Endpoint.cs`: `internal sealed class XEndpoint : IEndpoint`, discovered automatically.
 - Request and response records (`internal sealed record`) are declared in the same file above the endpoint; the FluentValidation validator is a nested `internal sealed class XRequestValidator` inside the endpoint class (auto-registered). Every endpoint that takes a body or query string has a request record and a validator.
 - Query-string input is bound into a request record with `[AsParameters] XRequest request`; its constructor parameters carry `[FromQuery]` (see `GetItemsEndpoint`, `SearchCategoriesEndpoint`). Paged lists validate `PageNumber > 0` and `PageSize` between 1 and 100; search text is at most 100 characters (a search that cannot match returns no results, not an error); required search text uses `NotEmpty()` (also rejects whitespace). Route values (`{id:guid}`) stay as `[FromRoute]` parameters.
-- `MapEndpoint` uses route `api/<plural>`, `api/<plural>/{id:guid}`, `api/<plural>/search?searchQuery=...` (unpaged lookup), plus `.WithName("<Action><Entity>")` and `.WithTags("<Plural>")`.
+- `MapEndpoint` uses route `api/<plural>`, `api/<plural>/{id:guid}`, `api/<plural>/search?searchQuery=...` (unpaged lookup), plus `.WithName("<Action><Entity>")`, `.WithTags("<Plural>")` and, for every Admin endpoint, `.RequireAuthorization(AuthorizationPolicies.Admin)` as the last call. Endpoints without `RequireAuthorization` are anonymous (auth endpoints, `POST api/orders`, health checks, API docs), so never forget it on a new Admin endpoint.
 - `private static async Task<Results<..., ProblemHttpResult>> HandleAsync(...)` with explicit `[FromBody]`/`[FromRoute]`/`[FromQuery]`/`[FromServices]` attributes and a `CancellationToken`.
 - Flow: `await validator.ValidateAndThrowAsync(request, ct)` → build command/query → `sender.Send` → `result.IsSuccess ? TypedResults.X(...) : result.ToProblemDetails()`.
 - Responses wrap payloads as `{ Data }`: create → `CreatedAtRoute` to the Get route, update/delete → `NoContent`, get → `Ok`.
@@ -114,6 +113,15 @@ dotnet ef migrations add <Name> \
 - Admin: dialogs use the shared `ImageUploadField` (upload button, optional remove, inline error) which reads the file into an `ImageFileDto`; the preview paper shows it via `ImageFileDto.ToDataUrl()`. The request carries it as `[JsonIgnore] Image` (update also `[JsonIgnore] RemoveImage`), and the page sends create/update and then the image call inside one `ApiService.ExecuteAsync` (see `CategoriesPage`).
 - Categories, Items and Bartenders all have uploads (blob folders `categories/`, `items/`, `bartenders/`). Bartenders without an image show coloured initials in `BartenderAvatar` (text size follows the avatar `Size`). Item cards in `ItemsPage` use `ItemCardImage`: the image at a fixed height, uncropped, centred over a blurred, faded copy of itself that fills the card's top area (so the background matches the image's colours), or the centred placeholder in an area of the same height. Small fixed-size thumbnails use `MudImage` with `ObjectFit.Cover` so photos are cropped, not stretched; never `MudCardMedia` inside a list row (it defaults to 300px tall).
 
+### Authentication
+
+- ASP.NET Core Identity, but only its user store: `UserManager` with `UserOnlyStore` on the plain `ApplicationDbContext` (password hashing, lockout, unique email, security stamp). No `SignInManager`, `MapIdentityApi`, Identity UI, cookies, claims, external logins, 2FA or Identity roles. Tables: `Users` (Infrastructure `Identity/ApplicationUser`, fully configured in `ApplicationUserTypeConfiguration`, unused Identity columns ignored) and `RefreshTokens`.
+- Two roles in `UserRole` (a column on the user): `Admin` (only seeded at startup from `Admin:Email`/`Admin:Password` when that email does not exist yet) and `Bartender`. A bartender's user has the same `Id` as the `Bartender` row; creating a bartender creates the login (temporary password, `MustChangePassword = true`), changing the email updates it, deactivating revokes refresh tokens, deleting deletes it.
+- Application talks to Identity only through `Identity/IIdentityService` and `Identity/ITokenService` (implemented in Infrastructure `Identity/`). The user store runs with `AutoSaveChanges = false`, so user and token changes are saved by the handler's `IUnitOfWork` together with everything else.
+- Tokens: JWT access token (HS256, 15 minutes, claims `sub`, `email`, `role`) and a random refresh token (7 days, only its SHA-256 hash stored, replaced on every refresh). Lifetimes, issuer and audience are in `appsettings.json` (`Jwt`), the key in user secrets. `ClockSkew` is zero.
+- Endpoints (anonymous): `POST api/auth/login` (`email`, `password`, `role`), `POST api/auth/initial-password` (first login only), `POST api/auth/refresh`, `POST api/auth/logout`. Each app sends its own role; a user of the other role gets `InvalidCredentials`, exactly like a wrong password. 5 failed attempts lock an account for 5 minutes. A bartender with `MustChangePassword` gets `PasswordChangeRequired` (403) and must use `initial-password`, which works only while the flag is set; an inactive bartender gets `AccountInactive`.
+- Authorization: policy `AuthorizationPolicies.Admin` (role `Admin`) on every Admin endpoint. The bartender app's endpoints get a `Bartender` policy when they are built. Scalar sends a pasted bearer token (`BearerSecuritySchemeTransformer`).
+- Admin: `Auth/` feature folder. `AuthService` (one per circuit) keeps the tokens in `ProtectedLocalStorage`, refreshes one minute before expiry under a lock (parallel calls refresh once) and raises `SessionChanged`. `AccessTokenHandler` on the "OrderPointApi" client attaches the token; it reaches the circuit's `AuthService` through `CircuitServicesAccessor` + `ServicesAccessorCircuitHandler` (the documented pattern, since `IHttpClientFactory` handlers live in another DI scope). `AuthApiClient` uses the separate "OrderPointAuthApi" client without the handler. `MainLayout` is the gate: it renders nothing until the session is loaded, then `LoginForm` instead of the page when signed out, so no page needs `[Authorize]`. Prerendering is off (`App.razor`) because browser storage is readable only once the circuit is connected. When a refresh fails, calls throw `SessionExpiredException`, which `ApiService` ignores silently, and the login form says the session expired.
 ### Validation is duplicated on purpose; keep it in sync
 
 Field rules live in several places. Changing one means changing all of them:
@@ -134,13 +142,13 @@ Field rules live in several places. Changing one means changing all of them:
 
 ### API calls
 
-- API clients are `internal sealed`, use relative URIs without a leading slash (`api/items?...`), escape user text with `Uri.EscapeDataString`, use `httpClientFactory.CreateClient("OrderPointApi")`, call `ApiExceptionHelpers.ThrowApiExceptionAsync` on non-success, and unwrap `.Data` from the response record. Register them in `Program.cs`.
+- API clients are `internal sealed`, use relative URIs without a leading slash (`api/items?...`), escape user text with `Uri.EscapeDataString`, use `httpClientFactory.CreateClient("OrderPointApi")` (the access token is attached automatically), call `ApiExceptionHelpers.ThrowApiExceptionAsync` on non-success, and unwrap `.Data` from the response record. Register them in `Program.cs`.
 - Pages and dialogs call API clients **only** through `ApiService`, which owns all API error handling and snackbars:
   - Queries: `T? result = await ApiService.ExecuteAsync(() => client.GetXAsync(...))`. Returns `null` on failure (error snackbar already shown), so fall back: `Items = Pagination?.Items ?? [];`.
   - Mutations: `bool isSuccess = await ApiService.ExecuteAsync(() => client.CreateXAsync(request), $"Item {request.Name} created successfully");`. Shows the success snackbar on success and the error snackbar on failure; reload the list only when `isSuccess`.
   - Autocomplete `SearchFunc`s pass MudBlazor's `CancellationToken` to both the client and `ExecuteAsync`, so cancelled searches are silent: `return categories ?? [];`.
   - Pages never inject `ISnackbar` for API results.
-  - `ApiService` logs unexpected exceptions (network, parsing); expected API errors (ProblemDetails) and cancellations are not logged.
+  - `ApiService` logs unexpected exceptions (network, parsing); expected API errors (ProblemDetails), cancellations and `SessionExpiredException` are not logged.
 
 ### Pages and dialogs
 
@@ -180,4 +188,4 @@ Field rules live in several places. Changing one means changing all of them:
 
 ## Adding a new entity end-to-end (checklist)
 
-Domain entity + errors (+ sort enum) → repository interface → EF config + EF repository + DbSet + registration → migration → DTO + mapper → commands/queries → endpoints with validators → Admin DTOs/enums/sorting → API client + requests/responses + registration → page + dialogs → nav link in `Shared/Layout/MainLayout.razor` (add it, or check it already exists; Orders and Bartenders already have links) → `dotnet build app/OrderPoint.slnx -c Release`.
+Domain entity + errors (+ sort enum) → repository interface → EF config + EF repository + DbSet + registration → migration → DTO + mapper → commands/queries → endpoints with validators and `RequireAuthorization(AuthorizationPolicies.Admin)` → Admin DTOs/enums/sorting → API client + requests/responses + registration → page + dialogs → nav link in `Shared/Layout/MainLayout.razor` (add it, or check it already exists; Orders and Bartenders already have links) → `dotnet build app/OrderPoint.slnx -c Release`.

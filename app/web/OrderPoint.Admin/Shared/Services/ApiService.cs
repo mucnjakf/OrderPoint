@@ -3,6 +3,7 @@ using OrderPoint.Admin.Shared.Errors;
 
 namespace OrderPoint.Admin.Shared.Services;
 
+// A SessionExpiredException is silent: the layout already replaced the page with the login form
 internal sealed class ApiService(ISnackbar snackbar, ILogger<ApiService> logger)
 {
     internal async Task<bool> ExecuteAsync(
@@ -19,6 +20,10 @@ internal sealed class ApiService(ISnackbar snackbar, ILogger<ApiService> logger)
             return true;
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            return false;
+        }
+        catch (SessionExpiredException)
         {
             return false;
         }
@@ -45,6 +50,10 @@ internal sealed class ApiService(ISnackbar snackbar, ILogger<ApiService> logger)
             return await apiCall();
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            return default;
+        }
+        catch (SessionExpiredException)
         {
             return default;
         }

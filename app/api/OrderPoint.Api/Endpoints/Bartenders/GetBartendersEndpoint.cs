@@ -28,7 +28,8 @@ internal sealed class GetBartendersEndpoint : IEndpoint
         app
             .MapGet("api/bartenders", HandleAsync)
             .WithName("GetBartenders")
-            .WithTags("Bartenders");
+            .WithTags("Bartenders")
+            .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 
     private static async Task<Results<Ok<GetBartendersResponse>, ProblemHttpResult>> HandleAsync(

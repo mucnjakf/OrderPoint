@@ -1,0 +1,52 @@
+﻿<PageTitle>Sign in</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraSmall" Class="d-flex align-center" Style="min-height: 100vh">
+    <MudPaper Elevation="3" Class="pa-8" Width="100%">
+        <EditForm Model="@Request" OnValidSubmit="@SignInAsync">
+            <DataAnnotationsValidator/>
+
+            <MudStack AlignItems="AlignItems.Center" Spacing="1" Class="mb-6">
+                <MudImage Src="images/orderpoint-logo.svg" Alt="OrderPoint logo" Width="64" Height="64" Class="mb-2"/>
+                <MudText Typo="Typo.h5" HtmlTag="h1">OrderPoint</MudText>
+                <MudText Typo="Typo.body2">Admin web</MudText>
+            </MudStack>
+
+            @if (AuthService.IsSessionExpired)
+            {
+                <MudAlert Severity="Severity.Info" Dense="true" Class="mb-5">
+                    Your session has expired. Please sign in again.
+                </MudAlert>
+            }
+
+            <MudTextField Label="Email"
+                          @bind-Value="@Request.Email"
+                          For="@(() => Request.Email)"
+                          InputType="InputType.Email"
+                          Class="mb-5"
+                          Variant="Variant.Outlined"
+                          Immediate="true"/>
+
+            <MudTextField Label="Password"
+                          @bind-Value="@Request.Password"
+                          For="@(() => Request.Password)"
+                          InputType="@PasswordInputType"
+                          Adornment="Adornment.End"
+                          AdornmentIcon="@PasswordVisibilityIcon"
+                          AdornmentAriaLabel="Show or hide password"
+                          OnAdornmentClick="@TogglePasswordVisibility"
+                          Class="mb-8"
+                          Variant="Variant.Outlined"
+                          Immediate="true"/>
+
+            <MudButton ButtonType="ButtonType.Submit"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Size="Size.Large"
+                       FullWidth="true"
+                       Disabled="@IsSigningIn"
+                       StartIcon="@Icons.Material.Filled.Login">
+                Sign in
+            </MudButton>
+        </EditForm>
+    </MudPaper>
+</MudContainer>

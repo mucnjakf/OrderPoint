@@ -1,4 +1,5 @@
-﻿using OrderPoint.Application.Mediator;
+﻿using OrderPoint.Application.Identity;
+using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Domain.Entities;
 using OrderPoint.Domain.Enumerations;
@@ -16,7 +17,11 @@ public sealed record UpdateBartenderCommand(
     BartenderStatus Status,
     string? Notes) : ICommand;
 
-internal sealed class UpdateBartenderCommandHandler(IBartenderRepository bartenderRepository, IUnitOfWork unitOfWork)
+internal sealed class UpdateBartenderCommandHandler(
+    IBartenderRepository bartenderRepository,
+    IIdentityService identityService,
+    ITokenService tokenService,
+    IUnitOfWork unitOfWork)
     : ICommandHandler<UpdateBartenderCommand>
 {
     public async Task<Result> Handle(UpdateBartenderCommand command, CancellationToken cancellationToken)
@@ -28,7 +33,10 @@ internal sealed class UpdateBartenderCommandHandler(IBartenderRepository bartend
             return Result.Failure(BartenderErrors.NotFound);
         }
 
-        if (command.Email != bartender.Email)
+        bool isEmailChanged = command.Email != bartender.Email;
+        bool isDeactivated = bartender.Status == BartenderStatus.Active && command.Status == BartenderStatus.Inactive;
+
+        if (isEmailChanged)
         {
             bool emailExists = await bartenderRepository.ExistsByEmailAsync(command.Email, cancellationToken);
 
@@ -49,6 +57,21 @@ internal sealed class UpdateBartenderCommandHandler(IBartenderRepository bartend
         if (result.IsFailure)
         {
             return Result.Failure(result.Error);
+        }
+
+        if (isEmailChanged)
+        {
+            Result userResult = await identityService.UpdateEmailAsync(bartender.Id, command.Email, cancellationToken);
+
+            if (userResult.IsFailure)
+            {
+                return Result.Failure(userResult.Error);
+            }
+        }
+
+        if (isDeactivated)
+        {
+            await tokenService.RevokeUserTokensAsync(bartender.Id, cancellationToken);
         }
 
         await unitOfWork.SaveChangesAsync(cancellationToken);

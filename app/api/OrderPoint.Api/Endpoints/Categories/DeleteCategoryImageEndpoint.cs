@@ -15,7 +15,8 @@ internal sealed class DeleteCategoryImageEndpoint : IEndpoint
         app
             .MapDelete("api/categories/{id:guid}/image", HandleAsync)
             .WithName("DeleteCategoryImage")
-            .WithTags("Categories");
+            .WithTags("Categories")
+            .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 
     private static async Task<Results<NoContent, ProblemHttpResult>> HandleAsync(

@@ -25,7 +25,8 @@ internal sealed class UpdateBartenderEndpoint : IEndpoint
         app
             .MapPut("api/bartenders/{id:guid}", HandleAsync)
             .WithName("UpdateBartender")
-            .WithTags("Bartenders");
+            .WithTags("Bartenders")
+            .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 
     private static async Task<Results<NoContent, ProblemHttpResult>> HandleAsync(

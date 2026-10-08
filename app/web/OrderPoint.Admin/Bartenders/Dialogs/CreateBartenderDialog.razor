@@ -48,6 +48,19 @@
                                       Immediate="true"/>
                     </MudStack>
 
+                    <MudTextField Label="Temporary password"
+                                  @bind-Value="@Request.Password"
+                                  For="@(() => Request.Password)"
+                                  InputType="@PasswordInputType"
+                                  Adornment="Adornment.End"
+                                  AdornmentIcon="@PasswordVisibilityIcon"
+                                  AdornmentAriaLabel="Show or hide password"
+                                  OnAdornmentClick="@TogglePasswordVisibility"
+                                  Class="mb-5"
+                                  HelperText="8+ characters, upper and lower case and a digit. Changed at first login."
+                                  Variant="Variant.Outlined"
+                                  Immediate="true"/>
+
                     <MudGrid Spacing="3">
                         <MudItem xs="6">
                             <MudSelect Label="Status"

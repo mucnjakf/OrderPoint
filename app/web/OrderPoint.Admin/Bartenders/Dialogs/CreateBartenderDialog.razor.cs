@@ -15,6 +15,19 @@ public sealed partial class CreateBartenderDialog
 
     private string? PreviewImageUrl => Request.Image?.ToDataUrl();
 
+    private bool IsPasswordVisible { get; set; }
+
+    private InputType PasswordInputType => IsPasswordVisible ? InputType.Text : InputType.Password;
+
+    private string PasswordVisibilityIcon => IsPasswordVisible
+        ? Icons.Material.Filled.VisibilityOff
+        : Icons.Material.Filled.Visibility;
+
+    private void TogglePasswordVisibility()
+    {
+        IsPasswordVisible = !IsPasswordVisible;
+    }
+
     private void OnImageSelected(ImageFileDto image)
     {
         Request.Image = image;

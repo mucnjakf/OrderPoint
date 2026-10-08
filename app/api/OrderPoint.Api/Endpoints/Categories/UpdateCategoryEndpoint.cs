@@ -22,7 +22,8 @@ internal sealed class UpdateCategoryEndpoint : IEndpoint
         app
             .MapPut("api/categories/{id:guid}", HandleAsync)
             .WithName("UpdateCategory")
-            .WithTags("Categories");
+            .WithTags("Categories")
+            .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 
     private static async Task<Results<NoContent, ProblemHttpResult>> HandleAsync(

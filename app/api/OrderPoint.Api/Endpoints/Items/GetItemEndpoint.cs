@@ -18,7 +18,8 @@ internal sealed class GetItemEndpoint : IEndpoint
         app
             .MapGet("api/items/{id:guid}", HandleAsync)
             .WithName("GetItem")
-            .WithTags("Items");
+            .WithTags("Items")
+            .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 
     private static async Task<Results<Ok<GetItemResponse>, ProblemHttpResult>> HandleAsync(

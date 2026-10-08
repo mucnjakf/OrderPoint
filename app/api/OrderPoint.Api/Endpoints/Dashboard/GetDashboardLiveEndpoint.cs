@@ -18,7 +18,8 @@ internal sealed class GetDashboardLiveEndpoint : IEndpoint
         app
             .MapGet("api/dashboard/live", HandleAsync)
             .WithName("GetDashboardLive")
-            .WithTags("Dashboard");
+            .WithTags("Dashboard")
+            .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 
     private static async Task<Results<Ok<GetDashboardLiveResponse>, ProblemHttpResult>> HandleAsync(
