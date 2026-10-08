@@ -51,10 +51,10 @@ internal sealed class ItemEfCoreRepository(ApplicationDbContext dbContext) : IIt
     public void Delete(Item item)
         => dbContext.Items.Remove(item);
 
-    public async Task<int> CountAsync(Guid categoryId, CancellationToken cancellationToken = default)
+    public async Task<int> CountByCategoryAsync(Guid categoryId, CancellationToken cancellationToken = default)
         => await dbContext.Items.CountAsync(item => item.CategoryId == categoryId, cancellationToken);
 
-    public async Task<bool> ExistsAsync(Guid categoryId, CancellationToken cancellationToken = default)
+    public async Task<bool> ExistsByCategoryAsync(Guid categoryId, CancellationToken cancellationToken = default)
         => await dbContext.Items.AnyAsync(item => item.CategoryId == categoryId, cancellationToken);
 
     private static IQueryable<Item> SearchItems(IQueryable<Item> query, string? searchQuery)

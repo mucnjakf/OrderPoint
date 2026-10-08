@@ -30,7 +30,7 @@ internal sealed class UpdateBartenderCommandHandler(IBartenderRepository bartend
 
         if (command.Email != bartender.Email)
         {
-            bool emailExists = await bartenderRepository.ExistsAsync(command.Email, cancellationToken);
+            bool emailExists = await bartenderRepository.ExistsByEmailAsync(command.Email, cancellationToken);
 
             if (emailExists)
             {

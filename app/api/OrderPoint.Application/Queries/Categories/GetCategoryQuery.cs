@@ -22,7 +22,7 @@ internal sealed class GetCategoryQueryHandler(ICategoryRepository categoryReposi
             return Result.Failure<CategoryDto>(CategoryErrors.NotFound);
         }
 
-        int itemsCount = await itemRepository.CountAsync(category.Id, cancellationToken);
+        int itemsCount = await itemRepository.CountByCategoryAsync(category.Id, cancellationToken);
 
         var categoryDto = category.ToCategoryDto(itemsCount);
 

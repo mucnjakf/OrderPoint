@@ -25,7 +25,7 @@ internal sealed class DeleteCategoryCommandHandler(
             return Result.Failure(CategoryErrors.NotFound);
         }
 
-        bool containsItems = await itemRepository.ExistsAsync(category.Id, cancellationToken);
+        bool containsItems = await itemRepository.ExistsByCategoryAsync(category.Id, cancellationToken);
 
         if (containsItems)
         {

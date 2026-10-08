@@ -20,5 +20,5 @@ public interface IBartenderRepository
 
     void Delete(Bartender bartender);
 
-    Task<bool> ExistsAsync(string email, CancellationToken cancellationToken = default);
+    Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken = default);
 }

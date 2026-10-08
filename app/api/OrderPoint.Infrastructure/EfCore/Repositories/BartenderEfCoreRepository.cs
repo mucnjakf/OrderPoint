@@ -42,7 +42,7 @@ internal sealed class BartenderEfCoreRepository(ApplicationDbContext dbContext) 
     public void Delete(Bartender bartender)
         => dbContext.Bartenders.Remove(bartender);
 
-    public async Task<bool> ExistsAsync(string email, CancellationToken cancellationToken = default)
+    public async Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken = default)
         => await dbContext.Bartenders.AnyAsync(bartender => bartender.Email == email, cancellationToken);
 
     private static IQueryable<Bartender> SearchBartenders(IQueryable<Bartender> query, string? searchQuery)

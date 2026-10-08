@@ -23,7 +23,7 @@ internal sealed class CreateBartenderCommandHandler(IBartenderRepository bartend
 {
     public async Task<Result<BartenderDto>> Handle(CreateBartenderCommand command, CancellationToken cancellationToken)
     {
-        bool emailExists = await bartenderRepository.ExistsAsync(command.Email, cancellationToken);
+        bool emailExists = await bartenderRepository.ExistsByEmailAsync(command.Email, cancellationToken);
 
         if (emailExists)
         {
