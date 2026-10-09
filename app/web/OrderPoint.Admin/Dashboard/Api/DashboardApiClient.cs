@@ -6,10 +6,8 @@ using OrderPoint.Admin.Shared.Services;
 
 namespace OrderPoint.Admin.Dashboard.Api;
 
-internal sealed class DashboardApiClient(IHttpClientFactory httpClientFactory, TimeZoneService timeZoneService)
+internal sealed class DashboardApiClient(HttpClient httpClient, TimeZoneService timeZoneService)
 {
-    private readonly HttpClient _httpClient = httpClientFactory.CreateClient("OrderPointApi");
-
     private string TimeZone => Uri.EscapeDataString(timeZoneService.TimeZone.Id);
 
     internal async Task<DashboardSummaryDto> GetSummaryAsync(
@@ -88,7 +86,7 @@ internal sealed class DashboardApiClient(IHttpClientFactory httpClientFactory, T
 
     private async Task<TResponse> GetAsync<TResponse>(string requestUri, CancellationToken cancellationToken)
     {
-        HttpResponseMessage response = await _httpClient.GetAsync(requestUri, cancellationToken);
+        HttpResponseMessage response = await httpClient.GetAsync(requestUri, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {

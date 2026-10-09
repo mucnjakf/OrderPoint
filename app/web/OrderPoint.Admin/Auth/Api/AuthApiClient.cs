@@ -5,14 +5,11 @@ using OrderPoint.Admin.Shared.Errors;
 
 namespace OrderPoint.Admin.Auth.Api;
 
-internal sealed class AuthApiClient(IHttpClientFactory httpClientFactory)
+internal sealed class AuthApiClient(HttpClient httpClient)
 {
-    // The auth endpoints are anonymous and called without the access token handler, which uses them to refresh
-    private readonly HttpClient _httpClient = httpClientFactory.CreateClient("OrderPointAuthApi");
-
     internal async Task<AuthTokensDto> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
     {
-        HttpResponseMessage response = await _httpClient
+        HttpResponseMessage response = await httpClient
             .PostAsJsonAsync("api/auth/login", request, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
@@ -31,7 +28,7 @@ internal sealed class AuthApiClient(IHttpClientFactory httpClientFactory)
         RefreshTokensRequest request,
         CancellationToken cancellationToken = default)
     {
-        HttpResponseMessage response = await _httpClient
+        HttpResponseMessage response = await httpClient
             .PostAsJsonAsync("api/auth/refresh", request, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
@@ -48,7 +45,7 @@ internal sealed class AuthApiClient(IHttpClientFactory httpClientFactory)
 
     internal async Task LogoutAsync(LogoutRequest request, CancellationToken cancellationToken = default)
     {
-        HttpResponseMessage response = await _httpClient
+        HttpResponseMessage response = await httpClient
             .PostAsJsonAsync("api/auth/logout", request, cancellationToken);
 
         if (!response.IsSuccessStatusCode)

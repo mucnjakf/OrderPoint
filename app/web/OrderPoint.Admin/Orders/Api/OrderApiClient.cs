@@ -6,10 +6,8 @@ using OrderPoint.Admin.Shared.Errors;
 
 namespace OrderPoint.Admin.Orders.Api;
 
-internal sealed class OrderApiClient(IHttpClientFactory httpClientFactory)
+internal sealed class OrderApiClient(HttpClient httpClient)
 {
-    private readonly HttpClient _httpClient = httpClientFactory.CreateClient("OrderPointApi");
-
     internal async Task<PaginationDto<OrderDto>> GetOrdersAsync(
         int pageNumber,
         int pageSize,
@@ -42,7 +40,7 @@ internal sealed class OrderApiClient(IHttpClientFactory httpClientFactory)
             requestUri += $"&bartenderId={bartenderId}";
         }
 
-        HttpResponseMessage response = await _httpClient.GetAsync(requestUri, cancellationToken);
+        HttpResponseMessage response = await httpClient.GetAsync(requestUri, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {

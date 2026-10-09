@@ -22,19 +22,6 @@ builder.Services
     .AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services
-    .AddHttpClient("OrderPointApi", client =>
-    {
-        client.BaseAddress = new Uri("https+http://order-point-api");
-    })
-    .AddHttpMessageHandler<AccessTokenHandler>();
-
-// The auth endpoints are anonymous and called without AccessTokenHandler, which uses them to refresh tokens
-builder.Services.AddHttpClient("OrderPointAuthApi", client =>
-{
-    client.BaseAddress = new Uri("https+http://order-point-api");
-});
-
 builder.Services.AddScoped<CircuitServicesAccessor>();
 builder.Services.AddScoped<CircuitHandler, ServicesAccessorCircuitHandler>();
 builder.Services.AddTransient<AccessTokenHandler>();
@@ -42,12 +29,14 @@ builder.Services.AddScoped<AuthService>();
 
 builder.Services.AddScoped<ApiService>();
 builder.Services.AddScoped<TimeZoneService>();
-builder.Services.AddScoped<AuthApiClient>();
-builder.Services.AddScoped<CategoryApiClient>();
-builder.Services.AddScoped<ItemApiClient>();
-builder.Services.AddScoped<BartenderApiClient>();
-builder.Services.AddScoped<OrderApiClient>();
-builder.Services.AddScoped<DashboardApiClient>();
+
+// The auth endpoints are anonymous and called without AccessTokenHandler, which uses them to refresh tokens
+builder.Services.AddHttpClient<AuthApiClient>(ConfigureApiClient);
+builder.Services.AddHttpClient<CategoryApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
+builder.Services.AddHttpClient<ItemApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
+builder.Services.AddHttpClient<BartenderApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
+builder.Services.AddHttpClient<OrderApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
+builder.Services.AddHttpClient<DashboardApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 
 builder.Services.AddMudServices(configuration =>
 {
@@ -94,3 +83,8 @@ app
 app.MapDefaultEndpoints();
 
 app.Run();
+
+static void ConfigureApiClient(HttpClient client)
+{
+    client.BaseAddress = new Uri("https+http://order-point-api");
+}

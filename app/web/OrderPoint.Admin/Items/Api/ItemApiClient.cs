@@ -8,11 +8,9 @@ using OrderPoint.Admin.Shared.Errors;
 
 namespace OrderPoint.Admin.Items.Api;
 
-internal sealed class ItemApiClient(IHttpClientFactory httpClientFactory)
+internal sealed class ItemApiClient(HttpClient httpClient)
 {
     private const string ImageFormFieldName = "image";
-
-    private readonly HttpClient _httpClient = httpClientFactory.CreateClient("OrderPointApi");
 
     internal async Task<PaginationDto<ItemDto>> GetItemsAsync(
         int pageNumber,
@@ -40,7 +38,7 @@ internal sealed class ItemApiClient(IHttpClientFactory httpClientFactory)
             requestUri += $"&status={status}";
         }
 
-        HttpResponseMessage response = await _httpClient.GetAsync(requestUri, cancellationToken);
+        HttpResponseMessage response = await httpClient.GetAsync(requestUri, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -56,7 +54,7 @@ internal sealed class ItemApiClient(IHttpClientFactory httpClientFactory)
 
     internal async Task<ItemDto> GetItemAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        HttpResponseMessage response = await _httpClient.GetAsync($"api/items/{id}", cancellationToken);
+        HttpResponseMessage response = await httpClient.GetAsync($"api/items/{id}", cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -74,7 +72,7 @@ internal sealed class ItemApiClient(IHttpClientFactory httpClientFactory)
         CreateItemRequest request,
         CancellationToken cancellationToken = default)
     {
-        HttpResponseMessage response = await _httpClient
+        HttpResponseMessage response = await httpClient
             .PostAsJsonAsync("api/items", request, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
@@ -94,7 +92,7 @@ internal sealed class ItemApiClient(IHttpClientFactory httpClientFactory)
         UpdateItemRequest request,
         CancellationToken cancellationToken = default)
     {
-        HttpResponseMessage response = await _httpClient
+        HttpResponseMessage response = await httpClient
             .PutAsJsonAsync($"api/items/{id}", request, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
@@ -114,7 +112,7 @@ internal sealed class ItemApiClient(IHttpClientFactory httpClientFactory)
         using var formContent = new MultipartFormDataContent();
         formContent.Add(fileContent, ImageFormFieldName, image.FileName);
 
-        HttpResponseMessage response = await _httpClient
+        HttpResponseMessage response = await httpClient
             .PutAsync($"api/items/{id}/image", formContent, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
@@ -125,7 +123,7 @@ internal sealed class ItemApiClient(IHttpClientFactory httpClientFactory)
 
     internal async Task DeleteItemImageAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        HttpResponseMessage response = await _httpClient
+        HttpResponseMessage response = await httpClient
             .DeleteAsync($"api/items/{id}/image", cancellationToken);
 
         if (!response.IsSuccessStatusCode)
@@ -136,7 +134,7 @@ internal sealed class ItemApiClient(IHttpClientFactory httpClientFactory)
 
     internal async Task DeleteItemAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        HttpResponseMessage response = await _httpClient
+        HttpResponseMessage response = await httpClient
             .DeleteAsync($"api/items/{id}", cancellationToken);
 
         if (!response.IsSuccessStatusCode)

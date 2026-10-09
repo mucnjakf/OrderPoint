@@ -9,13 +9,11 @@ using OrderPoint.Admin.Shared.Errors;
 
 namespace OrderPoint.Admin.Categories.Api;
 
-internal sealed class CategoryApiClient(IHttpClientFactory httpClientFactory)
+internal sealed class CategoryApiClient(HttpClient httpClient)
 {
     private const int DefaultSearchResultsCount = 5;
 
     private const string ImageFormFieldName = "image";
-
-    private readonly HttpClient _httpClient = httpClientFactory.CreateClient("OrderPointApi");
 
     internal async Task<PaginationDto<CategoryDto>> GetCategoriesAsync(
         int pageNumber,
@@ -37,7 +35,7 @@ internal sealed class CategoryApiClient(IHttpClientFactory httpClientFactory)
             requestUri += $"&status={status}";
         }
 
-        HttpResponseMessage response = await _httpClient.GetAsync(requestUri, cancellationToken);
+        HttpResponseMessage response = await httpClient.GetAsync(requestUri, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -66,7 +64,7 @@ internal sealed class CategoryApiClient(IHttpClientFactory httpClientFactory)
             return result.Items;
         }
 
-        HttpResponseMessage response = await _httpClient.GetAsync(
+        HttpResponseMessage response = await httpClient.GetAsync(
             $"api/categories/search?searchQuery={Uri.EscapeDataString(searchQuery)}",
             cancellationToken);
 
@@ -84,7 +82,7 @@ internal sealed class CategoryApiClient(IHttpClientFactory httpClientFactory)
 
     internal async Task<CategoryDto> GetCategoryAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        HttpResponseMessage response = await _httpClient.GetAsync($"api/categories/{id}", cancellationToken);
+        HttpResponseMessage response = await httpClient.GetAsync($"api/categories/{id}", cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -102,7 +100,7 @@ internal sealed class CategoryApiClient(IHttpClientFactory httpClientFactory)
         CreateCategoryRequest request,
         CancellationToken cancellationToken = default)
     {
-        HttpResponseMessage response = await _httpClient
+        HttpResponseMessage response = await httpClient
             .PostAsJsonAsync("api/categories", request, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
@@ -122,7 +120,7 @@ internal sealed class CategoryApiClient(IHttpClientFactory httpClientFactory)
         UpdateCategoryRequest request,
         CancellationToken cancellationToken = default)
     {
-        HttpResponseMessage response = await _httpClient
+        HttpResponseMessage response = await httpClient
             .PutAsJsonAsync($"api/categories/{id}", request, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
@@ -142,7 +140,7 @@ internal sealed class CategoryApiClient(IHttpClientFactory httpClientFactory)
         using var formContent = new MultipartFormDataContent();
         formContent.Add(fileContent, ImageFormFieldName, image.FileName);
 
-        HttpResponseMessage response = await _httpClient
+        HttpResponseMessage response = await httpClient
             .PutAsync($"api/categories/{id}/image", formContent, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
@@ -153,7 +151,7 @@ internal sealed class CategoryApiClient(IHttpClientFactory httpClientFactory)
 
     internal async Task DeleteCategoryImageAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        HttpResponseMessage response = await _httpClient
+        HttpResponseMessage response = await httpClient
             .DeleteAsync($"api/categories/{id}/image", cancellationToken);
 
         if (!response.IsSuccessStatusCode)
@@ -164,7 +162,7 @@ internal sealed class CategoryApiClient(IHttpClientFactory httpClientFactory)
 
     internal async Task DeleteCategoryAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        HttpResponseMessage response = await _httpClient
+        HttpResponseMessage response = await httpClient
             .DeleteAsync($"api/categories/{id}", cancellationToken);
 
         if (!response.IsSuccessStatusCode)

@@ -8,11 +8,9 @@ using OrderPoint.Admin.Shared.Errors;
 
 namespace OrderPoint.Admin.Bartenders.Api;
 
-internal sealed class BartenderApiClient(IHttpClientFactory httpClientFactory)
+internal sealed class BartenderApiClient(HttpClient httpClient)
 {
     private const string ImageFormFieldName = "image";
-
-    private readonly HttpClient _httpClient = httpClientFactory.CreateClient("OrderPointApi");
 
     internal async Task<PaginationDto<BartenderDto>> GetBartendersAsync(
         int pageNumber,
@@ -34,7 +32,7 @@ internal sealed class BartenderApiClient(IHttpClientFactory httpClientFactory)
             requestUri += $"&status={status}";
         }
 
-        HttpResponseMessage response = await _httpClient.GetAsync(requestUri, cancellationToken);
+        HttpResponseMessage response = await httpClient.GetAsync(requestUri, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -50,7 +48,7 @@ internal sealed class BartenderApiClient(IHttpClientFactory httpClientFactory)
 
     internal async Task<BartenderDto> GetBartenderAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        HttpResponseMessage response = await _httpClient.GetAsync($"api/bartenders/{id}", cancellationToken);
+        HttpResponseMessage response = await httpClient.GetAsync($"api/bartenders/{id}", cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -68,7 +66,7 @@ internal sealed class BartenderApiClient(IHttpClientFactory httpClientFactory)
         CreateBartenderRequest request,
         CancellationToken cancellationToken = default)
     {
-        HttpResponseMessage response = await _httpClient
+        HttpResponseMessage response = await httpClient
             .PostAsJsonAsync("api/bartenders", request, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
@@ -88,7 +86,7 @@ internal sealed class BartenderApiClient(IHttpClientFactory httpClientFactory)
         UpdateBartenderRequest request,
         CancellationToken cancellationToken = default)
     {
-        HttpResponseMessage response = await _httpClient
+        HttpResponseMessage response = await httpClient
             .PutAsJsonAsync($"api/bartenders/{id}", request, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
@@ -102,7 +100,7 @@ internal sealed class BartenderApiClient(IHttpClientFactory httpClientFactory)
         ResetBartenderPasswordRequest request,
         CancellationToken cancellationToken = default)
     {
-        HttpResponseMessage response = await _httpClient
+        HttpResponseMessage response = await httpClient
             .PutAsJsonAsync($"api/bartenders/{id}/password", request, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
@@ -122,7 +120,7 @@ internal sealed class BartenderApiClient(IHttpClientFactory httpClientFactory)
         using var formContent = new MultipartFormDataContent();
         formContent.Add(fileContent, ImageFormFieldName, image.FileName);
 
-        HttpResponseMessage response = await _httpClient
+        HttpResponseMessage response = await httpClient
             .PutAsync($"api/bartenders/{id}/image", formContent, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
@@ -133,7 +131,7 @@ internal sealed class BartenderApiClient(IHttpClientFactory httpClientFactory)
 
     internal async Task DeleteBartenderImageAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        HttpResponseMessage response = await _httpClient
+        HttpResponseMessage response = await httpClient
             .DeleteAsync($"api/bartenders/{id}/image", cancellationToken);
 
         if (!response.IsSuccessStatusCode)
@@ -144,7 +142,7 @@ internal sealed class BartenderApiClient(IHttpClientFactory httpClientFactory)
 
     internal async Task DeleteBartenderAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        HttpResponseMessage response = await _httpClient
+        HttpResponseMessage response = await httpClient
             .DeleteAsync($"api/bartenders/{id}", cancellationToken);
 
         if (!response.IsSuccessStatusCode)
