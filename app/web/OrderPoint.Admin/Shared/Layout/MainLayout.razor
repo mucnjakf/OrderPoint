@@ -20,10 +20,7 @@
 
 <MudLayout>
     <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
-                       OnClick="@ToggleDrawer" />
-
-        <MudStack Class="ml-3" Row="true" AlignItems="AlignItems.Center">
+        <MudStack Row="true" AlignItems="AlignItems.Center">
             <MudImage Src="images/orderpoint-logo.svg" Alt="OrderPoint logo" Width="36" Height="36" />
 
             <MudStack Spacing="0">
@@ -102,6 +99,13 @@
             </MudStack>
         </div>
     </MudDrawer>
+
+    <div style="@DrawerToggleWrapperStyle">
+        <MudTooltip Text="@(DrawerOpen ? "Collapse menu" : "Expand menu")" Placement="Placement.Right">
+            <MudIconButton Icon="@DrawerToggleIcon" Size="Size.Small" Class="pa-1" Style="@DrawerToggleButtonStyle"
+                           OnClick="@ToggleDrawer" />
+        </MudTooltip>
+    </div>
 
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="pa-3">

@@ -7,6 +7,13 @@ namespace OrderPoint.Admin.Shared.Layout;
 
 public sealed partial class MainLayout : IDisposable
 {
+    private const string DrawerToggleWrapperStyle =
+        "position: fixed; left: 0; bottom: 92px; transform: translateX(-50%); " +
+        "z-index: calc(var(--mud-zindex-drawer) + 1)";
+
+    private const string DrawerToggleButtonStyle =
+        "background-color: var(--mud-palette-surface); border: 1px solid var(--mud-palette-lines-default)";
+
     [Inject]
     private AuthService AuthService { get; set; } = null!;
 
@@ -28,6 +35,10 @@ public sealed partial class MainLayout : IDisposable
 
     private string DarkModeIcon => IsDarkMode ? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode;
 
+    private string DrawerToggleIcon => DrawerOpen
+        ? Icons.Material.Filled.ChevronLeft
+        : Icons.Material.Filled.ChevronRight;
+
     protected override async Task OnInitializedAsync()
     {
         AuthService.SessionChanged += OnSessionChanged;
@@ -42,7 +53,6 @@ public sealed partial class MainLayout : IDisposable
 
     private void OnSessionChanged()
     {
-        // Raised on sign in, sign out and when a session expires during an API call (possibly off the UI thread)
         _ = InvokeAsync(StateHasChanged);
     }
 
