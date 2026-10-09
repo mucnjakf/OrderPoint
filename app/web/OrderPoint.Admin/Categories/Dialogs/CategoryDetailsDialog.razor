@@ -91,13 +91,6 @@
                     </MudStack>
 
                     <MudStack Row="true" Class="align-center">
-                        <MudChip T="string"
-                                 Size="Size.Small"
-                                 Variant="Variant.Text"
-                                 Color="@(context.IsActive ? Color.Success : Color.Error)">
-                            @(context.IsActive ? nameof(ItemStatus.Active) : nameof(ItemStatus.Inactive))
-                        </MudChip>
-
                         <MudStack Spacing="1" Class="align-end">
                             <MudText Typo="Typo.body1">
                                 @context.Portion x @context.Price.ToString("C", CultureInfo.CurrentCulture)

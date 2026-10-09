@@ -66,6 +66,28 @@
           EmptyStateText="No items found">
 
     <FilterContent>
+        <MudSelect @bind-Value="@SelectedStatus"
+                   @bind-Value:after="@OnStatusChangedAsync"
+                   T="ItemStatus?"
+                   Variant="Variant.Outlined"
+                   Label="Status"
+                   Class="mt-0"
+                   FitContent="true">
+
+            <MudSelectItem Value="@(null)" T="ItemStatus?">
+                <MudText>All</MudText>
+            </MudSelectItem>
+
+            @foreach (ItemStatus status in Enum.GetValues<ItemStatus>())
+            {
+                <MudSelectItem Value="@status" T="ItemStatus?">
+                    <MudText>
+                        @status.ToString()
+                    </MudText>
+                </MudSelectItem>
+            }
+        </MudSelect>
+
         <MudAutocomplete @bind-Value="@SelectedCategory"
                          @bind-Value:after="@OnCategoryChangedAsync"
                          T="CategoryDto"
@@ -82,27 +104,6 @@
                 </MudText>
             </NoItemsTemplate>
         </MudAutocomplete>
-
-        <MudSelect @bind-Value="@SelectedStatus"
-                   @bind-Value:after="@OnStatusChangedAsync"
-                   T="ItemStatus?"
-                   Variant="Variant.Outlined"
-                   Label="Status"
-                   FitContent="true">
-
-            <MudSelectItem Value="@(null)" T="ItemStatus?">
-                <MudText>All</MudText>
-            </MudSelectItem>
-
-            @foreach (ItemStatus status in Enum.GetValues<ItemStatus>())
-            {
-                <MudSelectItem Value="@status" T="ItemStatus?">
-                    <MudText>
-                        @status.ToString()
-                    </MudText>
-                </MudSelectItem>
-            }
-        </MudSelect>
     </FilterContent>
 
     <RowTemplate>
