@@ -6,6 +6,7 @@ using OrderPoint.Admin.Items.Api;
 using OrderPoint.Admin.Items.Api.Requests;
 using OrderPoint.Admin.Items.Dialogs;
 using OrderPoint.Admin.Items.Dtos;
+using OrderPoint.Admin.Items.Enumerations;
 using OrderPoint.Admin.Items.Sorting;
 using OrderPoint.Admin.Shared.Dtos;
 using OrderPoint.Admin.Shared.Extensions;
@@ -71,6 +72,8 @@ public sealed partial class ItemsPage
     private string? SearchQuery { get; set; }
 
     private CategoryDto? SelectedCategory { get; set; }
+
+    private ItemStatus? SelectedStatus { get; set; }
 
     private bool IsLoading { get; set; } = true;
 
@@ -153,7 +156,8 @@ public sealed partial class ItemsPage
             PageSize,
             SelectedSortBy,
             SearchQuery,
-            SelectedCategory?.Id));
+            SelectedCategory?.Id,
+            SelectedStatus));
 
         Items = Pagination?.Items ?? [];
 
@@ -173,6 +177,11 @@ public sealed partial class ItemsPage
     }
 
     private async Task OnCategoryChangedAsync()
+    {
+        await GetItemsAsync(pageNumber: 1);
+    }
+
+    private async Task OnStatusChangedAsync()
     {
         await GetItemsAsync(pageNumber: 1);
     }

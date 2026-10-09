@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using OrderPoint.Api.Configuration;
 using OrderPoint.Api.Extensions;
 using OrderPoint.Application.Commands.Items;
+using OrderPoint.Domain.Enumerations;
 using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Items;
@@ -14,6 +15,7 @@ internal sealed record UpdateItemRequest(
     string Description,
     double Portion,
     decimal Price,
+    ItemStatus Status,
     Guid CategoryId);
 
 internal sealed class UpdateItemEndpoint : IEndpoint
@@ -42,6 +44,7 @@ internal sealed class UpdateItemEndpoint : IEndpoint
             request.Description,
             request.Portion,
             request.Price,
+            request.Status,
             request.CategoryId);
 
         Result result = await sender.Send(command, cancellationToken);
@@ -68,6 +71,9 @@ internal sealed class UpdateItemEndpoint : IEndpoint
 
             RuleFor(request => request.Price)
                 .GreaterThan(0).WithMessage("Price must be positive");
+
+            RuleFor(request => request.Status)
+                .IsInEnum().WithMessage("Status is invalid");
         }
     }
 }

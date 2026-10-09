@@ -36,6 +36,10 @@ internal sealed class ItemTypeConfiguration : IEntityTypeConfiguration<Item>
             .IsRequired();
 
         builder
+            .Property(item => item.Status)
+            .IsRequired();
+
+        builder
             .Property(item => item.ImageUrl)
             .HasMaxLength(200)
             .IsRequired(false);

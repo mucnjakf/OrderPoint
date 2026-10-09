@@ -6,6 +6,7 @@ using OrderPoint.Api.Configuration;
 using OrderPoint.Api.Extensions;
 using OrderPoint.Application.Commands.Items;
 using OrderPoint.Application.Dtos;
+using OrderPoint.Domain.Enumerations;
 using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Items;
@@ -15,6 +16,7 @@ internal sealed record CreateItemRequest(
     string Description,
     double Portion,
     decimal Price,
+    ItemStatus Status,
     Guid CategoryId);
 
 internal sealed record CreateItemResponse(ItemDto Data);
@@ -43,6 +45,7 @@ internal sealed class CreateItemEndpoint : IEndpoint
             request.Description,
             request.Portion,
             request.Price,
+            request.Status,
             request.CategoryId);
 
         Result<ItemDto> result = await sender.Send(command, cancellationToken);
@@ -72,6 +75,9 @@ internal sealed class CreateItemEndpoint : IEndpoint
 
             RuleFor(request => request.Price)
                 .GreaterThan(0).WithMessage("Price must be positive");
+
+            RuleFor(request => request.Status)
+                .IsInEnum().WithMessage("Status is invalid");
         }
     }
 }

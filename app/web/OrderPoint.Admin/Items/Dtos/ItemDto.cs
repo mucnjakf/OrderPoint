@@ -1,4 +1,7 @@
-﻿namespace OrderPoint.Admin.Items.Dtos;
+﻿using OrderPoint.Admin.Categories.Enumerations;
+using OrderPoint.Admin.Items.Enumerations;
+
+namespace OrderPoint.Admin.Items.Dtos;
 
 public sealed record ItemDto(
     Guid Id,
@@ -6,8 +9,12 @@ public sealed record ItemDto(
     string Description,
     double Portion,
     decimal Price,
+    ItemStatus Status,
     string? ImageUrl,
     ItemCategoryDto Category,
     int OrdersCount,
     DateTimeOffset CreatedAtUtc,
-    DateTimeOffset? UpdatedAtUtc);
+    DateTimeOffset? UpdatedAtUtc)
+{
+    public bool IsActive => Status == ItemStatus.Active && Category.Status == CategoryStatus.Active;
+}

@@ -45,8 +45,24 @@
                                          Variant="Variant.Outlined"
                                          Class="mb-5"
                                          Immediate="true"/>
-                    </MudStack>
 
+                        <MudSelect Label="Status"
+                                   T="ItemStatus"
+                                   @bind-Value="@Request.Status"
+                                   For="@(() => Request.Status)"
+                                   HelperText="Inactive items, or items in an inactive category, can't be ordered."
+                                   Variant="Variant.Outlined"
+                                   Class="mb-5">
+                            @foreach (ItemStatus status in Enum.GetValues<ItemStatus>())
+                            {
+                                <MudSelectItem Value="@status" T="ItemStatus">
+                                    <MudText>
+                                        @status.ToString()
+                                    </MudText>
+                                </MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudStack>
                     <MudGrid Spacing="3">
                         <MudItem xs="6">
                             <MudAutocomplete @bind-Value="@SelectedCategory"
@@ -82,6 +98,7 @@
                                       Name="@Request.Name"
                                       Description="@Request.Description"
                                       Price="@Request.Price"
+                                      IsActive="@IsPreviewActive"
                                       NamePlaceholder="Item name"
                                       DescriptionPlaceholder="Item description"/>
 

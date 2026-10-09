@@ -21,6 +21,10 @@ public sealed partial class ItemPreviewPaper
     public decimal Price { get; set; }
 
     [Parameter]
+    [EditorRequired]
+    public bool IsActive { get; set; }
+
+    [Parameter]
     public string NamePlaceholder { get; set; } = string.Empty;
 
     [Parameter]

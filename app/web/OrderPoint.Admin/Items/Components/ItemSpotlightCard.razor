@@ -12,7 +12,8 @@
                   Class="mb-3"
                   Width="55"
                   Height="55"
-                  ObjectFit="ObjectFit.Cover"/>
+                  ObjectFit="ObjectFit.Cover"
+                  Style="@(Item.IsActive ? string.Empty : "filter: grayscale(1); opacity: 0.6;")"/>
 
         <MudText Typo="Typo.body1" Align="Align.Center">
             @Item.Name
@@ -20,6 +21,11 @@
 
         <MudText Typo="Typo.caption" Class="mb-2">
             @Item.Category.Name
+
+            @if (!Item.IsActive)
+            {
+                <span class="mud-error-text">· @nameof(ItemStatus.Inactive)</span>
+            }
         </MudText>
 
         <MudText Typo="Typo.h6">

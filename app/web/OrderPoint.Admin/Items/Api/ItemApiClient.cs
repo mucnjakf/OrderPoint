@@ -2,6 +2,7 @@
 using OrderPoint.Admin.Items.Api.Requests;
 using OrderPoint.Admin.Items.Api.Responses;
 using OrderPoint.Admin.Items.Dtos;
+using OrderPoint.Admin.Items.Enumerations;
 using OrderPoint.Admin.Shared.Dtos;
 using OrderPoint.Admin.Shared.Errors;
 
@@ -19,6 +20,7 @@ internal sealed class ItemApiClient(IHttpClientFactory httpClientFactory)
         string sortBy,
         string? searchQuery = null,
         Guid? categoryId = null,
+        ItemStatus? status = null,
         CancellationToken cancellationToken = default)
     {
         string requestUri = $"api/items?pageNumber={pageNumber}&pageSize={pageSize}&sortBy={sortBy}";
@@ -31,6 +33,11 @@ internal sealed class ItemApiClient(IHttpClientFactory httpClientFactory)
         if (categoryId is not null)
         {
             requestUri += $"&categoryId={categoryId}";
+        }
+
+        if (status is not null)
+        {
+            requestUri += $"&status={status}";
         }
 
         HttpResponseMessage response = await _httpClient.GetAsync(requestUri, cancellationToken);

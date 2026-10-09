@@ -2,8 +2,10 @@
 using MudBlazor;
 using OrderPoint.Admin.Categories.Api;
 using OrderPoint.Admin.Categories.Dtos;
+using OrderPoint.Admin.Categories.Enumerations;
 using OrderPoint.Admin.Items.Api.Requests;
 using OrderPoint.Admin.Items.Dtos;
+using OrderPoint.Admin.Items.Enumerations;
 using OrderPoint.Admin.Shared.Dtos;
 using OrderPoint.Admin.Shared.Extensions;
 using OrderPoint.Admin.Shared.Services;
@@ -30,6 +32,9 @@ public sealed partial class UpdateItemDialog
 
     private CategoryDto? SelectedCategory { get; set; }
 
+    private bool IsPreviewActive =>
+        Request.Status == ItemStatus.Active && SelectedCategory?.Status != CategoryStatus.Inactive;
+
     private bool IsFormSubmitted { get; set; }
 
     private string? PreviewImageUrl => Request.Image is not null
@@ -48,6 +53,7 @@ public sealed partial class UpdateItemDialog
             Description = Item.Description,
             Portion = Item.Portion,
             Price = Item.Price,
+            Status = Item.Status,
             CategoryId = Item.Category.Id
         };
 

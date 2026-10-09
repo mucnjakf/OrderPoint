@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using OrderPoint.Admin.Items.Enumerations;
 using OrderPoint.Admin.Shared.Dtos;
 
 namespace OrderPoint.Admin.Items.Api.Requests;
@@ -21,6 +22,9 @@ internal sealed class UpdateItemRequest
     [Required(ErrorMessage = "Price is required.")]
     [Range(0.01, double.MaxValue, ErrorMessage = "Price must be positive.")]
     public decimal Price { get; set; }
+
+    [Required(ErrorMessage = "Status is required.")]
+    public ItemStatus Status { get; set; }
 
     [JsonIgnore]
     public ImageFileDto? Image { get; set; }

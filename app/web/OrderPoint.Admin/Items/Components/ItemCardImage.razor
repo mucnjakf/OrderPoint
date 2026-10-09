@@ -4,16 +4,24 @@
         <MudImage Src="images/image-placeholder.svg"
                   Alt="Item image"
                   Width="@PlaceholderSize"
-                  Height="@PlaceholderSize"/>
+                  Height="@PlaceholderSize"
+                  Style="@InactiveImageStyle"/>
     }
     else
     {
         <div style="@BackdropStyle"></div>
-
         <MudImage Src="@ImageUrl"
                   Alt="Item image"
                   Height="@ImageHeight"
                   ObjectFit="ObjectFit.Contain"
-                  Style="position: relative; max-width: 100%;"/>
+                  Style="@($"position: relative; max-width: 100%; {InactiveImageStyle}")"/>
     }
+
+    <MudChip T="string"
+             Size="Size.Small"
+             Variant="Variant.Filled"
+             Color="@(IsActive ? Color.Success : Color.Error)"
+             Style="position: absolute; top: 8px; right: 8px; margin: 0;">
+        @StatusText
+    </MudChip>
 </div>

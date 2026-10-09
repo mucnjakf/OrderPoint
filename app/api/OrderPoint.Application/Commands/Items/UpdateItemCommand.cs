@@ -1,6 +1,7 @@
 ﻿using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Domain.Entities;
+using OrderPoint.Domain.Enumerations;
 using OrderPoint.Domain.Errors;
 using OrderPoint.Domain.Outcomes;
 
@@ -12,6 +13,7 @@ public sealed record UpdateItemCommand(
     string Description,
     double Portion,
     decimal Price,
+    ItemStatus Status,
     Guid CategoryId) : ICommand;
 
 internal sealed class UpdateItemCommandHandler(
@@ -41,6 +43,7 @@ internal sealed class UpdateItemCommandHandler(
             command.Description,
             command.Portion,
             command.Price,
+            command.Status,
             command.CategoryId);
 
         if (result.IsFailure)

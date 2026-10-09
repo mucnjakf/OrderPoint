@@ -10,6 +10,7 @@ internal static class ItemMapper
         item.Description,
         item.Portion,
         item.Price,
+        item.Status,
         item.ImageUrl,
         item.Category.ToItemCategoryDto(),
         ordersCount,

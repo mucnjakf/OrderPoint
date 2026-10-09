@@ -6,6 +6,7 @@ using OrderPoint.Api.Configuration;
 using OrderPoint.Api.Extensions;
 using OrderPoint.Application.Dtos;
 using OrderPoint.Application.Queries.Items;
+using OrderPoint.Domain.Enumerations;
 using OrderPoint.Domain.Outcomes;
 using OrderPoint.Domain.Sorting;
 
@@ -16,6 +17,7 @@ internal sealed record GetItemsRequest(
     [FromQuery] int PageSize,
     [FromQuery] string? SearchQuery,
     [FromQuery] Guid? CategoryId,
+    [FromQuery] ItemStatus? Status,
     [FromQuery] ItemSortBy? SortBy);
 
 internal sealed record GetItemsResponse(PaginationDto<ItemDto> Data);
@@ -44,6 +46,7 @@ internal sealed class GetItemsEndpoint : IEndpoint
             request.PageSize,
             request.SearchQuery,
             request.CategoryId,
+            request.Status,
             request.SortBy);
 
         Result<PaginationDto<ItemDto>> result = await sender.Send(query, cancellationToken);
@@ -65,6 +68,9 @@ internal sealed class GetItemsEndpoint : IEndpoint
 
             RuleFor(request => request.SearchQuery)
                 .MaximumLength(100).WithMessage("SearchQuery must be at most 100 characters");
+
+            RuleFor(request => request.Status)
+                .IsInEnum().WithMessage("Status is invalid");
 
             RuleFor(request => request.SortBy)
                 .IsInEnum().WithMessage("SortBy is invalid");

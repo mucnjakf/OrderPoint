@@ -2,7 +2,9 @@
 using MudBlazor;
 using OrderPoint.Admin.Categories.Api;
 using OrderPoint.Admin.Categories.Dtos;
+using OrderPoint.Admin.Categories.Enumerations;
 using OrderPoint.Admin.Items.Api.Requests;
+using OrderPoint.Admin.Items.Enumerations;
 using OrderPoint.Admin.Shared.Dtos;
 using OrderPoint.Admin.Shared.Extensions;
 using OrderPoint.Admin.Shared.Services;
@@ -26,6 +28,9 @@ public sealed partial class CreateItemDialog
     private CreateItemRequest Request { get; set; } = new();
 
     private CategoryDto? SelectedCategory { get; set; }
+
+    private bool IsPreviewActive =>
+        Request.Status == ItemStatus.Active && SelectedCategory?.Status != CategoryStatus.Inactive;
 
     private bool IsFormSubmitted { get; set; }
 

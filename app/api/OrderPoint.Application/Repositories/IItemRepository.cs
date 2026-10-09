@@ -1,4 +1,5 @@
 ﻿using OrderPoint.Domain.Entities;
+using OrderPoint.Domain.Enumerations;
 using OrderPoint.Domain.Sorting;
 
 namespace OrderPoint.Application.Repositories;
@@ -10,6 +11,7 @@ public interface IItemRepository
         int pageSize = 10,
         string? searchQuery = null,
         Guid? categoryId = null,
+        ItemStatus? status = null,
         ItemSortBy? sortBy = null,
         CancellationToken cancellationToken = default);
 

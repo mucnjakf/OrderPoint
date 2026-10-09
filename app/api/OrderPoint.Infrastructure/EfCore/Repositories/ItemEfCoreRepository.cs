@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Domain.Entities;
+using OrderPoint.Domain.Enumerations;
 using OrderPoint.Domain.Sorting;
 
 namespace OrderPoint.Infrastructure.EfCore.Repositories;
@@ -12,6 +13,7 @@ internal sealed class ItemEfCoreRepository(ApplicationDbContext dbContext) : IIt
         int pageSize = 10,
         string? searchQuery = null,
         Guid? categoryId = null,
+        ItemStatus? status = null,
         ItemSortBy? sortBy = null,
         CancellationToken cancellationToken = default)
     {
@@ -20,7 +22,7 @@ internal sealed class ItemEfCoreRepository(ApplicationDbContext dbContext) : IIt
             .Include(item => item.Category);
 
         query = SearchItems(query, searchQuery);
-        query = FilterItems(query, categoryId);
+        query = FilterItems(query, categoryId, status);
         query = SortItems(query, sortBy);
 
         int totalCount = await query.CountAsync(cancellationToken);
@@ -42,6 +44,7 @@ internal sealed class ItemEfCoreRepository(ApplicationDbContext dbContext) : IIt
         IReadOnlyList<Guid> ids,
         CancellationToken cancellationToken = default)
         => await dbContext.Items
+            .Include(item => item.Category)
             .Where(item => ids.Contains(item.Id))
             .ToListAsync(cancellationToken);
 
@@ -69,12 +72,21 @@ internal sealed class ItemEfCoreRepository(ApplicationDbContext dbContext) : IIt
         return query;
     }
 
-    private static IQueryable<Item> FilterItems(IQueryable<Item> query, Guid? categoryId)
+    private static IQueryable<Item> FilterItems(IQueryable<Item> query, Guid? categoryId, ItemStatus? status)
     {
         if (categoryId.HasValue)
         {
             query = query.Where(item => item.CategoryId == categoryId.Value);
         }
+
+        query = status switch
+        {
+            ItemStatus.Active => query.Where(item =>
+                item.Status == ItemStatus.Active && item.Category.Status == CategoryStatus.Active),
+            ItemStatus.Inactive => query.Where(item =>
+                item.Status == ItemStatus.Inactive || item.Category.Status == CategoryStatus.Inactive),
+            _ => query
+        };
 
         return query;
     }

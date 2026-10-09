@@ -1,4 +1,6 @@
-﻿namespace OrderPoint.Application.Dtos;
+﻿using OrderPoint.Domain.Enumerations;
+
+namespace OrderPoint.Application.Dtos;
 
 public sealed record ItemDto(
     Guid Id,
@@ -6,6 +8,7 @@ public sealed record ItemDto(
     string Description,
     double Portion,
     decimal Price,
+    ItemStatus Status,
     string? ImageUrl,
     ItemCategoryDto Category,
     int OrdersCount,

@@ -3,6 +3,7 @@ using OrderPoint.Application.Dtos.Mappers;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Domain.Entities;
+using OrderPoint.Domain.Enumerations;
 using OrderPoint.Domain.Outcomes;
 using OrderPoint.Domain.Sorting;
 
@@ -13,6 +14,7 @@ public sealed record GetItemsQuery(
     int PageSize,
     string? SearchQuery,
     Guid? CategoryId,
+    ItemStatus? Status,
     ItemSortBy? SortBy)
     : IQuery<PaginationDto<ItemDto>>;
 
@@ -29,6 +31,7 @@ internal sealed class GetItemsQueryHandler(IItemRepository itemRepository, IOrde
                 query.PageSize,
                 query.SearchQuery,
                 query.CategoryId,
+                query.Status,
                 query.SortBy,
                 cancellationToken);
 

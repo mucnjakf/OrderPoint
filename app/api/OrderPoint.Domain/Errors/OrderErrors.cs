@@ -19,4 +19,8 @@ public static class OrderErrors
     internal static readonly Error QuantityMustBePositive = Error.Validation(
         "Order.QuantityMustBePositive",
         "Order item quantity must be positive");
+
+    internal static readonly Error ItemIsUnavailable = Error.Conflict(
+        "Order.ItemIsUnavailable",
+        "Order contains an item that is not available");
 }

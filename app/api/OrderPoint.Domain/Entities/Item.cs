@@ -1,4 +1,5 @@
 ﻿using OrderPoint.Domain.Entities.Base;
+using OrderPoint.Domain.Enumerations;
 using OrderPoint.Domain.Errors;
 using OrderPoint.Domain.Outcomes;
 
@@ -14,6 +15,8 @@ public sealed class Item : Entity
 
     public decimal Price { get; private set; }
 
+    public ItemStatus Status { get; private set; }
+
     public string? ImageUrl { get; private set; }
 
     public Guid CategoryId { get; private set; }
@@ -24,12 +27,15 @@ public sealed class Item : Entity
 
     public IReadOnlyList<OrderItem> OrderItems => _orderItems.AsReadOnly();
 
+    public bool IsAvailable => Status == ItemStatus.Active && Category.Status == CategoryStatus.Active;
+
     private Item(
         Guid id,
         string name,
         string description,
         double portion,
         decimal price,
+        ItemStatus status,
         Guid categoryId,
         DateTimeOffset createdAtUtc) : base(id, createdAtUtc)
     {
@@ -37,6 +43,7 @@ public sealed class Item : Entity
         Description = description;
         Portion = portion;
         Price = price;
+        Status = status;
         CategoryId = categoryId;
     }
 
@@ -45,6 +52,7 @@ public sealed class Item : Entity
         string description,
         double portion,
         decimal price,
+        ItemStatus status,
         Guid categoryId)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -73,6 +81,7 @@ public sealed class Item : Entity
             description,
             portion,
             price,
+            status,
             categoryId,
             DateTimeOffset.UtcNow);
 
@@ -84,6 +93,7 @@ public sealed class Item : Entity
         string description,
         double portion,
         decimal price,
+        ItemStatus status,
         Guid categoryId)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -110,6 +120,7 @@ public sealed class Item : Entity
         Description = description;
         Portion = portion;
         Price = price;
+        Status = status;
         CategoryId = categoryId;
 
         UpdatedAtUtc = DateTimeOffset.UtcNow;

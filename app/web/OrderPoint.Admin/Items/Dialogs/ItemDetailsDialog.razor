@@ -12,7 +12,8 @@
                 <ItemPreviewPaper ImageUrl="@Item.ImageUrl"
                                   Name="@Item.Name"
                                   Description="@Item.Description"
-                                  Price="@Item.Price"/>
+                                  Price="@Item.Price"
+                                  IsActive="@Item.IsActive"/>
             </MudItem>
 
             <MudItem xs="12" md="8">
@@ -45,6 +46,12 @@
                     <TextDisplayRow Icon="@Icons.Material.Filled.Category"
                                     Label="Category"
                                     Text="@Item.Category.Name"
+                                    ShowDivider="true"/>
+
+                    <ChipDisplayRow Icon="@Icons.Material.Filled.MonitorHeart"
+                                    Label="Status"
+                                    Text="@StatusText"
+                                    Color="@(Item.IsActive ? Color.Success : Color.Error)"
                                     ShowDivider="true"/>
 
                     <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"

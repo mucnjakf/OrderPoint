@@ -63,6 +63,11 @@ public sealed class Order : Entity
             return Result.Failure<Order>(OrderErrors.QuantityMustBePositive);
         }
 
+        if (items.Any(orderItem => !orderItem.Item.IsAvailable))
+        {
+            return Result.Failure<Order>(OrderErrors.ItemIsUnavailable);
+        }
+
         Order order = new(Guid.CreateVersion7(), tableCode, note, OrderStatus.Pending, DateTimeOffset.UtcNow);
 
         foreach ((Item item, int quantity) in items)
