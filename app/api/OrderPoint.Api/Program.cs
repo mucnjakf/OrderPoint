@@ -44,12 +44,16 @@ builder.Services
     .AddPolicy(AuthorizationPolicies.Admin, policy => policy.RequireRole(nameof(UserRole.Admin)));
 
 // Cors
+const string CorsPolicyName = "AllowedOrigins";
+
+string[] allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+
 builder.Services.AddCors(options =>
-    options.AddPolicy("AllowAll", configure
+    options.AddPolicy(CorsPolicyName, configure
         => configure
+            .WithOrigins(allowedOrigins)
             .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowAnyOrigin()));
+            .WithMethods(HttpMethods.Get, HttpMethods.Post, HttpMethods.Put, HttpMethods.Delete)));
 
 // Error handling
 builder.Services.AddProblemDetails();
@@ -89,7 +93,7 @@ app.UseExceptionHandler();
 app.UseHttpsRedirection();
 
 // Cors
-app.UseCors("AllowAll");
+app.UseCors(CorsPolicyName);
 
 // Authentication and authorization
 app.UseAuthentication();
