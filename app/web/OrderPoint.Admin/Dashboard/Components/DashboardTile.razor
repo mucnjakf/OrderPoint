@@ -11,11 +11,13 @@
         @HeaderContent
     </MudStack>
 
-    <StatefulView IsLoading="@IsLoading"
-                  ShowContent="@ShowContent"
-                  EmptyStateIcon="@Icon"
-                  EmptyStateText="@EmptyStateText"
-                  Compact="true">
-        @ChildContent
-    </StatefulView>
+    <div style="@ContentStyle">
+        <StatefulView IsLoading="@IsLoading"
+                      ShowContent="@ShowContent"
+                      EmptyStateIcon="@Icon"
+                      EmptyStateText="@EmptyStateText"
+                      Compact="true">
+            @ChildContent
+        </StatefulView>
+    </div>
 </MudPaper>

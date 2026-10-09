@@ -64,7 +64,8 @@
                                Icon="@Icons.Material.Filled.ShowChart"
                                IsLoading="@IsLoadingRevenueTrend"
                                ShowContent="@RevenueTrend.Any(point => point.Revenue > 0)"
-                               EmptyStateText="No completed orders in this period">
+                               EmptyStateText="No completed orders in this period"
+                               ContentHeight="@RevenueTrendChart.ChartHeight">
                     <RevenueTrendChart Points="@RevenueTrend" IsHourly="@(SelectedPeriod is DashboardPeriod.Today)"/>
                 </DashboardTile>
             </MudItem>

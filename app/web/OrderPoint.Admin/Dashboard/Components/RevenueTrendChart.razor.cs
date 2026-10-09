@@ -6,7 +6,7 @@ namespace OrderPoint.Admin.Dashboard.Components;
 
 public sealed partial class RevenueTrendChart
 {
-    private const int ChartHeight = 260;
+    internal const int ChartHeight = 260;
 
     private const double ViewBoxSize = 1000;
 

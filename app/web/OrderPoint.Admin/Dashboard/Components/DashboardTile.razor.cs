@@ -28,6 +28,13 @@ public sealed partial class DashboardTile
     public RenderFragment? HeaderContent { get; set; }
 
     [Parameter]
+    public int? ContentHeight { get; set; }
+
+    [Parameter]
     [EditorRequired]
     public RenderFragment ChildContent { get; set; } = null!;
+
+    private string ContentStyle => ContentHeight is null
+        ? "display: contents;"
+        : $"display: flex; flex-direction: column; height: {ContentHeight}px;";
 }
