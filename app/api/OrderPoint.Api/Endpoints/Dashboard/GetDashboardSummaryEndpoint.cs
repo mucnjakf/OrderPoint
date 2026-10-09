@@ -11,7 +11,9 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Dashboard;
 
-internal sealed record GetDashboardSummaryRequest([FromQuery] DashboardPeriod Period);
+internal sealed record GetDashboardSummaryRequest(
+    [FromQuery] DashboardPeriod Period,
+    [FromQuery] string TimeZone);
 
 internal sealed record GetDashboardSummaryResponse(DashboardSummaryDto Data);
 
@@ -34,7 +36,7 @@ internal sealed class GetDashboardSummaryEndpoint : IEndpoint
     {
         await validator.ValidateAndThrowAsync(request, cancellationToken);
 
-        GetDashboardSummaryQuery query = new(request.Period);
+        GetDashboardSummaryQuery query = new(request.Period, TimeZoneInfo.FindSystemTimeZoneById(request.TimeZone));
 
         Result<DashboardSummaryDto> result = await sender.Send(query, cancellationToken);
 
@@ -49,6 +51,9 @@ internal sealed class GetDashboardSummaryEndpoint : IEndpoint
         {
             RuleFor(request => request.Period)
                 .IsInEnum().WithMessage("Period is invalid");
+
+            RuleFor(request => request.TimeZone)
+                .MustBeValidTimeZone();
         }
     }
 }

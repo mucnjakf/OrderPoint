@@ -100,7 +100,7 @@
         </MudTd>
 
         <MudTd DataLabel="Created">
-            @context.CreatedAtUtc.ToString("G")
+            @context.CreatedAtUtc.ToTimeZone(TimeZoneService.TimeZone).ToString("G")
         </MudTd>
     </RowTemplate>
 </DataTable>

@@ -15,4 +15,9 @@ internal static class DateTimeOffsetExtensions
             _ => $"{(int)elapsed.TotalDays} days ago"
         };
     }
+
+    internal static DateTimeOffset ToTimeZone(this DateTimeOffset dateTime, TimeZoneInfo timeZone)
+    {
+        return TimeZoneInfo.ConvertTime(dateTime, timeZone);
+    }
 }

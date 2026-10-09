@@ -116,7 +116,7 @@
                 <MudIcon Icon="@Icons.Material.Filled.Circle"
                          Style="width: 6px; height: 6px; margin-right: 3px; vertical-align: center;"/>
 
-                @context.CreatedAtUtc.ToString("G")
+                @context.CreatedAtUtc.ToTimeZone(TimeZoneService.TimeZone).ToString("G")
             </MudText>
         </MudCardContent>
     </RowTemplate>

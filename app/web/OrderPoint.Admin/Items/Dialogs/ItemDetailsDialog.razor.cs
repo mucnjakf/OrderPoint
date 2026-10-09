@@ -5,6 +5,7 @@ using OrderPoint.Admin.Orders.Api;
 using OrderPoint.Admin.Orders.Dtos;
 using OrderPoint.Admin.Orders.Sorting;
 using OrderPoint.Admin.Shared.Dtos;
+using OrderPoint.Admin.Shared.Extensions;
 using OrderPoint.Admin.Shared.Services;
 
 namespace OrderPoint.Admin.Items.Dialogs;
@@ -20,6 +21,9 @@ public sealed partial class ItemDetailsDialog
     private IMudDialogInstance MudDialogInstance { get; set; } = null!;
 
     [Inject]
+    private TimeZoneService TimeZoneService { get; set; } = null!;
+
+    [Inject]
     private ApiService ApiService { get; set; } = null!;
 
     [Inject]
@@ -28,6 +32,8 @@ public sealed partial class ItemDetailsDialog
     private PaginationDto<OrderDto>? Pagination { get; set; }
 
     private IReadOnlyList<OrderDto> Orders { get; set; } = [];
+
+    private string UpdatedAtText => Item.UpdatedAtUtc?.ToTimeZone(TimeZoneService.TimeZone).ToString("G") ?? "-";
 
     private string SelectedSortBy { get; set; } = nameof(OrderSortBy.CreatedAtUtcDesc);
 

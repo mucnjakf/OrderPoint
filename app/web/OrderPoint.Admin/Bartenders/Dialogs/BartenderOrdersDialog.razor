@@ -52,7 +52,7 @@
                         </MudText>
 
                         <MudText Typo="Typo.caption">
-                            @context.CreatedAtUtc.ToString("G")
+                            @context.CreatedAtUtc.ToTimeZone(TimeZoneService.TimeZone).ToString("G")
                         </MudText>
                     </MudStack>
 

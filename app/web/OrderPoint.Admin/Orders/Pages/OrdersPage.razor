@@ -77,7 +77,8 @@
                     </MudText>
 
                     <MudText Typo="Typo.caption">
-                        @context.CreatedAtUtc.ToString("G") · @context.CreatedAtUtc.ToRelativeTime()
+                        @context.CreatedAtUtc.ToTimeZone(TimeZoneService.TimeZone).ToString("G")
+                        · @context.CreatedAtUtc.ToRelativeTime()
                     </MudText>
                 </MudStack>
             </MudStack>

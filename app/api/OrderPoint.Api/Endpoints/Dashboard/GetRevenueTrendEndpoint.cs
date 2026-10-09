@@ -11,7 +11,9 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Dashboard;
 
-internal sealed record GetRevenueTrendRequest([FromQuery] DashboardPeriod Period);
+internal sealed record GetRevenueTrendRequest(
+    [FromQuery] DashboardPeriod Period,
+    [FromQuery] string TimeZone);
 
 internal sealed record GetRevenueTrendResponse(IReadOnlyList<RevenueTrendPointDto> Data);
 
@@ -34,7 +36,7 @@ internal sealed class GetRevenueTrendEndpoint : IEndpoint
     {
         await validator.ValidateAndThrowAsync(request, cancellationToken);
 
-        GetRevenueTrendQuery query = new(request.Period);
+        GetRevenueTrendQuery query = new(request.Period, TimeZoneInfo.FindSystemTimeZoneById(request.TimeZone));
 
         Result<IReadOnlyList<RevenueTrendPointDto>> result = await sender.Send(query, cancellationToken);
 
@@ -49,6 +51,9 @@ internal sealed class GetRevenueTrendEndpoint : IEndpoint
         {
             RuleFor(request => request.Period)
                 .IsInEnum().WithMessage("Period is invalid");
+
+            RuleFor(request => request.TimeZone)
+                .MustBeValidTimeZone();
         }
     }
 }

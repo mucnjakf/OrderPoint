@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using OrderPoint.Admin.Dashboard.Dtos;
 using OrderPoint.Admin.Orders.Enumerations;
+using OrderPoint.Admin.Shared.Services;
 
 namespace OrderPoint.Admin.Dashboard.Components;
 
@@ -12,6 +13,9 @@ public sealed partial class LiveOrdersPanel
         OrderStatus.Accepted,
         OrderStatus.Active
     ];
+
+    [Inject]
+    private TimeZoneService TimeZoneService { get; set; } = null!;
 
     [Parameter]
     [EditorRequired]

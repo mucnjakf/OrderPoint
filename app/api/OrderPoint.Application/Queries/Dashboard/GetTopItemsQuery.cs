@@ -6,7 +6,8 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Queries.Dashboard;
 
-public sealed record GetTopItemsQuery(DashboardPeriod Period) : IQuery<IReadOnlyList<TopItemDto>>;
+public sealed record GetTopItemsQuery(DashboardPeriod Period, TimeZoneInfo TimeZone)
+    : IQuery<IReadOnlyList<TopItemDto>>;
 
 internal sealed class GetTopItemsQueryHandler(IDashboardRepository dashboardRepository)
     : IQueryHandler<GetTopItemsQuery, IReadOnlyList<TopItemDto>>
@@ -17,7 +18,7 @@ internal sealed class GetTopItemsQueryHandler(IDashboardRepository dashboardRepo
         GetTopItemsQuery query,
         CancellationToken cancellationToken)
     {
-        var range = DashboardPeriodRange.For(query.Period, DateTimeOffset.UtcNow);
+        var range = DashboardPeriodRange.For(query.Period, DateTimeOffset.UtcNow, query.TimeZone);
 
         IReadOnlyList<TopItemDto> topItems = await dashboardRepository.GetTopItemsAsync(
             range.FromUtc,

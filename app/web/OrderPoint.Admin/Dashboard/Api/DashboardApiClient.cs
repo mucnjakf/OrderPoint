@@ -2,19 +2,22 @@
 using OrderPoint.Admin.Dashboard.Dtos;
 using OrderPoint.Admin.Dashboard.Enumerations;
 using OrderPoint.Admin.Shared.Errors;
+using OrderPoint.Admin.Shared.Services;
 
 namespace OrderPoint.Admin.Dashboard.Api;
 
-internal sealed class DashboardApiClient(IHttpClientFactory httpClientFactory)
+internal sealed class DashboardApiClient(IHttpClientFactory httpClientFactory, TimeZoneService timeZoneService)
 {
     private readonly HttpClient _httpClient = httpClientFactory.CreateClient("OrderPointApi");
+
+    private string TimeZone => Uri.EscapeDataString(timeZoneService.TimeZone.Id);
 
     internal async Task<DashboardSummaryDto> GetSummaryAsync(
         DashboardPeriod period,
         CancellationToken cancellationToken = default)
     {
         GetDashboardSummaryResponse result = await GetAsync<GetDashboardSummaryResponse>(
-            $"api/dashboard/summary?period={period}",
+            $"api/dashboard/summary?period={period}&timeZone={TimeZone}",
             cancellationToken);
 
         return result.Data;
@@ -23,7 +26,7 @@ internal sealed class DashboardApiClient(IHttpClientFactory httpClientFactory)
     internal async Task<DashboardLiveDto> GetLiveAsync(CancellationToken cancellationToken = default)
     {
         GetDashboardLiveResponse result = await GetAsync<GetDashboardLiveResponse>(
-            "api/dashboard/live",
+            $"api/dashboard/live?timeZone={TimeZone}",
             cancellationToken);
 
         return result.Data;
@@ -34,7 +37,7 @@ internal sealed class DashboardApiClient(IHttpClientFactory httpClientFactory)
         CancellationToken cancellationToken = default)
     {
         GetRevenueTrendResponse result = await GetAsync<GetRevenueTrendResponse>(
-            $"api/dashboard/revenue-trend?period={period}",
+            $"api/dashboard/revenue-trend?period={period}&timeZone={TimeZone}",
             cancellationToken);
 
         return result.Data;
@@ -44,7 +47,7 @@ internal sealed class DashboardApiClient(IHttpClientFactory httpClientFactory)
         CancellationToken cancellationToken = default)
     {
         GetBusiestTimesResponse result = await GetAsync<GetBusiestTimesResponse>(
-            "api/dashboard/busiest-times",
+            $"api/dashboard/busiest-times?timeZone={TimeZone}",
             cancellationToken);
 
         return result.Data;
@@ -55,7 +58,7 @@ internal sealed class DashboardApiClient(IHttpClientFactory httpClientFactory)
         CancellationToken cancellationToken = default)
     {
         GetCategoryRevenueResponse result = await GetAsync<GetCategoryRevenueResponse>(
-            $"api/dashboard/category-revenue?period={period}",
+            $"api/dashboard/category-revenue?period={period}&timeZone={TimeZone}",
             cancellationToken);
 
         return result.Data;
@@ -66,7 +69,7 @@ internal sealed class DashboardApiClient(IHttpClientFactory httpClientFactory)
         CancellationToken cancellationToken = default)
     {
         GetTopItemsResponse result = await GetAsync<GetTopItemsResponse>(
-            $"api/dashboard/top-items?period={period}",
+            $"api/dashboard/top-items?period={period}&timeZone={TimeZone}",
             cancellationToken);
 
         return result.Data;
@@ -77,7 +80,7 @@ internal sealed class DashboardApiClient(IHttpClientFactory httpClientFactory)
         CancellationToken cancellationToken = default)
     {
         GetBartenderLeaderboardResponse result = await GetAsync<GetBartenderLeaderboardResponse>(
-            $"api/dashboard/bartender-leaderboard?period={period}",
+            $"api/dashboard/bartender-leaderboard?period={period}&timeZone={TimeZone}",
             cancellationToken);
 
         return result.Data;

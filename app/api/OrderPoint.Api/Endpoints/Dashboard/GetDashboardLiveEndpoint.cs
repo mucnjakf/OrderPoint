@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using OrderPoint.Api.Configuration;
@@ -8,6 +9,8 @@ using OrderPoint.Application.Queries.Dashboard;
 using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Dashboard;
+
+internal sealed record GetDashboardLiveRequest([FromQuery] string TimeZone);
 
 internal sealed record GetDashboardLiveResponse(DashboardLiveDto Data);
 
@@ -23,15 +26,28 @@ internal sealed class GetDashboardLiveEndpoint : IEndpoint
     }
 
     private static async Task<Results<Ok<GetDashboardLiveResponse>, ProblemHttpResult>> HandleAsync(
+        [AsParameters] GetDashboardLiveRequest request,
+        [FromServices] IValidator<GetDashboardLiveRequest> validator,
         [FromServices] ISender sender,
         CancellationToken cancellationToken)
     {
-        GetDashboardLiveQuery query = new();
+        await validator.ValidateAndThrowAsync(request, cancellationToken);
+
+        GetDashboardLiveQuery query = new(TimeZoneInfo.FindSystemTimeZoneById(request.TimeZone));
 
         Result<DashboardLiveDto> result = await sender.Send(query, cancellationToken);
 
         return result.IsSuccess
             ? TypedResults.Ok(new GetDashboardLiveResponse(result.Value))
             : result.ToProblemDetails();
+    }
+
+    internal sealed class GetDashboardLiveRequestValidator : AbstractValidator<GetDashboardLiveRequest>
+    {
+        public GetDashboardLiveRequestValidator()
+        {
+            RuleFor(request => request.TimeZone)
+                .MustBeValidTimeZone();
+        }
     }
 }

@@ -2,11 +2,15 @@
 using MudBlazor;
 using OrderPoint.Admin.Orders.Dtos;
 using OrderPoint.Admin.Orders.Enumerations;
+using OrderPoint.Admin.Shared.Services;
 
 namespace OrderPoint.Admin.Orders.Dialogs;
 
 public sealed partial class OrderDetailsDialog
 {
+    [Inject]
+    private TimeZoneService TimeZoneService { get; set; } = null!;
+
     [Parameter]
     public OrderDto Order { get; set; } = null!;
 

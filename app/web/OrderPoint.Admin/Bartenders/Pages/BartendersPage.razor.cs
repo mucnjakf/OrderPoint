@@ -18,6 +18,9 @@ public sealed partial class BartendersPage
     private const int ActiveTeamAvatarsCount = 5;
 
     [Inject]
+    private TimeZoneService TimeZoneService { get; set; } = null!;
+
+    [Inject]
     private IDialogService DialogService { get; set; } = null!;
 
     [Inject]

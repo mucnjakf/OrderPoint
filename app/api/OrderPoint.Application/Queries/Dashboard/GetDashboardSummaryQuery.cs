@@ -6,7 +6,8 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Queries.Dashboard;
 
-public sealed record GetDashboardSummaryQuery(DashboardPeriod Period) : IQuery<DashboardSummaryDto>;
+public sealed record GetDashboardSummaryQuery(DashboardPeriod Period, TimeZoneInfo TimeZone)
+    : IQuery<DashboardSummaryDto>;
 
 internal sealed class GetDashboardSummaryQueryHandler(IDashboardRepository dashboardRepository)
     : IQueryHandler<GetDashboardSummaryQuery, DashboardSummaryDto>
@@ -15,7 +16,7 @@ internal sealed class GetDashboardSummaryQueryHandler(IDashboardRepository dashb
         GetDashboardSummaryQuery query,
         CancellationToken cancellationToken)
     {
-        var range = DashboardPeriodRange.For(query.Period, DateTimeOffset.UtcNow);
+        var range = DashboardPeriodRange.For(query.Period, DateTimeOffset.UtcNow, query.TimeZone);
 
         IReadOnlyList<DashboardOrderDto> orders = await dashboardRepository.GetOrdersAsync(
             range.PreviousFromUtc,

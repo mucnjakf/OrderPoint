@@ -11,7 +11,9 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Dashboard;
 
-internal sealed record GetTopItemsRequest([FromQuery] DashboardPeriod Period);
+internal sealed record GetTopItemsRequest(
+    [FromQuery] DashboardPeriod Period,
+    [FromQuery] string TimeZone);
 
 internal sealed record GetTopItemsResponse(IReadOnlyList<TopItemDto> Data);
 
@@ -34,7 +36,7 @@ internal sealed class GetTopItemsEndpoint : IEndpoint
     {
         await validator.ValidateAndThrowAsync(request, cancellationToken);
 
-        GetTopItemsQuery query = new(request.Period);
+        GetTopItemsQuery query = new(request.Period, TimeZoneInfo.FindSystemTimeZoneById(request.TimeZone));
 
         Result<IReadOnlyList<TopItemDto>> result = await sender.Send(query, cancellationToken);
 
@@ -49,6 +51,9 @@ internal sealed class GetTopItemsEndpoint : IEndpoint
         {
             RuleFor(request => request.Period)
                 .IsInEnum().WithMessage("Period is invalid");
+
+            RuleFor(request => request.TimeZone)
+                .MustBeValidTimeZone();
         }
     }
 }

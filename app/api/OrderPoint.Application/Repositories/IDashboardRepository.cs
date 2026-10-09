@@ -9,7 +9,10 @@ public interface IDashboardRepository
         DateTimeOffset toUtc,
         CancellationToken cancellationToken = default);
 
-    Task<DashboardLiveDto> GetLiveAsync(CancellationToken cancellationToken = default);
+    Task<DashboardLiveDto> GetLiveAsync(
+        DateTimeOffset todayFromUtc,
+        DateTimeOffset nowUtc,
+        CancellationToken cancellationToken = default);
 
     Task<IReadOnlyList<CategoryRevenueDto>> GetCategoryRevenueAsync(
         DateTimeOffset fromUtc,

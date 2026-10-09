@@ -1,6 +1,8 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Components;
 using OrderPoint.Admin.Dashboard.Dtos;
+using OrderPoint.Admin.Shared.Extensions;
+using OrderPoint.Admin.Shared.Services;
 
 namespace OrderPoint.Admin.Dashboard.Components;
 
@@ -17,6 +19,9 @@ public sealed partial class RevenueTrendChart
     private const int MaxDailyLabels = 8;
 
     private const int DotSize = 12;
+
+    [Inject]
+    private TimeZoneService TimeZoneService { get; set; } = null!;
 
     [Parameter]
     [EditorRequired]
@@ -129,14 +134,18 @@ public sealed partial class RevenueTrendChart
 
     private string GetAxisLabel(DateTimeOffset bucketStartUtc)
     {
-        return bucketStartUtc.ToString(IsHourly ? "HH:mm" : "dd MMM", CultureInfo.CurrentCulture);
+        DateTimeOffset bucketStart = bucketStartUtc.ToTimeZone(TimeZoneService.TimeZone);
+
+        return bucketStart.ToString(IsHourly ? "HH:mm" : "dd MMM", CultureInfo.CurrentCulture);
     }
 
     private string GetTooltipLabel(DateTimeOffset bucketStartUtc)
     {
+        DateTimeOffset bucketStart = bucketStartUtc.ToTimeZone(TimeZoneService.TimeZone);
+
         return IsHourly
-            ? $"{bucketStartUtc:HH:mm} – {bucketStartUtc.AddHours(1):HH:mm}"
-            : bucketStartUtc.ToString("dddd, dd MMM", CultureInfo.CurrentCulture);
+            ? $"{bucketStart:HH:mm} – {bucketStart.AddHours(1):HH:mm}"
+            : bucketStart.ToString("dddd, dd MMM", CultureInfo.CurrentCulture);
     }
 
     private static double GetNiceAxisMax(double maxValue)

@@ -5,7 +5,7 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Queries.Dashboard;
 
-public sealed record GetBusiestTimesQuery : IQuery<IReadOnlyList<BusiestTimeDto>>;
+public sealed record GetBusiestTimesQuery(TimeZoneInfo TimeZone) : IQuery<IReadOnlyList<BusiestTimeDto>>;
 
 internal sealed class GetBusiestTimesQueryHandler(IDashboardRepository dashboardRepository)
     : IQueryHandler<GetBusiestTimesQuery, IReadOnlyList<BusiestTimeDto>>
@@ -19,15 +19,16 @@ internal sealed class GetBusiestTimesQueryHandler(IDashboardRepository dashboard
         CancellationToken cancellationToken)
     {
         DateTimeOffset nowUtc = DateTimeOffset.UtcNow;
-        var todayStartUtc = new DateTimeOffset(nowUtc.UtcDateTime.Date, TimeSpan.Zero);
+        DateTime fromLocal = DashboardPeriodRange.GetLocalToday(nowUtc, query.TimeZone).AddDays(1 - DaysCount);
 
         IReadOnlyList<DashboardOrderDto> orders = await dashboardRepository.GetOrdersAsync(
-            todayStartUtc.AddDays(1 - DaysCount),
+            DashboardPeriodRange.LocalToUtc(fromLocal, query.TimeZone),
             nowUtc,
             cancellationToken);
 
         Dictionary<(DayOfWeek, int), int> ordersCountBySlot = orders
-            .GroupBy(order => (order.CreatedAtUtc.UtcDateTime.DayOfWeek, order.CreatedAtUtc.UtcDateTime.Hour))
+            .Select(order => DashboardPeriodRange.UtcToLocal(order.CreatedAtUtc, query.TimeZone))
+            .GroupBy(createdAtLocal => (createdAtLocal.DayOfWeek, createdAtLocal.Hour))
             .ToDictionary(group => group.Key, group => group.Count());
 
         List<BusiestTimeDto> busiestTimes = Enum.GetValues<DayOfWeek>()

@@ -40,12 +40,12 @@
 
                     <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
                                     Label="Created"
-                                    Text="@Category.CreatedAtUtc.ToString("G")"
+                                    Text="@Category.CreatedAtUtc.ToTimeZone(TimeZoneService.TimeZone).ToString("G")"
                                     ShowDivider="true"/>
 
                     <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
                                     Label="Updated"
-                                    Text="@(Category.UpdatedAtUtc?.ToString("G") ?? "-")"/>
+                                    Text="@UpdatedAtText"/>
                 </MudPaper>
             </MudItem>
         </MudGrid>
@@ -97,7 +97,7 @@
                             </MudText>
 
                             <MudText Typo="Typo.caption">
-                                @context.CreatedAtUtc.ToString("G")
+                                @context.CreatedAtUtc.ToTimeZone(TimeZoneService.TimeZone).ToString("G")
                             </MudText>
                         </MudStack>
 

@@ -20,7 +20,10 @@ internal sealed class DashboardEfCoreRepository(ApplicationDbContext dbContext) 
                 order.CompletedAtUtc))
             .ToListAsync(cancellationToken);
 
-    public async Task<DashboardLiveDto> GetLiveAsync(CancellationToken cancellationToken = default)
+    public async Task<DashboardLiveDto> GetLiveAsync(
+        DateTimeOffset todayFromUtc,
+        DateTimeOffset nowUtc,
+        CancellationToken cancellationToken = default)
     {
         var openOrders = await dbContext.Orders
             .AsNoTracking()
@@ -31,10 +34,7 @@ internal sealed class DashboardEfCoreRepository(ApplicationDbContext dbContext) 
             .Select(order => new { order.Status, order.CreatedAtUtc })
             .ToListAsync(cancellationToken);
 
-        DateTimeOffset nowUtc = DateTimeOffset.UtcNow;
-        var todayStartUtc = new DateTimeOffset(nowUtc.UtcDateTime.Date, TimeSpan.Zero);
-
-        IReadOnlyList<DashboardOrderDto> todayOrders = await GetOrdersAsync(todayStartUtc, nowUtc, cancellationToken);
+        IReadOnlyList<DashboardOrderDto> todayOrders = await GetOrdersAsync(todayFromUtc, nowUtc, cancellationToken);
 
         List<DashboardOrderDto> todayCompletedOrders = todayOrders
             .Where(order => order.Status == OrderStatus.Completed)

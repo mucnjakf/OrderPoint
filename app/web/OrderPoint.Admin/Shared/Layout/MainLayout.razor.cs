@@ -29,6 +29,9 @@ public sealed partial class MainLayout : IDisposable
     [Inject]
     private ProtectedLocalStorage ProtectedLocalStorage { get; set; } = null!;
 
+    [Inject]
+    private TimeZoneService TimeZoneService { get; set; } = null!;
+
     private MudTheme Theme { get; } = AdminTheme.Create();
 
     private bool DrawerOpen { get; set; } = true;
@@ -45,7 +48,7 @@ public sealed partial class MainLayout : IDisposable
     {
         AuthService.SessionChanged += OnSessionChanged;
 
-        await Task.WhenAll(LoadLayoutPreferencesAsync(), AuthService.LoadAsync());
+        await Task.WhenAll(LoadLayoutPreferencesAsync(), AuthService.LoadAsync(), TimeZoneService.LoadAsync());
     }
 
     public void Dispose()

@@ -7,9 +7,10 @@ internal sealed record DashboardPeriodRange(
     DateTimeOffset ToUtc,
     DateTimeOffset PreviousFromUtc,
     DateTimeOffset PreviousToUtc,
+    DateTime FromLocal,
     int DaysCount)
 {
-    internal static DashboardPeriodRange For(DashboardPeriod period, DateTimeOffset nowUtc)
+    internal static DashboardPeriodRange For(DashboardPeriod period, DateTimeOffset nowUtc, TimeZoneInfo timeZone)
     {
         int daysCount = period switch
         {
@@ -19,11 +20,26 @@ internal sealed record DashboardPeriodRange(
             _ => throw new ArgumentOutOfRangeException(nameof(period), period, null)
         };
 
-        var todayStartUtc = new DateTimeOffset(nowUtc.UtcDateTime.Date, TimeSpan.Zero);
-        DateTimeOffset fromUtc = todayStartUtc.AddDays(1 - daysCount);
+        DateTime fromLocal = GetLocalToday(nowUtc, timeZone).AddDays(1 - daysCount);
+        DateTimeOffset fromUtc = LocalToUtc(fromLocal, timeZone);
+        DateTimeOffset previousFromUtc = LocalToUtc(fromLocal.AddDays(-daysCount), timeZone);
         TimeSpan length = nowUtc - fromUtc;
-        DateTimeOffset previousFromUtc = fromUtc.AddDays(-daysCount);
 
-        return new DashboardPeriodRange(fromUtc, nowUtc, previousFromUtc, previousFromUtc + length, daysCount);
+        return new DashboardPeriodRange(
+            fromUtc,
+            nowUtc,
+            previousFromUtc,
+            previousFromUtc + length,
+            fromLocal,
+            daysCount);
     }
+
+    internal static DateTime GetLocalToday(DateTimeOffset nowUtc, TimeZoneInfo timeZone)
+        => TimeZoneInfo.ConvertTime(nowUtc, timeZone).Date;
+
+    internal static DateTime UtcToLocal(DateTimeOffset dateTimeUtc, TimeZoneInfo timeZone)
+        => TimeZoneInfo.ConvertTime(dateTimeUtc, timeZone).DateTime;
+
+    internal static DateTimeOffset LocalToUtc(DateTime localDateTime, TimeZoneInfo timeZone)
+        => new DateTimeOffset(localDateTime, timeZone.GetUtcOffset(localDateTime)).ToUniversalTime();
 }

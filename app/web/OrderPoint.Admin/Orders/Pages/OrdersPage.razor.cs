@@ -15,6 +15,9 @@ public sealed partial class OrdersPage
     private const int PageSize = 10;
 
     [Inject]
+    private TimeZoneService TimeZoneService { get; set; } = null!;
+
+    [Inject]
     private IDialogService DialogService { get; set; } = null!;
 
     [Inject]

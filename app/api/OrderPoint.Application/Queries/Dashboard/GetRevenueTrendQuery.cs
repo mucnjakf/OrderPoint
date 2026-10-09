@@ -6,7 +6,8 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Queries.Dashboard;
 
-public sealed record GetRevenueTrendQuery(DashboardPeriod Period) : IQuery<IReadOnlyList<RevenueTrendPointDto>>;
+public sealed record GetRevenueTrendQuery(DashboardPeriod Period, TimeZoneInfo TimeZone)
+    : IQuery<IReadOnlyList<RevenueTrendPointDto>>;
 
 internal sealed class GetRevenueTrendQueryHandler(IDashboardRepository dashboardRepository)
     : IQueryHandler<GetRevenueTrendQuery, IReadOnlyList<RevenueTrendPointDto>>
@@ -17,7 +18,7 @@ internal sealed class GetRevenueTrendQueryHandler(IDashboardRepository dashboard
         GetRevenueTrendQuery query,
         CancellationToken cancellationToken)
     {
-        var range = DashboardPeriodRange.For(query.Period, DateTimeOffset.UtcNow);
+        var range = DashboardPeriodRange.For(query.Period, DateTimeOffset.UtcNow, query.TimeZone);
 
         IReadOnlyList<DashboardOrderDto> orders = await dashboardRepository.GetOrdersAsync(
             range.FromUtc,
@@ -25,31 +26,30 @@ internal sealed class GetRevenueTrendQueryHandler(IDashboardRepository dashboard
             cancellationToken);
 
         bool isHourly = query.Period is DashboardPeriod.Today;
-        TimeSpan bucketLength = isHourly ? TimeSpan.FromHours(1) : TimeSpan.FromDays(1);
         int bucketsCount = isHourly ? HoursPerDay : range.DaysCount;
 
-        Dictionary<DateTimeOffset, decimal> revenueByBucket = orders
+        Dictionary<DateTime, decimal> revenueByLocalBucket = orders
             .Where(order => order.Status == OrderStatus.Completed)
-            .GroupBy(order => GetBucketStart(order.CreatedAtUtc, isHourly))
+            .GroupBy(order => GetLocalBucketStart(order.CreatedAtUtc, query.TimeZone, isHourly))
             .ToDictionary(group => group.Key, group => group.Sum(order => order.Total));
 
         List<RevenueTrendPointDto> points = Enumerable
             .Range(0, bucketsCount)
-            .Select(index => range.FromUtc + bucketLength * index)
-            .Select(bucketStart => new RevenueTrendPointDto(
-                bucketStart,
-                revenueByBucket.GetValueOrDefault(bucketStart)))
+            .Select(index => isHourly ? range.FromLocal.AddHours(index) : range.FromLocal.AddDays(index))
+            .Select(bucketStartLocal => new RevenueTrendPointDto(
+                DashboardPeriodRange.LocalToUtc(bucketStartLocal, query.TimeZone),
+                revenueByLocalBucket.GetValueOrDefault(bucketStartLocal)))
             .ToList();
 
         return points;
     }
 
-    private static DateTimeOffset GetBucketStart(DateTimeOffset createdAtUtc, bool isHourly)
+    private static DateTime GetLocalBucketStart(DateTimeOffset createdAtUtc, TimeZoneInfo timeZone, bool isHourly)
     {
-        DateTime utc = createdAtUtc.UtcDateTime;
+        DateTime local = DashboardPeriodRange.UtcToLocal(createdAtUtc, timeZone);
 
         return isHourly
-            ? new DateTimeOffset(utc.Year, utc.Month, utc.Day, utc.Hour, 0, 0, TimeSpan.Zero)
-            : new DateTimeOffset(utc.Date, TimeSpan.Zero);
+            ? new DateTime(local.Year, local.Month, local.Day, local.Hour, 0, 0)
+            : local.Date;
     }
 }

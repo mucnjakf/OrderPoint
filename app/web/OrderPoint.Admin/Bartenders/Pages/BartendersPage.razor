@@ -119,11 +119,11 @@
 
         <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
                         Label="Created"
-                        Text="@context.CreatedAtUtc.ToString("G")"
+                        Text="@context.CreatedAtUtc.ToTimeZone(TimeZoneService.TimeZone).ToString("G")"
                         ShowDivider="true"/>
 
         <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
                         Label="Updated"
-                        Text="@(context.UpdatedAtUtc?.ToString("G") ?? "-")"/>
+                        Text="@(context.UpdatedAtUtc?.ToTimeZone(TimeZoneService.TimeZone).ToString("G") ?? "-")"/>
     </DetailsTemplate>
 </DataAccordion>

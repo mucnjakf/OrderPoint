@@ -11,7 +11,9 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Dashboard;
 
-internal sealed record GetBartenderLeaderboardRequest([FromQuery] DashboardPeriod Period);
+internal sealed record GetBartenderLeaderboardRequest(
+    [FromQuery] DashboardPeriod Period,
+    [FromQuery] string TimeZone);
 
 internal sealed record GetBartenderLeaderboardResponse(IReadOnlyList<BartenderLeaderboardEntryDto> Data);
 
@@ -34,7 +36,7 @@ internal sealed class GetBartenderLeaderboardEndpoint : IEndpoint
     {
         await validator.ValidateAndThrowAsync(request, cancellationToken);
 
-        GetBartenderLeaderboardQuery query = new(request.Period);
+        GetBartenderLeaderboardQuery query = new(request.Period, TimeZoneInfo.FindSystemTimeZoneById(request.TimeZone));
 
         Result<IReadOnlyList<BartenderLeaderboardEntryDto>> result = await sender.Send(query, cancellationToken);
 
@@ -49,6 +51,9 @@ internal sealed class GetBartenderLeaderboardEndpoint : IEndpoint
         {
             RuleFor(request => request.Period)
                 .IsInEnum().WithMessage("Period is invalid");
+
+            RuleFor(request => request.TimeZone)
+                .MustBeValidTimeZone();
         }
     }
 }

@@ -18,6 +18,9 @@ public sealed partial class CategoriesPage
     private const int TopCategoriesCount = 5;
 
     [Inject]
+    private TimeZoneService TimeZoneService { get; set; } = null!;
+
+    [Inject]
     private IDialogService DialogService { get; set; } = null!;
 
     [Inject]

@@ -6,7 +6,7 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Queries.Dashboard;
 
-public sealed record GetBartenderLeaderboardQuery(DashboardPeriod Period)
+public sealed record GetBartenderLeaderboardQuery(DashboardPeriod Period, TimeZoneInfo TimeZone)
     : IQuery<IReadOnlyList<BartenderLeaderboardEntryDto>>;
 
 internal sealed class GetBartenderLeaderboardQueryHandler(IDashboardRepository dashboardRepository)
@@ -18,7 +18,7 @@ internal sealed class GetBartenderLeaderboardQueryHandler(IDashboardRepository d
         GetBartenderLeaderboardQuery query,
         CancellationToken cancellationToken)
     {
-        var range = DashboardPeriodRange.For(query.Period, DateTimeOffset.UtcNow);
+        var range = DashboardPeriodRange.For(query.Period, DateTimeOffset.UtcNow, query.TimeZone);
 
         IReadOnlyList<BartenderLeaderboardEntryDto> leaderboard = await dashboardRepository
             .GetBartenderLeaderboardAsync(range.FromUtc, range.ToUtc, LeaderboardSize, cancellationToken);

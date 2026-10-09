@@ -39,6 +39,7 @@ builder.Services.AddTransient<AccessTokenHandler>();
 builder.Services.AddScoped<AuthService>();
 
 builder.Services.AddScoped<ApiService>();
+builder.Services.AddScoped<TimeZoneService>();
 builder.Services.AddScoped<AuthApiClient>();
 builder.Services.AddScoped<CategoryApiClient>();
 builder.Services.AddScoped<ItemApiClient>();

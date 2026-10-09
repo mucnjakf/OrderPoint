@@ -6,7 +6,8 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Queries.Dashboard;
 
-public sealed record GetCategoryRevenueQuery(DashboardPeriod Period) : IQuery<IReadOnlyList<CategoryRevenueDto>>;
+public sealed record GetCategoryRevenueQuery(DashboardPeriod Period, TimeZoneInfo TimeZone)
+    : IQuery<IReadOnlyList<CategoryRevenueDto>>;
 
 internal sealed class GetCategoryRevenueQueryHandler(IDashboardRepository dashboardRepository)
     : IQueryHandler<GetCategoryRevenueQuery, IReadOnlyList<CategoryRevenueDto>>
@@ -17,7 +18,7 @@ internal sealed class GetCategoryRevenueQueryHandler(IDashboardRepository dashbo
         GetCategoryRevenueQuery query,
         CancellationToken cancellationToken)
     {
-        var range = DashboardPeriodRange.For(query.Period, DateTimeOffset.UtcNow);
+        var range = DashboardPeriodRange.For(query.Period, DateTimeOffset.UtcNow, query.TimeZone);
 
         IReadOnlyList<CategoryRevenueDto> categoryRevenue = await dashboardRepository.GetCategoryRevenueAsync(
             range.FromUtc,

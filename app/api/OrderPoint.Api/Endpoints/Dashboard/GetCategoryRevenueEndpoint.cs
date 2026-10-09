@@ -11,7 +11,9 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Dashboard;
 
-internal sealed record GetCategoryRevenueRequest([FromQuery] DashboardPeriod Period);
+internal sealed record GetCategoryRevenueRequest(
+    [FromQuery] DashboardPeriod Period,
+    [FromQuery] string TimeZone);
 
 internal sealed record GetCategoryRevenueResponse(IReadOnlyList<CategoryRevenueDto> Data);
 
@@ -34,7 +36,7 @@ internal sealed class GetCategoryRevenueEndpoint : IEndpoint
     {
         await validator.ValidateAndThrowAsync(request, cancellationToken);
 
-        GetCategoryRevenueQuery query = new(request.Period);
+        GetCategoryRevenueQuery query = new(request.Period, TimeZoneInfo.FindSystemTimeZoneById(request.TimeZone));
 
         Result<IReadOnlyList<CategoryRevenueDto>> result = await sender.Send(query, cancellationToken);
 
@@ -49,6 +51,9 @@ internal sealed class GetCategoryRevenueEndpoint : IEndpoint
         {
             RuleFor(request => request.Period)
                 .IsInEnum().WithMessage("Period is invalid");
+
+            RuleFor(request => request.TimeZone)
+                .MustBeValidTimeZone();
         }
     }
 }

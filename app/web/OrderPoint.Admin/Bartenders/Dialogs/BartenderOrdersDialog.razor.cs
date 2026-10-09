@@ -20,6 +20,9 @@ public sealed partial class BartenderOrdersDialog
     private IMudDialogInstance MudDialogInstance { get; set; } = null!;
 
     [Inject]
+    private TimeZoneService TimeZoneService { get; set; } = null!;
+
+    [Inject]
     private ApiService ApiService { get; set; } = null!;
 
     [Inject]
