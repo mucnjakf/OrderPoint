@@ -5,7 +5,6 @@
 <MudDialogProvider CloseButton="true" BackdropClick="false" Position="DialogPosition.Center" CloseOnEscapeKey="true" />
 <MudSnackbarProvider />
 
-@* Nothing renders until the session is read from the browser, then the login form replaces any page *@
 @if (!AuthService.IsLoaded)
 {
     return;
@@ -19,7 +18,7 @@
 }
 
 <MudLayout>
-    <MudAppBar Elevation="1">
+    <MudAppBar Elevation="0" Style="border-bottom: 1px solid var(--mud-palette-lines-default)">
         <MudStack Row="true" AlignItems="AlignItems.Center">
             <MudImage Src="images/orderpoint-logo.svg" Alt="OrderPoint logo" Width="36" Height="36" />
 
@@ -32,11 +31,12 @@
         <MudSpacer />
 
         <MudTooltip Text="@(IsDarkMode ? "Light mode" : "Dark mode")">
-            <MudIconButton Icon="@DarkModeIcon" OnClick="@ToggleDarkMode" Color="Color.Inherit" />
+            <MudIconButton Icon="@DarkModeIcon" OnClick="@ToggleDarkModeAsync" Color="Color.Inherit" />
         </MudTooltip>
     </MudAppBar>
 
-    <MudDrawer @bind-Open="@DrawerOpen" ClipMode="DrawerClipMode.Always" Elevation="1" Variant="DrawerVariant.Mini">
+    <MudDrawer @bind-Open="@DrawerOpen" ClipMode="DrawerClipMode.Always" Elevation="0" Variant="DrawerVariant.Mini"
+               Style="border-right: 1px solid var(--mud-palette-lines-default)">
         <MudNavMenu Bordered="true">
             @if (DrawerOpen)
             {
@@ -103,7 +103,7 @@
     <div style="@DrawerToggleWrapperStyle">
         <MudTooltip Text="@(DrawerOpen ? "Collapse menu" : "Expand menu")" Placement="Placement.Right">
             <MudIconButton Icon="@DrawerToggleIcon" Size="Size.Small" Class="pa-1" Style="@DrawerToggleButtonStyle"
-                           OnClick="@ToggleDrawer" />
+                           OnClick="@ToggleDrawerAsync" />
         </MudTooltip>
     </div>
 

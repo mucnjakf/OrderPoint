@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Security.Cryptography;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using MudBlazor;
 using OrderPoint.Admin.Auth.Services;
 using OrderPoint.Admin.Shared.Services;
@@ -7,6 +9,10 @@ namespace OrderPoint.Admin.Shared.Layout;
 
 public sealed partial class MainLayout : IDisposable
 {
+    private const string DarkModeStorageKey = "dark-mode";
+
+    private const string DrawerOpenStorageKey = "drawer-open";
+
     private const string DrawerToggleWrapperStyle =
         "position: fixed; left: 0; bottom: 92px; transform: translateX(-50%); " +
         "z-index: calc(var(--mud-zindex-drawer) + 1)";
@@ -20,14 +26,10 @@ public sealed partial class MainLayout : IDisposable
     [Inject]
     private ApiService ApiService { get; set; } = null!;
 
-    private MudTheme Theme { get; } = new()
-    {
-        PaletteDark = new PaletteDark
-        {
-            Background = "#32333d",
-            LinesDefault = "#4e4e4e"
-        }
-    };
+    [Inject]
+    private ProtectedLocalStorage ProtectedLocalStorage { get; set; } = null!;
+
+    private MudTheme Theme { get; } = AdminTheme.Create();
 
     private bool DrawerOpen { get; set; } = true;
 
@@ -43,7 +45,7 @@ public sealed partial class MainLayout : IDisposable
     {
         AuthService.SessionChanged += OnSessionChanged;
 
-        await AuthService.LoadAsync();
+        await Task.WhenAll(LoadLayoutPreferencesAsync(), AuthService.LoadAsync());
     }
 
     public void Dispose()
@@ -56,14 +58,40 @@ public sealed partial class MainLayout : IDisposable
         _ = InvokeAsync(StateHasChanged);
     }
 
-    private void ToggleDrawer()
+    private async Task LoadLayoutPreferencesAsync()
     {
-        DrawerOpen = !DrawerOpen;
+        IsDarkMode = await LoadPreferenceAsync(DarkModeStorageKey, defaultValue: true);
+        DrawerOpen = await LoadPreferenceAsync(DrawerOpenStorageKey, defaultValue: true);
     }
 
-    private void ToggleDarkMode()
+    private async Task<bool> LoadPreferenceAsync(string storageKey, bool defaultValue)
+    {
+        try
+        {
+            ProtectedBrowserStorageResult<bool> result = await ProtectedLocalStorage.GetAsync<bool>(storageKey);
+
+            return result.Success ? result.Value : defaultValue;
+        }
+        catch (CryptographicException)
+        {
+            await ProtectedLocalStorage.DeleteAsync(storageKey);
+
+            return defaultValue;
+        }
+    }
+
+    private async Task ToggleDrawerAsync()
+    {
+        DrawerOpen = !DrawerOpen;
+
+        await ProtectedLocalStorage.SetAsync(DrawerOpenStorageKey, DrawerOpen);
+    }
+
+    private async Task ToggleDarkModeAsync()
     {
         IsDarkMode = !IsDarkMode;
+
+        await ProtectedLocalStorage.SetAsync(DarkModeStorageKey, IsDarkMode);
     }
 
     private async Task SignOutAsync()
