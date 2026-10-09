@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Components;
 using OrderPoint.Admin.Dashboard.Dtos;
+using OrderPoint.Admin.Shared.Extensions;
 
 namespace OrderPoint.Admin.Dashboard.Components;
 
@@ -66,5 +67,20 @@ public sealed partial class BusiestTimesHeatMap
     private static string GetDayName(DayOfWeek dayOfWeek)
     {
         return CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(dayOfWeek);
+    }
+
+    private static string GetHourLabel(int hour)
+    {
+        CultureInfo culture = CultureInfo.CurrentCulture;
+
+        return DateTime.MinValue.AddHours(hour).ToString(culture.Uses12HourClock() ? "h tt" : "HH", culture);
+    }
+
+    private static string GetHourRange(int hour)
+    {
+        CultureInfo culture = CultureInfo.CurrentCulture;
+        DateTime start = DateTime.MinValue.AddHours(hour);
+
+        return $"{start.ToString("t", culture)} – {start.AddHours(1).ToString("t", culture)}";
     }
 }

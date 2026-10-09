@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Server.Circuits;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Components.Server.Circuits;
 using MudBlazor;
 using MudBlazor.Services;
 using OrderPoint.Admin;
@@ -9,6 +10,7 @@ using OrderPoint.Admin.Categories.Api;
 using OrderPoint.Admin.Dashboard.Api;
 using OrderPoint.Admin.Items.Api;
 using OrderPoint.Admin.Orders.Api;
+using OrderPoint.Admin.Shared.Extensions;
 using OrderPoint.Admin.Shared.Services;
 using OrderPoint.ServiceDefaults;
 
@@ -64,6 +66,22 @@ if (!app.Environment.IsDevelopment())
 
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
 app.UseHttpsRedirection();
+
+app.UseRequestLocalization(options =>
+{
+    CultureInfo[] cultures = CultureInfo.GetCultures(CultureTypes.AllCultures);
+
+    options.SetDefaultCulture("en-US");
+    options.SupportedCultures = cultures;
+    options.SupportedUICultures = cultures;
+});
+
+app.Use(async (context, next) =>
+{
+    CultureInfo.CurrentCulture = CultureInfo.CurrentCulture.ToDisplayCulture();
+
+    await next(context);
+});
 
 app.UseAntiforgery();
 

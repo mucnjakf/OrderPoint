@@ -49,7 +49,7 @@
 
                     <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
                                     Label="Created"
-                                    Text="@Item.CreatedAtUtc.ToTimeZone(TimeZoneService.TimeZone).ToString("G")"
+                                    Text="@Item.CreatedAtUtc.ToDisplayDateTime(TimeZoneService.TimeZone)"
                                     ShowDivider="true"/>
 
                     <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
@@ -89,7 +89,7 @@
                         </MudText>
 
                         <MudText Typo="Typo.caption">
-                            @context.CreatedAtUtc.ToTimeZone(TimeZoneService.TimeZone).ToString("G")
+                            @context.CreatedAtUtc.ToDisplayDateTime(TimeZoneService.TimeZone)
                         </MudText>
                     </MudStack>
 

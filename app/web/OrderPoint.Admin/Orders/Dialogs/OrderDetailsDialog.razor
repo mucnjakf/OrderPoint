@@ -82,7 +82,7 @@
                                     </MudText>
 
                                     <MudText Typo="Typo.caption">
-                                        @(reachedAtUtc?.ToTimeZone(TimeZoneService.TimeZone).ToString("G") ?? "Not yet")
+                                        @(reachedAtUtc?.ToDisplayDateTime(TimeZoneService.TimeZone) ?? "Not yet")
                                     </MudText>
                                 </ItemContent>
                             </MudTimelineItem>

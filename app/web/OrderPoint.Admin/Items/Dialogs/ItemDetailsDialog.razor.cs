@@ -33,7 +33,7 @@ public sealed partial class ItemDetailsDialog
 
     private IReadOnlyList<OrderDto> Orders { get; set; } = [];
 
-    private string UpdatedAtText => Item.UpdatedAtUtc?.ToTimeZone(TimeZoneService.TimeZone).ToString("G") ?? "-";
+    private string UpdatedAtText => Item.UpdatedAtUtc?.ToDisplayDateTime(TimeZoneService.TimeZone) ?? "-";
 
     private string SelectedSortBy { get; set; } = nameof(OrderSortBy.CreatedAtUtcDesc);
 

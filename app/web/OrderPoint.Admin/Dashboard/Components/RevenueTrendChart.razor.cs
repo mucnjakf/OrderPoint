@@ -135,17 +135,21 @@ public sealed partial class RevenueTrendChart
     private string GetAxisLabel(DateTimeOffset bucketStartUtc)
     {
         DateTimeOffset bucketStart = bucketStartUtc.ToTimeZone(TimeZoneService.TimeZone);
+        CultureInfo culture = CultureInfo.CurrentCulture;
 
-        return bucketStart.ToString(IsHourly ? "HH:mm" : "dd MMM", CultureInfo.CurrentCulture);
+        return IsHourly
+            ? bucketStart.ToString("t", culture)
+            : bucketStart.ToString(culture.GetShortMonthDayPattern(), culture);
     }
 
     private string GetTooltipLabel(DateTimeOffset bucketStartUtc)
     {
         DateTimeOffset bucketStart = bucketStartUtc.ToTimeZone(TimeZoneService.TimeZone);
+        CultureInfo culture = CultureInfo.CurrentCulture;
 
         return IsHourly
-            ? $"{bucketStart:HH:mm} – {bucketStart.AddHours(1):HH:mm}"
-            : bucketStart.ToString("dddd, dd MMM", CultureInfo.CurrentCulture);
+            ? $"{bucketStart.ToString("t", culture)} – {bucketStart.AddHours(1).ToString("t", culture)}"
+            : bucketStart.ToString($"dddd, {culture.DateTimeFormat.MonthDayPattern}", culture);
     }
 
     private static double GetNiceAxisMax(double maxValue)

@@ -41,7 +41,7 @@ public sealed partial class CategoryDetailsDialog
 
     private IReadOnlyList<ItemDto> Items { get; set; } = [];
 
-    private string UpdatedAtText => Category.UpdatedAtUtc?.ToTimeZone(TimeZoneService.TimeZone).ToString("G") ?? "-";
+    private string UpdatedAtText => Category.UpdatedAtUtc?.ToDisplayDateTime(TimeZoneService.TimeZone) ?? "-";
 
     private string SelectedSortBy { get; set; } = nameof(ItemSortBy.CreatedAtUtcDesc);
 

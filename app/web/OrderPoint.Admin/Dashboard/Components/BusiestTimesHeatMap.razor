@@ -21,7 +21,7 @@
                     <TooltipContent>
                         <div class="pa-1">
                             <MudText Typo="Typo.caption">
-                                @GetDayName(rowDay), @($"{cellHour:00}:00 – {cellHour + 1:00}:00")
+                                @GetDayName(rowDay), @GetHourRange(cellHour)
                             </MudText>
 
                             <MudText Typo="Typo.subtitle2">
@@ -41,8 +41,8 @@
         {
             int labelHour = hour;
 
-            <MudText Typo="Typo.caption" Class="flex-1" Align="Align.Center">
-                @(labelHour % LabelHourStep == 0 ? $"{labelHour:00}" : string.Empty)
+            <MudText Typo="Typo.caption" Class="flex-1" Align="Align.Center" Style="white-space: nowrap">
+                @(labelHour % LabelHourStep == 0 ? GetHourLabel(labelHour) : string.Empty)
             </MudText>
         }
     </MudStack>
