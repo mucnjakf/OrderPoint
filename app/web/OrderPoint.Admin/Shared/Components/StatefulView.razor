@@ -2,7 +2,13 @@
 {
     if (Compact)
     {
-        <MudProgressCircular Indeterminate="true" Class="ma-auto"/>
+        <MudProgressCircular Indeterminate="true" Class="ma-auto" Style="height: 80px; width: 80px;">
+            <ChildContent>
+                <MudText Typo="Typo.caption">
+                    Loading...
+                </MudText>
+            </ChildContent>
+        </MudProgressCircular>
     }
     else
     {

@@ -6,6 +6,14 @@ namespace OrderPoint.Admin.Shared.Components;
 
 public sealed partial class DataTimeline<TItem>
 {
+    private const string TimelineStyle =
+        "border-top: 1px solid var(--mud-palette-lines-default); " +
+        "border-bottom: 1px solid var(--mud-palette-lines-default);";
+
+    private const string TicketStyle = "transition: all 0.2s ease-in-out;";
+
+    private const string HoveredTicketStyle = TicketStyle + " background-color: var(--mud-palette-table-hover);";
+
     [Parameter]
     [EditorRequired]
     public IReadOnlyList<TItem> Items { get; set; } = [];
@@ -108,5 +116,10 @@ public sealed partial class DataTimeline<TItem>
     private bool IsHovered(TItem item)
     {
         return EqualityComparer<TItem>.Default.Equals(item, HoveredItem);
+    }
+
+    private string GetTicketStyle(TItem item)
+    {
+        return IsHovered(item) ? HoveredTicketStyle : TicketStyle;
     }
 }

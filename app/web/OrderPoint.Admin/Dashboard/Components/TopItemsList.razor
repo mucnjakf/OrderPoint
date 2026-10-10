@@ -1,48 +1,42 @@
-﻿<MudStack Spacing="1">
+﻿<MudStack Spacing="2">
     @for (int i = 0; i < Items.Count; i++)
     {
         TopItemDto item = Items[i];
-        bool isLast = i == Items.Count - 1;
 
-        <MudStack Row="true"
-                  AlignItems="AlignItems.Center"
-                  Spacing="3"
-                  Class="pa-2 rounded cursor-pointer"
+        <MudPaper Outlined="true"
+                  Class="pa-3 cursor-pointer"
                   Style="@GetRowStyle(item)"
                   @onclick="@(() => OnItemClickAsync(item))"
                   @onmouseenter="@(() => HoveredItemId = item.ItemId)"
                   @onmouseleave="@(() => HoveredItemId = null)">
-            <MudImage Src="@(item.ImageUrl ?? "images/image-placeholder.svg")"
-                      Alt="Item image"
-                      Width="40"
-                      Height="40"
-                      ObjectFit="ObjectFit.Cover"/>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudImage Src="@(item.ImageUrl ?? "images/image-placeholder.svg")"
+                          Alt="Item image"
+                          Width="40"
+                          Height="40"
+                          ObjectFit="ObjectFit.Cover"/>
 
-            <MudStack Spacing="1" Class="flex-1">
-                <MudStack Row="true" Justify="Justify.SpaceBetween">
-                    <MudText Typo="Typo.body2">
-                        @item.Name
-                    </MudText>
+                <MudStack Spacing="1" Class="flex-1">
+                    <MudStack Row="true" Justify="Justify.SpaceBetween">
+                        <MudText Typo="Typo.body2">
+                            @item.Name
+                        </MudText>
 
-                    <MudText Typo="Typo.body2">
-                        @item.Quantity sold
+                        <MudText Typo="Typo.body2">
+                            @item.Quantity sold
+                        </MudText>
+                    </MudStack>
+
+                    <MudProgressLinear Color="Color.Primary"
+                                       Value="@GetShareOfTop(item)"
+                                       Rounded="true"
+                                       Size="Size.Small"/>
+
+                    <MudText Typo="Typo.caption">
+                        @item.Revenue.ToString("C", CultureInfo.CurrentCulture)
                     </MudText>
                 </MudStack>
-
-                <MudProgressLinear Color="Color.Primary"
-                                   Value="@GetShareOfTop(item)"
-                                   Rounded="true"
-                                   Size="Size.Small"/>
-
-                <MudText Typo="Typo.caption">
-                    @item.Revenue.ToString("C", CultureInfo.CurrentCulture)
-                </MudText>
             </MudStack>
-        </MudStack>
-
-        @if (!isLast)
-        {
-            <MudDivider/>
-        }
+        </MudPaper>
     }
 </MudStack>

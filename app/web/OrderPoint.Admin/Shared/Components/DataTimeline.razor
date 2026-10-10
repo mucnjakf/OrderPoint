@@ -35,7 +35,9 @@
               EmptyStateIcon="@EmptyStateIcon"
               EmptyStateText="@EmptyStateText">
 
-    <MudTimeline TimelineOrientation="TimelineOrientation.Vertical" TimelinePosition="TimelinePosition.Start">
+    <MudTimeline TimelineOrientation="TimelineOrientation.Vertical"
+                 TimelinePosition="TimelinePosition.Start"
+                 Style="@TimelineStyle">
         @foreach (TItem item in Items)
         {
             <MudTimelineItem @key="@item"
@@ -45,7 +47,7 @@
                              Size="Size.Medium">
                 <ItemContent>
                     <MudPaper Class="pa-4 cursor-pointer"
-                              Style="transition: all 0.2s ease-in-out;"
+                              Style="@GetTicketStyle(item)"
                               Elevation="@(IsHovered(item) ? 10 : 1)"
                               @onclick="@(() => OnItemClickAsync(item))"
                               @onmouseenter="@(() => HoveredItem = item)"

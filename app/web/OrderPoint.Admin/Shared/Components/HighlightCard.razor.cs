@@ -52,6 +52,9 @@ public sealed partial class HighlightCard
 
     private string CursorClass => IsClickable ? "cursor-pointer" : string.Empty;
 
+    private string HoverStyle =>
+        IsHovered && IsClickable ? "background-color: var(--mud-palette-table-hover);" : string.Empty;
+
     private async Task OnCardClickAsync()
     {
         if (!IsClickable)
