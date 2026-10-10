@@ -1,34 +1,41 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-        <base href="/"/>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <ResourcePreloader/>
+    <base href="/" />
 
-        <link rel="icon" type="image/png" sizes="32x32" href="favicon.png"/>
-        <link rel="icon" type="image/svg+xml" href="images/orderpoint-logo.svg"/>
-        <link rel="apple-touch-icon" href="apple-touch-icon.png"/>
+    <ResourcePreloader />
 
-        <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap"
-              rel="stylesheet"/>
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png" />
+    <link rel="icon" type="image/svg+xml" href="images/orderpoint-logo.svg" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
 
-        <link href="@Assets["_content/MudBlazor/MudBlazor.min.css"]" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet" />
 
-        <ImportMap/>
+    <link href="@Assets["_content/MudBlazor/MudBlazor.min.css"]" rel="stylesheet" />
 
-        <HeadOutlet @rendermode="@(new InteractiveServerRenderMode(prerender: false))"/>
+    <style>
+            [class*="mud-elevation-"]:not(.mud-elevation-0) {
+                border: 1px solid var(--mud-palette-lines-default);
+            }
+    </style>
 
-        <title>OrderPoint</title>
-    </head>
+    <ImportMap />
 
-    <body>
-        @* Not prerendered: the session lives in browser storage, readable only once the circuit is connected *@
-        <Routes @rendermode="@(new InteractiveServerRenderMode(prerender: false))"/>
+    <HeadOutlet @rendermode="@(new InteractiveServerRenderMode(prerender: false))" />
 
-        <script src="@Assets["_framework/blazor.web.js"]"></script>
-        <script src="@Assets["_content/MudBlazor/MudBlazor.min.js"]"></script>
-    </body>
+    <title>OrderPoint</title>
+</head>
+
+<body>
+    @* Not prerendered: the session lives in browser storage, readable only once the circuit is connected *@
+    <Routes @rendermode="@(new InteractiveServerRenderMode(prerender: false))" />
+
+    <script src="@Assets["_framework/blazor.web.js"]"></script>
+    <script src="@Assets["_content/MudBlazor/MudBlazor.min.js"]"></script>
+</body>
+
 </html>

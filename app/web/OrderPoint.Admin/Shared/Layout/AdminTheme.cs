@@ -41,6 +41,7 @@ internal static class AdminTheme
                 LinesDefault = "#e4e4e4",
                 LinesInputs = "#ebebeb",
                 TableLines = "#e4e4e4",
+                TableHover = "#ebebeb",
                 Divider = "#e4e4e4"
             },
             PaletteDark = new PaletteDark
@@ -62,6 +63,7 @@ internal static class AdminTheme
                 LinesDefault = "#242424",
                 LinesInputs = "#333333",
                 TableLines = "#242424",
+                TableHover = "#333333",
                 Divider = "#242424"
             }
         };
