@@ -5,18 +5,7 @@ namespace OrderPoint.Admin.Shared.Layout;
 internal static class AdminTheme
 {
     private const string BorderRadius = "8px";
-
-    private const string ShadowSmall =
-        "0 1px 2px 0px hsl(0 0% 0% / 0.18), 0 1px 2px -1px hsl(0 0% 0% / 0.18)";
-
-    private const string ShadowMedium =
-        "0 1px 2px 0px hsl(0 0% 0% / 0.18), 0 2px 4px -1px hsl(0 0% 0% / 0.18)";
-
-    private const string ShadowLarge =
-        "0 1px 2px 0px hsl(0 0% 0% / 0.18), 0 4px 6px -1px hsl(0 0% 0% / 0.18)";
-
-    private const string ShadowExtraLarge =
-        "0 1px 2px 0px hsl(0 0% 0% / 0.18), 0 8px 10px -1px hsl(0 0% 0% / 0.18)";
+    private const string NoShadow = "none";
 
     internal static MudTheme Create()
     {
@@ -74,16 +63,7 @@ internal static class AdminTheme
         theme.Typography.Button.TextTransform = "none";
         theme.LayoutProperties.DefaultBorderRadius = BorderRadius;
 
-        for (int elevation = 1; elevation < theme.Shadows.Elevation.Length; elevation++)
-        {
-            theme.Shadows.Elevation[elevation] = elevation switch
-            {
-                <= 2 => ShadowSmall,
-                <= 4 => ShadowMedium,
-                <= 8 => ShadowLarge,
-                _ => ShadowExtraLarge
-            };
-        }
+        Array.Fill(theme.Shadows.Elevation, NoShadow);
 
         return theme;
     }

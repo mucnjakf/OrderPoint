@@ -48,7 +48,6 @@
                 <ItemContent>
                     <MudPaper Class="pa-4 cursor-pointer"
                               Style="@GetTicketStyle(item)"
-                              Elevation="@(IsHovered(item) ? 10 : 1)"
                               @onclick="@(() => OnItemClickAsync(item))"
                               @onmouseenter="@(() => HoveredItem = item)"
                               @onmouseleave="@(() => HoveredItem = default)">

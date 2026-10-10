@@ -1,6 +1,5 @@
 ﻿<MudPaper Class="@($"pa-5 d-flex flex-column align-center flex-1 {CursorClass}")"
-          Style="@($"transition: all 0.2s ease-in-out; height: {Height}px; {HoverStyle}")"
-          Elevation="@(IsRaised ? 10 : 1)"
+          Style="@($"transition: all 0.2s ease-in-out; height: {Height}px; {HighlightStyle}")"
           @onclick="@OnCardClickAsync"
           @onmouseover="@(() => IsHovered = true)"
           @onmouseout="@(() => IsHovered = false)">

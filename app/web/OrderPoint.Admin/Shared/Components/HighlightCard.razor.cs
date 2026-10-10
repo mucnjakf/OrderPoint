@@ -48,12 +48,10 @@ public sealed partial class HighlightCard
 
     private bool IsClickable => ShowContent && !IsLoading;
 
-    private bool IsRaised => IsSelected || (IsHovered && IsClickable);
-
     private string CursorClass => IsClickable ? "cursor-pointer" : string.Empty;
 
-    private string HoverStyle =>
-        IsHovered && IsClickable ? "background-color: var(--mud-palette-table-hover);" : string.Empty;
+    private string HighlightStyle =>
+        IsSelected || (IsHovered && IsClickable) ? "background-color: var(--mud-palette-table-hover);" : string.Empty;
 
     private async Task OnCardClickAsync()
     {
