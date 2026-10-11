@@ -66,56 +66,79 @@
     </FilterContent>
 
     <ItemTemplate>
-        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
-            <OrderAvatar Number="@context.Number"/>
+        <MudStack Row="true" Spacing="4">
+            <MudStack Spacing="3" Style="flex: 0 0 45%">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                    <OrderAvatar Number="@context.Number"/>
 
-            <MudStack Spacing="0">
-                <MudText Typo="Typo.body1">
-                    Table @context.TableCode
-                </MudText>
+                    <MudStack Spacing="0">
+                        <MudText Typo="Typo.body1">
+                            Table @context.TableCode
+                        </MudText>
 
-                <MudText Typo="Typo.caption">
-                    @context.CreatedAtUtc.ToDisplayDateTime(TimeZoneService.TimeZone)
-                    · @context.CreatedAtUtc.ToRelativeTime()
-                </MudText>
+                        <MudText Typo="Typo.caption">
+                            @context.CreatedAtUtc.ToDisplayDateTime(TimeZoneService.TimeZone)
+                            · @context.CreatedAtUtc.ToRelativeTime()
+                        </MudText>
+                    </MudStack>
+
+                    <MudSpacer/>
+
+                    <MudChip T="string"
+                             Variant="Variant.Text"
+                             Color="@context.Status.GetColor()">
+                        @context.Status.ToString()
+                    </MudChip>
+                </MudStack>
+
+                @if (context.Note is not null)
+                {
+                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                        "@context.Note"
+                    </MudText>
+                }
+
+                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mt-auto">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                        <BartenderAvatar FirstName="@context.Bartender?.FirstName"
+                                         LastName="@context.Bartender?.LastName"
+                                         ImageUrl="@context.Bartender?.ImageUrl"/>
+
+                        <MudText Typo="Typo.body2">
+                            @(context.Bartender is null
+                                ? "Unassigned"
+                                : $"{context.Bartender.FirstName} {context.Bartender.LastName}")
+                        </MudText>
+                    </MudStack>
+
+                    <MudText Typo="Typo.h6">
+                        @context.Total.ToString("C", CultureInfo.CurrentCulture)
+                    </MudText>
+                </MudStack>
             </MudStack>
 
-            <MudSpacer/>
+            <MudDivider Vertical="true" FlexItem="true"/>
 
-            <MudChip T="string"
-                     Variant="Variant.Text"
-                     Color="@context.Status.GetColor()">
-                @context.Status.ToString()
-            </MudChip>
-        </MudStack>
+            <MudStack Spacing="2" Class="flex-1">
+                @foreach (OrderItemDto orderItem in context.Items)
+                {
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                        <MudImage Src="@(orderItem.ImageUrl ?? "images/image-placeholder.svg")"
+                                  Alt="Item image"
+                                  Width="32"
+                                  Height="32"
+                                  ObjectFit="ObjectFit.Cover"/>
 
-        <MudText Typo="Typo.body1" Class="mt-1">
-            @(string.Join(" · ", context.Items.Select(orderItem => $"{orderItem.Quantity}× {orderItem.Name}")))
-        </MudText>
+                        <MudText Typo="Typo.body2" Class="flex-1">
+                            @orderItem.Quantity× @orderItem.Name
+                        </MudText>
 
-        @if (context.Note is not null)
-        {
-            <MudText Typo="Typo.body2" Class="mt-1">
-                "@context.Note"
-            </MudText>
-        }
-
-        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mt-4">
-            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                <BartenderAvatar FirstName="@context.Bartender?.FirstName"
-                                 LastName="@context.Bartender?.LastName"
-                                 ImageUrl="@context.Bartender?.ImageUrl"/>
-
-                <MudText Typo="Typo.body2">
-                    @(context.Bartender is null
-                        ? "Unassigned"
-                        : $"{context.Bartender.FirstName} {context.Bartender.LastName}")
-                </MudText>
+                        <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                            @((orderItem.Quantity * orderItem.UnitPrice).ToString("C", CultureInfo.CurrentCulture))
+                        </MudText>
+                    </MudStack>
+                }
             </MudStack>
-
-            <MudText Typo="Typo.h6">
-                @context.Total.ToString("C", CultureInfo.CurrentCulture)
-            </MudText>
         </MudStack>
     </ItemTemplate>
 </DataTimeline>

@@ -30,8 +30,8 @@ internal static class AdminTheme
                 LinesDefault = "#e4e4e4",
                 LinesInputs = "#ebebeb",
                 TableLines = "#e4e4e4",
-                TableHover = "#f0f0f0",
-                HoverOpacity = 0.06,
+                TableHover = "#f6f6f6",
+                HoverOpacity = 0.04,
                 Divider = "#e4e4e4"
             },
             PaletteDark = new PaletteDark
@@ -53,8 +53,8 @@ internal static class AdminTheme
                 LinesDefault = "#242424",
                 LinesInputs = "#333333",
                 TableLines = "#242424",
-                TableHover = "#222222",
-                HoverOpacity = 0.13,
+                TableHover = "#161616",
+                HoverOpacity = 0.08,
                 Divider = "#242424"
             }
         };
