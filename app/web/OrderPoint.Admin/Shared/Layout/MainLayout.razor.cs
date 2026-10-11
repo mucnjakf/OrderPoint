@@ -19,20 +19,19 @@ public sealed partial class MainLayout : IDisposable
     private const string DrawerOpenStorageKey = "drawer-open";
 
     private const string DrawerToggleWrapperStyle =
-        "position: fixed; left: 0; bottom: 128px; transform: translateX(-50%); " +
+        "position: fixed; left: 0; bottom: 72px; transform: translateX(-50%); " +
         "z-index: calc(var(--mud-zindex-drawer) + 1)";
 
     // MudNavLink leaves a 12px gap after its icon; the avatar takes the icon's place
     private const string AccountAvatarStyle = "margin-left: -12px; margin-right: 12px;";
+
+    private const string AccountNameStyle = "min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;";
 
     private const string DrawerToggleButtonStyle =
         "background-color: var(--mud-palette-surface); border: 1px solid var(--mud-palette-lines-default)";
 
     [Inject]
     private AuthService AuthService { get; set; } = null!;
-
-    [Inject]
-    private ApiService ApiService { get; set; } = null!;
 
     [Inject]
     private ProtectedLocalStorage ProtectedLocalStorage { get; set; } = null!;
@@ -61,6 +60,8 @@ public sealed partial class MainLayout : IDisposable
     private bool DrawerOpen { get; set; } = true;
 
     private bool IsDarkMode { get; set; } = true;
+
+    private string? AccountName => AuthService.Email?.Split('@')[0];
 
     private string? AccountNavIcon =>
         AccountService.ImageUrl is null ? Icons.Material.Filled.AccountCircle : null;
@@ -199,10 +200,5 @@ public sealed partial class MainLayout : IDisposable
         IsDarkMode = !IsDarkMode;
 
         await ProtectedLocalStorage.SetAsync(DarkModeStorageKey, IsDarkMode);
-    }
-
-    private async Task SignOutAsync()
-    {
-        await ApiService.ExecuteAsync(() => AuthService.LogoutAsync(), "Signed out");
     }
 }

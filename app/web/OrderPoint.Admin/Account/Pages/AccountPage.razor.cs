@@ -113,6 +113,27 @@ public sealed partial class AccountPage : IDisposable
         await AuthService.ReplaceTokensAsync(tokens);
     }
 
+    private async Task ShowSignOutDialogAsync()
+    {
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.ExtraSmall,
+            FullWidth = true
+        };
+
+        IDialogReference dialogReference = await DialogService
+            .ShowAsync<SignOutDialog>(string.Empty, options);
+
+        DialogResult dialogResult = (await dialogReference.Result)!;
+
+        if (dialogResult.Canceled)
+        {
+            return;
+        }
+
+        await ApiService.ExecuteAsync(() => AuthService.LogoutAsync(), "Signed out");
+    }
+
     private async Task ShowSignOutEverywhereDialogAsync()
     {
         var options = new DialogOptions

@@ -6,8 +6,8 @@
 
 <MudGrid Spacing="3">
     <MudItem xs="12" md="4">
-        <MudPaper Class="pa-5 d-flex flex-column align-center" Style="height: 100%">
-            <MudAvatar Color="Color.Primary" Class="mb-3" Style="width: 96px; height: 96px; font-size: 2rem;">
+        <MudPaper Class="pa-5 d-flex flex-column align-center justify-center gap-3" Style="height: 100%">
+            <MudAvatar Color="Color.Primary" Style="width: 96px; height: 96px; font-size: 2rem;">
                 @if (AccountService.ImageUrl is not null)
                 {
                     <MudImage Src="@AccountService.ImageUrl" Alt="Account image" ObjectFit="ObjectFit.Cover"/>
@@ -22,18 +22,36 @@
                 @AuthService.Email
             </MudText>
 
-            <MudChip T="string" Variant="Variant.Text" Size="Size.Small" Color="Color.Primary" Class="mb-5">
+            <MudChip T="string" Variant="Variant.Text" Size="Size.Small" Color="Color.Primary" Class="ma-0">
                 Admin
             </MudChip>
-
-            <ImageUploadField FileName="@ImageFileName"
-                              OnImageSelected="@OnImageSelectedAsync"
-                              OnImageRemoved="@OnImageRemovedAsync"/>
         </MudPaper>
     </MudItem>
 
     <MudItem xs="12" md="8">
         <MudPaper Class="pa-5" Style="height: 100%">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudIcon Icon="@Icons.Material.Filled.Image"/>
+
+                <MudStack Spacing="0" Class="flex-1">
+                    <MudText Typo="Typo.subtitle1">
+                        Profile image
+                    </MudText>
+
+                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                        Shown on this page and in the menu.
+                    </MudText>
+                </MudStack>
+
+                <div style="width: 280px;">
+                    <ImageUploadField FileName="@ImageFileName"
+                                      OnImageSelected="@OnImageSelectedAsync"
+                                      OnImageRemoved="@OnImageRemovedAsync"/>
+                </div>
+            </MudStack>
+
+            <MudDivider Class="my-5"/>
+
             <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
                 <MudIcon Icon="@Icons.Material.Filled.Password"/>
 
@@ -65,15 +83,37 @@
                     </MudText>
 
                     <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
-                        Sign out on every device signed in with this account, including this one.
+                        Sign out of every device signed in with this account, including this one.
                     </MudText>
                 </MudStack>
 
                 <MudButton Variant="Variant.Outlined"
                            Color="Color.Warning"
-                           StartIcon="@Icons.Material.Filled.Logout"
+                           StartIcon="@Icons.Material.Filled.PhonelinkErase"
                            OnClick="@ShowSignOutEverywhereDialogAsync">
                     Sign out everywhere
+                </MudButton>
+            </MudStack>
+
+            <MudDivider Class="my-5"/>
+
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudIcon Icon="@Icons.Material.Filled.Logout"/>
+
+                <MudStack Spacing="0" Class="flex-1">
+                    <MudText Typo="Typo.subtitle1">
+                        Sign out
+                    </MudText>
+
+                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                        Sign out of this device.
+                    </MudText>
+                </MudStack>
+
+                <MudButton Variant="Variant.Outlined"
+                           StartIcon="@Icons.Material.Filled.Logout"
+                           OnClick="@ShowSignOutDialogAsync">
+                    Sign out
                 </MudButton>
             </MudStack>
         </MudPaper>
