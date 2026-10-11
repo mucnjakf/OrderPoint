@@ -16,6 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet" />
 
     <link href="@Assets["_content/MudBlazor/MudBlazor.min.css"]" rel="stylesheet" />
+    <link href="@Assets["OrderPoint.Admin.styles.css"]" rel="stylesheet" />
 
     <style>
             [class*="mud-elevation-"]:not(.mud-elevation-0) {
@@ -42,6 +43,9 @@
 <body>
     @* Not prerendered: the session lives in browser storage, readable only once the circuit is connected *@
     <Routes @rendermode="@PageRenderMode" />
+
+    @* Static, so it stays in the page while the circuit is gone *@
+    <ReconnectModal />
 
     <script src="@Assets["_framework/blazor.web.js"]"></script>
     <script src="@Assets["_content/MudBlazor/MudBlazor.min.js"]"></script>

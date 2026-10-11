@@ -1,0 +1,116 @@
+/* Blazor sets the state classes on the dialog; "retrying" comes on top of "show" */
+.reconnect-animation,
+.reconnect-first-attempt,
+.reconnect-repeated-attempt,
+.reconnect-failed,
+.reconnect-paused,
+.reconnect-resume-failed {
+    display: none;
+}
+
+.components-reconnect-show .reconnect-animation,
+.components-reconnect-show:not(.components-reconnect-retrying) .reconnect-first-attempt,
+.components-reconnect-retrying .reconnect-repeated-attempt,
+.components-reconnect-failed .reconnect-failed,
+.components-reconnect-paused .reconnect-paused,
+.components-reconnect-resume-failed .reconnect-resume-failed {
+    display: block;
+}
+
+#components-reconnect-modal {
+    /* MudBlazor's reset removes the browser's margin: auto that centres a modal dialog */
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: 20rem;
+    height: fit-content;
+    padding: 2rem;
+    border: 1px solid var(--mud-palette-lines-default);
+    border-radius: var(--mud-default-borderradius);
+    background-color: var(--mud-palette-surface);
+    color: var(--mud-palette-text-primary);
+    font-family: var(--mud-typography-default-family);
+    font-size: var(--mud-typography-body1-size);
+}
+
+/* showModal() focuses the dialog itself, which would get the browser's focus ring */
+#components-reconnect-modal:focus,
+#components-reconnect-modal:focus-visible {
+    outline: none;
+}
+
+#components-reconnect-modal[open] {
+    animation: reconnect-slide-up 0.5s ease-out;
+}
+
+#components-reconnect-modal::backdrop {
+    background-color: var(--mud-palette-overlay-dark);
+}
+
+.reconnect-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.reconnect-content p {
+    margin: 0;
+    text-align: center;
+}
+
+.reconnect-content button {
+    padding: 6px 16px;
+    border: 0;
+    border-radius: var(--mud-default-borderradius);
+    background-color: var(--mud-palette-primary);
+    color: var(--mud-palette-primary-text);
+    font: inherit;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.reconnect-content button:hover {
+    background-color: var(--mud-palette-primary-darken);
+}
+
+.reconnect-animation {
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.reconnect-animation div {
+    position: absolute;
+    border: 3px solid var(--mud-palette-primary);
+    border-radius: 50%;
+    animation: reconnect-ripple 1.5s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+.reconnect-animation div:nth-child(2) {
+    animation-delay: -0.5s;
+}
+
+@keyframes reconnect-ripple {
+    0% {
+        inset: 40px;
+        opacity: 1;
+    }
+
+    100% {
+        inset: 0;
+        opacity: 0;
+    }
+}
+
+@keyframes reconnect-slide-up {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
