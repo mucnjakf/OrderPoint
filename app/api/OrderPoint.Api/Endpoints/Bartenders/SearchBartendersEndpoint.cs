@@ -10,8 +10,12 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Bartenders;
 
+/// <summary>The search text.</summary>
+/// <param name="SearchQuery">Matches the first or the last name, ignoring case.</param>
 internal sealed record SearchBartendersRequest([FromQuery] string SearchQuery);
 
+/// <summary>The matching bartenders.</summary>
+/// <param name="Data">The bartenders, sorted by name.</param>
 internal sealed record SearchBartendersResponse(IReadOnlyList<BartenderDto> Data);
 
 internal sealed class SearchBartendersEndpoint : IEndpoint
@@ -22,6 +26,11 @@ internal sealed class SearchBartendersEndpoint : IEndpoint
             .MapGet("api/bartenders/search", HandleAsync)
             .WithName("SearchBartenders")
             .WithTags("Bartenders")
+            .WithSummary("Search bartenders")
+            .WithDescription("""
+                An unpaged lookup by first or last name for autocompletes, sorted by name (last name, then first
+                name).
+                """)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

@@ -16,6 +16,15 @@ internal sealed class DeleteBartenderEndpoint : IEndpoint
             .MapDelete("api/bartenders/{id:guid}", HandleAsync)
             .WithName("DeleteBartender")
             .WithTags("Bartenders")
+            .WithSummary("Delete a bartender")
+            .WithDescription("""
+                Deletes the bartender, their login and their image.
+
+                - `409 Bartender.CannotDeleteBartenderWithOrders`: the bartender handled orders; deactivate them
+                  instead.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

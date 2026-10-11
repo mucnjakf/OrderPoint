@@ -9,6 +9,8 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Items;
 
+/// <summary>The item image upload.</summary>
+/// <param name="Image">The image file: JPEG, PNG or WebP, at most 2 MB.</param>
 internal sealed record UpdateItemImageRequest(IFormFile Image);
 
 internal sealed class UpdateItemImageEndpoint : IEndpoint
@@ -19,6 +21,14 @@ internal sealed class UpdateItemImageEndpoint : IEndpoint
             .MapPut("api/items/{id:guid}/image", HandleAsync)
             .WithName("UpdateItemImage")
             .WithTags("Items")
+            .WithSummary("Upload an item image")
+            .WithDescription("""
+                Sets the item image. Send the file as `multipart/form-data` in the field `image`: JPEG, PNG or WebP,
+                at most 2 MB.
+
+                The previous image is deleted after the new one is saved.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
             .DisableAntiforgery()
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }

@@ -10,6 +10,9 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Bartenders;
 
+/// <summary>The bartenders and their new status.</summary>
+/// <param name="Ids">The ids of 1 to 100 different bartenders.</param>
+/// <param name="Status">The new status for all of them. Inactive bartenders cannot sign in.</param>
 internal sealed record ChangeBartendersStatusRequest(IReadOnlyList<Guid> Ids, BartenderStatus Status);
 
 internal sealed class ChangeBartendersStatusEndpoint : IEndpoint
@@ -20,6 +23,12 @@ internal sealed class ChangeBartendersStatusEndpoint : IEndpoint
             .MapPut("api/bartenders/status", HandleAsync)
             .WithName("ChangeBartendersStatus")
             .WithTags("Bartenders")
+            .WithSummary("Change the status of bartenders")
+            .WithDescription("""
+                Activates or deactivates up to 100 bartenders at once. Deactivated bartenders are signed out.
+                All-or-nothing: if any id does not exist (`404`), nothing changes.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

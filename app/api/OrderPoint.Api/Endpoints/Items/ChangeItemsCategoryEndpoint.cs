@@ -9,6 +9,9 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Items;
 
+/// <summary>The items and their new category.</summary>
+/// <param name="Ids">The ids of 1 to 100 different items.</param>
+/// <param name="CategoryId">The category to move the items to.</param>
 internal sealed record ChangeItemsCategoryRequest(IReadOnlyList<Guid> Ids, Guid CategoryId);
 
 internal sealed class ChangeItemsCategoryEndpoint : IEndpoint
@@ -19,6 +22,14 @@ internal sealed class ChangeItemsCategoryEndpoint : IEndpoint
             .MapPut("api/items/category", HandleAsync)
             .WithName("ChangeItemsCategory")
             .WithTags("Items")
+            .WithSummary("Move items to a category")
+            .WithDescription("""
+                Moves up to 100 items to another category. All-or-nothing: if any id does not exist (`404`), nothing
+                changes.
+
+                - `404 Category.NotFound` or `404 Item.NotFound`.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

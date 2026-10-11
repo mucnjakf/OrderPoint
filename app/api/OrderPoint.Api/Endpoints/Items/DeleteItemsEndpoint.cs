@@ -9,6 +9,8 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Items;
 
+/// <summary>The items to delete.</summary>
+/// <param name="Ids">The ids of 1 to 100 different items.</param>
 internal sealed record DeleteItemsRequest(IReadOnlyList<Guid> Ids);
 
 internal sealed class DeleteItemsEndpoint : IEndpoint
@@ -19,6 +21,15 @@ internal sealed class DeleteItemsEndpoint : IEndpoint
             .MapPost("api/items/delete", HandleAsync)
             .WithName("DeleteItems")
             .WithTags("Items")
+            .WithSummary("Delete items")
+            .WithDescription("""
+                Deletes up to 100 items with their images. All-or-nothing: if any id does not exist (`404`), nothing
+                changes.
+
+                - `409 Item.CannotDeleteItemWithOrders`: one of them is part of orders; nothing is deleted.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

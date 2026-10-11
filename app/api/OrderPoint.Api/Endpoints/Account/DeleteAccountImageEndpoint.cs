@@ -17,6 +17,16 @@ internal sealed class DeleteAccountImageEndpoint : IEndpoint
             .MapDelete("api/account/image", HandleAsync)
             .WithName("DeleteAccountImage")
             .WithTags("Account")
+            .WithSummary("Remove my profile image")
+            .WithDescription("""
+                Removes the profile image and deletes the file. Succeeds when there is no image.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .WithSummary("Remove my profile image")
+            .WithDescription("""
+                Removes the profile image and deletes the file. Succeeds when there is no image.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

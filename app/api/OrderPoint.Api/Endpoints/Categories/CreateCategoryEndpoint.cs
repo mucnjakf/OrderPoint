@@ -11,11 +11,17 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Categories;
 
+/// <summary>The new category.</summary>
+/// <param name="Name">The name shown on the menu.</param>
+/// <param name="Description">A short description shown on the menu.</param>
+/// <param name="Status">The status. Items in an inactive category cannot be ordered.</param>
 internal sealed record CreateCategoryRequest(
     string Name,
     string Description,
     CategoryStatus Status);
 
+/// <summary>The created category.</summary>
+/// <param name="Data">The category.</param>
 internal sealed record CreateCategoryResponse(CategoryDto Data);
 
 internal sealed class CreateCategoryEndpoint : IEndpoint
@@ -26,6 +32,10 @@ internal sealed class CreateCategoryEndpoint : IEndpoint
             .MapPost("api/categories", HandleAsync)
             .WithName("CreateCategory")
             .WithTags("Categories")
+            .WithSummary("Create a category")
+            .WithDescription("""
+                Creates a category at the end of the menu (`displayOrder` is the highest so far plus one).
+                """)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

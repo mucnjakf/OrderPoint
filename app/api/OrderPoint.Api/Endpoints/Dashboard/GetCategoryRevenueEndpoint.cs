@@ -11,10 +11,17 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Dashboard;
 
+/// <summary>The period and the viewer's time zone.</summary>
+/// <param name="Period">The period: `Today` (since local midnight), `Last7Days` or `Last30Days` (both including
+/// today). Previous-period comparisons use the window of the same length right before it.</param>
+/// <param name="TimeZone">The IANA time zone of the viewer, e.g. `Europe/Zagreb`. Periods, buckets and weekdays
+/// follow its local calendar.</param>
 internal sealed record GetCategoryRevenueRequest(
     [FromQuery] DashboardPeriod Period,
     [FromQuery] string TimeZone);
 
+/// <summary>Revenue per category.</summary>
+/// <param name="Data">Up to 5 categories, highest revenue first.</param>
 internal sealed record GetCategoryRevenueResponse(IReadOnlyList<CategoryRevenueDto> Data);
 
 internal sealed class GetCategoryRevenueEndpoint : IEndpoint
@@ -25,6 +32,10 @@ internal sealed class GetCategoryRevenueEndpoint : IEndpoint
             .MapGet("api/dashboard/category-revenue", HandleAsync)
             .WithName("GetCategoryRevenue")
             .WithTags("Dashboard")
+            .WithSummary("Get revenue by category")
+            .WithDescription("""
+                Completed revenue per category for the period: the top 5 categories, highest first.
+                """)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

@@ -10,6 +10,11 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Categories;
 
+/// <summary>The category's new values.</summary>
+/// <param name="Name">The name shown on the menu.</param>
+/// <param name="Description">A short description shown on the menu.</param>
+/// <param name="Status">The status. Items in an inactive category cannot be ordered; their own status does not
+/// change.</param>
 internal sealed record UpdateCategoryRequest(
     string Name,
     string Description,
@@ -23,6 +28,12 @@ internal sealed class UpdateCategoryEndpoint : IEndpoint
             .MapPut("api/categories/{id:guid}", HandleAsync)
             .WithName("UpdateCategory")
             .WithTags("Categories")
+            .WithSummary("Update a category")
+            .WithDescription("""
+                Updates the name, description and status. While a category is inactive its items cannot be ordered;
+                their own status does not change.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

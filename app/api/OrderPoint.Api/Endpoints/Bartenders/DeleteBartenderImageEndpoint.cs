@@ -16,6 +16,11 @@ internal sealed class DeleteBartenderImageEndpoint : IEndpoint
             .MapDelete("api/bartenders/{id:guid}/image", HandleAsync)
             .WithName("DeleteBartenderImage")
             .WithTags("Bartenders")
+            .WithSummary("Remove a bartender image")
+            .WithDescription("""
+                Removes the photo and deletes the file. Succeeds when there is no image.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

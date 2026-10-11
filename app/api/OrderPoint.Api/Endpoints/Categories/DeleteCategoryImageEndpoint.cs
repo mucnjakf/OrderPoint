@@ -16,6 +16,11 @@ internal sealed class DeleteCategoryImageEndpoint : IEndpoint
             .MapDelete("api/categories/{id:guid}/image", HandleAsync)
             .WithName("DeleteCategoryImage")
             .WithTags("Categories")
+            .WithSummary("Remove a category image")
+            .WithDescription("""
+                Removes the image and deletes the file. Succeeds when there is no image.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

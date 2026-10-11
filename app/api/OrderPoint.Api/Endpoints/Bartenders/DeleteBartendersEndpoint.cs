@@ -9,6 +9,8 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Bartenders;
 
+/// <summary>The bartenders to delete.</summary>
+/// <param name="Ids">The ids of 1 to 100 different bartenders.</param>
 internal sealed record DeleteBartendersRequest(IReadOnlyList<Guid> Ids);
 
 internal sealed class DeleteBartendersEndpoint : IEndpoint
@@ -19,6 +21,15 @@ internal sealed class DeleteBartendersEndpoint : IEndpoint
             .MapPost("api/bartenders/delete", HandleAsync)
             .WithName("DeleteBartenders")
             .WithTags("Bartenders")
+            .WithSummary("Delete bartenders")
+            .WithDescription("""
+                Deletes up to 100 bartenders with their logins and images. All-or-nothing: if any id does not exist
+                (`404`), nothing changes.
+
+                - `409 Bartender.CannotDeleteBartenderWithOrders`: one of them handled orders; nothing is deleted.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

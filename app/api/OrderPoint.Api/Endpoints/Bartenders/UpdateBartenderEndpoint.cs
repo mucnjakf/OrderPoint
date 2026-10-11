@@ -10,6 +10,14 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Bartenders;
 
+/// <summary>The bartender's new profile.</summary>
+/// <param name="FirstName">The first name.</param>
+/// <param name="LastName">The last name.</param>
+/// <param name="Email">The email the bartender signs in with. It must be unique; changing it changes the sign-in
+/// email.</param>
+/// <param name="PhoneNumber">An optional phone number.</param>
+/// <param name="Status">The status. Deactivating signs the bartender out.</param>
+/// <param name="Notes">Optional internal notes about the bartender.</param>
 internal sealed record UpdateBartenderRequest(
     string FirstName,
     string LastName,
@@ -26,6 +34,15 @@ internal sealed class UpdateBartenderEndpoint : IEndpoint
             .MapPut("api/bartenders/{id:guid}", HandleAsync)
             .WithName("UpdateBartender")
             .WithTags("Bartenders")
+            .WithSummary("Update a bartender")
+            .WithDescription("""
+                Updates the profile. A new email also changes the login email; deactivating signs the bartender out
+                (their refresh tokens are revoked).
+
+                - `409 Bartender.EmailAlreadyExists`: the new email is already used.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

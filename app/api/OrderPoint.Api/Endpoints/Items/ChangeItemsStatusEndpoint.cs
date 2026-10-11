@@ -10,6 +10,9 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Items;
 
+/// <summary>The items and their new status.</summary>
+/// <param name="Ids">The ids of 1 to 100 different items.</param>
+/// <param name="Status">The new status for all of them. Inactive items cannot be ordered.</param>
 internal sealed record ChangeItemsStatusRequest(IReadOnlyList<Guid> Ids, ItemStatus Status);
 
 internal sealed class ChangeItemsStatusEndpoint : IEndpoint
@@ -20,6 +23,12 @@ internal sealed class ChangeItemsStatusEndpoint : IEndpoint
             .MapPut("api/items/status", HandleAsync)
             .WithName("ChangeItemsStatus")
             .WithTags("Items")
+            .WithSummary("Change the status of items")
+            .WithDescription("""
+                Activates or deactivates up to 100 items at once. An active item in an inactive category still cannot
+                be ordered. All-or-nothing: if any id does not exist (`404`), nothing changes.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

@@ -16,6 +16,14 @@ internal sealed class DeleteItemEndpoint : IEndpoint
             .MapDelete("api/items/{id:guid}", HandleAsync)
             .WithName("DeleteItem")
             .WithTags("Items")
+            .WithSummary("Delete an item")
+            .WithDescription("""
+                Deletes the item and its image.
+
+                - `409 Item.CannotDeleteItemWithOrders`: the item is part of orders; deactivate it instead.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

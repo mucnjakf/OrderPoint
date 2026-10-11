@@ -12,6 +12,14 @@ using OrderPoint.Domain.Sorting;
 
 namespace OrderPoint.Api.Endpoints.Orders;
 
+/// <summary>Paging, search, filter and sort options.</summary>
+/// <param name="PageNumber">The page to return, starting at 1.</param>
+/// <param name="PageSize">The number of orders per page.</param>
+/// <param name="SearchQuery">Matches the order number or the table code.</param>
+/// <param name="Status">Only orders with this status.</param>
+/// <param name="ItemId">Only orders that contain this item.</param>
+/// <param name="BartenderId">Only orders handled by this bartender.</param>
+/// <param name="SortBy">The sort order. Default: `CreatedAtUtcDesc` (newest first).</param>
 internal sealed record GetOrdersRequest(
     [FromQuery] int PageNumber,
     [FromQuery] int PageSize,
@@ -21,6 +29,8 @@ internal sealed record GetOrdersRequest(
     [FromQuery] Guid? BartenderId,
     [FromQuery] OrderSortBy? SortBy);
 
+/// <summary>A page of orders.</summary>
+/// <param name="Data">The page.</param>
 internal sealed record GetOrdersResponse(PaginationDto<OrderDto> Data);
 
 internal sealed class GetOrdersEndpoint : IEndpoint
@@ -31,6 +41,11 @@ internal sealed class GetOrdersEndpoint : IEndpoint
             .MapGet("api/orders", HandleAsync)
             .WithName("GetOrders")
             .WithTags("Orders")
+            .WithSummary("List orders")
+            .WithDescription("""
+                A page of orders with search (order number or table code), filters (status, item, bartender) and
+                sorting (default: newest first). `total` is calculated from the order lines.
+                """)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

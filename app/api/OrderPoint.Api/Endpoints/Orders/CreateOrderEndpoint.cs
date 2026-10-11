@@ -10,13 +10,22 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Orders;
 
+/// <summary>One order line.</summary>
+/// <param name="ItemId">The item to order. It and its category must be active.</param>
+/// <param name="Quantity">How many pieces, at least 1.</param>
 internal sealed record CreateOrderItemRequest(Guid ItemId, int Quantity);
 
+/// <summary>The order placed from a table.</summary>
+/// <param name="TableCode">The code of the table the order is placed from, e.g. `T11` (from the QR code).</param>
+/// <param name="Note">An optional note for the bartender, e.g. "no ice".</param>
+/// <param name="Items">The order lines; each item at most once.</param>
 internal sealed record CreateOrderRequest(
     string TableCode,
     string? Note,
     IReadOnlyList<CreateOrderItemRequest> Items);
 
+/// <summary>The placed order.</summary>
+/// <param name="Data">The order.</param>
 internal sealed record CreateOrderResponse(OrderDto Data);
 
 internal sealed class CreateOrderEndpoint : IEndpoint
@@ -26,7 +35,17 @@ internal sealed class CreateOrderEndpoint : IEndpoint
         app
             .MapPost("api/orders", HandleAsync)
             .WithName("CreateOrder")
-            .WithTags("Orders");
+            .WithTags("Orders")
+            .WithSummary("Place an order")
+            .WithDescription("""
+                Places an order from a table. Used by the customer app, so no token is needed. Every line copies the
+                item's current price into `unitPrice`; the order starts as `Pending` and gets the next order `number`.
+
+                - `404 Item.NotFound`: an item does not exist.
+                - `409 Order.ItemIsUnavailable`: an item or its category is inactive.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict);
     }
 
     private static async Task<Results<CreatedAtRoute<CreateOrderResponse>, ProblemHttpResult>> HandleAsync(

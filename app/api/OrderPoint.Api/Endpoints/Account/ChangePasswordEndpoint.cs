@@ -11,8 +11,14 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Account;
 
+/// <summary>The current and the new password.</summary>
+/// <param name="CurrentPassword">The password the admin signs in with now.</param>
+/// <param name="NewPassword">The new password. At least 8 characters with an uppercase letter, a lowercase letter and
+/// a digit. It must differ from the current one.</param>
 internal sealed record ChangePasswordRequest(string CurrentPassword, string NewPassword);
 
+/// <summary>The new token pair for this session.</summary>
+/// <param name="Data">The new tokens.</param>
 internal sealed record ChangePasswordResponse(AuthTokensDto Data);
 
 internal sealed class ChangePasswordEndpoint : IEndpoint
@@ -23,6 +29,24 @@ internal sealed class ChangePasswordEndpoint : IEndpoint
             .MapPut("api/account/password", HandleAsync)
             .WithName("ChangePassword")
             .WithTags("Account")
+            .WithSummary("Change my password")
+            .WithDescription("""
+                Changes the signed-in admin's password. Every refresh token is revoked, so other devices are signed
+                out; the response contains a new token pair for this session.
+
+                - `400 Auth.InvalidCurrentPassword`: the current password is wrong.
+                - `400 Auth.InvalidPassword`: the new password needs 8+ characters, upper and lower case and a digit.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .WithSummary("Change my password")
+            .WithDescription("""
+                Changes the signed-in admin's password. Every refresh token is revoked, so other devices are signed
+                out; the response contains a new token pair for this session.
+
+                - `400 Auth.InvalidCurrentPassword`: the current password is wrong.
+                - `400 Auth.InvalidPassword`: the new password needs 8+ characters, upper and lower case and a digit.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

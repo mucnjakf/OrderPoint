@@ -9,6 +9,8 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Items;
 
+/// <summary>One item.</summary>
+/// <param name="Data">The item.</param>
 internal sealed record GetItemResponse(ItemDto Data);
 
 internal sealed class GetItemEndpoint : IEndpoint
@@ -19,6 +21,11 @@ internal sealed class GetItemEndpoint : IEndpoint
             .MapGet("api/items/{id:guid}", HandleAsync)
             .WithName("GetItem")
             .WithTags("Items")
+            .WithSummary("Get an item")
+            .WithDescription("""
+                Returns one item with its category and the number of orders that contain it.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

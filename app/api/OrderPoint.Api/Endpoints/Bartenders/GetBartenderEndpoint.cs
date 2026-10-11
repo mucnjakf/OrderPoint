@@ -9,6 +9,8 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Bartenders;
 
+/// <summary>One bartender.</summary>
+/// <param name="Data">The bartender.</param>
 internal sealed record GetBartenderResponse(BartenderDto Data);
 
 internal sealed class GetBartenderEndpoint : IEndpoint
@@ -19,6 +21,11 @@ internal sealed class GetBartenderEndpoint : IEndpoint
             .MapGet("api/bartenders/{id:guid}", HandleAsync)
             .WithName("GetBartender")
             .WithTags("Bartenders")
+            .WithSummary("Get a bartender")
+            .WithDescription("""
+                Returns one bartender, including the number of orders they handled.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

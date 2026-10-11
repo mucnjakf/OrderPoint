@@ -11,6 +11,15 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Bartenders;
 
+/// <summary>The new bartender and their temporary password.</summary>
+/// <param name="FirstName">The first name.</param>
+/// <param name="LastName">The last name.</param>
+/// <param name="Email">The email the bartender signs in with. It must be unique.</param>
+/// <param name="Password">The temporary password the bartender replaces at the first sign-in. At least 8 characters
+/// with an uppercase letter, a lowercase letter and a digit.</param>
+/// <param name="PhoneNumber">An optional phone number.</param>
+/// <param name="Status">The status. Inactive bartenders cannot sign in.</param>
+/// <param name="Notes">Optional internal notes about the bartender.</param>
 internal sealed record CreateBartenderRequest(
     string FirstName,
     string LastName,
@@ -20,6 +29,8 @@ internal sealed record CreateBartenderRequest(
     BartenderStatus Status,
     string? Notes);
 
+/// <summary>The created bartender.</summary>
+/// <param name="Data">The bartender.</param>
 internal sealed record CreateBartenderResponse(BartenderDto Data);
 
 internal sealed class CreateBartenderEndpoint : IEndpoint
@@ -30,6 +41,15 @@ internal sealed class CreateBartenderEndpoint : IEndpoint
             .MapPost("api/bartenders", HandleAsync)
             .WithName("CreateBartender")
             .WithTags("Bartenders")
+            .WithSummary("Create a bartender")
+            .WithDescription("""
+                Creates the bartender and their login. `password` is temporary: the bartender has to replace it at the
+                first sign-in (`POST /api/auth/initial-password`).
+
+                - `409 Bartender.EmailAlreadyExists`: the email is already used.
+                - `400 Auth.InvalidPassword`: the password needs 8+ characters, upper and lower case and a digit.
+                """)
+            .ProducesProblem(StatusCodes.Status409Conflict)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

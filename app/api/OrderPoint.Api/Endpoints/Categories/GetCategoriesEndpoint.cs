@@ -12,6 +12,13 @@ using OrderPoint.Domain.Sorting;
 
 namespace OrderPoint.Api.Endpoints.Categories;
 
+/// <summary>Paging, search, filter and sort options.</summary>
+/// <param name="PageNumber">The page to return, starting at 1.</param>
+/// <param name="PageSize">The number of categories per page.</param>
+/// <param name="SearchQuery">Matches the name, ignoring case.</param>
+/// <param name="Status">Only categories with this status.</param>
+/// <param name="SortBy">The sort order. Default: `CreatedAtUtcDesc` (newest first). `DisplayOrderAsc` gives the menu
+/// order.</param>
 internal sealed record GetCategoriesRequest(
     [FromQuery] int PageNumber,
     [FromQuery] int PageSize,
@@ -19,6 +26,8 @@ internal sealed record GetCategoriesRequest(
     [FromQuery] CategoryStatus? Status,
     [FromQuery] CategorySortBy? SortBy);
 
+/// <summary>A page of categories.</summary>
+/// <param name="Data">The page.</param>
 internal sealed record GetCategoriesResponse(PaginationDto<CategoryDto> Data);
 
 internal sealed class GetCategoriesEndpoint : IEndpoint
@@ -29,6 +38,11 @@ internal sealed class GetCategoriesEndpoint : IEndpoint
             .MapGet("api/categories", HandleAsync)
             .WithName("GetCategories")
             .WithTags("Categories")
+            .WithSummary("List categories")
+            .WithDescription("""
+                A page of categories with search (name), a status filter and sorting (default: newest first;
+                `DisplayOrderAsc` gives the menu order). `itemsCount` is the number of items in the category.
+                """)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

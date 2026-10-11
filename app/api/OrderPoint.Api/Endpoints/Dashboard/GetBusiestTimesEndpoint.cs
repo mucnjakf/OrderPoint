@@ -10,8 +10,13 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Dashboard;
 
+/// <summary>The viewer's time zone.</summary>
+/// <param name="TimeZone">The IANA time zone of the viewer, e.g. `Europe/Zagreb`. Periods, buckets and weekdays
+/// follow its local calendar.</param>
 internal sealed record GetBusiestTimesRequest([FromQuery] string TimeZone);
 
+/// <summary>The heat map data.</summary>
+/// <param name="Data">One entry per local weekday and hour that had orders in the last 28 days.</param>
 internal sealed record GetBusiestTimesResponse(IReadOnlyList<BusiestTimeDto> Data);
 
 internal sealed class GetBusiestTimesEndpoint : IEndpoint
@@ -22,6 +27,11 @@ internal sealed class GetBusiestTimesEndpoint : IEndpoint
             .MapGet("api/dashboard/busiest-times", HandleAsync)
             .WithName("GetBusiestTimes")
             .WithTags("Dashboard")
+            .WithSummary("Get the busiest times")
+            .WithDescription("""
+                The number of orders per local weekday and hour over the last 28 days, for a heat map. Takes no
+                period.
+                """)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

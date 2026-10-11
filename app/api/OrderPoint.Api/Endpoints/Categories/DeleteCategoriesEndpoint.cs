@@ -9,6 +9,8 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Categories;
 
+/// <summary>The categories to delete.</summary>
+/// <param name="Ids">The ids of 1 to 100 different categories.</param>
 internal sealed record DeleteCategoriesRequest(IReadOnlyList<Guid> Ids);
 
 internal sealed class DeleteCategoriesEndpoint : IEndpoint
@@ -19,6 +21,15 @@ internal sealed class DeleteCategoriesEndpoint : IEndpoint
             .MapPost("api/categories/delete", HandleAsync)
             .WithName("DeleteCategories")
             .WithTags("Categories")
+            .WithSummary("Delete categories")
+            .WithDescription("""
+                Deletes up to 100 categories with their images. All-or-nothing: if any id does not exist (`404`),
+                nothing changes.
+
+                - `409 Category.CannotDeleteCategoryWithItems`: one of them still has items; nothing is deleted.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

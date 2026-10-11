@@ -9,6 +9,8 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Categories;
 
+/// <summary>The new menu order.</summary>
+/// <param name="Ids">The id of every category exactly once, in the new menu order (first on the menu first).</param>
 internal sealed record ReorderCategoriesRequest(IReadOnlyList<Guid> Ids);
 
 internal sealed class ReorderCategoriesEndpoint : IEndpoint
@@ -19,6 +21,15 @@ internal sealed class ReorderCategoriesEndpoint : IEndpoint
             .MapPut("api/categories/display-order", HandleAsync)
             .WithName("ReorderCategories")
             .WithTags("Categories")
+            .WithSummary("Reorder categories")
+            .WithDescription("""
+                Sets the menu order: send the id of every category exactly once, in the new order. The categories are
+                numbered 1 to n.
+
+                - `400 Category.DisplayOrderMustIncludeAllCategories`: a category is missing or listed twice.
+                - `404 Category.NotFound`: an id does not exist.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

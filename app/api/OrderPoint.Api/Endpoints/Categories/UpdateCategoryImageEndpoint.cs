@@ -9,6 +9,8 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Categories;
 
+/// <summary>The category image upload.</summary>
+/// <param name="Image">The image file: JPEG, PNG or WebP, at most 2 MB.</param>
 internal sealed record UpdateCategoryImageRequest(IFormFile Image);
 
 internal sealed class UpdateCategoryImageEndpoint : IEndpoint
@@ -19,6 +21,14 @@ internal sealed class UpdateCategoryImageEndpoint : IEndpoint
             .MapPut("api/categories/{id:guid}/image", HandleAsync)
             .WithName("UpdateCategoryImage")
             .WithTags("Categories")
+            .WithSummary("Upload a category image")
+            .WithDescription("""
+                Sets the category image. Send the file as `multipart/form-data` in the field `image`: JPEG, PNG or
+                WebP, at most 2 MB.
+
+                The previous image is deleted after the new one is saved.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
             .DisableAntiforgery()
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }

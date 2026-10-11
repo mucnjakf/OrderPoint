@@ -12,6 +12,12 @@ using OrderPoint.Domain.Sorting;
 
 namespace OrderPoint.Api.Endpoints.Bartenders;
 
+/// <summary>Paging, search, filter and sort options.</summary>
+/// <param name="PageNumber">The page to return, starting at 1.</param>
+/// <param name="PageSize">The number of bartenders per page.</param>
+/// <param name="SearchQuery">Matches the first or the last name, ignoring case.</param>
+/// <param name="Status">Only bartenders with this status.</param>
+/// <param name="SortBy">The sort order. Default: `CreatedAtUtcDesc` (newest first).</param>
 internal sealed record GetBartendersRequest(
     [FromQuery] int PageNumber,
     [FromQuery] int PageSize,
@@ -19,6 +25,8 @@ internal sealed record GetBartendersRequest(
     [FromQuery] BartenderStatus? Status,
     [FromQuery] BartenderSortBy? SortBy);
 
+/// <summary>A page of bartenders.</summary>
+/// <param name="Data">The page.</param>
 internal sealed record GetBartendersResponse(PaginationDto<BartenderDto> Data);
 
 internal sealed class GetBartendersEndpoint : IEndpoint
@@ -29,6 +37,11 @@ internal sealed class GetBartendersEndpoint : IEndpoint
             .MapGet("api/bartenders", HandleAsync)
             .WithName("GetBartenders")
             .WithTags("Bartenders")
+            .WithSummary("List bartenders")
+            .WithDescription("""
+                A page of bartenders with search (first or last name), a status filter and sorting (default: newest
+                first). `ordersCount` is the number of orders the bartender handled.
+                """)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

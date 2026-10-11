@@ -11,6 +11,13 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Items;
 
+/// <summary>The new item.</summary>
+/// <param name="Name">The name shown on the menu.</param>
+/// <param name="Description">The description shown on the menu.</param>
+/// <param name="Portion">The portion size, e.g. `0.5` for half a litre or `1` for one piece.</param>
+/// <param name="Price">The price in euros.</param>
+/// <param name="Status">The status. Inactive items cannot be ordered.</param>
+/// <param name="CategoryId">The category the item belongs to.</param>
 internal sealed record CreateItemRequest(
     string Name,
     string Description,
@@ -19,6 +26,8 @@ internal sealed record CreateItemRequest(
     ItemStatus Status,
     Guid CategoryId);
 
+/// <summary>The created item.</summary>
+/// <param name="Data">The item.</param>
 internal sealed record CreateItemResponse(ItemDto Data);
 
 internal sealed class CreateItemEndpoint : IEndpoint
@@ -29,6 +38,13 @@ internal sealed class CreateItemEndpoint : IEndpoint
             .MapPost("api/items", HandleAsync)
             .WithName("CreateItem")
             .WithTags("Items")
+            .WithSummary("Create an item")
+            .WithDescription("""
+                Creates an item in a category.
+
+                - `404 Category.NotFound`: the category does not exist.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

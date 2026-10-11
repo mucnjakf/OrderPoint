@@ -10,8 +10,13 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Dashboard;
 
+/// <summary>The viewer's time zone.</summary>
+/// <param name="TimeZone">The IANA time zone of the viewer, e.g. `Europe/Zagreb`. Periods, buckets and weekdays
+/// follow its local calendar.</param>
 internal sealed record GetDashboardLiveRequest([FromQuery] string TimeZone);
 
+/// <summary>The live figures.</summary>
+/// <param name="Data">The figures.</param>
 internal sealed record GetDashboardLiveResponse(DashboardLiveDto Data);
 
 internal sealed class GetDashboardLiveEndpoint : IEndpoint
@@ -22,6 +27,12 @@ internal sealed class GetDashboardLiveEndpoint : IEndpoint
             .MapGet("api/dashboard/live", HandleAsync)
             .WithName("GetDashboardLive")
             .WithTags("Dashboard")
+            .WithSummary("Get the live figures")
+            .WithDescription("""
+                Open orders by status, the oldest open order, and today's figures since local midnight (orders,
+                completed orders, revenue, average order value). Meant to be polled; the Admin refreshes every 30
+                seconds.
+                """)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

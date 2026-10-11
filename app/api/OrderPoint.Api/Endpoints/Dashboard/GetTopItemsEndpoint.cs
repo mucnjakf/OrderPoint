@@ -11,10 +11,17 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Dashboard;
 
+/// <summary>The period and the viewer's time zone.</summary>
+/// <param name="Period">The period: `Today` (since local midnight), `Last7Days` or `Last30Days` (both including
+/// today). Previous-period comparisons use the window of the same length right before it.</param>
+/// <param name="TimeZone">The IANA time zone of the viewer, e.g. `Europe/Zagreb`. Periods, buckets and weekdays
+/// follow its local calendar.</param>
 internal sealed record GetTopItemsRequest(
     [FromQuery] DashboardPeriod Period,
     [FromQuery] string TimeZone);
 
+/// <summary>The best-selling items.</summary>
+/// <param name="Data">Up to 5 items, best-selling first.</param>
 internal sealed record GetTopItemsResponse(IReadOnlyList<TopItemDto> Data);
 
 internal sealed class GetTopItemsEndpoint : IEndpoint
@@ -25,6 +32,10 @@ internal sealed class GetTopItemsEndpoint : IEndpoint
             .MapGet("api/dashboard/top-items", HandleAsync)
             .WithName("GetTopItems")
             .WithTags("Dashboard")
+            .WithSummary("Get the best-selling items")
+            .WithDescription("""
+                The 5 best-selling items of the period by quantity (then revenue), from completed orders.
+                """)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

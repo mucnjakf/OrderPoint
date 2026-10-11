@@ -11,10 +11,17 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Dashboard;
 
+/// <summary>The period and the viewer's time zone.</summary>
+/// <param name="Period">The period: `Today` (since local midnight), `Last7Days` or `Last30Days` (both including
+/// today). Previous-period comparisons use the window of the same length right before it.</param>
+/// <param name="TimeZone">The IANA time zone of the viewer, e.g. `Europe/Zagreb`. Periods, buckets and weekdays
+/// follow its local calendar.</param>
 internal sealed record GetRevenueTrendRequest(
     [FromQuery] DashboardPeriod Period,
     [FromQuery] string TimeZone);
 
+/// <summary>The revenue trend.</summary>
+/// <param name="Data">One point per hour (`Today`) or per day, oldest first.</param>
 internal sealed record GetRevenueTrendResponse(IReadOnlyList<RevenueTrendPointDto> Data);
 
 internal sealed class GetRevenueTrendEndpoint : IEndpoint
@@ -25,6 +32,11 @@ internal sealed class GetRevenueTrendEndpoint : IEndpoint
             .MapGet("api/dashboard/revenue-trend", HandleAsync)
             .WithName("GetRevenueTrend")
             .WithTags("Dashboard")
+            .WithSummary("Get the revenue trend")
+            .WithDescription("""
+                Completed revenue per bucket in the viewer's time zone: hourly for `Today`, daily for `Last7Days` and
+                `Last30Days`. Buckets without revenue are included with 0.
+                """)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

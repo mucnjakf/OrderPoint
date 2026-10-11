@@ -16,6 +16,15 @@ internal sealed class DeleteCategoryEndpoint : IEndpoint
             .MapDelete("api/categories/{id:guid}", HandleAsync)
             .WithName("DeleteCategory")
             .WithTags("Categories")
+            .WithSummary("Delete a category")
+            .WithDescription("""
+                Deletes the category and its image.
+
+                - `409 Category.CannotDeleteCategoryWithItems`: the category still has items; move or delete them
+                  first.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

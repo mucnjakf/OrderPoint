@@ -9,6 +9,9 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Bartenders;
 
+/// <summary>The new temporary password.</summary>
+/// <param name="Password">The temporary password the bartender replaces at the next sign-in. At least 8 characters
+/// with an uppercase letter, a lowercase letter and a digit.</param>
 internal sealed record ResetBartenderPasswordRequest(string Password);
 
 internal sealed class ResetBartenderPasswordEndpoint : IEndpoint
@@ -19,6 +22,14 @@ internal sealed class ResetBartenderPasswordEndpoint : IEndpoint
             .MapPut("api/bartenders/{id:guid}/password", HandleAsync)
             .WithName("ResetBartenderPassword")
             .WithTags("Bartenders")
+            .WithSummary("Reset a bartender's password")
+            .WithDescription("""
+                Gives a bartender who forgot their password a new temporary one: they must replace it at the next
+                sign-in, a lockout is lifted and every session is signed out.
+
+                - `400 Auth.InvalidPassword`: the password needs 8+ characters, upper and lower case and a digit.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

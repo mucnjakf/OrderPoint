@@ -10,8 +10,12 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Auth;
 
+/// <summary>The refresh token to exchange.</summary>
+/// <param name="RefreshToken">The refresh token from signing in or from the last refresh. It works once.</param>
 internal sealed record RefreshTokensRequest(string RefreshToken);
 
+/// <summary>The new token pair.</summary>
+/// <param name="Data">The new tokens; the old refresh token no longer works.</param>
 internal sealed record RefreshTokensResponse(AuthTokensDto Data);
 
 internal sealed class RefreshTokensEndpoint : IEndpoint
@@ -21,7 +25,15 @@ internal sealed class RefreshTokensEndpoint : IEndpoint
         app
             .MapPost("api/auth/refresh", HandleAsync)
             .WithName("RefreshTokens")
-            .WithTags("Auth");
+            .WithTags("Auth")
+            .WithSummary("Refresh the tokens")
+            .WithDescription("""
+                Exchanges a refresh token for a new access token and refresh token. The used refresh token is revoked
+                (rotation), so each one works once.
+
+                - `401 Auth.InvalidRefreshToken`: the token is unknown, expired, revoked or already used.
+                """)
+            .ProducesProblem(StatusCodes.Status401Unauthorized);
     }
 
     private static async Task<Results<Ok<RefreshTokensResponse>, ProblemHttpResult>> HandleAsync(

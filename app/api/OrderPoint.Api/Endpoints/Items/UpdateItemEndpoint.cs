@@ -10,6 +10,13 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Items;
 
+/// <summary>The item's new values.</summary>
+/// <param name="Name">The name shown on the menu.</param>
+/// <param name="Description">The description shown on the menu.</param>
+/// <param name="Portion">The portion size, e.g. `0.5` for half a litre or `1` for one piece.</param>
+/// <param name="Price">The price in euros. It applies to new orders only.</param>
+/// <param name="Status">The status. Inactive items cannot be ordered.</param>
+/// <param name="CategoryId">The category the item belongs to.</param>
 internal sealed record UpdateItemRequest(
     string Name,
     string Description,
@@ -26,6 +33,14 @@ internal sealed class UpdateItemEndpoint : IEndpoint
             .MapPut("api/items/{id:guid}", HandleAsync)
             .WithName("UpdateItem")
             .WithTags("Items")
+            .WithSummary("Update an item")
+            .WithDescription("""
+                Updates every field, including the category. A new price applies to new orders only; existing order
+                lines keep their price.
+
+                - `404 Item.NotFound` or `404 Category.NotFound`.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

@@ -10,6 +10,8 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Account;
 
+/// <summary>The signed-in admin's account.</summary>
+/// <param name="Data">The account.</param>
 internal sealed record GetAccountResponse(AccountDto Data);
 
 internal sealed class GetAccountEndpoint : IEndpoint
@@ -20,6 +22,16 @@ internal sealed class GetAccountEndpoint : IEndpoint
             .MapGet("api/account", HandleAsync)
             .WithName("GetAccount")
             .WithTags("Account")
+            .WithSummary("Get my account")
+            .WithDescription("""
+                Returns the signed-in admin's email and profile image. The user is taken from the access token.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .WithSummary("Get my account")
+            .WithDescription("""
+                Returns the signed-in admin's email and profile image. The user is taken from the access token.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

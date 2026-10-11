@@ -11,12 +11,20 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Auth;
 
+/// <summary>The credentials with the temporary password and the new password.</summary>
+/// <param name="Email">The email the bartender signs in with.</param>
+/// <param name="CurrentPassword">The temporary password set by the admin.</param>
+/// <param name="NewPassword">The new password. At least 8 characters with an uppercase letter, a lowercase letter and
+/// a digit. It must differ from the temporary one.</param>
+/// <param name="Role">The role of the app: the bartender app sends `1` (Bartender).</param>
 internal sealed record ChangeInitialPasswordRequest(
     string Email,
     string CurrentPassword,
     string NewPassword,
     UserRole Role);
 
+/// <summary>The tokens after the first password was set.</summary>
+/// <param name="Data">The tokens.</param>
 internal sealed record ChangeInitialPasswordResponse(AuthTokensDto Data);
 
 internal sealed class ChangeInitialPasswordEndpoint : IEndpoint
@@ -26,7 +34,19 @@ internal sealed class ChangeInitialPasswordEndpoint : IEndpoint
         app
             .MapPost("api/auth/initial-password", HandleAsync)
             .WithName("ChangeInitialPassword")
-            .WithTags("Auth");
+            .WithTags("Auth")
+            .WithSummary("Set the first password")
+            .WithDescription("""
+                First sign-in of a bartender created by the admin, or after the admin reset their password: replaces
+                the temporary password and returns tokens. Works only while a password change is required.
+
+                - `401 Auth.InvalidCredentials` or `401 Auth.LockedOut`: as for sign in.
+                - `403 Auth.PasswordChangeNotAllowed`: the password was already changed.
+                - `403 Auth.AccountInactive`: the bartender is inactive.
+                - `400 Auth.InvalidPassword`: the new password needs 8+ characters, upper and lower case and a digit.
+                """)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status403Forbidden);
     }
 
     private static async Task<Results<Ok<ChangeInitialPasswordResponse>, ProblemHttpResult>> HandleAsync(

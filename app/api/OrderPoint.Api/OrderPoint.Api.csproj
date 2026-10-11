@@ -3,6 +3,8 @@
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
         <Nullable>enable</Nullable>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);CS1591</NoWarn>
         <ImplicitUsings>enable</ImplicitUsings>
         <UserSecretsId>df0c6b02-bd6b-4236-bbc6-5c038b06cbb3</UserSecretsId>
     </PropertyGroup>

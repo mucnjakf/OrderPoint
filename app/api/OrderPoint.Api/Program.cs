@@ -7,12 +7,12 @@ using Microsoft.IdentityModel.Tokens;
 using OrderPoint.Api.Configuration;
 using OrderPoint.Api.Exceptions;
 using OrderPoint.Api.Extensions;
+using OrderPoint.Api.OpenApi;
 using OrderPoint.Application;
 using OrderPoint.Domain.Enumerations;
 using OrderPoint.Infrastructure;
 using OrderPoint.Infrastructure.Identity;
 using OrderPoint.ServiceDefaults;
-using Scalar.AspNetCore;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +20,7 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 
 // API docs
-builder.Services.AddOpenApi(options => options.AddDocumentTransformer<BearerSecuritySchemeTransformer>());
+builder.Services.AddApiDocumentation();
 
 // Authentication
 builder.Services
@@ -103,18 +103,7 @@ app.UseAuthorization();
 app.MapEndpoints();
 
 // API docs
-app.MapOpenApi();
-app.MapScalarApiReference(options =>
-{
-    options
-        .WithTitle("OrderPoint API")
-        .WithClassicLayout()
-        .WithTheme(ScalarTheme.Alternate)
-        .ExpandAllTags()
-        .SortOperationsByMethod();
-
-    options.HideClientButton = true;
-});
+app.MapApiDocumentation();
 
 // Aspire
 app.MapDefaultEndpoints();

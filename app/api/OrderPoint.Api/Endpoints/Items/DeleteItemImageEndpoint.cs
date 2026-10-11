@@ -16,6 +16,11 @@ internal sealed class DeleteItemImageEndpoint : IEndpoint
             .MapDelete("api/items/{id:guid}/image", HandleAsync)
             .WithName("DeleteItemImage")
             .WithTags("Items")
+            .WithSummary("Remove an item image")
+            .WithDescription("""
+                Removes the image and deletes the file. Succeeds when there is no image.
+                """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

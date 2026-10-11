@@ -9,6 +9,8 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Auth;
 
+/// <summary>The refresh token to revoke.</summary>
+/// <param name="RefreshToken">The refresh token from signing in or from the last refresh.</param>
 internal sealed record LogoutRequest(string RefreshToken);
 
 internal sealed class LogoutEndpoint : IEndpoint
@@ -18,7 +20,11 @@ internal sealed class LogoutEndpoint : IEndpoint
         app
             .MapPost("api/auth/logout", HandleAsync)
             .WithName("Logout")
-            .WithTags("Auth");
+            .WithTags("Auth")
+            .WithSummary("Sign out")
+            .WithDescription("""
+                Revokes the given refresh token. Always succeeds, also for unknown or already revoked tokens.
+                """);
     }
 
     private static async Task<Results<NoContent, ProblemHttpResult>> HandleAsync(

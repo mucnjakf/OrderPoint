@@ -24,9 +24,14 @@ internal static class EndpointConfiguration
     {
         var endpoints = app.Services.GetRequiredService<IEnumerable<IEndpoint>>();
 
+        // Every endpoint can fail unexpectedly; this also registers the ProblemDetails schema the docs refer to
+        RouteGroupBuilder group = app
+            .MapGroup(string.Empty)
+            .ProducesProblem(StatusCodes.Status500InternalServerError);
+
         foreach (IEndpoint endpoint in endpoints)
         {
-            endpoint.MapEndpoint(app);
+            endpoint.MapEndpoint(group);
         }
 
         return app;
