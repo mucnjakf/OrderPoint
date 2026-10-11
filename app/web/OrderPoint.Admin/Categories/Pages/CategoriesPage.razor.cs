@@ -377,4 +377,34 @@ public sealed partial class CategoriesPage
                 GetCategoriesAsync(pageNumber: 1));
         }
     }
+
+    private async Task ShowReorderCategoriesDialogAsync()
+    {
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true
+        };
+
+        IDialogReference dialogReference = await DialogService
+            .ShowAsync<ReorderCategoriesDialog>(string.Empty, options);
+
+        DialogResult dialogResult = (await dialogReference.Result)!;
+
+        if (dialogResult.Canceled)
+        {
+            return;
+        }
+
+        var request = (dialogResult.Data as ReorderCategoriesRequest)!;
+
+        bool isSuccess = await ApiService.ExecuteAsync(
+            () => CategoryApiClient.ReorderCategoriesAsync(request),
+            "Category order saved successfully");
+
+        if (isSuccess)
+        {
+            await GetCategoriesAsync(pageNumber: 1);
+        }
+    }
 }

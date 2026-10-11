@@ -36,7 +36,7 @@
            OnSearchChanged="@OnSearchChangedAsync"
            OnSortChanged="@OnSortChangedAsync"
            OnPageChanged="@OnPageChangedAsync"
-           SortByOptions="@Enum.GetNames(typeof(CategorySortBy))"
+           SortByOptions="@CategorySorting.SortByOptions"
            GetSortByLabel="@CategorySorting.GetSortByLabel"
            GetSortByIcon="@CategorySorting.GetSortByIcon"
            CreateButtonText="New category"
@@ -53,6 +53,14 @@
     <LoadingTemplate>
         <CategoryRowSkeleton/>
     </LoadingTemplate>
+
+    <ToolbarActionsContent>
+        <MudButton Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Filled.SwapVert"
+                   OnClick="@ShowReorderCategoriesDialogAsync">
+            Reorder
+        </MudButton>
+    </ToolbarActionsContent>
 
     <BulkActionsTemplate>
         <MudButton Variant="Variant.Text"
@@ -107,7 +115,7 @@
         <MudTh Style="width: 100px;"></MudTh>
         <MudTh>Name</MudTh>
         <MudTh>Status</MudTh>
-        <MudTh>Items</MudTh>
+        <MudTh>Display order</MudTh>
         <MudTh>Created</MudTh>
     </HeaderContent>
 
@@ -132,8 +140,8 @@
             </MudChip>
         </MudTd>
 
-        <MudTd DataLabel="Items">
-            @context.ItemsCount @(context.ItemsCount == 1 ? "item" : "items")
+        <MudTd DataLabel="Display order">
+            @context.DisplayOrder
         </MudTd>
 
         <MudTd DataLabel="Created">

@@ -25,4 +25,8 @@ public interface ICategoryRepository
     void Delete(Category category);
 
     Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default);
+
+    Task<int> CountAsync(CancellationToken cancellationToken = default);
+
+    Task<int> GetMaxDisplayOrderAsync(CancellationToken cancellationToken = default);
 }

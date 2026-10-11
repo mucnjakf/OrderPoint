@@ -196,4 +196,17 @@ internal sealed class CategoryApiClient(HttpClient httpClient)
             await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
         }
     }
+
+    internal async Task ReorderCategoriesAsync(
+        ReorderCategoriesRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await httpClient
+            .PutAsJsonAsync("api/categories/display-order", request, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+    }
 }

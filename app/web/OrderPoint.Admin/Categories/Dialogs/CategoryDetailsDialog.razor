@@ -22,6 +22,11 @@
                                     Text="@Category.Id.ToString()"
                                     ShowDivider="true"/>
 
+                    <TextDisplayRow Icon="@Icons.Material.Filled.FormatListNumbered"
+                                    Label="Display order"
+                                    Text="@Category.DisplayOrder.ToString(CultureInfo.CurrentCulture)"
+                                    ShowDivider="true"/>
+
                     <TextDisplayRow Icon="@Icons.Material.Filled.MenuBook"
                                     Label="Items"
                                     Text="@ItemsCount.ToString(CultureInfo.CurrentCulture)"

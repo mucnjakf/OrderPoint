@@ -9,6 +9,7 @@ internal static class CategoryMapper
         category.Name,
         category.Description,
         category.Status,
+        category.DisplayOrder,
         category.ImageUrl,
         itemsCount,
         category.CreatedAtUtc,

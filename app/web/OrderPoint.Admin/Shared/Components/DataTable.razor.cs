@@ -67,6 +67,9 @@ public sealed partial class DataTable<TItem>
     public RenderFragment? FilterContent { get; set; }
 
     [Parameter]
+    public RenderFragment? ToolbarActionsContent { get; set; }
+
+    [Parameter]
     [EditorRequired]
     public string CreateButtonText { get; set; }
 

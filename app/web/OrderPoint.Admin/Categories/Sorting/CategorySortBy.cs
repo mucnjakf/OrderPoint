@@ -4,6 +4,8 @@ internal enum CategorySortBy
 {
     NameAsc,
     NameDesc,
+    DisplayOrderAsc,
+    DisplayOrderDesc,
     ItemsCountAsc,
     ItemsCountDesc,
     CreatedAtUtcAsc,

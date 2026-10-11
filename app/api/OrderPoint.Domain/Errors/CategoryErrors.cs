@@ -20,6 +20,10 @@ public static class CategoryErrors
         "Category.ImageUrlIsRequired",
         "Category image URL is required");
 
+    public static readonly Error DisplayOrderMustIncludeAllCategories = Error.Validation(
+        "Category.DisplayOrderMustIncludeAllCategories",
+        "Display order must include every category exactly once");
+
     public static readonly Error CannotDeleteCategoryWithItems = Error.Conflict(
         "Category.CannotDeleteCategoryWithItems",
         "Cannot delete category with items");

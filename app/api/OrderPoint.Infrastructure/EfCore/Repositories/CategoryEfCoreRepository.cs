@@ -67,6 +67,12 @@ internal sealed class CategoryEfCoreRepository(ApplicationDbContext dbContext) :
     public async Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default)
         => await dbContext.Categories.AnyAsync(category => category.Id == id, cancellationToken);
 
+    public async Task<int> CountAsync(CancellationToken cancellationToken = default)
+        => await dbContext.Categories.CountAsync(cancellationToken);
+
+    public async Task<int> GetMaxDisplayOrderAsync(CancellationToken cancellationToken = default)
+        => await dbContext.Categories.MaxAsync(category => (int?)category.DisplayOrder, cancellationToken) ?? 0;
+
     private static IQueryable<Category> SearchCategories(IQueryable<Category> query, string? searchQuery)
     {
         if (!string.IsNullOrWhiteSpace(searchQuery))
@@ -93,6 +99,8 @@ internal sealed class CategoryEfCoreRepository(ApplicationDbContext dbContext) :
     {
         IOrderedQueryable<Category> orderedQuery = sortBy switch
         {
+            CategorySortBy.DisplayOrderAsc => query.OrderBy(category => category.DisplayOrder),
+            CategorySortBy.DisplayOrderDesc => query.OrderByDescending(category => category.DisplayOrder),
             CategorySortBy.NameAsc => query.OrderBy(category => category.Name),
             CategorySortBy.NameDesc => query.OrderByDescending(category => category.Name),
             CategorySortBy.ItemsCountAsc => query.OrderBy(category => category.Items.Count),

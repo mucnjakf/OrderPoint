@@ -34,12 +34,16 @@
         }
     </MudStack>
 
-    <MudButton Variant="Variant.Filled"
-               StartIcon="@Icons.Material.Filled.Add"
-               Color="Color.Primary"
-               OnClick="@OnCreateClickAsync">
-        @CreateButtonText
-    </MudButton>
+    <MudStack Row="true" AlignItems="AlignItems.Center">
+        @ToolbarActionsContent
+
+        <MudButton Variant="Variant.Filled"
+                   StartIcon="@Icons.Material.Filled.Add"
+                   Color="Color.Primary"
+                   OnClick="@OnCreateClickAsync">
+            @CreateButtonText
+        </MudButton>
+    </MudStack>
 </MudStack>
 
 @if (SelectedItems.Count > 0 && BulkActionsTemplate is not null)

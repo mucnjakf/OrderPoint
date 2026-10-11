@@ -13,6 +13,8 @@ public sealed class Category : Entity
 
     public CategoryStatus Status { get; private set; }
 
+    public int DisplayOrder { get; private set; }
+
     public string? ImageUrl { get; private set; }
 
     private readonly List<Item> _items = [];
@@ -24,17 +26,20 @@ public sealed class Category : Entity
         string name,
         string description,
         CategoryStatus status,
+        int displayOrder,
         DateTimeOffset createdAtUtc) : base(id, createdAtUtc)
     {
         Name = name;
         Description = description;
         Status = status;
+        DisplayOrder = displayOrder;
     }
 
     public static Result<Category> Create(
         string name,
         string description,
-        CategoryStatus status)
+        CategoryStatus status,
+        int displayOrder)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -46,7 +51,13 @@ public sealed class Category : Entity
             return Result.Failure<Category>(CategoryErrors.DescriptionIsRequired);
         }
 
-        Category category = new(Guid.CreateVersion7(), name, description, status, DateTimeOffset.UtcNow);
+        Category category = new(
+            Guid.CreateVersion7(),
+            name,
+            description,
+            status,
+            displayOrder,
+            DateTimeOffset.UtcNow);
 
         return Result.Success(category);
     }
@@ -83,6 +94,18 @@ public sealed class Category : Entity
         }
 
         Status = status;
+
+        UpdatedAtUtc = DateTimeOffset.UtcNow;
+    }
+
+    public void ChangeDisplayOrder(int displayOrder)
+    {
+        if (DisplayOrder == displayOrder)
+        {
+            return;
+        }
+
+        DisplayOrder = displayOrder;
 
         UpdatedAtUtc = DateTimeOffset.UtcNow;
     }

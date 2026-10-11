@@ -32,6 +32,10 @@ internal sealed class CategoryTypeConfiguration : IEntityTypeConfiguration<Categ
             .IsRequired();
 
         builder
+            .Property(category => category.DisplayOrder)
+            .IsRequired();
+
+        builder
             .Property(category => category.ImageUrl)
             .HasMaxLength(200)
             .IsRequired(false);

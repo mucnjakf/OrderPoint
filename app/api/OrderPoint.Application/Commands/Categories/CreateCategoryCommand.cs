@@ -19,7 +19,13 @@ internal sealed class CreateCategoryCommandHandler(ICategoryRepository categoryR
 {
     public async Task<Result<CategoryDto>> Handle(CreateCategoryCommand command, CancellationToken cancellationToken)
     {
-        Result<Category> result = Category.Create(command.Name, command.Description, command.Status);
+        int maxDisplayOrder = await categoryRepository.GetMaxDisplayOrderAsync(cancellationToken);
+
+        Result<Category> result = Category.Create(
+            command.Name,
+            command.Description,
+            command.Status,
+            maxDisplayOrder + 1);
 
         if (result.IsFailure)
         {

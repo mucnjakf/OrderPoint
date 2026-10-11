@@ -66,6 +66,7 @@ public sealed partial class UpdateItemDialog
             category.Name,
             category.Description,
             category.Status,
+            DisplayOrder: 0,
             category.ImageUrl,
             ItemsCount: 0,
             category.CreatedAtUtc,
