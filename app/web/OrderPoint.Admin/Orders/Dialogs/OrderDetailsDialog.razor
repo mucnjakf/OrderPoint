@@ -25,15 +25,13 @@
                                     Text="@Order.TableCode"
                                     ShowDivider="true"/>
 
-                    <ChipDisplayRow Icon="@Icons.Material.Filled.MonitorHeart"
-                                    Label="Status"
-                                    Text="@Order.Status.ToString()"
-                                    Color="@Order.Status.GetColor()"
+                    <TextDisplayRow Icon="@Icons.Material.Filled.Notes"
+                                    Label="Note"
+                                    Text="@(Order.Note ?? "-")"
                                     ShowDivider="true"/>
 
                     <TextDisplayRow Icon="@Icons.Material.Filled.Person"
-                                    Label="Bartender"
-                                    ShowDivider="true">
+                                    Label="Bartender">
                         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
                             <BartenderAvatar FirstName="@Order.Bartender?.FirstName"
                                              LastName="@Order.Bartender?.LastName"
@@ -47,10 +45,6 @@
                             </MudText>
                         </MudStack>
                     </TextDisplayRow>
-
-                    <TextDisplayRow Icon="@Icons.Material.Filled.Notes"
-                                    Label="Note"
-                                    Text="@(Order.Note ?? "-")"/>
                 </MudPaper>
             </MudItem>
 
@@ -70,17 +64,23 @@
                                 <ItemDot>
                                     <MudIcon Icon="@status.GetIcon()"
                                              Size="Size.Small"
-                                             Style="@(reachedAtUtc is null ? "font-size: 1rem" : null)"/>
+                                             Style="@(reachedAtUtc is null
+                                                          ? "font-size: 1rem; color: var(--mud-palette-text-disabled)"
+                                                          : null)"/>
                                 </ItemDot>
 
                                 <ItemContent>
-                                    <MudText Typo="Typo.body1">
-                                        @status.ToString()
-                                    </MudText>
+                                    <div style="@(reachedAtUtc is null
+                                                      ? "color: var(--mud-palette-text-disabled)"
+                                                      : null)">
+                                        <MudText Typo="Typo.body1">
+                                            @status.ToString()
+                                        </MudText>
 
-                                    <MudText Typo="Typo.caption">
-                                        @(reachedAtUtc?.ToDisplayDateTime(TimeZoneService.TimeZone) ?? "Not yet")
-                                    </MudText>
+                                        <MudText Typo="Typo.caption">
+                                            @(reachedAtUtc?.ToDisplayDateTime(TimeZoneService.TimeZone) ?? "Not yet")
+                                        </MudText>
+                                    </div>
                                 </ItemContent>
                             </MudTimelineItem>
                         }
