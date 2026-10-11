@@ -114,6 +114,18 @@ public sealed class Bartender : Entity
         return Result.Success();
     }
 
+    public void ChangeStatus(BartenderStatus status)
+    {
+        if (Status == status)
+        {
+            return;
+        }
+
+        Status = status;
+
+        UpdatedAtUtc = DateTimeOffset.UtcNow;
+    }
+
     public Result SetImage(string imageUrl)
     {
         if (string.IsNullOrWhiteSpace(imageUrl))

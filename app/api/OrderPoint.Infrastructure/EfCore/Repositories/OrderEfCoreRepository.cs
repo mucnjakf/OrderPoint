@@ -68,6 +68,13 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
             order => order.Items.Any(orderItem => orderItem.ItemId == itemId),
             cancellationToken);
 
+    public async Task<bool> ExistsByItemsAsync(
+        IReadOnlyList<Guid> itemIds,
+        CancellationToken cancellationToken = default)
+        => await dbContext.Orders.AnyAsync(
+            order => order.Items.Any(orderItem => itemIds.Contains(orderItem.ItemId)),
+            cancellationToken);
+
     public async Task<int> CountByBartenderAsync(Guid bartenderId, CancellationToken cancellationToken = default)
         => await dbContext.Orders.CountAsync(order => order.BartenderId == bartenderId, cancellationToken);
 
@@ -85,6 +92,13 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
 
     public async Task<bool> ExistsByBartenderAsync(Guid bartenderId, CancellationToken cancellationToken = default)
         => await dbContext.Orders.AnyAsync(order => order.BartenderId == bartenderId, cancellationToken);
+
+    public async Task<bool> ExistsByBartendersAsync(
+        IReadOnlyList<Guid> bartenderIds,
+        CancellationToken cancellationToken = default)
+        => await dbContext.Orders.AnyAsync(
+            order => order.BartenderId != null && bartenderIds.Contains(order.BartenderId.Value),
+            cancellationToken);
 
     private static IQueryable<Order> SearchOrders(IQueryable<Order> query, string? searchQuery)
     {

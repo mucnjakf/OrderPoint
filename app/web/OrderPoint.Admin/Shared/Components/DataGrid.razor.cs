@@ -107,6 +107,17 @@ public sealed partial class DataGrid<TItem>
     [Parameter]
     public RenderFragment? LoadingTemplate { get; set; }
 
+    [Parameter]
+    public HashSet<TItem> SelectedItems { get; set; } = [];
+
+    [Parameter]
+    public EventCallback<HashSet<TItem>> SelectedItemsChanged { get; set; }
+
+    [Parameter]
+    public RenderFragment? BulkActionsTemplate { get; set; }
+
+    private bool IsSelectable => SelectedItemsChanged.HasDelegate;
+
     private async Task OnSearchChangedAsync()
     {
         await SearchQueryChanged.InvokeAsync(SearchQuery);
@@ -149,5 +160,47 @@ public sealed partial class DataGrid<TItem>
         return IsDeleteButtonDisabled(item) && DeleteButtonDisabledTooltipText is not null
             ? DeleteButtonDisabledTooltipText
             : "Delete";
+    }
+
+    private static string SelectionCheckBoxStyle =>
+        "position: absolute; top: 8px; left: 8px; z-index: 1; " +
+        "border-radius: var(--mud-default-borderradius); background-color: var(--mud-palette-surface);";
+
+    private string GetCardStyle(TItem item)
+    {
+        return IsSelected(item)
+            ? "position: relative; background-color: var(--mud-palette-table-hover);"
+            : "position: relative;";
+    }
+
+    private bool IsSelected(TItem item)
+    {
+        return SelectedItems.Contains(item);
+    }
+
+    private async Task SetSelectedAsync(TItem item, bool isSelected)
+    {
+        HashSet<TItem> selectedItems = [.. SelectedItems];
+
+        if (isSelected)
+        {
+            selectedItems.Add(item);
+        }
+        else
+        {
+            selectedItems.Remove(item);
+        }
+
+        await SelectedItemsChanged.InvokeAsync(selectedItems);
+    }
+
+    private async Task SelectAllAsync()
+    {
+        await SelectedItemsChanged.InvokeAsync([.. Items]);
+    }
+
+    private async Task ClearSelectionAsync()
+    {
+        await SelectedItemsChanged.InvokeAsync([]);
     }
 }

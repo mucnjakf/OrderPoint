@@ -60,6 +60,11 @@ internal sealed class ItemEfCoreRepository(ApplicationDbContext dbContext) : IIt
     public async Task<bool> ExistsByCategoryAsync(Guid categoryId, CancellationToken cancellationToken = default)
         => await dbContext.Items.AnyAsync(item => item.CategoryId == categoryId, cancellationToken);
 
+    public async Task<bool> ExistsByCategoriesAsync(
+        IReadOnlyList<Guid> categoryIds,
+        CancellationToken cancellationToken = default)
+        => await dbContext.Items.AnyAsync(item => categoryIds.Contains(item.CategoryId), cancellationToken);
+
     private static IQueryable<Item> SearchItems(IQueryable<Item> query, string? searchQuery)
     {
         if (!string.IsNullOrWhiteSpace(searchQuery))

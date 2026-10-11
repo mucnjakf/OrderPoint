@@ -44,6 +44,16 @@
     </MudButton>
 </MudStack>
 
+@if (SelectedItems.Count > 0 && BulkActionsTemplate is not null)
+{
+    <BulkActionBar SelectedCount="@SelectedItems.Count"
+                   TotalCount="@Items.Count"
+                   OnSelectAllClick="@SelectAllAsync"
+                   OnClearClick="@ClearSelectionAsync">
+        @BulkActionsTemplate
+    </BulkActionBar>
+}
+
 @if (IsLoading && LoadingTemplate is not null)
 {
     <MudPaper Style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; background-color: transparent"
@@ -79,7 +89,17 @@ else
                   Elevation="0">
             @foreach (TItem item in Items)
             {
-                <MudCard>
+                <MudCard Style="@GetCardStyle(item)">
+                    @if (IsSelectable)
+                    {
+                        <div style="@SelectionCheckBoxStyle">
+                            <MudCheckBox T="bool"
+                                         Value="@IsSelected(item)"
+                                         ValueChanged="@(isSelected => SetSelectedAsync(item, isSelected))"
+                                         Dense="true"/>
+                        </div>
+                    }
+
                     @RowTemplate(item)
 
                     <MudCardActions Class="d-flex justify-center pa-4"

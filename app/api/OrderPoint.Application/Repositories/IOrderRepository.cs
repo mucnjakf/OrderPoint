@@ -28,6 +28,8 @@ public interface IOrderRepository
 
     Task<bool> ExistsByItemAsync(Guid itemId, CancellationToken cancellationToken = default);
 
+    Task<bool> ExistsByItemsAsync(IReadOnlyList<Guid> itemIds, CancellationToken cancellationToken = default);
+
     Task<int> CountByBartenderAsync(Guid bartenderId, CancellationToken cancellationToken = default);
 
     Task<IReadOnlyDictionary<Guid, int>> CountByBartendersAsync(
@@ -35,4 +37,8 @@ public interface IOrderRepository
         CancellationToken cancellationToken = default);
 
     Task<bool> ExistsByBartenderAsync(Guid bartenderId, CancellationToken cancellationToken = default);
+
+    Task<bool> ExistsByBartendersAsync(
+        IReadOnlyList<Guid> bartenderIds,
+        CancellationToken cancellationToken = default);
 }

@@ -142,4 +142,30 @@ internal sealed class ItemApiClient(HttpClient httpClient)
             await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
         }
     }
+
+    internal async Task ChangeItemsStatusAsync(
+        ChangeItemsStatusRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await httpClient
+            .PutAsJsonAsync("api/items/status", request, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+    }
+
+    internal async Task DeleteItemsAsync(
+        DeleteItemsRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await httpClient
+            .PostAsJsonAsync("api/items/delete", request, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+    }
 }

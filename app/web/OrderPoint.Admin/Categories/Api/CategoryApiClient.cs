@@ -170,4 +170,30 @@ internal sealed class CategoryApiClient(HttpClient httpClient)
             await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
         }
     }
+
+    internal async Task ChangeCategoriesStatusAsync(
+        ChangeCategoriesStatusRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await httpClient
+            .PutAsJsonAsync("api/categories/status", request, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+    }
+
+    internal async Task DeleteCategoriesAsync(
+        DeleteCategoriesRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await httpClient
+            .PostAsJsonAsync("api/categories/delete", request, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+    }
 }

@@ -62,12 +62,39 @@
           OnDeleteClick="@ShowDeleteItemDialogAsync"
           DeleteButtonDisabled="@(item => item.OrdersCount > 0)"
           DeleteButtonDisabledTooltipText="Item has orders"
+          @bind-SelectedItems="@SelectedItems"
           EmptyStateIcon="@Icons.Material.Filled.MenuBook"
           EmptyStateText="No items found">
 
     <LoadingTemplate>
         <ItemCardSkeleton/>
     </LoadingTemplate>
+
+    <BulkActionsTemplate>
+        <MudButton Variant="Variant.Text"
+                   Color="Color.Success"
+                   StartIcon="@Icons.Material.Filled.CheckCircle"
+                   OnClick="@(() => ShowChangeItemsStatusDialogAsync(ItemStatus.Active))">
+            Activate
+        </MudButton>
+
+        <MudButton Variant="Variant.Text"
+                   Color="Color.Warning"
+                   StartIcon="@Icons.Material.Filled.Block"
+                   OnClick="@(() => ShowChangeItemsStatusDialogAsync(ItemStatus.Inactive))">
+            Deactivate
+        </MudButton>
+
+        <MudTooltip Text="@DeleteSelectedTooltipText">
+            <MudButton Variant="Variant.Text"
+                       Color="Color.Error"
+                       StartIcon="@Icons.Material.Filled.Delete"
+                       Disabled="@IsDeleteSelectedBlocked"
+                       OnClick="@ShowDeleteItemsDialogAsync">
+                Delete
+            </MudButton>
+        </MudTooltip>
+    </BulkActionsTemplate>
 
     <FilterContent>
         <MudSelect @bind-Value="@SelectedStatus"

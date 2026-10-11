@@ -1,0 +1,70 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Error"/>
+            <MudText Typo="Typo.h6">Delete items</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudAlert Severity="Severity.Error" Variant="Variant.Text" Dense="true" Class="mb-4">
+            <MudText Typo="Typo.body2">
+                This action cannot be undone.
+            </MudText>
+        </MudAlert>
+
+        <BulkSelectionSummary TItem="ItemDto" Items="@Items">
+            <ItemTemplate>
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                    <MudImage Src="@(context.ImageUrl ?? "images/image-placeholder.svg")"
+                              Alt="Item image"
+                              Width="40"
+                              Height="40"
+                              ObjectFit="ObjectFit.Cover"/>
+
+                    <MudStack Spacing="0" Class="flex-1">
+                        <MudText Typo="Typo.body1">
+                            @context.Name
+                        </MudText>
+
+                        <MudText Typo="Typo.caption">
+                            @context.Category.Name
+                        </MudText>
+                    </MudStack>
+
+                    <MudChip T="string"
+                             Variant="Variant.Text"
+                             Size="Size.Small"
+                             Color="@(context.Status is ItemStatus.Active ? Color.Success : Color.Error)">
+                        @context.Status.ToString()
+                    </MudChip>
+                </MudStack>
+            </ItemTemplate>
+        </BulkSelectionSummary>
+
+        @if (Items.Any(item => item.ImageUrl is not null))
+        {
+            <MudText Typo="Typo.body2" Class="mt-4 mb-2">
+                This also deletes:
+            </MudText>
+
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                <MudIcon Icon="@Icons.Material.Filled.Image" Size="Size.Small"/>
+                <MudText Typo="Typo.body2">Their images</MudText>
+            </MudStack>
+        }
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
+            Cancel
+        </MudButton>
+
+        <MudButton OnClick="@Confirm"
+                   Variant="Variant.Filled"
+                   Color="Color.Error"
+                   StartIcon="@Icons.Material.Filled.Delete">
+            Delete @Items.Count.ToCountText("item", "items")
+        </MudButton>
+    </DialogActions>
+</MudDialog>

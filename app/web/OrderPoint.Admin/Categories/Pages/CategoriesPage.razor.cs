@@ -7,6 +7,7 @@ using OrderPoint.Admin.Categories.Dtos;
 using OrderPoint.Admin.Categories.Enumerations;
 using OrderPoint.Admin.Categories.Sorting;
 using OrderPoint.Admin.Shared.Dtos;
+using OrderPoint.Admin.Shared.Extensions;
 using OrderPoint.Admin.Shared.Services;
 
 namespace OrderPoint.Admin.Categories.Pages;
@@ -51,6 +52,20 @@ public sealed partial class CategoriesPage
 
     private bool IsLoading { get; set; } = true;
 
+    private HashSet<CategoryDto> SelectedCategories { get; set; } = [];
+
+    private IReadOnlyList<CategoryDto> UndeletableCategories =>
+        [.. SelectedCategories.Where(category => category.ItemsCount > 0)];
+
+    private bool IsDeleteSelectedBlocked => UndeletableCategories.Count > 0;
+
+    private string UndeletableNamesText =>
+        string.Join(", ", UndeletableCategories.Select(category => category.Name));
+
+    private string DeleteSelectedTooltipText => IsDeleteSelectedBlocked
+        ? $"Categories with items can't be deleted: {UndeletableNamesText}"
+        : "Delete selected";
+
     protected override async Task OnInitializedAsync()
     {
         await Task.WhenAll(
@@ -77,6 +92,8 @@ public sealed partial class CategoriesPage
 
     private async Task GetCategoriesAsync(int pageNumber)
     {
+        SelectedCategories = [];
+
         IsLoading = true;
 
         Pagination = await ApiService.ExecuteAsync(() => CategoryApiClient.GetCategoriesAsync(
@@ -261,6 +278,97 @@ public sealed partial class CategoriesPage
         bool isSuccess = await ApiService.ExecuteAsync(
             () => CategoryApiClient.DeleteCategoryAsync(category.Id),
             $"Category {category.Name} deleted successfully");
+
+        if (isSuccess)
+        {
+            await Task.WhenAll(
+                GetTopCategoriesAsync(),
+                GetCategoriesAsync(pageNumber: 1));
+        }
+    }
+
+    private async Task ShowChangeCategoriesStatusDialogAsync(CategoryStatus status)
+    {
+        IReadOnlyList<CategoryDto> categories = [.. SelectedCategories];
+
+        var parameters = new DialogParameters<ChangeCategoriesStatusDialog>
+        {
+            { dialog => dialog.Categories, categories },
+            { dialog => dialog.Status, status }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true
+        };
+
+        IDialogReference dialogReference = await DialogService
+            .ShowAsync<ChangeCategoriesStatusDialog>(string.Empty, parameters, options);
+
+        DialogResult dialogResult = (await dialogReference.Result)!;
+
+        if (dialogResult.Canceled)
+        {
+            return;
+        }
+
+        var request = new ChangeCategoriesStatusRequest
+        {
+            Ids = [.. categories.Select(category => category.Id)],
+            Status = status
+        };
+
+        string countText = categories.Count.ToCountText("category", "categories");
+        string statusText = status is CategoryStatus.Active ? "activated" : "deactivated";
+
+        bool isSuccess = await ApiService.ExecuteAsync(
+            () => CategoryApiClient.ChangeCategoriesStatusAsync(request),
+            $"{countText} {statusText} successfully");
+
+        if (isSuccess)
+        {
+            await Task.WhenAll(
+                GetTopCategoriesAsync(),
+                GetCategoriesAsync(pageNumber: 1));
+        }
+    }
+
+    private async Task ShowDeleteCategoriesDialogAsync()
+    {
+        IReadOnlyList<CategoryDto> categories = [.. SelectedCategories];
+
+        var parameters = new DialogParameters<DeleteCategoriesDialog>
+        {
+            { dialog => dialog.Categories, categories }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true
+        };
+
+        IDialogReference dialogReference = await DialogService
+            .ShowAsync<DeleteCategoriesDialog>(string.Empty, parameters, options);
+
+        DialogResult dialogResult = (await dialogReference.Result)!;
+
+        if (dialogResult.Canceled)
+        {
+            return;
+        }
+
+        var request = new DeleteCategoriesRequest
+        {
+            Ids = [.. categories.Select(category => category.Id)]
+        };
+
+        string countText = categories.Count.ToCountText("category", "categories");
+
+        bool isSuccess = await ApiService.ExecuteAsync(
+            () => CategoryApiClient.DeleteCategoriesAsync(request),
+            $"{countText} deleted successfully");
 
         if (isSuccess)
         {

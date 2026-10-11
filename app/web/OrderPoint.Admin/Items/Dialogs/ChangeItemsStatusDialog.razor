@@ -1,0 +1,58 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@StatusIcon" Color="@StatusColor"/>
+            <MudText Typo="Typo.h6">@Title</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudAlert Severity="@AlertSeverity" Variant="Variant.Text" Dense="true" Class="mb-4">
+            <MudText Typo="Typo.body2">
+                @AlertText
+            </MudText>
+        </MudAlert>
+
+        <BulkSelectionSummary TItem="ItemDto" Items="@Items">
+            <ItemTemplate>
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                    <MudImage Src="@(context.ImageUrl ?? "images/image-placeholder.svg")"
+                              Alt="Item image"
+                              Width="40"
+                              Height="40"
+                              ObjectFit="ObjectFit.Cover"/>
+
+                    <MudStack Spacing="0" Class="flex-1">
+                        <MudText Typo="Typo.body1">
+                            @context.Name
+                        </MudText>
+
+                        <MudText Typo="Typo.caption">
+                            @context.Category.Name
+                        </MudText>
+                    </MudStack>
+
+                    <MudChip T="string"
+                             Variant="Variant.Text"
+                             Size="Size.Small"
+                             Color="@(context.Status is ItemStatus.Active ? Color.Success : Color.Error)">
+                        @context.Status.ToString()
+                    </MudChip>
+                </MudStack>
+            </ItemTemplate>
+        </BulkSelectionSummary>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
+            Cancel
+        </MudButton>
+
+        <MudButton OnClick="@Confirm"
+                   Variant="Variant.Filled"
+                   Color="@StatusColor"
+                   StartIcon="@StatusIcon">
+            @ConfirmText
+        </MudButton>
+    </DialogActions>
+</MudDialog>

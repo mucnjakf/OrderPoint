@@ -7,6 +7,7 @@ using OrderPoint.Admin.Bartenders.Dtos;
 using OrderPoint.Admin.Bartenders.Enumerations;
 using OrderPoint.Admin.Bartenders.Sorting;
 using OrderPoint.Admin.Shared.Dtos;
+using OrderPoint.Admin.Shared.Extensions;
 using OrderPoint.Admin.Shared.Services;
 
 namespace OrderPoint.Admin.Bartenders.Pages;
@@ -60,6 +61,20 @@ public sealed partial class BartendersPage
     private BartenderStatus? SelectedStatus { get; set; }
 
     private bool IsLoading { get; set; } = true;
+
+    private HashSet<BartenderDto> SelectedBartenders { get; set; } = [];
+
+    private IReadOnlyList<BartenderDto> UndeletableBartenders =>
+        [.. SelectedBartenders.Where(bartender => bartender.OrdersCount > 0)];
+
+    private bool IsDeleteSelectedBlocked => UndeletableBartenders.Count > 0;
+
+    private string UndeletableNamesText =>
+        string.Join(", ", UndeletableBartenders.Select(bartender => $"{bartender.FirstName} {bartender.LastName}"));
+
+    private string DeleteSelectedTooltipText => IsDeleteSelectedBlocked
+        ? $"Bartenders with orders can't be deleted: {UndeletableNamesText}"
+        : "Delete selected";
 
     protected override async Task OnInitializedAsync()
     {
@@ -132,6 +147,8 @@ public sealed partial class BartendersPage
 
     private async Task GetBartendersAsync(int pageNumber)
     {
+        SelectedBartenders = [];
+
         IsLoading = true;
 
         Pagination = await ApiService.ExecuteAsync(() => BartenderApiClient.GetBartendersAsync(
@@ -342,6 +359,97 @@ public sealed partial class BartendersPage
         bool isSuccess = await ApiService.ExecuteAsync(
             () => BartenderApiClient.DeleteBartenderAsync(bartender.Id),
             $"Bartender {bartenderName} deleted successfully");
+
+        if (isSuccess)
+        {
+            await Task.WhenAll(
+                GetTeamStripAsync(),
+                GetBartendersAsync(pageNumber: 1));
+        }
+    }
+
+    private async Task ShowChangeBartendersStatusDialogAsync(BartenderStatus status)
+    {
+        IReadOnlyList<BartenderDto> bartenders = [.. SelectedBartenders];
+
+        var parameters = new DialogParameters<ChangeBartendersStatusDialog>
+        {
+            { dialog => dialog.Bartenders, bartenders },
+            { dialog => dialog.Status, status }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true
+        };
+
+        IDialogReference dialogReference = await DialogService
+            .ShowAsync<ChangeBartendersStatusDialog>(string.Empty, parameters, options);
+
+        DialogResult dialogResult = (await dialogReference.Result)!;
+
+        if (dialogResult.Canceled)
+        {
+            return;
+        }
+
+        var request = new ChangeBartendersStatusRequest
+        {
+            Ids = [.. bartenders.Select(bartender => bartender.Id)],
+            Status = status
+        };
+
+        string countText = bartenders.Count.ToCountText("bartender", "bartenders");
+        string statusText = status is BartenderStatus.Active ? "activated" : "deactivated";
+
+        bool isSuccess = await ApiService.ExecuteAsync(
+            () => BartenderApiClient.ChangeBartendersStatusAsync(request),
+            $"{countText} {statusText} successfully");
+
+        if (isSuccess)
+        {
+            await Task.WhenAll(
+                GetTeamStripAsync(),
+                GetBartendersAsync(pageNumber: 1));
+        }
+    }
+
+    private async Task ShowDeleteBartendersDialogAsync()
+    {
+        IReadOnlyList<BartenderDto> bartenders = [.. SelectedBartenders];
+
+        var parameters = new DialogParameters<DeleteBartendersDialog>
+        {
+            { dialog => dialog.Bartenders, bartenders }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true
+        };
+
+        IDialogReference dialogReference = await DialogService
+            .ShowAsync<DeleteBartendersDialog>(string.Empty, parameters, options);
+
+        DialogResult dialogResult = (await dialogReference.Result)!;
+
+        if (dialogResult.Canceled)
+        {
+            return;
+        }
+
+        var request = new DeleteBartendersRequest
+        {
+            Ids = [.. bartenders.Select(bartender => bartender.Id)]
+        };
+
+        string countText = bartenders.Count.ToCountText("bartender", "bartenders");
+
+        bool isSuccess = await ApiService.ExecuteAsync(
+            () => BartenderApiClient.DeleteBartendersAsync(request),
+            $"{countText} deleted successfully");
 
         if (isSuccess)
         {

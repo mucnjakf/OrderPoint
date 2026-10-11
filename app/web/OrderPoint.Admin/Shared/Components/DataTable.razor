@@ -42,15 +42,37 @@
     </MudButton>
 </MudStack>
 
+@if (SelectedItems.Count > 0 && BulkActionsTemplate is not null)
+{
+    <BulkActionBar SelectedCount="@SelectedItems.Count"
+                   TotalCount="@Items.Count"
+                   OnSelectAllClick="@SelectAllAsync"
+                   OnClearClick="@ClearSelectionAsync">
+        @BulkActionsTemplate
+    </BulkActionBar>
+}
+
 @if (IsLoading && LoadingTemplate is not null)
 {
     <MudTable T="int" Items="@LoadingRows">
         <HeaderContent>
+            @if (IsSelectable)
+            {
+                <MudTh></MudTh>
+            }
+
             @HeaderContent
             <MudTh Style="width: 150px;"></MudTh>
         </HeaderContent>
 
         <RowTemplate>
+            @if (IsSelectable)
+            {
+                <MudTd>
+                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="18px" Height="18px"/>
+                </MudTd>
+            }
+
             @LoadingTemplate
 
             <MudTd>
@@ -75,7 +97,13 @@ else
                   EmptyStateIcon="@EmptyStateIcon"
                   EmptyStateText="@EmptyStateText">
 
-        <MudTable Items="@Items" Hover="true">
+        <MudTable T="TItem"
+                  Items="@Items"
+                  Hover="true"
+                  MultiSelection="@IsSelectable"
+                  SelectOnRowClick="false"
+                  SelectedItems="@SelectedItems"
+                  SelectedItemsChanged="@OnSelectedItemsChangedAsync">
             <HeaderContent>
                 @HeaderContent
                 <MudTh Style="width: 150px;"></MudTh>

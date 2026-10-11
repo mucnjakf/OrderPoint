@@ -1,0 +1,75 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Error"/>
+            <MudText Typo="Typo.h6">Delete bartenders</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudAlert Severity="Severity.Error" Variant="Variant.Text" Dense="true" Class="mb-4">
+            <MudText Typo="Typo.body2">
+                This action cannot be undone.
+            </MudText>
+        </MudAlert>
+
+        <BulkSelectionSummary TItem="BartenderDto" Items="@Bartenders">
+            <ItemTemplate>
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                    <BartenderAvatar FirstName="@context.FirstName"
+                                     LastName="@context.LastName"
+                                     ImageUrl="@context.ImageUrl"/>
+
+                    <MudStack Spacing="0" Class="flex-1">
+                        <MudText Typo="Typo.body1">
+                            @context.FirstName @context.LastName
+                        </MudText>
+
+                        <MudText Typo="Typo.caption">
+                            @context.Email
+                        </MudText>
+                    </MudStack>
+
+                    <MudChip T="string"
+                             Variant="Variant.Text"
+                             Size="Size.Small"
+                             Color="@(context.Status is BartenderStatus.Active ? Color.Success : Color.Error)">
+                        @context.Status.ToString()
+                    </MudChip>
+                </MudStack>
+            </ItemTemplate>
+        </BulkSelectionSummary>
+
+        <MudText Typo="Typo.body2" Class="mt-4 mb-2">
+            This also deletes:
+        </MudText>
+
+        <MudStack Spacing="1">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                <MudIcon Icon="@Icons.Material.Filled.Key" Size="Size.Small"/>
+                <MudText Typo="Typo.body2">Their logins, so they can no longer sign in</MudText>
+            </MudStack>
+
+            @if (Bartenders.Any(bartender => bartender.ImageUrl is not null))
+            {
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                    <MudIcon Icon="@Icons.Material.Filled.Image" Size="Size.Small"/>
+                    <MudText Typo="Typo.body2">Their photos</MudText>
+                </MudStack>
+            }
+        </MudStack>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
+            Cancel
+        </MudButton>
+
+        <MudButton OnClick="@Confirm"
+                   Variant="Variant.Filled"
+                   Color="Color.Error"
+                   StartIcon="@Icons.Material.Filled.Delete">
+            Delete @Bartenders.Count.ToCountText("bartender", "bartenders")
+        </MudButton>
+    </DialogActions>
+</MudDialog>

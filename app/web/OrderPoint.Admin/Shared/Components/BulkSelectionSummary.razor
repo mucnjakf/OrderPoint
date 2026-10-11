@@ -1,0 +1,17 @@
+﻿@typeparam TItem
+
+<MudPaper Outlined="true" Class="pa-4">
+    <MudStack Spacing="3">
+        @foreach (TItem item in Items.Take(MaxVisibleItemsCount))
+        {
+            @ItemTemplate(item)
+        }
+
+        @if (HiddenItemsCount > 0)
+        {
+            <MudText Typo="Typo.caption">
+                and @HiddenItemsCount more
+            </MudText>
+        }
+    </MudStack>
+</MudPaper>

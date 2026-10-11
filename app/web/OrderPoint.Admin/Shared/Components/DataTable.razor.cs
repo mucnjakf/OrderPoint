@@ -110,6 +110,17 @@ public sealed partial class DataTable<TItem>
     [Parameter]
     public RenderFragment? LoadingTemplate { get; set; }
 
+    [Parameter]
+    public HashSet<TItem> SelectedItems { get; set; } = [];
+
+    [Parameter]
+    public EventCallback<HashSet<TItem>> SelectedItemsChanged { get; set; }
+
+    [Parameter]
+    public RenderFragment? BulkActionsTemplate { get; set; }
+
+    private bool IsSelectable => SelectedItemsChanged.HasDelegate;
+
     private IEnumerable<int> LoadingRows => Enumerable.Range(0, LoadingItemsCount);
 
     private async Task OnSearchChangedAsync()
@@ -154,5 +165,20 @@ public sealed partial class DataTable<TItem>
         return IsDeleteButtonDisabled(item) && DeleteButtonDisabledTooltipText is not null
             ? DeleteButtonDisabledTooltipText
             : "Delete";
+    }
+
+    private async Task OnSelectedItemsChangedAsync(HashSet<TItem> selectedItems)
+    {
+        await SelectedItemsChanged.InvokeAsync(selectedItems);
+    }
+
+    private async Task SelectAllAsync()
+    {
+        await SelectedItemsChanged.InvokeAsync([.. Items]);
+    }
+
+    private async Task ClearSelectionAsync()
+    {
+        await SelectedItemsChanged.InvokeAsync([]);
     }
 }

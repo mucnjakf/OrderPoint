@@ -33,12 +33,39 @@
                OnDeleteClick="@ShowDeleteBartenderDialogAsync"
                DeleteButtonDisabled="@(bartender => bartender.OrdersCount > 0)"
                DeleteButtonDisabledTooltipText="Bartender has orders"
+               @bind-SelectedItems="@SelectedBartenders"
                EmptyStateIcon="@Icons.Material.Filled.People"
                EmptyStateText="No bartenders found">
 
     <LoadingTemplate>
         <BartenderRowSkeleton/>
     </LoadingTemplate>
+
+    <BulkActionsTemplate>
+        <MudButton Variant="Variant.Text"
+                   Color="Color.Success"
+                   StartIcon="@Icons.Material.Filled.CheckCircle"
+                   OnClick="@(() => ShowChangeBartendersStatusDialogAsync(BartenderStatus.Active))">
+            Activate
+        </MudButton>
+
+        <MudButton Variant="Variant.Text"
+                   Color="Color.Warning"
+                   StartIcon="@Icons.Material.Filled.Block"
+                   OnClick="@(() => ShowChangeBartendersStatusDialogAsync(BartenderStatus.Inactive))">
+            Deactivate
+        </MudButton>
+
+        <MudTooltip Text="@DeleteSelectedTooltipText">
+            <MudButton Variant="Variant.Text"
+                       Color="Color.Error"
+                       StartIcon="@Icons.Material.Filled.Delete"
+                       Disabled="@IsDeleteSelectedBlocked"
+                       OnClick="@ShowDeleteBartendersDialogAsync">
+                Delete
+            </MudButton>
+        </MudTooltip>
+    </BulkActionsTemplate>
 
     <FilterContent>
         <MudSelect @bind-Value="@SelectedStatus"

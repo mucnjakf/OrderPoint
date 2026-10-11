@@ -26,4 +26,8 @@ public interface IItemRepository
     Task<int> CountByCategoryAsync(Guid categoryId, CancellationToken cancellationToken = default);
 
     Task<bool> ExistsByCategoryAsync(Guid categoryId, CancellationToken cancellationToken = default);
+
+    Task<bool> ExistsByCategoriesAsync(
+        IReadOnlyList<Guid> categoryIds,
+        CancellationToken cancellationToken = default);
 }

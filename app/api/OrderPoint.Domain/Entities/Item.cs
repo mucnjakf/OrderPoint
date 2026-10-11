@@ -128,6 +128,18 @@ public sealed class Item : Entity
         return Result.Success();
     }
 
+    public void ChangeStatus(ItemStatus status)
+    {
+        if (Status == status)
+        {
+            return;
+        }
+
+        Status = status;
+
+        UpdatedAtUtc = DateTimeOffset.UtcNow;
+    }
+
     public Result SetImage(string imageUrl)
     {
         if (string.IsNullOrWhiteSpace(imageUrl))

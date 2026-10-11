@@ -1,0 +1,24 @@
+﻿<MudPaper Outlined="true" Class="px-4 py-2 mb-3">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+        <MudText Typo="Typo.body2" Class="mr-2">
+            @SelectedCount selected
+        </MudText>
+
+        <MudDivider Vertical="true" FlexItem="true"/>
+
+        @ChildContent
+
+        <MudSpacer/>
+
+        @if (SelectedCount < TotalCount)
+        {
+            <MudButton Variant="Variant.Text" OnClick="@OnSelectAllClickAsync">
+                Select all @TotalCount
+            </MudButton>
+        }
+
+        <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.Close" OnClick="@OnClearClickAsync">
+            Clear
+        </MudButton>
+    </MudStack>
+</MudPaper>

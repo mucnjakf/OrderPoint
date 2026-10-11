@@ -18,6 +18,8 @@ public interface IBartenderRepository
 
     Task<Bartender?> GetAsync(Guid id, CancellationToken cancellationToken = default);
 
+    Task<IReadOnlyList<Bartender>> GetAsync(IReadOnlyList<Guid> ids, CancellationToken cancellationToken = default);
+
     Task CreateAsync(Bartender bartender, CancellationToken cancellationToken = default);
 
     void Delete(Bartender bartender);

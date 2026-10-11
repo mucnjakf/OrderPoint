@@ -184,4 +184,30 @@ internal sealed class BartenderApiClient(HttpClient httpClient)
             await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
         }
     }
+
+    internal async Task ChangeBartendersStatusAsync(
+        ChangeBartendersStatusRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await httpClient
+            .PutAsJsonAsync("api/bartenders/status", request, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+    }
+
+    internal async Task DeleteBartendersAsync(
+        DeleteBartendersRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await httpClient
+            .PostAsJsonAsync("api/bartenders/delete", request, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+    }
 }

@@ -112,6 +112,17 @@ public sealed partial class DataAccordion<TItem>
     [Parameter]
     public RenderFragment? LoadingTemplate { get; set; }
 
+    [Parameter]
+    public HashSet<TItem> SelectedItems { get; set; } = [];
+
+    [Parameter]
+    public EventCallback<HashSet<TItem>> SelectedItemsChanged { get; set; }
+
+    [Parameter]
+    public RenderFragment? BulkActionsTemplate { get; set; }
+
+    private bool IsSelectable => SelectedItemsChanged.HasDelegate;
+
     private TItem? HoveredItem { get; set; }
 
     private TItem? ExpandedItem { get; set; }
@@ -172,7 +183,9 @@ public sealed partial class DataAccordion<TItem>
         bool isHovered = EqualityComparer<TItem>.Default.Equals(item, HoveredItem);
         bool isExpanded = EqualityComparer<TItem>.Default.Equals(item, ExpandedItem);
 
-        return isHovered && !isExpanded ? "background-color: var(--mud-palette-table-hover);" : null;
+        return (isHovered || IsSelected(item)) && !isExpanded
+            ? "background-color: var(--mud-palette-table-hover);"
+            : null;
     }
 
     private string GetDeleteButtonTooltipText(TItem item)
@@ -180,5 +193,36 @@ public sealed partial class DataAccordion<TItem>
         return IsDeleteButtonDisabled(item) && DeleteButtonDisabledTooltipText is not null
             ? DeleteButtonDisabledTooltipText
             : "Delete";
+    }
+
+    private bool IsSelected(TItem item)
+    {
+        return SelectedItems.Contains(item);
+    }
+
+    private async Task SetSelectedAsync(TItem item, bool isSelected)
+    {
+        HashSet<TItem> selectedItems = [.. SelectedItems];
+
+        if (isSelected)
+        {
+            selectedItems.Add(item);
+        }
+        else
+        {
+            selectedItems.Remove(item);
+        }
+
+        await SelectedItemsChanged.InvokeAsync(selectedItems);
+    }
+
+    private async Task SelectAllAsync()
+    {
+        await SelectedItemsChanged.InvokeAsync([.. Items]);
+    }
+
+    private async Task ClearSelectionAsync()
+    {
+        await SelectedItemsChanged.InvokeAsync([]);
     }
 }

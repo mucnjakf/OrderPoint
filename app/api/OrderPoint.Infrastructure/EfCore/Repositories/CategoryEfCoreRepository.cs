@@ -51,6 +51,13 @@ internal sealed class CategoryEfCoreRepository(ApplicationDbContext dbContext) :
     public async Task<Category?> GetAsync(Guid id, CancellationToken cancellationToken = default)
         => await dbContext.Categories.SingleOrDefaultAsync(category => category.Id == id, cancellationToken);
 
+    public async Task<IReadOnlyList<Category>> GetAsync(
+        IReadOnlyList<Guid> ids,
+        CancellationToken cancellationToken = default)
+        => await dbContext.Categories
+            .Where(category => ids.Contains(category.Id))
+            .ToListAsync(cancellationToken);
+
     public async Task CreateAsync(Category category, CancellationToken cancellationToken = default)
         => await dbContext.Categories.AddAsync(category, cancellationToken);
 

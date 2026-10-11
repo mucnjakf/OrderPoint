@@ -49,6 +49,13 @@ internal sealed class BartenderEfCoreRepository(ApplicationDbContext dbContext) 
     public async Task<Bartender?> GetAsync(Guid id, CancellationToken cancellationToken = default)
         => await dbContext.Bartenders.SingleOrDefaultAsync(bartender => bartender.Id == id, cancellationToken);
 
+    public async Task<IReadOnlyList<Bartender>> GetAsync(
+        IReadOnlyList<Guid> ids,
+        CancellationToken cancellationToken = default)
+        => await dbContext.Bartenders
+            .Where(bartender => ids.Contains(bartender.Id))
+            .ToListAsync(cancellationToken);
+
     public async Task CreateAsync(Bartender bartender, CancellationToken cancellationToken = default)
         => await dbContext.Bartenders.AddAsync(bartender, cancellationToken);
 

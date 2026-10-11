@@ -46,12 +46,39 @@
            DeleteButtonDisabled="@(category => category.ItemsCount > 0)"
            DeleteButtonDisabledTooltipText="Category contains items"
            OnDeleteClick="@ShowDeleteCategoryDialogAsync"
+           @bind-SelectedItems="@SelectedCategories"
            EmptyStateIcon="@Icons.Material.Filled.Category"
            EmptyStateText="No categories found">
 
     <LoadingTemplate>
         <CategoryRowSkeleton/>
     </LoadingTemplate>
+
+    <BulkActionsTemplate>
+        <MudButton Variant="Variant.Text"
+                   Color="Color.Success"
+                   StartIcon="@Icons.Material.Filled.CheckCircle"
+                   OnClick="@(() => ShowChangeCategoriesStatusDialogAsync(CategoryStatus.Active))">
+            Activate
+        </MudButton>
+
+        <MudButton Variant="Variant.Text"
+                   Color="Color.Warning"
+                   StartIcon="@Icons.Material.Filled.Block"
+                   OnClick="@(() => ShowChangeCategoriesStatusDialogAsync(CategoryStatus.Inactive))">
+            Deactivate
+        </MudButton>
+
+        <MudTooltip Text="@DeleteSelectedTooltipText">
+            <MudButton Variant="Variant.Text"
+                       Color="Color.Error"
+                       StartIcon="@Icons.Material.Filled.Delete"
+                       Disabled="@IsDeleteSelectedBlocked"
+                       OnClick="@ShowDeleteCategoriesDialogAsync">
+                Delete
+            </MudButton>
+        </MudTooltip>
+    </BulkActionsTemplate>
 
     <FilterContent>
         <MudSelect @bind-Value="@SelectedStatus"

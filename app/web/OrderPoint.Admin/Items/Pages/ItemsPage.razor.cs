@@ -76,6 +76,20 @@ public sealed partial class ItemsPage
 
     private bool IsLoading { get; set; } = true;
 
+    private HashSet<ItemDto> SelectedItems { get; set; } = [];
+
+    private IReadOnlyList<ItemDto> UndeletableItems =>
+        [.. SelectedItems.Where(item => item.OrdersCount > 0)];
+
+    private bool IsDeleteSelectedBlocked => UndeletableItems.Count > 0;
+
+    private string UndeletableNamesText =>
+        string.Join(", ", UndeletableItems.Select(item => item.Name));
+
+    private string DeleteSelectedTooltipText => IsDeleteSelectedBlocked
+        ? $"Items with orders can't be deleted: {UndeletableNamesText}"
+        : "Delete selected";
+
     protected override async Task OnInitializedAsync()
     {
         await Task.WhenAll(
@@ -148,6 +162,8 @@ public sealed partial class ItemsPage
 
     private async Task GetItemsAsync(int pageNumber)
     {
+        SelectedItems = [];
+
         IsLoading = true;
 
         Pagination = await ApiService.ExecuteAsync(() => ItemApiClient.GetItemsAsync(
@@ -355,4 +371,94 @@ public sealed partial class ItemsPage
         }
     }
 
+    private async Task ShowChangeItemsStatusDialogAsync(ItemStatus status)
+    {
+        IReadOnlyList<ItemDto> items = [.. SelectedItems];
+
+        var parameters = new DialogParameters<ChangeItemsStatusDialog>
+        {
+            { dialog => dialog.Items, items },
+            { dialog => dialog.Status, status }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true
+        };
+
+        IDialogReference dialogReference = await DialogService
+            .ShowAsync<ChangeItemsStatusDialog>(string.Empty, parameters, options);
+
+        DialogResult dialogResult = (await dialogReference.Result)!;
+
+        if (dialogResult.Canceled)
+        {
+            return;
+        }
+
+        var request = new ChangeItemsStatusRequest
+        {
+            Ids = [.. items.Select(item => item.Id)],
+            Status = status
+        };
+
+        string countText = items.Count.ToCountText("item", "items");
+        string statusText = status is ItemStatus.Active ? "activated" : "deactivated";
+
+        bool isSuccess = await ApiService.ExecuteAsync(
+            () => ItemApiClient.ChangeItemsStatusAsync(request),
+            $"{countText} {statusText} successfully");
+
+        if (isSuccess)
+        {
+            await Task.WhenAll(
+                GetSpotlightAsync(),
+                GetItemsAsync(pageNumber: 1));
+        }
+    }
+
+    private async Task ShowDeleteItemsDialogAsync()
+    {
+        IReadOnlyList<ItemDto> items = [.. SelectedItems];
+
+        var parameters = new DialogParameters<DeleteItemsDialog>
+        {
+            { dialog => dialog.Items, items }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true
+        };
+
+        IDialogReference dialogReference = await DialogService
+            .ShowAsync<DeleteItemsDialog>(string.Empty, parameters, options);
+
+        DialogResult dialogResult = (await dialogReference.Result)!;
+
+        if (dialogResult.Canceled)
+        {
+            return;
+        }
+
+        var request = new DeleteItemsRequest
+        {
+            Ids = [.. items.Select(item => item.Id)]
+        };
+
+        string countText = items.Count.ToCountText("item", "items");
+
+        bool isSuccess = await ApiService.ExecuteAsync(
+            () => ItemApiClient.DeleteItemsAsync(request),
+            $"{countText} deleted successfully");
+
+        if (isSuccess)
+        {
+            await Task.WhenAll(
+                GetSpotlightAsync(),
+                GetItemsAsync(pageNumber: 1));
+        }
+    }
 }

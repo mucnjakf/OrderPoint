@@ -75,6 +75,18 @@ public sealed class Category : Entity
         return Result.Success();
     }
 
+    public void ChangeStatus(CategoryStatus status)
+    {
+        if (Status == status)
+        {
+            return;
+        }
+
+        Status = status;
+
+        UpdatedAtUtc = DateTimeOffset.UtcNow;
+    }
+
     public Result SetImage(string imageUrl)
     {
         if (string.IsNullOrWhiteSpace(imageUrl))

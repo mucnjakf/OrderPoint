@@ -42,6 +42,16 @@
     </MudButton>
 </MudStack>
 
+@if (SelectedItems.Count > 0 && BulkActionsTemplate is not null)
+{
+    <BulkActionBar SelectedCount="@SelectedItems.Count"
+                   TotalCount="@Items.Count"
+                   OnSelectAllClick="@SelectAllAsync"
+                   OnClearClick="@ClearSelectionAsync">
+        @BulkActionsTemplate
+    </BulkActionBar>
+}
+
 @if (IsLoading && LoadingTemplate is not null)
 {
     <MudExpansionPanels Elevation="1">
@@ -49,7 +59,14 @@
         {
             <MudExpansionPanel Disabled="true">
                 <TitleContent>
-                    @LoadingTemplate
+                    <div class="d-flex align-center">
+                        @if (IsSelectable)
+                        {
+                            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="18px" Height="18px" Class="mr-4"/>
+                        }
+
+                        @LoadingTemplate
+                    </div>
                 </TitleContent>
             </MudExpansionPanel>
         }
@@ -71,7 +88,20 @@ else
                                    @onmouseenter="@(() => HoveredItem = item)"
                                    @onmouseleave="@(() => HoveredItem = default)">
                     <TitleContent>
-                        @HeaderTemplate(item)
+                        <div class="d-flex align-center">
+                            @if (IsSelectable)
+                            {
+                                <div @onclick:stopPropagation="true" @onkeydown:stopPropagation="true">
+                                    <MudCheckBox T="bool"
+                                                 Value="@IsSelected(item)"
+                                                 ValueChanged="@(isSelected => SetSelectedAsync(item, isSelected))"
+                                                 Dense="true"
+                                                 Class="mr-2"/>
+                                </div>
+                            }
+
+                            @HeaderTemplate(item)
+                        </div>
                     </TitleContent>
 
                     <ChildContent>
