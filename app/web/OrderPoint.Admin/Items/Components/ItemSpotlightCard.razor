@@ -12,7 +12,7 @@
     <ChildContent>
         @if (Item is not null)
         {
-            <MudImage Src="@(Item.ImageUrl ?? "images/image-placeholder.svg")"
+            <MudImage Src="@(Item.ImageUrl ?? ImageUrls.Placeholder)"
                       Alt="Item image"
                       Class="mb-3"
                       Width="55"

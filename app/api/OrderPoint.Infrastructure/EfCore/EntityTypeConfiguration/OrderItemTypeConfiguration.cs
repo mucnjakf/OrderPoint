@@ -23,6 +23,7 @@ internal sealed class OrderItemTypeConfiguration : IEntityTypeConfiguration<Orde
 
         builder
             .Property(orderItem => orderItem.UnitPrice)
+            .HasPrecision(10, 2)
             .IsRequired();
 
         builder

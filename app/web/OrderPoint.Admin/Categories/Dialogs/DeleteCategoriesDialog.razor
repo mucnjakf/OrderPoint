@@ -16,7 +16,7 @@
         <BulkSelectionSummary TItem="CategoryDto" Items="@Categories">
             <ItemTemplate>
                 <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
-                    <MudImage Src="@(context.ImageUrl ?? "images/image-placeholder.svg")"
+                    <MudImage Src="@(context.ImageUrl ?? ImageUrls.Placeholder)"
                               Alt="Category image"
                               Width="40"
                               Height="40"

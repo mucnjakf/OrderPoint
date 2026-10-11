@@ -10,7 +10,7 @@
                   @onmouseenter="@(() => HoveredItemId = item.ItemId)"
                   @onmouseleave="@(() => HoveredItemId = null)">
             <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
-                <MudImage Src="@(item.ImageUrl ?? "images/image-placeholder.svg")"
+                <MudImage Src="@(item.ImageUrl ?? ImageUrls.Placeholder)"
                           Alt="Item image"
                           Width="40"
                           Height="40"

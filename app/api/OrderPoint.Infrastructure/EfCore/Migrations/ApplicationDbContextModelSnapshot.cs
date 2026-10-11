@@ -136,7 +136,8 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                         .HasColumnType("double precision");
 
                     b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
+                        .HasPrecision(10, 2)
+                        .HasColumnType("numeric(10,2)");
 
                     b.Property<int>("Status")
                         .HasColumnType("integer");
@@ -223,7 +224,8 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                         .HasColumnType("integer");
 
                     b.Property<decimal>("UnitPrice")
-                        .HasColumnType("numeric");
+                        .HasPrecision(10, 2)
+                        .HasColumnType("numeric(10,2)");
 
                     b.Property<DateTimeOffset?>("UpdatedAtUtc")
                         .HasColumnType("timestamp with time zone");

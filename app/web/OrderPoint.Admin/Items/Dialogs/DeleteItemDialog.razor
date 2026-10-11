@@ -15,7 +15,7 @@
 
         <MudPaper Outlined="true" Class="pa-4">
             <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="4">
-                <MudImage Src="@(Item.ImageUrl ?? "images/image-placeholder.svg")"
+                <MudImage Src="@(Item.ImageUrl ?? ImageUrls.Placeholder)"
                           Alt="Item image"
                           Width="72"
                           Height="72"
@@ -36,7 +36,7 @@
                     </MudStack>
 
                     <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                        <MudImage Src="@(Item.Category.ImageUrl ?? "images/image-placeholder.svg")"
+                        <MudImage Src="@(Item.Category.ImageUrl ?? ImageUrls.Placeholder)"
                                   Alt="Category image"
                                   Width="20"
                                   Height="20"

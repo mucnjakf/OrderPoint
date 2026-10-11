@@ -127,7 +127,7 @@
                 @foreach (OrderItemDto orderItem in context.Items)
                 {
                     <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
-                        <MudImage Src="@(orderItem.ImageUrl ?? "images/image-placeholder.svg")"
+                        <MudImage Src="@(orderItem.ImageUrl ?? ImageUrls.Placeholder)"
                                   Alt="Item image"
                                   Width="32"
                                   Height="32"

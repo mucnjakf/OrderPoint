@@ -33,6 +33,7 @@ internal sealed class ItemTypeConfiguration : IEntityTypeConfiguration<Item>
 
         builder
             .Property(item => item.Price)
+            .HasPrecision(10, 2)
             .IsRequired();
 
         builder

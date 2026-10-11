@@ -17,7 +17,7 @@
             <BartenderAvatar FirstName="@FirstName" LastName="@LastName" ImageUrl="@Result.ImageUrl"/>
             break;
         default:
-            <MudImage Src="@(Result.ImageUrl ?? "images/image-placeholder.svg")"
+            <MudImage Src="@(Result.ImageUrl ?? ImageUrls.Placeholder)"
                       Alt="Image"
                       Width="40"
                       Height="40"

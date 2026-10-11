@@ -145,7 +145,7 @@
                          ToStringFunc="@(category => category?.Name)">
             <ItemTemplate Context="category">
                 <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                    <MudImage Src="@(category.ImageUrl ?? "images/image-placeholder.svg")"
+                    <MudImage Src="@(category.ImageUrl ?? ImageUrls.Placeholder)"
                               Alt="Category image"
                               Width="24"
                               Height="24"
@@ -170,7 +170,7 @@
 
         <MudCardContent Class="d-flex flex-column">
             <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mb-1">
-                <MudImage Src="@(context.Category.ImageUrl ?? "images/image-placeholder.svg")"
+                <MudImage Src="@(context.Category.ImageUrl ?? ImageUrls.Placeholder)"
                           Alt="Category image"
                           Width="16"
                           Height="16"
@@ -187,7 +187,8 @@
 
             <MudText Typo="Typo.body2"
                      Class="mt-1"
-                     Style="color: var(--mud-palette-text-secondary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                     Style="color: var(--mud-palette-text-secondary); display: -webkit-box; -webkit-line-clamp: 2;
+                            -webkit-box-orient: vertical; overflow: hidden;">
                 @context.Description
             </MudText>
 
