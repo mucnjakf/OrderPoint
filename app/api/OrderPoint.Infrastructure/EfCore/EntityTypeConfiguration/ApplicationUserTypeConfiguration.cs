@@ -78,6 +78,11 @@ internal sealed class ApplicationUserTypeConfiguration : IEntityTypeConfiguratio
             .Property(user => user.MustChangePassword)
             .IsRequired();
 
+        builder
+            .Property(user => user.ImageUrl)
+            .HasMaxLength(200)
+            .IsRequired(false);
+
         // Not used: phone numbers live on Bartender, and there is no email confirmation or two-factor login
         builder.Ignore(user => user.PhoneNumber);
         builder.Ignore(user => user.PhoneNumberConfirmed);

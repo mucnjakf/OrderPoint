@@ -78,15 +78,31 @@
         </MudNavMenu>
 
         <div class="mt-auto">
+            <MudNavMenu Bordered="true" Class="mb-2">
+                <MudNavLink Href="/account" Match="NavLinkMatch.Prefix" Icon="@AccountNavIcon">
+                    <div class="d-flex align-center">
+                        @if (AccountService.ImageUrl is not null)
+                        {
+                            <MudAvatar Size="Size.Small" Style="@AccountAvatarStyle">
+                                <MudImage Src="@AccountService.ImageUrl"
+                                          Alt="Account image"
+                                          ObjectFit="ObjectFit.Cover"/>
+                            </MudAvatar>
+                        }
+
+                        @if (DrawerOpen)
+                        {
+                            <MudText Typo="Typo.body1">Account</MudText>
+                        }
+                    </div>
+                </MudNavLink>
+            </MudNavMenu>
+
             <MudDivider />
 
             <MudStack AlignItems="AlignItems.Center" Spacing="1" Class="py-3">
                 @if (DrawerOpen)
                 {
-                    <MudText Typo="Typo.caption" Align="Align.Center" Class="px-3" Style="overflow-wrap: anywhere">
-                        @AuthService.Email
-                    </MudText>
-
                     <MudButton Variant="Variant.Text" Size="Size.Small" StartIcon="@Icons.Material.Filled.Logout"
                                OnClick="@SignOutAsync">
                         Sign out

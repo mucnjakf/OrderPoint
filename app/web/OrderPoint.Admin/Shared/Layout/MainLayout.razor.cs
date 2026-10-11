@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.JSInterop;
 using MudBlazor;
+using OrderPoint.Admin.Account.Services;
 using OrderPoint.Admin.Auth.Services;
 using OrderPoint.Admin.Search.Dialogs;
 using OrderPoint.Admin.Search.Dtos;
@@ -18,8 +19,11 @@ public sealed partial class MainLayout : IDisposable
     private const string DrawerOpenStorageKey = "drawer-open";
 
     private const string DrawerToggleWrapperStyle =
-        "position: fixed; left: 0; bottom: 92px; transform: translateX(-50%); " +
+        "position: fixed; left: 0; bottom: 128px; transform: translateX(-50%); " +
         "z-index: calc(var(--mud-zindex-drawer) + 1)";
+
+    // MudNavLink leaves a 12px gap after its icon; the avatar takes the icon's place
+    private const string AccountAvatarStyle = "margin-left: -12px; margin-right: 12px;";
 
     private const string DrawerToggleButtonStyle =
         "background-color: var(--mud-palette-surface); border: 1px solid var(--mud-palette-lines-default)";
@@ -45,6 +49,9 @@ public sealed partial class MainLayout : IDisposable
     [Inject]
     private SearchService SearchService { get; set; } = null!;
 
+    [Inject]
+    private AccountService AccountService { get; set; } = null!;
+
     private DotNetObjectReference<MainLayout>? SelfReference { get; set; }
 
     private bool IsSearchOpen { get; set; }
@@ -55,6 +62,9 @@ public sealed partial class MainLayout : IDisposable
 
     private bool IsDarkMode { get; set; } = true;
 
+    private string? AccountNavIcon =>
+        AccountService.ImageUrl is null ? Icons.Material.Filled.AccountCircle : null;
+
     private string DarkModeIcon => IsDarkMode ? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode;
 
     private string DrawerToggleIcon => DrawerOpen
@@ -64,8 +74,14 @@ public sealed partial class MainLayout : IDisposable
     protected override async Task OnInitializedAsync()
     {
         AuthService.SessionChanged += OnSessionChanged;
+        AccountService.Changed += OnAccountChanged;
 
         await Task.WhenAll(LoadLayoutPreferencesAsync(), AuthService.LoadAsync(), TimeZoneService.LoadAsync());
+
+        if (AuthService.IsSignedIn)
+        {
+            await AccountService.LoadAsync();
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -83,6 +99,7 @@ public sealed partial class MainLayout : IDisposable
     public void Dispose()
     {
         AuthService.SessionChanged -= OnSessionChanged;
+        AccountService.Changed -= OnAccountChanged;
         SelfReference?.Dispose();
     }
 
@@ -127,6 +144,23 @@ public sealed partial class MainLayout : IDisposable
     }
 
     private void OnSessionChanged()
+    {
+        _ = InvokeAsync(async () =>
+        {
+            if (AuthService.IsSignedIn)
+            {
+                await AccountService.LoadAsync();
+            }
+            else
+            {
+                AccountService.Clear();
+            }
+
+            StateHasChanged();
+        });
+    }
+
+    private void OnAccountChanged()
     {
         _ = InvokeAsync(StateHasChanged);
     }

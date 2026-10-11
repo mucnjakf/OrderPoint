@@ -73,6 +73,29 @@ internal sealed class AuthService(ProtectedLocalStorage protectedLocalStorage, A
         }
     }
 
+    // After a password change the API revokes every session and returns a new token pair for this one
+    internal async Task ReplaceTokensAsync(AuthTokensDto tokens)
+    {
+        await _tokensLock.WaitAsync();
+
+        try
+        {
+            await SetTokensAsync(tokens);
+        }
+        finally
+        {
+            _tokensLock.Release();
+        }
+    }
+
+    // After "sign out everywhere" the refresh token is already revoked, so there is nothing to call
+    internal async Task EndSessionAsync()
+    {
+        await ClearTokensAsync();
+
+        SessionChanged?.Invoke();
+    }
+
     internal async Task<string> GetAccessTokenAsync(CancellationToken cancellationToken = default)
     {
         await _tokensLock.WaitAsync(cancellationToken);

@@ -1,0 +1,81 @@
+﻿@page "/account"
+
+<PageTitle>Account</PageTitle>
+
+<PageHeader Text="Account" Breadcrumbs="@Breadcrumbs"/>
+
+<MudGrid Spacing="3">
+    <MudItem xs="12" md="4">
+        <MudPaper Class="pa-5 d-flex flex-column align-center" Style="height: 100%">
+            <MudAvatar Color="Color.Primary" Class="mb-3" Style="width: 96px; height: 96px; font-size: 2rem;">
+                @if (AccountService.ImageUrl is not null)
+                {
+                    <MudImage Src="@AccountService.ImageUrl" Alt="Account image" ObjectFit="ObjectFit.Cover"/>
+                }
+                else
+                {
+                    @Initial
+                }
+            </MudAvatar>
+
+            <MudText Typo="Typo.h6" Align="Align.Center" Style="overflow-wrap: anywhere">
+                @AuthService.Email
+            </MudText>
+
+            <MudChip T="string" Variant="Variant.Text" Size="Size.Small" Color="Color.Primary" Class="mb-5">
+                Admin
+            </MudChip>
+
+            <ImageUploadField FileName="@ImageFileName"
+                              OnImageSelected="@OnImageSelectedAsync"
+                              OnImageRemoved="@OnImageRemovedAsync"/>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12" md="8">
+        <MudPaper Class="pa-5" Style="height: 100%">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudIcon Icon="@Icons.Material.Filled.Password"/>
+
+                <MudStack Spacing="0" Class="flex-1">
+                    <MudText Typo="Typo.subtitle1">
+                        Password
+                    </MudText>
+
+                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                        Change the password you sign in with. Other devices are signed out.
+                    </MudText>
+                </MudStack>
+
+                <MudButton Variant="Variant.Outlined"
+                           StartIcon="@Icons.Material.Filled.Edit"
+                           OnClick="@ShowChangePasswordDialogAsync">
+                    Change password
+                </MudButton>
+            </MudStack>
+
+            <MudDivider Class="my-5"/>
+
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudIcon Icon="@Icons.Material.Filled.Devices"/>
+
+                <MudStack Spacing="0" Class="flex-1">
+                    <MudText Typo="Typo.subtitle1">
+                        Sessions
+                    </MudText>
+
+                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                        Sign out on every device signed in with this account, including this one.
+                    </MudText>
+                </MudStack>
+
+                <MudButton Variant="Variant.Outlined"
+                           Color="Color.Warning"
+                           StartIcon="@Icons.Material.Filled.Logout"
+                           OnClick="@ShowSignOutEverywhereDialogAsync">
+                    Sign out everywhere
+                </MudButton>
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+</MudGrid>

@@ -256,6 +256,10 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<string>("ImageUrl")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
 

@@ -31,7 +31,8 @@ public sealed partial class GlobalSearchDialog : IDisposable
         new(SearchResultKind.Page, "Orders", Href: "/orders", Icon: Icons.Material.Filled.Receipt),
         new(SearchResultKind.Page, "Bartenders", Href: "/bartenders", Icon: Icons.Material.Filled.People),
         new(SearchResultKind.Page, "Items", Href: "/items", Icon: Icons.Material.Filled.MenuBook),
-        new(SearchResultKind.Page, "Categories", Href: "/categories", Icon: Icons.Material.Filled.Category)
+        new(SearchResultKind.Page, "Categories", Href: "/categories", Icon: Icons.Material.Filled.Category),
+        new(SearchResultKind.Page, "Account", Href: "/account", Icon: Icons.Material.Filled.AccountCircle)
     ];
 
     [CascadingParameter]

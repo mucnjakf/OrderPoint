@@ -8,4 +8,6 @@ public sealed class ApplicationUser : IdentityUser<Guid>
     public UserRole Role { get; set; }
 
     public bool MustChangePassword { get; set; }
+
+    public string? ImageUrl { get; set; }
 }

@@ -63,6 +63,13 @@ internal sealed class IdentityService(UserManager<ApplicationUser> userManager) 
         return user is not null;
     }
 
+    public async Task<UserDto?> GetUserAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        ApplicationUser? user = await userManager.FindByIdAsync(id.ToString());
+
+        return user?.ToUserDto();
+    }
+
     public async Task<Result> CreateUserAsync(
         Guid id,
         string email,
@@ -110,6 +117,52 @@ internal sealed class IdentityService(UserManager<ApplicationUser> userManager) 
         user.MustChangePassword = false;
 
         return Result.Success();
+    }
+
+    public async Task<Result> ChangePasswordAsync(
+        Guid id,
+        string currentPassword,
+        string newPassword,
+        CancellationToken cancellationToken = default)
+    {
+        ApplicationUser? user = await userManager.FindByIdAsync(id.ToString());
+
+        if (user is null)
+        {
+            return Result.Failure(AuthErrors.UserNotFound);
+        }
+
+        IdentityResult result = await userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+
+        if (result.Succeeded)
+        {
+            return Result.Success();
+        }
+
+        // A wrong current password is a validation error here, not a failed sign-in
+        bool isPasswordMismatch = result.Errors.Any(error =>
+            error.Code == nameof(IdentityErrorDescriber.PasswordMismatch));
+
+        return Result.Failure(isPasswordMismatch ? AuthErrors.InvalidCurrentPassword : ToError(result));
+    }
+
+    public async Task<Result> SetImageUrlAsync(
+        Guid id,
+        string? imageUrl,
+        CancellationToken cancellationToken = default)
+    {
+        ApplicationUser? user = await userManager.FindByIdAsync(id.ToString());
+
+        if (user is null)
+        {
+            return Result.Failure(AuthErrors.UserNotFound);
+        }
+
+        user.ImageUrl = imageUrl;
+
+        IdentityResult result = await userManager.UpdateAsync(user);
+
+        return result.Succeeded ? Result.Success() : Result.Failure(ToError(result));
     }
 
     public async Task<Result> ResetPasswordAsync(

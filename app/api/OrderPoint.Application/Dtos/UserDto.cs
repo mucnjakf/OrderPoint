@@ -6,4 +6,5 @@ public sealed record UserDto(
     Guid Id,
     string Email,
     UserRole Role,
-    bool MustChangePassword);
+    bool MustChangePassword,
+    string? ImageUrl);

@@ -14,6 +14,8 @@ public interface IIdentityService
 
     Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken = default);
 
+    Task<UserDto?> GetUserAsync(Guid id, CancellationToken cancellationToken = default);
+
     Task<Result> CreateUserAsync(
         Guid id,
         string email,
@@ -27,6 +29,14 @@ public interface IIdentityService
         string currentPassword,
         string newPassword,
         CancellationToken cancellationToken = default);
+
+    Task<Result> ChangePasswordAsync(
+        Guid id,
+        string currentPassword,
+        string newPassword,
+        CancellationToken cancellationToken = default);
+
+    Task<Result> SetImageUrlAsync(Guid id, string? imageUrl, CancellationToken cancellationToken = default);
 
     Task<Result> ResetPasswordAsync(Guid id, string newPassword, CancellationToken cancellationToken = default);
 

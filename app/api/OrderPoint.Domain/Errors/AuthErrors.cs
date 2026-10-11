@@ -24,6 +24,10 @@ public static class AuthErrors
         "Auth.AccountInactive",
         "Account is inactive");
 
+    public static readonly Error InvalidCurrentPassword = Error.Validation(
+        "Auth.InvalidCurrentPassword",
+        "Current password is incorrect");
+
     public static readonly Error PasswordChangeRequired = Error.Forbidden(
         "Auth.PasswordChangeRequired",
         "Password must be changed at first login");

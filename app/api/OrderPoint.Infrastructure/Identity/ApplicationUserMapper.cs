@@ -8,5 +8,6 @@ internal static class ApplicationUserMapper
         user.Id,
         user.Email!,
         user.Role,
-        user.MustChangePassword);
+        user.MustChangePassword,
+        user.ImageUrl);
 }

@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using OrderPoint.Admin.Account.Api;
+using OrderPoint.Admin.Account.Services;
+using System.Globalization;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 using MudBlazor;
 using MudBlazor.Services;
@@ -31,6 +33,7 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<ApiService>();
 builder.Services.AddScoped<TimeZoneService>();
 builder.Services.AddScoped<SearchService>();
+builder.Services.AddScoped<AccountService>();
 
 // The auth endpoints are anonymous and called without AccessTokenHandler, which uses them to refresh tokens
 builder.Services.AddHttpClient<AuthApiClient>(ConfigureApiClient);
@@ -39,6 +42,7 @@ builder.Services.AddHttpClient<ItemApiClient>(ConfigureApiClient).AddHttpMessage
 builder.Services.AddHttpClient<BartenderApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 builder.Services.AddHttpClient<OrderApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 builder.Services.AddHttpClient<DashboardApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
+builder.Services.AddHttpClient<AccountApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 
 builder.Services.AddMudServices(configuration =>
 {
