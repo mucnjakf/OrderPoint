@@ -66,10 +66,19 @@
     </FilterContent>
 
     <ItemTemplate>
-        <MudStack Row="true" AlignItems="AlignItems.Center">
-            <MudText Typo="Typo.h6">
-                #@context.Number · @context.TableCode
-            </MudText>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <OrderAvatar Number="@context.Number"/>
+
+            <MudStack Spacing="0">
+                <MudText Typo="Typo.body1">
+                    Table @context.TableCode
+                </MudText>
+
+                <MudText Typo="Typo.caption">
+                    @context.CreatedAtUtc.ToDisplayDateTime(TimeZoneService.TimeZone)
+                    · @context.CreatedAtUtc.ToRelativeTime()
+                </MudText>
+            </MudStack>
 
             <MudSpacer/>
 
@@ -97,18 +106,11 @@
                                  LastName="@context.Bartender?.LastName"
                                  ImageUrl="@context.Bartender?.ImageUrl"/>
 
-                <MudStack Spacing="0">
-                    <MudText Typo="Typo.body2">
-                        @(context.Bartender is null
-                            ? "Unassigned"
-                            : $"{context.Bartender.FirstName} {context.Bartender.LastName}")
-                    </MudText>
-
-                    <MudText Typo="Typo.caption">
-                        @context.CreatedAtUtc.ToDisplayDateTime(TimeZoneService.TimeZone)
-                        · @context.CreatedAtUtc.ToRelativeTime()
-                    </MudText>
-                </MudStack>
+                <MudText Typo="Typo.body2">
+                    @(context.Bartender is null
+                        ? "Unassigned"
+                        : $"{context.Bartender.FirstName} {context.Bartender.LastName}")
+                </MudText>
             </MudStack>
 
             <MudText Typo="Typo.h6">

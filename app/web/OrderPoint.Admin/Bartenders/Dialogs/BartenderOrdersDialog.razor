@@ -46,14 +46,18 @@
 
             <RowTemplate>
                 <MudStack Row="true" Class="d-flex justify-space-between">
-                    <MudStack Spacing="1">
-                        <MudText Typo="Typo.body1">
-                            #@context.Number · @context.TableCode
-                        </MudText>
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                        <OrderAvatar Number="@context.Number"/>
 
-                        <MudText Typo="Typo.caption">
-                            @context.CreatedAtUtc.ToDisplayDateTime(TimeZoneService.TimeZone)
-                        </MudText>
+                        <MudStack Spacing="1">
+                            <MudText Typo="Typo.body1">
+                                Table @context.TableCode
+                            </MudText>
+
+                            <MudText Typo="Typo.caption">
+                                @context.CreatedAtUtc.ToDisplayDateTime(TimeZoneService.TimeZone)
+                            </MudText>
+                        </MudStack>
                     </MudStack>
 
                     <MudStack Row="true" Class="align-center">

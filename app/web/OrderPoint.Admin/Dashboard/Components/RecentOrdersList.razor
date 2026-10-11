@@ -10,19 +10,24 @@
                   @onmouseenter="@(() => HoveredOrderId = rowOrder.Id)"
                   @onmouseleave="@(() => HoveredOrderId = null)">
             <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
-                <MudAvatar Color="@rowOrder.Status.GetColor()" Size="Size.Small" Rounded="true">
-                    <MudIcon Icon="@rowOrder.Status.GetIcon()" Size="Size.Small"/>
-                </MudAvatar>
+                <OrderAvatar Number="@rowOrder.Number"/>
 
                 <MudStack Spacing="0" Class="flex-1">
                     <MudText Typo="Typo.body2">
-                        #@rowOrder.Number · @rowOrder.TableCode
+                        Table @rowOrder.TableCode
                     </MudText>
 
                     <MudText Typo="Typo.caption">
                         @rowOrder.CreatedAtUtc.ToRelativeTime()
                     </MudText>
                 </MudStack>
+
+                <MudChip T="string"
+                         Variant="Variant.Text"
+                         Size="Size.Small"
+                         Color="@rowOrder.Status.GetColor()">
+                    @rowOrder.Status.ToString()
+                </MudChip>
 
                 <MudText Typo="Typo.body1">
                     @rowOrder.Total.ToString("C", CultureInfo.CurrentCulture)
