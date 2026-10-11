@@ -22,8 +22,29 @@
 
 <HealthSummary Status="@HealthService.Status" CheckedAtUtc="@HealthService.CheckedAtUtc" IsLoading="@IsLoading"/>
 
+<MudText Typo="Typo.overline" Class="d-block mb-1" Style="color: var(--mud-palette-text-secondary);">
+    Core services
+</MudText>
+
 <MudGrid Spacing="3">
-    @foreach ((string name, string subtitle, string icon) in Components)
+    @foreach ((string name, string subtitle, string icon) in CoreServices)
+    {
+        <MudItem xs="4">
+            <HealthCheckCard Name="@name"
+                             Subtitle="@subtitle"
+                             Icon="@icon"
+                             Check="@GetCheck(name)"
+                             IsLoading="@IsLoading"/>
+        </MudItem>
+    }
+</MudGrid>
+
+<MudText Typo="Typo.overline" Class="d-block mt-6 mb-1" Style="color: var(--mud-palette-text-secondary);">
+    Developer tools
+</MudText>
+
+<MudGrid Spacing="3">
+    @foreach ((string name, string subtitle, string icon) in DevTools)
     {
         <MudItem xs="4">
             <HealthCheckCard Name="@name"

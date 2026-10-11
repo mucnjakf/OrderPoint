@@ -8,11 +8,17 @@ namespace OrderPoint.Admin.Health.Pages;
 public sealed partial class HealthPage : IDisposable
 {
     // Names as the API reports them
-    private static readonly (string Name, string Subtitle, string Icon)[] Components =
+    private static readonly (string Name, string Subtitle, string Icon)[] CoreServices =
     [
         (HealthService.ApiCheckName, "OrderPoint API", Icons.Material.Filled.Api),
         ("Database", "PostgreSQL", Icons.Material.Filled.Storage),
         ("Blob storage", "Images in Azure Blob Storage", Icons.Material.Filled.PhotoLibrary)
+    ];
+
+    private static readonly (string Name, string Subtitle, string Icon)[] DevTools =
+    [
+        ("pgweb", "Database browser", Icons.Material.Filled.TableView),
+        ("Storage Explorer", "Blob storage browser", Icons.Material.Filled.FolderOpen)
     ];
 
     [Inject]

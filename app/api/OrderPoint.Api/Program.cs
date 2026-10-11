@@ -79,6 +79,10 @@ builder.Services.AddInfrastructureModule(builder.Configuration);
 // Database: health check, Npgsql traces and metrics, retries on transient errors
 builder.EnrichNpgsqlDbContext<ApplicationDbContext>();
 
+// Developer tools: pgweb and Storage Explorer in the health report
+builder.AddDevToolHealthCheck("pgweb");
+builder.AddDevToolHealthCheck("storage-blobs-explorer");
+
 // ---------------------------------------------------------------------------------------------------------------------
 
 WebApplication app = builder.Build();

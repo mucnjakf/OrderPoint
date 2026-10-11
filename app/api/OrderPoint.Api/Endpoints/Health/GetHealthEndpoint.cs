@@ -12,14 +12,14 @@ internal sealed record GetHealthResponse(HealthReportResponse Data);
 /// <summary>The result of every health check.</summary>
 /// <param name="Status">The worst status of all checks.</param>
 /// <param name="TotalDurationMs">How long all checks took together, in milliseconds.</param>
-/// <param name="Checks">Each check: the API itself, the database and the blob storage.</param>
+/// <param name="Checks">Each check: the API, the database, the blob storage and, in Development, the dev tools.</param>
 internal sealed record HealthReportResponse(
     HealthStatus Status,
     double TotalDurationMs,
     IReadOnlyList<HealthCheckResponse> Checks);
 
 /// <summary>The result of one health check.</summary>
-/// <param name="Name">What was checked: `API`, `Database` or `Blob storage`.</param>
+/// <param name="Name">What was checked: `API`, `Database`, `Blob storage`, `pgweb` or `Storage Explorer`.</param>
 /// <param name="Status">The status of this check.</param>
 /// <param name="DurationMs">How long the check took, in milliseconds.</param>
 /// <param name="Description">What the check reported, or `null`.</param>
@@ -41,7 +41,9 @@ internal sealed class GetHealthEndpoint : IEndpoint
     {
         ["self"] = "API",
         ["ApplicationDbContext"] = "Database",
-        ["Azure_BlobContainerClient"] = "Blob storage"
+        ["Azure_BlobContainerClient"] = "Blob storage",
+        ["pgweb"] = "pgweb",
+        ["storage-blobs-explorer"] = "Storage Explorer"
     };
 
     public void MapEndpoint(IEndpointRouteBuilder app)
@@ -53,7 +55,9 @@ internal sealed class GetHealthEndpoint : IEndpoint
             .WithSummary("Get health")
             .WithDescription("""
                 Runs every health check and returns the result of each one: the API itself, the PostgreSQL
-                database and the blob storage for images.
+                database and the blob storage for images. In Development it also checks the developer tools Aspire
+                runs next to them (pgweb and Storage Explorer); a stopped tool reports `Degraded`, not `Unhealthy`,
+                because the app keeps working without it.
 
                 Always returns `200` with the report, also when a check fails; read `status` to know whether
                 everything is healthy. Each check gives up after 5 seconds and then reports `Unhealthy`, so a

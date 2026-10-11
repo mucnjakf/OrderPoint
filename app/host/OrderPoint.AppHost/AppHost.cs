@@ -6,8 +6,7 @@ IResourceBuilder<PostgresServerResource> postgres = builder
     .AddPostgres("postgres")
     .WithDataVolume()
     .WithLifetime(ContainerLifetime.Persistent)
-    .WithEndpoint("tcp", endpoint => endpoint.Port = 59286)
-    .WithPgWeb();
+    .WithEndpoint("tcp", endpoint => endpoint.Port = 59286);
 
 IResourceBuilder<PostgresDatabaseResource> database = postgres
     .AddDatabase("order-point-db");
@@ -22,10 +21,6 @@ IResourceBuilder<AzureStorageResource> storage = builder
 IResourceBuilder<AzureBlobStorageContainerResource> images = storage
     .AddBlobContainer("images");
 
-storage
-    .AddBlobs("storage-blobs")
-    .WithAzureStorageExplorer();
-
 IResourceBuilder<ProjectResource> api = builder
     .AddProject<Projects.OrderPoint_Api>("order-point-api")
     .WithUrlForEndpoint("https", _ => new ResourceUrlAnnotation { Url = "/scalar", DisplayText = "API reference" })
@@ -34,6 +29,13 @@ IResourceBuilder<ProjectResource> api = builder
     .WithReference(images)
     .WaitFor(database)
     .WaitFor(images);
+
+// Browser tools for data; the API checks their health, but does not wait for them
+postgres.WithPgWeb(pgWeb => api.WithReference(pgWeb.Resource.PrimaryEndpoint));
+
+storage
+    .AddBlobs("storage-blobs")
+    .WithAzureStorageExplorer(explorer => api.WithReference(explorer.Resource.PrimaryEndpoint));
 
 IResourceBuilder<ProjectResource> admin = builder
     .AddProject<Projects.OrderPoint_Admin>("order-point-admin")
