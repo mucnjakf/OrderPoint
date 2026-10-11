@@ -30,12 +30,6 @@ public sealed partial class ItemsPage
     [Inject]
     private CategoryApiClient CategoryApiClient { get; set; } = null!;
 
-    private List<BreadcrumbItem> Breadcrumbs { get; set; } =
-    [
-        new("Dashboard", href: "/", icon: Icons.Material.Filled.Dashboard),
-        new("Items", href: null, disabled: true, icon: Icons.Material.Filled.MenuBook)
-    ];
-
     private ItemDto? NewestItem { get; set; }
 
     private ItemDto? LastEditedItem { get; set; }

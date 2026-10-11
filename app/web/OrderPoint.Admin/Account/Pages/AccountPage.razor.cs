@@ -30,12 +30,6 @@ public sealed partial class AccountPage : IDisposable
     [Inject]
     private AccountApiClient AccountApiClient { get; set; } = null!;
 
-    private List<BreadcrumbItem> Breadcrumbs { get; set; } =
-    [
-        new("Dashboard", href: "/", icon: Icons.Material.Filled.Dashboard),
-        new("Account", href: null, disabled: true, icon: Icons.Material.Filled.AccountCircle)
-    ];
-
     private string? ImageFileName => AccountService.ImageUrl is null ? null : CurrentImageFileName;
 
     private string Initial => string.IsNullOrEmpty(AuthService.Email)

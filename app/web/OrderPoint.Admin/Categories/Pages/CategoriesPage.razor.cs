@@ -30,12 +30,6 @@ public sealed partial class CategoriesPage
     [Inject]
     private CategoryApiClient CategoryApiClient { get; set; } = null!;
 
-    private List<BreadcrumbItem> Breadcrumbs { get; set; } =
-    [
-        new("Dashboard", href: "/", icon: Icons.Material.Filled.Dashboard),
-        new("Categories", href: null, disabled: true, icon: Icons.Material.Filled.Category)
-    ];
-
     private IReadOnlyList<CategoryDto> TopCategories { get; set; } = [];
 
     private PaginationDto<CategoryDto>? Pagination { get; set; }

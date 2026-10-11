@@ -30,12 +30,6 @@ public sealed partial class BartendersPage
     [Inject]
     private BartenderApiClient BartenderApiClient { get; set; } = null!;
 
-    private List<BreadcrumbItem> Breadcrumbs { get; set; } =
-    [
-        new("Dashboard", href: "/", icon: Icons.Material.Filled.Dashboard),
-        new("Bartenders", href: null, disabled: true, icon: Icons.Material.Filled.People)
-    ];
-
     private IReadOnlyList<BartenderDto> ActiveBartenders { get; set; } = [];
 
     private int ActiveCount { get; set; }

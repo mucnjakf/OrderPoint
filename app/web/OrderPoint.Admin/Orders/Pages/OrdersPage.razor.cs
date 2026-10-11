@@ -31,12 +31,6 @@ public sealed partial class OrdersPage
     [Inject]
     private BartenderApiClient BartenderApiClient { get; set; } = null!;
 
-    private List<BreadcrumbItem> Breadcrumbs { get; set; } =
-    [
-        new("Dashboard", href: "/", icon: Icons.Material.Filled.Dashboard),
-        new("Orders", href: null, disabled: true, icon: Icons.Material.Filled.Receipt)
-    ];
-
     private Dictionary<OrderStatus, int> StatusCounts { get; } = [];
 
     private HashSet<OrderStatus> LoadingStatuses { get; } = [.. Enum.GetValues<OrderStatus>()];
