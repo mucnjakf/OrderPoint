@@ -123,18 +123,22 @@
             </div>
 
             <div class="flex-1">
-                <BartenderOrdersList BartenderId="@context.Id" ShowControls="false"/>
+                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mb-3">
+                    <MudText Typo="Typo.h6">
+                        Orders · @context.OrdersCount
+                    </MudText>
 
-                @if (context.OrdersCount > 0)
-                {
-                    <MudStack Row="true" Justify="Justify.FlexEnd" Class="mt-3">
+                    @if (context.OrdersCount > 0)
+                    {
                         <MudButton Variant="Variant.Text"
                                    EndIcon="@Icons.Material.Filled.ArrowForward"
                                    OnClick="@(() => ShowBartenderOrdersDialogAsync(context))">
                             View all
                         </MudButton>
-                    </MudStack>
-                }
+                    }
+                </MudStack>
+
+                <BartenderOrdersList BartenderId="@context.Id" ShowControls="false"/>
             </div>
         </MudStack>
     </DetailsTemplate>

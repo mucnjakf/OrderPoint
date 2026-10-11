@@ -9,46 +9,6 @@
     <DialogContent>
         <MudGrid Spacing="3">
             <MudItem xs="12" md="6">
-                <MudPaper Class="pa-5" Style="height: 100%">
-                    <TextDisplayRow Icon="@Icons.Material.Filled.Numbers"
-                                    Label="ID"
-                                    Text="@Order.Id.ToString()"
-                                    ShowDivider="true"/>
-
-                    <TextDisplayRow Icon="@Icons.Material.Filled.Tag"
-                                    Label="Number"
-                                    Text="@($"#{Order.Number}")"
-                                    ShowDivider="true"/>
-
-                    <TextDisplayRow Icon="@Icons.Material.Filled.TableBar"
-                                    Label="Table"
-                                    Text="@Order.TableCode"
-                                    ShowDivider="true"/>
-
-                    <TextDisplayRow Icon="@Icons.Material.Filled.Notes"
-                                    Label="Note"
-                                    Text="@(Order.Note ?? "-")"
-                                    ShowDivider="true"/>
-
-                    <TextDisplayRow Icon="@Icons.Material.Filled.Person"
-                                    Label="Bartender">
-                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                            <BartenderAvatar FirstName="@Order.Bartender?.FirstName"
-                                             LastName="@Order.Bartender?.LastName"
-                                             ImageUrl="@Order.Bartender?.ImageUrl"
-                                             Size="Size.Small"/>
-
-                            <MudText Typo="Typo.body1">
-                                @(Order.Bartender is null
-                                    ? "Unassigned"
-                                    : $"{Order.Bartender.FirstName} {Order.Bartender.LastName}")
-                            </MudText>
-                        </MudStack>
-                    </TextDisplayRow>
-                </MudPaper>
-            </MudItem>
-
-            <MudItem xs="12" md="6">
                 <MudPaper Class="px-5" Style="height: 100%">
                     <MudTimeline TimelineOrientation="TimelineOrientation.Vertical"
                                  TimelinePosition="TimelinePosition.Start"
@@ -85,6 +45,46 @@
                             </MudTimelineItem>
                         }
                     </MudTimeline>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" md="6">
+                <MudPaper Class="pa-5" Style="height: 100%">
+                    <TextDisplayRow Icon="@Icons.Material.Filled.Numbers"
+                                    Label="ID"
+                                    Text="@Order.Id.ToString()"
+                                    ShowDivider="true"/>
+
+                    <TextDisplayRow Icon="@Icons.Material.Filled.Tag"
+                                    Label="Number"
+                                    Text="@($"#{Order.Number}")"
+                                    ShowDivider="true"/>
+
+                    <TextDisplayRow Icon="@Icons.Material.Filled.TableBar"
+                                    Label="Table"
+                                    Text="@Order.TableCode"
+                                    ShowDivider="true"/>
+
+                    <TextDisplayRow Icon="@Icons.Material.Filled.Notes"
+                                    Label="Note"
+                                    Text="@(Order.Note ?? "-")"
+                                    ShowDivider="true"/>
+
+                    <TextDisplayRow Icon="@Icons.Material.Filled.Person"
+                                    Label="Bartender">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                            <BartenderAvatar FirstName="@Order.Bartender?.FirstName"
+                                             LastName="@Order.Bartender?.LastName"
+                                             ImageUrl="@Order.Bartender?.ImageUrl"
+                                             Size="Size.Small"/>
+
+                            <MudText Typo="Typo.body1">
+                                @(Order.Bartender is null
+                                    ? "Unassigned"
+                                    : $"{Order.Bartender.FirstName} {Order.Bartender.LastName}")
+                            </MudText>
+                        </MudStack>
+                    </TextDisplayRow>
                 </MudPaper>
             </MudItem>
 
