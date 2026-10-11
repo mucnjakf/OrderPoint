@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using OrderPoint.Admin.Bartenders.Api.Requests;
+using OrderPoint.Admin.Bartenders.Dtos;
 
 namespace OrderPoint.Admin.Bartenders.Dialogs;
 
@@ -8,7 +9,7 @@ public sealed partial class ResetBartenderPasswordDialog
 {
     [Parameter]
     [EditorRequired]
-    public string BartenderName { get; set; } = null!;
+    public BartenderDto Bartender { get; set; } = null!;
 
     [CascadingParameter]
     private IMudDialogInstance MudDialogInstance { get; set; } = null!;

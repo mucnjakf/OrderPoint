@@ -13,41 +13,7 @@
             </MudText>
         </MudAlert>
 
-        <MudPaper Outlined="true" Class="pa-4">
-            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="4">
-                <BartenderAvatar FirstName="@Bartender.FirstName"
-                                 LastName="@Bartender.LastName"
-                                 ImageUrl="@Bartender.ImageUrl"
-                                 Size="Size.Large"/>
-
-                <MudStack Spacing="1" Class="flex-1">
-                    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
-                        <MudText Typo="Typo.h6">
-                            @BartenderName
-                        </MudText>
-
-                        <MudChip T="string"
-                                 Variant="Variant.Text"
-                                 Size="Size.Small"
-                                 Color="@(Bartender.Status is BartenderStatus.Active ? Color.Success : Color.Error)">
-                            @Bartender.Status.ToString()
-                        </MudChip>
-                    </MudStack>
-
-                    <MudText Typo="Typo.body2">
-                        @Bartender.Email
-                        @if (Bartender.PhoneNumber is not null)
-                        {
-                            @($" · {Bartender.PhoneNumber}")
-                        }
-                    </MudText>
-
-                    <MudText Typo="Typo.caption">
-                        Joined @Bartender.CreatedAtUtc.ToRelativeTime()
-                    </MudText>
-                </MudStack>
-            </MudStack>
-        </MudPaper>
+        <BartenderSummaryCard Bartender="@Bartender"/>
 
         <MudText Typo="Typo.body2" Class="mt-4 mb-2">
             This also deletes:
