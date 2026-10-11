@@ -80,6 +80,20 @@
                                              Error="@(IsFormSubmitted && Request.CategoryId == Guid.Empty)"
                                              ErrorText="Category is required."
                                              Disabled="@(Category is not null)">
+                                <ItemTemplate Context="category">
+                                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                        <MudImage Src="@(category.ImageUrl ?? "images/image-placeholder.svg")"
+                                                  Alt="Category image"
+                                                  Width="24"
+                                                  Height="24"
+                                                  ObjectFit="ObjectFit.Cover"/>
+
+                                        <MudText Typo="Typo.body1">
+                                            @category.Name
+                                        </MudText>
+                                    </MudStack>
+                                </ItemTemplate>
+
                                 <NoItemsTemplate>
                                     <MudText Align="Align.Center" Class="px-3 py-1">
                                         No categories found

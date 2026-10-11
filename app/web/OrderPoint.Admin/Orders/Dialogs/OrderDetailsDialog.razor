@@ -62,10 +62,15 @@
                         @foreach ((OrderStatus status, DateTimeOffset? reachedAtUtc) in TimelineSteps)
                         {
                             <MudTimelineItem Color="@(reachedAtUtc is null ? Color.Default : status.GetColor())"
-                                             Icon="@status.GetIcon()"
                                              Variant="@(reachedAtUtc is null ? Variant.Outlined : Variant.Filled)"
                                              Size="Size.Medium"
                                              Elevation="0">
+                                <ItemDot>
+                                    <MudIcon Icon="@status.GetIcon()"
+                                             Size="Size.Small"
+                                             Style="@(reachedAtUtc is null ? "font-size: 1rem" : null)"/>
+                                </ItemDot>
+
                                 <ItemContent>
                                     <MudText Typo="Typo.body1">
                                         @status.ToString()

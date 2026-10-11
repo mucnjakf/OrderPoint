@@ -47,10 +47,13 @@
         {
             <MudTimelineItem @key="@item"
                              Color="@GetItemColor(item)"
-                             Icon="@GetItemIcon(item)"
                              Variant="Variant.Filled"
                              Size="Size.Medium"
                              Elevation="0">
+                <ItemDot>
+                    <MudIcon Icon="@GetItemIcon(item)" Size="Size.Small"/>
+                </ItemDot>
+
                 <ItemContent>
                     <MudPaper Class="pa-4 cursor-pointer"
                               Style="@GetTicketStyle(item)"
