@@ -3,7 +3,7 @@
         <MudTextField @bind-Value="@SearchQuery"
                       @bind-Value:after="@OnSearchQueryChangedAsync"
                       T="string"
-                      Placeholder="Search orders, items, categories and bartenders"
+                      Placeholder="Search pages, orders, items, categories and bartenders"
                       Variant="Variant.Outlined"
                       Adornment="Adornment.Start"
                       AdornmentIcon="@Icons.Material.Filled.Search"
@@ -13,6 +13,12 @@
         <div class="mt-2 mb-1" style="max-height: 60vh; overflow-y: auto;">
             @if (HasQuery)
             {
+                <SearchResultGroup Title="Pages"
+                                   Results="@MatchingPageResults"
+                                   ActiveResult="@ActiveResult"
+                                   OnResultClick="@Select"
+                                   OnResultMouseEnter="@Activate"/>
+
                 <SearchResultGroup Title="Orders"
                                    Results="@OrderResults"
                                    IsLoading="@IsLoadingOrders"

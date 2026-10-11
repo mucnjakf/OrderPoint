@@ -32,7 +32,8 @@ public sealed partial class GlobalSearchDialog : IDisposable
         new(SearchResultKind.Page, "Bartenders", Href: "/bartenders", Icon: Icons.Material.Filled.People),
         new(SearchResultKind.Page, "Items", Href: "/items", Icon: Icons.Material.Filled.MenuBook),
         new(SearchResultKind.Page, "Categories", Href: "/categories", Icon: Icons.Material.Filled.Category),
-        new(SearchResultKind.Page, "Account", Href: "/account", Icon: Icons.Material.Filled.AccountCircle)
+        new(SearchResultKind.Page, "Health", Href: "/system", Icon: Icons.Material.Filled.MonitorHeart),
+        new(SearchResultKind.Page, "Account", Href: "/account", Icon: Icons.Material.Filled.Person)
     ];
 
     [CascadingParameter]
@@ -65,6 +66,8 @@ public sealed partial class GlobalSearchDialog : IDisposable
 
     private IReadOnlyList<SearchResultDto> RecentResults { get; set; } = [];
 
+    private IReadOnlyList<SearchResultDto> MatchingPageResults { get; set; } = [];
+
     private IReadOnlyList<SearchResultDto> OrderResults { get; set; } = [];
 
     private IReadOnlyList<SearchResultDto> ItemResults { get; set; } = [];
@@ -90,7 +93,7 @@ public sealed partial class GlobalSearchDialog : IDisposable
     private bool HasNoResults => !IsSearching && VisibleResults.Count == 0;
 
     private IReadOnlyList<SearchResultDto> VisibleResults => HasQuery
-        ? [.. OrderResults, .. ItemResults, .. CategoryResults, .. BartenderResults]
+        ? [.. MatchingPageResults, .. OrderResults, .. ItemResults, .. CategoryResults, .. BartenderResults]
         : [.. RecentResults, .. PageResults];
 
     protected override async Task OnInitializedAsync()
@@ -112,6 +115,7 @@ public sealed partial class GlobalSearchDialog : IDisposable
         SearchCancellation?.Dispose();
         SearchCancellation = new CancellationTokenSource();
 
+        MatchingPageResults = [];
         OrderResults = [];
         ItemResults = [];
         CategoryResults = [];
@@ -126,6 +130,12 @@ public sealed partial class GlobalSearchDialog : IDisposable
 
         string searchQuery = SearchQuery!;
         CancellationToken cancellationToken = SearchCancellation.Token;
+
+        MatchingPageResults =
+        [
+            .. PageResults.Where(page => page.Title.Contains(searchQuery.Trim(), StringComparison.OrdinalIgnoreCase))
+        ];
+        ActiveResult = VisibleResults.FirstOrDefault();
 
         await Task.WhenAll(
             SearchOrdersAsync(searchQuery, cancellationToken),
