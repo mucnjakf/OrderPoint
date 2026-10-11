@@ -30,6 +30,8 @@
 
         <MudSpacer />
 
+        <SearchTrigger OnClick="@OpenSearchAsync" />
+
         <MudTooltip Text="@(IsDarkMode ? "Light mode" : "Dark mode")">
             <MudIconButton Icon="@DarkModeIcon" OnClick="@ToggleDarkModeAsync" Color="Color.Inherit" />
         </MudTooltip>

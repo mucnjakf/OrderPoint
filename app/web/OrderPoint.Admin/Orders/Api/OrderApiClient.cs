@@ -53,4 +53,20 @@ internal sealed class OrderApiClient(HttpClient httpClient)
 
         return result.Data;
     }
+
+    internal async Task<OrderDto> GetOrderAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await httpClient.GetAsync($"api/orders/{id}", cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+
+        GetOrderResponse result =
+            await response.Content.ReadFromJsonAsync<GetOrderResponse>(cancellationToken)
+            ?? throw new InvalidOperationException($"Unable to parse {nameof(GetOrderResponse)}");
+
+        return result.Data;
+    }
 }

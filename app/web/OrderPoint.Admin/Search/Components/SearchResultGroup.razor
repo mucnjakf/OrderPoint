@@ -1,0 +1,24 @@
+﻿@if (IsLoading || Results.Any())
+{
+    <MudText Typo="Typo.overline" Class="px-3 mt-2" Style="color: var(--mud-palette-text-secondary);">
+        @Title
+    </MudText>
+
+    @if (IsLoading)
+    {
+        @for (int i = 0; i < SkeletonRowsCount; i++)
+        {
+            <SearchResultRowSkeleton/>
+        }
+    }
+    else
+    {
+        @foreach (SearchResultDto result in Results)
+        {
+            <SearchResultRow Result="@result"
+                             IsActive="@(result == ActiveResult)"
+                             OnClick="@OnResultClick"
+                             OnMouseEnter="@OnResultMouseEnter"/>
+        }
+    }
+}

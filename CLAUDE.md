@@ -181,6 +181,13 @@ Field rules live in several places. Changing one means changing all of them:
   - **Actions:** Activate and Deactivate open `Change<Plural>StatusDialog`. Delete opens `Delete<Plural>Dialog`; it is disabled while the selection contains a record that can't be deleted, and its tooltip names those records.
   - **Dialogs:** both list the selection with `BulkSelectionSummary` (first 5, then "and n more") and say what happens or what else gets deleted.
   - **Messages:** counts in UI text use `int.ToCountText(singular, plural)` ("3 categories").
+- Global search (`Search/` feature folder):
+  - **Opening:** the `SearchTrigger` in the app bar, or Ctrl+K / ⌘K. `wwwroot/js/search.js` (the Admin's only custom script) registers the shortcut and calls `MainLayout.OpenSearchFromShortcutAsync` through a `DotNetObjectReference`.
+  - **Focus and keys:** `GlobalSearchDialog` sets `DefaultFocus="DefaultFocus.FirstChild"` on the `<MudDialog>` component itself. `MudDialog` wraps its content in a focus trap that reads this parameter, not `DialogOptions.DefaultFocus`, and otherwise moves focus from the field to the dialog element. ↑/↓/Enter use `MudDialog.OnKeyDown`, which the container's key interceptor fires for any key inside the dialog.
+  - **Searching:** no backend of its own. It runs the existing list and search endpoints in parallel, 5 results per group: orders by number or table, items, categories and bartenders. Each group has its own loading flag and skeleton rows, and a new query cancels the previous one.
+  - **Empty query:** shows "Recent" (the last 5 opened results, per browser in `ProtectedLocalStorage`) and "Pages".
+  - **Keyboard:** ↑/↓ move the highlight, Enter opens, Esc closes. A `SearchResultRow` that becomes active scrolls itself into view after rendering (`scrollSearchResultIntoView`, `block: "nearest"`), so keyboard navigation follows long result lists.
+  - **Opening a result:** the dialog returns a `SearchResultDto`, and `SearchService.OpenAsync` navigates to a page, or fetches the record fresh by id and shows the same details dialog the dashboard uses (bartenders open `BartenderOrdersDialog`).
   - **Items only:**
     - "Move" opens `ChangeItemsCategoryDialog`: a category autocomplete with images and the clear fix, plus a warning when the target category is inactive.
     - "Adjust price" opens `AdjustItemsPriceDialog`: mode, a value with a % or € suffix, and a live old → new preview. It uses `PriceAdjustmentMode.Apply` from `Shared/Extensions`, which mirrors the API's calculation. Confirm is disabled while the value is invalid or any new price would not be positive.

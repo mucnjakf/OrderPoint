@@ -1,0 +1,75 @@
+﻿<MudDialog Class="mud-background" DefaultFocus="DefaultFocus.FirstChild" OnKeyDown="@OnKeyDownAsync">
+    <DialogContent>
+        <MudTextField @bind-Value="@SearchQuery"
+                      @bind-Value:after="@OnSearchQueryChangedAsync"
+                      T="string"
+                      Placeholder="Search orders, items, categories and bartenders"
+                      Variant="Variant.Outlined"
+                      Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      Immediate="true"
+                      DebounceInterval="300"/>
+
+        <div class="mt-2 mb-1" style="max-height: 60vh; overflow-y: auto;">
+            @if (HasQuery)
+            {
+                <SearchResultGroup Title="Orders"
+                                   Results="@OrderResults"
+                                   IsLoading="@IsLoadingOrders"
+                                   ActiveResult="@ActiveResult"
+                                   OnResultClick="@Select"
+                                   OnResultMouseEnter="@Activate"/>
+
+                <SearchResultGroup Title="Items"
+                                   Results="@ItemResults"
+                                   IsLoading="@IsLoadingItems"
+                                   ActiveResult="@ActiveResult"
+                                   OnResultClick="@Select"
+                                   OnResultMouseEnter="@Activate"/>
+
+                <SearchResultGroup Title="Categories"
+                                   Results="@CategoryResults"
+                                   IsLoading="@IsLoadingCategories"
+                                   ActiveResult="@ActiveResult"
+                                   OnResultClick="@Select"
+                                   OnResultMouseEnter="@Activate"/>
+
+                <SearchResultGroup Title="Bartenders"
+                                   Results="@BartenderResults"
+                                   IsLoading="@IsLoadingBartenders"
+                                   ActiveResult="@ActiveResult"
+                                   OnResultClick="@Select"
+                                   OnResultMouseEnter="@Activate"/>
+
+                @if (HasNoResults)
+                {
+                    <MudStack AlignItems="AlignItems.Center" Spacing="1" Class="py-6">
+                        <MudIcon Icon="@Icons.Material.Filled.SearchOff"/>
+
+                        <MudText Typo="Typo.body2">
+                            No results for "@SearchQuery"
+                        </MudText>
+                    </MudStack>
+                }
+            }
+            else
+            {
+                <SearchResultGroup Title="Recent"
+                                   Results="@RecentResults"
+                                   ActiveResult="@ActiveResult"
+                                   OnResultClick="@Select"
+                                   OnResultMouseEnter="@Activate"/>
+
+                <SearchResultGroup Title="Pages"
+                                   Results="@PageResults"
+                                   ActiveResult="@ActiveResult"
+                                   OnResultClick="@Select"
+                                   OnResultMouseEnter="@Activate"/>
+            }
+        </div>
+
+        <MudText Typo="Typo.caption" Class="d-block mb-2" Style="color: var(--mud-palette-text-secondary);">
+            ↑ ↓ to navigate · Enter to open · Esc to close
+        </MudText>
+    </DialogContent>
+</MudDialog>

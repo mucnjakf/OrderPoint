@@ -1,8 +1,12 @@
 ﻿using System.Security.Cryptography;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using Microsoft.JSInterop;
 using MudBlazor;
 using OrderPoint.Admin.Auth.Services;
+using OrderPoint.Admin.Search.Dialogs;
+using OrderPoint.Admin.Search.Dtos;
+using OrderPoint.Admin.Search.Services;
 using OrderPoint.Admin.Shared.Services;
 
 namespace OrderPoint.Admin.Shared.Layout;
@@ -32,6 +36,19 @@ public sealed partial class MainLayout : IDisposable
     [Inject]
     private TimeZoneService TimeZoneService { get; set; } = null!;
 
+    [Inject]
+    private IJSRuntime JsRuntime { get; set; } = null!;
+
+    [Inject]
+    private IDialogService DialogService { get; set; } = null!;
+
+    [Inject]
+    private SearchService SearchService { get; set; } = null!;
+
+    private DotNetObjectReference<MainLayout>? SelfReference { get; set; }
+
+    private bool IsSearchOpen { get; set; }
+
     private MudTheme Theme { get; } = AdminTheme.Create();
 
     private bool DrawerOpen { get; set; } = true;
@@ -51,9 +68,62 @@ public sealed partial class MainLayout : IDisposable
         await Task.WhenAll(LoadLayoutPreferencesAsync(), AuthService.LoadAsync(), TimeZoneService.LoadAsync());
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        SelfReference = DotNetObjectReference.Create(this);
+
+        await JsRuntime.InvokeVoidAsync("registerSearchShortcut", SelfReference);
+    }
+
     public void Dispose()
     {
         AuthService.SessionChanged -= OnSessionChanged;
+        SelfReference?.Dispose();
+    }
+
+    [JSInvokable]
+    public async Task OpenSearchFromShortcutAsync()
+    {
+        await OpenSearchAsync();
+    }
+
+    private async Task OpenSearchAsync()
+    {
+        if (!AuthService.IsSignedIn || IsSearchOpen)
+        {
+            return;
+        }
+
+        IsSearchOpen = true;
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true,
+            NoHeader = true,
+            Position = DialogPosition.TopCenter
+        };
+
+        IDialogReference dialogReference = await DialogService
+            .ShowAsync<GlobalSearchDialog>(string.Empty, options);
+
+        DialogResult dialogResult = (await dialogReference.Result)!;
+
+        IsSearchOpen = false;
+
+        if (dialogResult.Canceled)
+        {
+            return;
+        }
+
+        var result = (dialogResult.Data as SearchResultDto)!;
+
+        await SearchService.OpenAsync(result);
     }
 
     private void OnSessionChanged()

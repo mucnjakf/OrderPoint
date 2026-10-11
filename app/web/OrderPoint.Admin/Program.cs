@@ -13,6 +13,7 @@ using OrderPoint.Admin.Orders.Api;
 using OrderPoint.Admin.Shared.Extensions;
 using OrderPoint.Admin.Shared.Services;
 using OrderPoint.ServiceDefaults;
+using OrderPoint.Admin.Search.Services;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,7 @@ builder.Services.AddScoped<AuthService>();
 
 builder.Services.AddScoped<ApiService>();
 builder.Services.AddScoped<TimeZoneService>();
+builder.Services.AddScoped<SearchService>();
 
 // The auth endpoints are anonymous and called without AccessTokenHandler, which uses them to refresh tokens
 builder.Services.AddHttpClient<AuthApiClient>(ConfigureApiClient);

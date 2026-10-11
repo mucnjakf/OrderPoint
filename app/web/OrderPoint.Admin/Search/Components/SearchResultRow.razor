@@ -1,0 +1,47 @@
+﻿<div @ref="@RowElement"
+     class="d-flex align-center px-3 py-2 cursor-pointer"
+     style="@RowStyle"
+     @onclick="@OnClickAsync"
+     @onmouseenter="@OnMouseEnterAsync">
+    @switch (Result.Kind)
+    {
+        case SearchResultKind.Page:
+            <MudAvatar Rounded="true" Variant="Variant.Outlined">
+                <MudIcon Icon="@Result.Icon"/>
+            </MudAvatar>
+            break;
+        case SearchResultKind.Order:
+            <OrderAvatar Number="@Result.OrderNumber!.Value"/>
+            break;
+        case SearchResultKind.Bartender:
+            <BartenderAvatar FirstName="@FirstName" LastName="@LastName" ImageUrl="@Result.ImageUrl"/>
+            break;
+        default:
+            <MudImage Src="@(Result.ImageUrl ?? "images/image-placeholder.svg")"
+                      Alt="Image"
+                      Width="40"
+                      Height="40"
+                      ObjectFit="ObjectFit.Cover"/>
+            break;
+    }
+
+    <MudStack Spacing="0" Class="flex-1 ml-3">
+        <MudText Typo="Typo.body1">
+            @Result.Title
+        </MudText>
+
+        @if (Result.Subtitle is not null)
+        {
+            <MudText Typo="Typo.caption">
+                @Result.Subtitle
+            </MudText>
+        }
+    </MudStack>
+
+    @if (Result.Meta is not null)
+    {
+        <MudText Typo="Typo.body2">
+            @Result.Meta
+        </MudText>
+    }
+</div>
