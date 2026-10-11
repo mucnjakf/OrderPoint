@@ -25,7 +25,7 @@
                             </MudText>
 
                             <MudText Typo="Typo.subtitle2">
-                                @ordersCount @(ordersCount == 1 ? "order" : "orders")
+                                @ordersCount.ToCountText("order", "orders")
                             </MudText>
                         </div>
                     </TooltipContent>

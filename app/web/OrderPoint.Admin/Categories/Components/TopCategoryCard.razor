@@ -22,6 +22,6 @@
     </MudChip>
 
     <MudText Typo="Typo.h6">
-        @Category.ItemsCount @(Category.ItemsCount == 1 ? "item" : "items")
+        @Category.ItemsCount.ToCountText("item", "items")
     </MudText>
 </HighlightCard>

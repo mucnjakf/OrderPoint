@@ -3,6 +3,7 @@ using OrderPoint.Admin.Orders.Api;
 using OrderPoint.Admin.Orders.Dtos;
 using OrderPoint.Admin.Orders.Sorting;
 using OrderPoint.Admin.Shared.Dtos;
+using OrderPoint.Admin.Shared.Extensions;
 using OrderPoint.Admin.Shared.Services;
 
 namespace OrderPoint.Admin.Bartenders.Components;
@@ -79,6 +80,6 @@ public sealed partial class BartenderOrdersList
     {
         int itemsCount = order.Items.Sum(orderItem => orderItem.Quantity);
 
-        return itemsCount == 1 ? "1 item" : $"{itemsCount} items";
+        return itemsCount.ToCountText("item", "items");
     }
 }

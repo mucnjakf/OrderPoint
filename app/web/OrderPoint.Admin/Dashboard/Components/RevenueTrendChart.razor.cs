@@ -187,8 +187,8 @@ public sealed partial class RevenueTrendChart
         }
 
         int count = points.Count;
-        var slopes = new double[count - 1];
-        var tangents = new double[count];
+        double[] slopes = new double[count - 1];
+        double[] tangents = new double[count];
 
         for (int i = 0; i < count - 1; i++)
         {

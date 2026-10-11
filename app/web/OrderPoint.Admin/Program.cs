@@ -1,10 +1,10 @@
-﻿using OrderPoint.Admin.Account.Api;
-using OrderPoint.Admin.Account.Services;
-using System.Globalization;
+﻿using System.Globalization;
 using Microsoft.AspNetCore.Components.Server.Circuits;
 using MudBlazor;
 using MudBlazor.Services;
 using OrderPoint.Admin;
+using OrderPoint.Admin.Account.Api;
+using OrderPoint.Admin.Account.Services;
 using OrderPoint.Admin.Auth.Api;
 using OrderPoint.Admin.Auth.Services;
 using OrderPoint.Admin.Bartenders.Api;
@@ -12,10 +12,10 @@ using OrderPoint.Admin.Categories.Api;
 using OrderPoint.Admin.Dashboard.Api;
 using OrderPoint.Admin.Items.Api;
 using OrderPoint.Admin.Orders.Api;
+using OrderPoint.Admin.Search.Services;
 using OrderPoint.Admin.Shared.Extensions;
 using OrderPoint.Admin.Shared.Services;
 using OrderPoint.ServiceDefaults;
-using OrderPoint.Admin.Search.Services;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
