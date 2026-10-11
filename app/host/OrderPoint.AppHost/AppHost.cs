@@ -6,7 +6,8 @@ IResourceBuilder<PostgresServerResource> postgres = builder
     .AddPostgres("postgres")
     .WithDataVolume()
     .WithLifetime(ContainerLifetime.Persistent)
-    .WithEndpoint("tcp", endpoint => endpoint.Port = 59286);
+    .WithEndpoint("tcp", endpoint => endpoint.Port = 59286)
+    .WithPgWeb();
 
 IResourceBuilder<PostgresDatabaseResource> database = postgres
     .AddDatabase("order-point-db");
@@ -20,6 +21,10 @@ IResourceBuilder<AzureStorageResource> storage = builder
 
 IResourceBuilder<AzureBlobStorageContainerResource> images = storage
     .AddBlobContainer("images");
+
+storage
+    .AddBlobs("storage-blobs")
+    .WithAzureStorageExplorer();
 
 IResourceBuilder<ProjectResource> api = builder
     .AddProject<Projects.OrderPoint_Api>("order-point-api")
