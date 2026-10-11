@@ -41,6 +41,8 @@ public sealed partial class CategoryDetailsDialog
 
     private IReadOnlyList<ItemDto> Items { get; set; } = [];
 
+    private int ItemsCount { get; set; }
+
     private string UpdatedAtText => Category.UpdatedAtUtc?.ToDisplayDateTime(TimeZoneService.TimeZone) ?? "-";
 
     private string SelectedSortBy { get; set; } = nameof(ItemSortBy.CreatedAtUtcDesc);
@@ -51,6 +53,8 @@ public sealed partial class CategoryDetailsDialog
 
     protected override async Task OnInitializedAsync()
     {
+        ItemsCount = Category.ItemsCount;
+
         await GetItemsAsync(pageNumber: 1);
     }
 
@@ -118,6 +122,8 @@ public sealed partial class CategoryDetailsDialog
 
         if (isSuccess)
         {
+            ItemsCount++;
+
             await Task.WhenAll(
                 GetItemsAsync(pageNumber: 1),
                 OnItemsChanged.InvokeAsync());
@@ -165,6 +171,8 @@ public sealed partial class CategoryDetailsDialog
 
         if (isSuccess)
         {
+            ItemsCount--;
+
             await Task.WhenAll(
                 GetItemsAsync(pageNumber: 1),
                 OnItemsChanged.InvokeAsync());

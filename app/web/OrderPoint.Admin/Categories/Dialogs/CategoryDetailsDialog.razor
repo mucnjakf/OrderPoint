@@ -22,20 +22,9 @@
                                     Text="@Category.Id.ToString()"
                                     ShowDivider="true"/>
 
-                    <TextDisplayRow Icon="@Icons.Material.Filled.ShortText"
-                                    Label="Name"
-                                    Text="@Category.Name"
-                                    ShowDivider="true"/>
-
-                    <TextDisplayRow Icon="@Icons.Material.Filled.Description"
-                                    Label="Description"
-                                    Text="@Category.Description"
-                                    ShowDivider="true"/>
-
-                    <ChipDisplayRow Icon="@Icons.Material.Filled.MonitorHeart"
-                                    Label="Status"
-                                    Text="@Category.Status.ToString()"
-                                    Color="@(Category.Status is CategoryStatus.Active ? Color.Success : Color.Error)"
+                    <TextDisplayRow Icon="@Icons.Material.Filled.MenuBook"
+                                    Label="Items"
+                                    Text="@ItemsCount.ToString(CultureInfo.CurrentCulture)"
                                     ShowDivider="true"/>
 
                     <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
