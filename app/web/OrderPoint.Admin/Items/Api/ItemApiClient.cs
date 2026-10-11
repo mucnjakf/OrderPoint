@@ -168,4 +168,30 @@ internal sealed class ItemApiClient(HttpClient httpClient)
             await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
         }
     }
+
+    internal async Task ChangeItemsCategoryAsync(
+        ChangeItemsCategoryRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await httpClient
+            .PutAsJsonAsync("api/items/category", request, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+    }
+
+    internal async Task AdjustItemsPriceAsync(
+        AdjustItemsPriceRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await httpClient
+            .PutAsJsonAsync("api/items/price", request, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+    }
 }

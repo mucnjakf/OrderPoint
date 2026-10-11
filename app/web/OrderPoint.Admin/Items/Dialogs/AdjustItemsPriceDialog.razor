@@ -1,0 +1,83 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.Sell"/>
+            <MudText Typo="Typo.h6">Adjust prices</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudStack Row="true" Spacing="3" Class="mb-4">
+            <MudSelect @bind-Value="@Mode"
+                       T="PriceAdjustmentMode"
+                       Variant="Variant.Outlined"
+                       Label="Adjustment"
+                       Class="flex-1">
+                @foreach (PriceAdjustmentMode mode in Enum.GetValues<PriceAdjustmentMode>())
+                {
+                    <MudSelectItem Value="@mode">
+                        @mode.GetLabel()
+                    </MudSelectItem>
+                }
+            </MudSelect>
+
+            <MudNumericField @bind-Value="@Value"
+                             T="decimal?"
+                             Variant="Variant.Outlined"
+                             Label="Value"
+                             HelperText="@ValueHelperText"
+                             Adornment="Adornment.End"
+                             AdornmentText="@ValueAdornmentText"
+                             Error="@HasValueError"
+                             ErrorText="@ValueErrorText"
+                             Immediate="true"
+                             Class="flex-1"/>
+        </MudStack>
+
+        <MudAlert Severity="Severity.Info" Variant="Variant.Text" Dense="true" Class="mb-4">
+            <MudText Typo="Typo.body2">
+                Past orders keep the prices they were placed with.
+            </MudText>
+        </MudAlert>
+
+        <BulkSelectionSummary TItem="ItemDto" Items="@Items">
+            <ItemTemplate>
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                    <MudImage Src="@(context.ImageUrl ?? "images/image-placeholder.svg")"
+                              Alt="Item image"
+                              Width="40"
+                              Height="40"
+                              ObjectFit="ObjectFit.Cover"/>
+
+                    <MudText Typo="Typo.body1" Class="flex-1">
+                        @context.Name
+                    </MudText>
+
+                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                        @context.Price.ToString("C", CultureInfo.CurrentCulture)
+                    </MudText>
+
+                    <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Size="Size.Small"/>
+
+                    <MudText Typo="Typo.body1" Color="@GetNewPriceColor(context)">
+                        @GetNewPrice(context).ToString("C", CultureInfo.CurrentCulture)
+                    </MudText>
+                </MudStack>
+            </ItemTemplate>
+        </BulkSelectionSummary>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
+            Cancel
+        </MudButton>
+
+        <MudButton OnClick="@Confirm"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Sell"
+                   Disabled="@(!IsValid)">
+            Adjust @Items.Count.ToCountText("price", "prices")
+        </MudButton>
+    </DialogActions>
+</MudDialog>

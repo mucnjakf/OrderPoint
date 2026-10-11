@@ -1,0 +1,88 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.DriveFileMove"/>
+            <MudText Typo="Typo.h6">Move items</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudAutocomplete @ref="@CategoryAutocomplete"
+                         @bind-Value="@SelectedCategory"
+                         T="CategoryDto"
+                         SearchFunc="@OnCategorySearchAsync"
+                         Variant="Variant.Outlined"
+                         HelperText="The category the selected items move to."
+                         Label="Category"
+                         Clearable="true"
+                         OnClearButtonClick="@OnCategoryClearedAsync"
+                         ShowProgressIndicator="true"
+                         ToStringFunc="@(category => category?.Name)"
+                         Class="mb-4">
+            <ItemTemplate Context="category">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                    <MudImage Src="@(category.ImageUrl ?? "images/image-placeholder.svg")"
+                              Alt="Category image"
+                              Width="24"
+                              Height="24"
+                              ObjectFit="ObjectFit.Cover"/>
+
+                    <MudText Typo="Typo.body1">
+                        @category.Name
+                    </MudText>
+                </MudStack>
+            </ItemTemplate>
+
+            <NoItemsTemplate>
+                <MudText Align="Align.Center" Class="px-3 py-1">
+                    No categories found
+                </MudText>
+            </NoItemsTemplate>
+        </MudAutocomplete>
+
+        @if (SelectedCategory?.Status is CategoryStatus.Inactive)
+        {
+            <MudAlert Severity="Severity.Warning" Variant="Variant.Text" Dense="true" Class="mb-4">
+                <MudText Typo="Typo.body2">
+                    @SelectedCategory.Name is inactive, so these items can't be ordered until it is activated.
+                </MudText>
+            </MudAlert>
+        }
+
+        <BulkSelectionSummary TItem="ItemDto" Items="@Items">
+            <ItemTemplate>
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                    <MudImage Src="@(context.ImageUrl ?? "images/image-placeholder.svg")"
+                              Alt="Item image"
+                              Width="40"
+                              Height="40"
+                              ObjectFit="ObjectFit.Cover"/>
+
+                    <MudStack Spacing="0" Class="flex-1">
+                        <MudText Typo="Typo.body1">
+                            @context.Name
+                        </MudText>
+
+                        <MudText Typo="Typo.caption">
+                            @context.Category.Name
+                        </MudText>
+                    </MudStack>
+                </MudStack>
+            </ItemTemplate>
+        </BulkSelectionSummary>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
+            Cancel
+        </MudButton>
+
+        <MudButton OnClick="@Confirm"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.DriveFileMove"
+                   Disabled="@(SelectedCategory is null)">
+            Move @Items.Count.ToCountText("item", "items")
+        </MudButton>
+    </DialogActions>
+</MudDialog>

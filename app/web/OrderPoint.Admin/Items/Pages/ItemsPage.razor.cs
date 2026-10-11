@@ -461,4 +461,86 @@ public sealed partial class ItemsPage
                 GetItemsAsync(pageNumber: 1));
         }
     }
+
+    private async Task ShowChangeItemsCategoryDialogAsync()
+    {
+        IReadOnlyList<ItemDto> items = [.. SelectedItems];
+
+        var parameters = new DialogParameters<ChangeItemsCategoryDialog>
+        {
+            { dialog => dialog.Items, items }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true
+        };
+
+        IDialogReference dialogReference = await DialogService
+            .ShowAsync<ChangeItemsCategoryDialog>(string.Empty, parameters, options);
+
+        DialogResult dialogResult = (await dialogReference.Result)!;
+
+        if (dialogResult.Canceled)
+        {
+            return;
+        }
+
+        var request = (dialogResult.Data as ChangeItemsCategoryRequest)!;
+
+        string countText = request.Ids.Count.ToCountText("item", "items");
+
+        bool isSuccess = await ApiService.ExecuteAsync(
+            () => ItemApiClient.ChangeItemsCategoryAsync(request),
+            $"{countText} moved to {request.CategoryName} successfully");
+
+        if (isSuccess)
+        {
+            await Task.WhenAll(
+                GetSpotlightAsync(),
+                GetItemsAsync(pageNumber: 1));
+        }
+    }
+
+    private async Task ShowAdjustItemsPriceDialogAsync()
+    {
+        IReadOnlyList<ItemDto> items = [.. SelectedItems];
+
+        var parameters = new DialogParameters<AdjustItemsPriceDialog>
+        {
+            { dialog => dialog.Items, items }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true
+        };
+
+        IDialogReference dialogReference = await DialogService
+            .ShowAsync<AdjustItemsPriceDialog>(string.Empty, parameters, options);
+
+        DialogResult dialogResult = (await dialogReference.Result)!;
+
+        if (dialogResult.Canceled)
+        {
+            return;
+        }
+
+        var request = (dialogResult.Data as AdjustItemsPriceRequest)!;
+
+        string countText = request.Ids.Count.ToCountText("item", "items");
+
+        bool isSuccess = await ApiService.ExecuteAsync(
+            () => ItemApiClient.AdjustItemsPriceAsync(request),
+            $"Prices of {countText} adjusted successfully");
+
+        if (isSuccess)
+        {
+            await Task.WhenAll(
+                GetSpotlightAsync(),
+                GetItemsAsync(pageNumber: 1));
+        }
+    }
 }

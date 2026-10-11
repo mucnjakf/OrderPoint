@@ -140,6 +140,37 @@ public sealed class Item : Entity
         UpdatedAtUtc = DateTimeOffset.UtcNow;
     }
 
+    public void ChangeCategory(Guid categoryId)
+    {
+        if (CategoryId == categoryId)
+        {
+            return;
+        }
+
+        CategoryId = categoryId;
+
+        UpdatedAtUtc = DateTimeOffset.UtcNow;
+    }
+
+    public Result ChangePrice(decimal price)
+    {
+        if (price <= 0)
+        {
+            return Result.Failure(ItemErrors.PriceMustBePositive);
+        }
+
+        if (Price == price)
+        {
+            return Result.Success();
+        }
+
+        Price = price;
+
+        UpdatedAtUtc = DateTimeOffset.UtcNow;
+
+        return Result.Success();
+    }
+
     public Result SetImage(string imageUrl)
     {
         if (string.IsNullOrWhiteSpace(imageUrl))

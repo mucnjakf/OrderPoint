@@ -85,6 +85,18 @@
             Deactivate
         </MudButton>
 
+        <MudButton Variant="Variant.Text"
+                   StartIcon="@Icons.Material.Filled.DriveFileMove"
+                   OnClick="@ShowChangeItemsCategoryDialogAsync">
+            Move
+        </MudButton>
+
+        <MudButton Variant="Variant.Text"
+                   StartIcon="@Icons.Material.Filled.Sell"
+                   OnClick="@ShowAdjustItemsPriceDialogAsync">
+            Adjust price
+        </MudButton>
+
         <MudTooltip Text="@DeleteSelectedTooltipText">
             <MudButton Variant="Variant.Text"
                        Color="Color.Error"
