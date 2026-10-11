@@ -66,8 +66,7 @@ internal sealed class BartenderEfCoreRepository(ApplicationDbContext dbContext) 
 
             query = query.Where(bartender =>
                 bartender.FirstName.ToLower().Contains(normalizedSearchQuery) ||
-                bartender.LastName.ToLower().Contains(normalizedSearchQuery) ||
-                bartender.Email.ToLower().Contains(normalizedSearchQuery));
+                bartender.LastName.ToLower().Contains(normalizedSearchQuery));
         }
 
         return query;

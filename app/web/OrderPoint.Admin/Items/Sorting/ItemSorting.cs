@@ -4,6 +4,16 @@ namespace OrderPoint.Admin.Items.Sorting;
 
 internal static class ItemSorting
 {
+    internal static string[] SortByOptions { get; } =
+    [
+        nameof(ItemSortBy.NameAsc),
+        nameof(ItemSortBy.NameDesc),
+        nameof(ItemSortBy.PriceAsc),
+        nameof(ItemSortBy.PriceDesc),
+        nameof(ItemSortBy.CreatedAtUtcAsc),
+        nameof(ItemSortBy.CreatedAtUtcDesc)
+    ];
+
     internal static string GetSortByLabel(string sortBy)
     {
         var parsedSortBy = Enum.Parse<ItemSortBy>(sortBy);

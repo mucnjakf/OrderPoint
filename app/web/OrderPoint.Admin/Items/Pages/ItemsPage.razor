@@ -52,7 +52,7 @@
           OnSearchChanged="@OnSearchChangedAsync"
           OnSortChanged="@OnSortChangedAsync"
           OnPageChanged="@OnPageChangedAsync"
-          SortByOptions="@Enum.GetNames(typeof(ItemSortBy))"
+          SortByOptions="@ItemSorting.SortByOptions"
           GetSortByLabel="@ItemSorting.GetSortByLabel"
           GetSortByIcon="@ItemSorting.GetSortByIcon"
           CreateButtonText="New item"

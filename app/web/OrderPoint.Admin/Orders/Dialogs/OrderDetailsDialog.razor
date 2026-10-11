@@ -10,14 +10,14 @@
         <MudGrid Spacing="3">
             <MudItem xs="12" md="6">
                 <MudPaper Class="pa-5" Style="height: 100%">
-                    <TextDisplayRow Icon="@Icons.Material.Filled.Tag"
-                                    Label="Number"
-                                    Text="@($"#{Order.Number}")"
-                                    ShowDivider="true"/>
-
                     <TextDisplayRow Icon="@Icons.Material.Filled.Numbers"
                                     Label="ID"
                                     Text="@Order.Id.ToString()"
+                                    ShowDivider="true"/>
+
+                    <TextDisplayRow Icon="@Icons.Material.Filled.Tag"
+                                    Label="Number"
+                                    Text="@($"#{Order.Number}")"
                                     ShowDivider="true"/>
 
                     <TextDisplayRow Icon="@Icons.Material.Filled.TableBar"
@@ -58,10 +58,12 @@
                 <MudPaper Class="px-5" Style="height: 100%">
                     <MudTimeline TimelineOrientation="TimelineOrientation.Vertical"
                                  TimelinePosition="TimelinePosition.Start"
-                                 Style="height: 100%">
+                                 Class="pt-0"
+                                 Style="height: 100%; justify-content: space-evenly">
                         @foreach ((OrderStatus status, DateTimeOffset? reachedAtUtc) in TimelineSteps)
                         {
-                            <MudTimelineItem Color="@(reachedAtUtc is null ? Color.Default : status.GetColor())"
+                            <MudTimelineItem Class="pb-0"
+                                             Color="@(reachedAtUtc is null ? Color.Default : status.GetColor())"
                                              Variant="@(reachedAtUtc is null ? Variant.Outlined : Variant.Filled)"
                                              Size="Size.Medium"
                                              Elevation="0">

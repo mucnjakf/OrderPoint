@@ -13,7 +13,7 @@
               Items="@Orders"
               Pagination="@Pagination"
               IsLoading="@IsLoading"
-              SearchLabel="Search by table or number"
+              SearchLabel="Search by number or table"
               SearchQuery="@SearchQuery"
               SearchQueryChanged="@(value => SearchQuery = value)"
               SelectedSortBy="@SelectedSortBy"
@@ -68,15 +68,8 @@
     <ItemTemplate>
         <MudStack Row="true" AlignItems="AlignItems.Center">
             <MudText Typo="Typo.h6">
-                #@context.Number
+                #@context.Number · @context.TableCode
             </MudText>
-
-            <MudChip T="string"
-                     Variant="Variant.Outlined"
-                     Icon="@Icons.Material.Filled.TableBar"
-                     Size="Size.Small">
-                @context.TableCode
-            </MudChip>
 
             <MudSpacer/>
 
