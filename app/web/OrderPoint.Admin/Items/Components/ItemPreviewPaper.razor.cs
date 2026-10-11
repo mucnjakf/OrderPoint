@@ -18,6 +18,10 @@ public sealed partial class ItemPreviewPaper
 
     [Parameter]
     [EditorRequired]
+    public double Portion { get; set; }
+
+    [Parameter]
+    [EditorRequired]
     public decimal Price { get; set; }
 
     [Parameter]

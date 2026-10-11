@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using OrderPoint.Admin.Items.Dtos;
-using OrderPoint.Admin.Items.Enumerations;
 using OrderPoint.Admin.Orders.Api;
 using OrderPoint.Admin.Orders.Dtos;
 using OrderPoint.Admin.Orders.Sorting;
@@ -14,8 +13,6 @@ namespace OrderPoint.Admin.Items.Dialogs;
 public sealed partial class ItemDetailsDialog
 {
     private const int PageSize = 5;
-
-    private const string InactiveCategoryStatusText = "Inactive (category is inactive)";
 
     [Parameter]
     public ItemDto Item { get; set; } = null!;
@@ -35,13 +32,6 @@ public sealed partial class ItemDetailsDialog
     private PaginationDto<OrderDto>? Pagination { get; set; }
 
     private IReadOnlyList<OrderDto> Orders { get; set; } = [];
-
-    private string StatusText => Item switch
-    {
-        { IsActive: true } => nameof(ItemStatus.Active),
-        { Status: ItemStatus.Inactive } => nameof(ItemStatus.Inactive),
-        _ => InactiveCategoryStatusText
-    };
 
     private string UpdatedAtText => Item.UpdatedAtUtc?.ToDisplayDateTime(TimeZoneService.TimeZone) ?? "-";
 
