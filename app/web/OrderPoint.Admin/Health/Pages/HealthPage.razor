@@ -1,0 +1,36 @@
+﻿@page "/system"
+
+<PageTitle>Health</PageTitle>
+
+<PageHeader Text="Health">
+    <MudButton Variant="Variant.Outlined" Disabled="@HealthService.IsChecking" OnClick="@HealthService.CheckAsync">
+        @if (HealthService.IsChecking)
+        {
+            <MudProgressCircular Indeterminate="true"
+                                 Size="Size.Small"
+                                 Class="mr-2"
+                                 Style="height: 18px; width: 18px;"/>
+            <span>Checking...</span>
+        }
+        else
+        {
+            <MudIcon Icon="@Icons.Material.Filled.Refresh" Size="Size.Small" Class="mr-2"/>
+            <span>Refresh</span>
+        }
+    </MudButton>
+</PageHeader>
+
+<HealthSummary Status="@HealthService.Status" CheckedAtUtc="@HealthService.CheckedAtUtc" IsLoading="@IsLoading"/>
+
+<MudGrid Spacing="3">
+    @foreach ((string name, string subtitle, string icon) in Components)
+    {
+        <MudItem xs="4">
+            <HealthCheckCard Name="@name"
+                             Subtitle="@subtitle"
+                             Icon="@icon"
+                             Check="@GetCheck(name)"
+                             IsLoading="@IsLoading"/>
+        </MudItem>
+    }
+</MudGrid>

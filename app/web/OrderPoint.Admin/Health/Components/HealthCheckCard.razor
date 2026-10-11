@@ -1,0 +1,53 @@
+﻿<MudPaper Class="pa-5 d-flex flex-column gap-3" Style="height: 100%">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+        <MudAvatar Rounded="true">
+            <MudIcon Icon="@Icon"/>
+        </MudAvatar>
+
+        <MudStack Spacing="0">
+            <MudText Typo="Typo.subtitle1">
+                @Name
+            </MudText>
+
+            <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                @Subtitle
+            </MudText>
+        </MudStack>
+    </MudStack>
+
+    <MudDivider/>
+
+    <StatefulView IsLoading="@IsLoading" ShowContent="true" Compact="true">
+        <LoadingContent>
+            <HealthCheckCardSkeleton/>
+        </LoadingContent>
+
+        <ChildContent>
+            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                <MudChip T="string"
+                         Variant="Variant.Text"
+                         Size="Size.Small"
+                         Color="@Status.GetColor()"
+                         Icon="@Status.GetIcon()"
+                         Class="ma-0">
+                    @Status.GetLabel()
+                </MudChip>
+
+                <MudText Typo="Typo.body2">
+                    @DurationText
+                </MudText>
+            </MudStack>
+
+            <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                @DetailText
+            </MudText>
+
+            @if (Check?.Error is not null)
+            {
+                <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Dense="true">
+                    @Check.Error
+                </MudAlert>
+            }
+        </ChildContent>
+    </StatefulView>
+</MudPaper>

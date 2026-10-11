@@ -1,7 +1,9 @@
-﻿using OrderPoint.Application.Dtos;
+﻿using Microsoft.Extensions.Logging;
+using OrderPoint.Application.Dtos;
 using OrderPoint.Application.Dtos.Mappers;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
+using OrderPoint.Application.Telemetry;
 using OrderPoint.Domain.Entities;
 using OrderPoint.Domain.Errors;
 using OrderPoint.Domain.Outcomes;
@@ -16,10 +18,12 @@ public sealed record CreateOrderCommand(
     IReadOnlyList<CreateOrderItemCommand> Items)
     : ICommand<OrderDto>;
 
-internal sealed class CreateOrderCommandHandler(
+internal sealed partial class CreateOrderCommandHandler(
     IOrderRepository orderRepository,
     IItemRepository itemRepository,
-    IUnitOfWork unitOfWork)
+    IUnitOfWork unitOfWork,
+    ApplicationTelemetry telemetry,
+    ILogger<CreateOrderCommandHandler> logger)
     : ICommandHandler<CreateOrderCommand, OrderDto>
 {
     public async Task<Result<OrderDto>> Handle(CreateOrderCommand command, CancellationToken cancellationToken)
@@ -53,6 +57,14 @@ internal sealed class CreateOrderCommandHandler(
 
         var orderDto = order.ToOrderDto();
 
+        telemetry.RecordOrderPlaced(orderDto.Total);
+        LogOrderPlaced(orderDto.Number, orderDto.TableCode, orderDto.Items.Count, orderDto.Total);
+
         return Result.Success(orderDto);
     }
+
+    [LoggerMessage(
+        Level = LogLevel.Information,
+        Message = "Order #{OrderNumber} placed at table {TableCode}: {LineCount} lines, {Total} EUR")]
+    private partial void LogOrderPlaced(int orderNumber, string tableCode, int lineCount, decimal total);
 }

@@ -1,4 +1,5 @@
-﻿using OrderPoint.Application.Mediator;
+﻿using Microsoft.Extensions.Logging;
+using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Domain.Entities;
 using OrderPoint.Domain.Enumerations;
@@ -9,9 +10,10 @@ namespace OrderPoint.Application.Commands.Categories;
 
 public sealed record ChangeCategoriesStatusCommand(IReadOnlyList<Guid> Ids, CategoryStatus Status) : ICommand;
 
-internal sealed class ChangeCategoriesStatusCommandHandler(
+internal sealed partial class ChangeCategoriesStatusCommandHandler(
     ICategoryRepository categoryRepository,
-    IUnitOfWork unitOfWork)
+    IUnitOfWork unitOfWork,
+    ILogger<ChangeCategoriesStatusCommandHandler> logger)
     : ICommandHandler<ChangeCategoriesStatusCommand>
 {
     public async Task<Result> Handle(ChangeCategoriesStatusCommand command, CancellationToken cancellationToken)
@@ -30,6 +32,11 @@ internal sealed class ChangeCategoriesStatusCommandHandler(
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
+        LogStatusChanged(categories.Count, command.Status);
+
         return Result.Success();
     }
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "{CategoryCount} categories set to {Status}")]
+    private partial void LogStatusChanged(int categoryCount, CategoryStatus status);
 }

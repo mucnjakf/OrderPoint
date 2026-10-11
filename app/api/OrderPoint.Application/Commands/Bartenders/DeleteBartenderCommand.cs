@@ -1,4 +1,5 @@
-﻿using OrderPoint.Application.Identity;
+﻿using Microsoft.Extensions.Logging;
+using OrderPoint.Application.Identity;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Application.Storage;
@@ -10,13 +11,14 @@ namespace OrderPoint.Application.Commands.Bartenders;
 
 public sealed record DeleteBartenderCommand(Guid Id) : ICommand;
 
-internal sealed class DeleteBartenderCommandHandler(
+internal sealed partial class DeleteBartenderCommandHandler(
     IBartenderRepository bartenderRepository,
     IOrderRepository orderRepository,
     IIdentityService identityService,
     ITokenService tokenService,
     IImageStorage imageStorage,
-    IUnitOfWork unitOfWork)
+    IUnitOfWork unitOfWork,
+    ILogger<DeleteBartenderCommandHandler> logger)
     : ICommandHandler<DeleteBartenderCommand>
 {
     public async Task<Result> Handle(DeleteBartenderCommand command, CancellationToken cancellationToken)
@@ -45,6 +47,11 @@ internal sealed class DeleteBartenderCommandHandler(
             await imageStorage.DeleteAsync(bartender.ImageUrl, cancellationToken);
         }
 
+        LogBartenderDeleted(bartender.Id, bartender.Email);
+
         return Result.Success();
     }
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Bartender {BartenderId} ({Email}) and their login deleted")]
+    private partial void LogBartenderDeleted(Guid bartenderId, string email);
 }

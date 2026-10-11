@@ -1,4 +1,5 @@
-﻿using OrderPoint.Application.Mediator;
+﻿using Microsoft.Extensions.Logging;
+using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Application.Storage;
 using OrderPoint.Domain.Entities;
@@ -9,11 +10,12 @@ namespace OrderPoint.Application.Commands.Items;
 
 public sealed record DeleteItemsCommand(IReadOnlyList<Guid> Ids) : ICommand;
 
-internal sealed class DeleteItemsCommandHandler(
+internal sealed partial class DeleteItemsCommandHandler(
     IItemRepository itemRepository,
     IOrderRepository orderRepository,
     IImageStorage imageStorage,
-    IUnitOfWork unitOfWork)
+    IUnitOfWork unitOfWork,
+    ILogger<DeleteItemsCommandHandler> logger)
     : ICommandHandler<DeleteItemsCommand>
 {
     public async Task<Result> Handle(DeleteItemsCommand command, CancellationToken cancellationToken)
@@ -44,6 +46,11 @@ internal sealed class DeleteItemsCommandHandler(
             await imageStorage.DeleteAsync(item.ImageUrl!, cancellationToken);
         }
 
+        LogItemsDeleted(items.Count);
+
         return Result.Success();
     }
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "{ItemCount} items deleted")]
+    private partial void LogItemsDeleted(int itemCount);
 }

@@ -27,11 +27,6 @@ internal sealed class GetAccountEndpoint : IEndpoint
                 Returns the signed-in admin's email and profile image. The user is taken from the access token.
                 """)
             .ProducesProblem(StatusCodes.Status404NotFound)
-            .WithSummary("Get my account")
-            .WithDescription("""
-                Returns the signed-in admin's email and profile image. The user is taken from the access token.
-                """)
-            .ProducesProblem(StatusCodes.Status404NotFound)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

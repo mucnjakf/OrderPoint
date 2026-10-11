@@ -1,4 +1,5 @@
-﻿using OrderPoint.Application.Dtos;
+﻿using Microsoft.Extensions.Logging;
+using OrderPoint.Application.Dtos;
 using OrderPoint.Application.Identity;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
@@ -10,10 +11,11 @@ namespace OrderPoint.Application.Commands.Account;
 public sealed record ChangePasswordCommand(Guid UserId, string CurrentPassword, string NewPassword)
     : ICommand<AuthTokensDto>;
 
-internal sealed class ChangePasswordCommandHandler(
+internal sealed partial class ChangePasswordCommandHandler(
     IIdentityService identityService,
     ITokenService tokenService,
-    IUnitOfWork unitOfWork)
+    IUnitOfWork unitOfWork,
+    ILogger<ChangePasswordCommandHandler> logger)
     : ICommandHandler<ChangePasswordCommand, AuthTokensDto>
 {
     public async Task<Result<AuthTokensDto>> Handle(ChangePasswordCommand command, CancellationToken cancellationToken)
@@ -41,6 +43,13 @@ internal sealed class ChangePasswordCommandHandler(
         AuthTokensDto tokens = await tokenService.CreateTokensAsync(user, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
+        LogPasswordChanged(user.Email);
+
         return Result.Success(tokens);
     }
+
+    [LoggerMessage(
+        Level = LogLevel.Information,
+        Message = "{Email} changed their password; every other session was signed out")]
+    private partial void LogPasswordChanged(string email);
 }

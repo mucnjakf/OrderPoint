@@ -35,6 +35,8 @@
         <MudTooltip Text="@(IsDarkMode ? "Light mode" : "Dark mode")">
             <MudIconButton Icon="@DarkModeIcon" OnClick="@ToggleDarkModeAsync" Color="Color.Inherit" />
         </MudTooltip>
+
+        <HealthStatusIndicator />
     </MudAppBar>
 
     <MudDrawer @bind-Open="@DrawerOpen" ClipMode="DrawerClipMode.Always" Elevation="0" Variant="DrawerVariant.Mini"
@@ -75,31 +77,24 @@
             <MudNavLink Href="/categories" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Category">
                 <MudText Typo="Typo.body1">Categories</MudText>
             </MudNavLink>
+
+            <MudDivider Class="my-3" />
+
+            @if (DrawerOpen)
+            {
+                <MudText Typo="Typo.button" HtmlTag="p" Class="px-3 pt-1 pb-1" Style="font-size: 12px">
+                    System
+                </MudText>
+            }
+
+            <MudNavLink Href="/system" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.MonitorHeart">
+                <MudText Typo="Typo.body1">Health</MudText>
+            </MudNavLink>
+
+            <MudNavLink Href="/account" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">
+                <MudText Typo="Typo.body1">Account</MudText>
+            </MudNavLink>
         </MudNavMenu>
-
-        <div class="mt-auto">
-            <MudDivider />
-
-            <MudNavMenu Bordered="true" Class="py-2">
-                <MudNavLink Href="/account" Match="NavLinkMatch.Prefix" Icon="@AccountNavIcon">
-                    <div class="d-flex align-center" style="min-width: 0;">
-                        @if (AccountService.ImageUrl is not null)
-                        {
-                            <MudAvatar Size="Size.Small" Style="@AccountAvatarStyle">
-                                <MudImage Src="@AccountService.ImageUrl"
-                                          Alt="Account image"
-                                          ObjectFit="ObjectFit.Cover"/>
-                            </MudAvatar>
-                        }
-
-                        @if (DrawerOpen)
-                        {
-                            <MudText Typo="Typo.body1" Style="@AccountNameStyle">@AccountName</MudText>
-                        }
-                    </div>
-                </MudNavLink>
-            </MudNavMenu>
-        </div>
     </MudDrawer>
 
     <div style="@DrawerToggleWrapperStyle">

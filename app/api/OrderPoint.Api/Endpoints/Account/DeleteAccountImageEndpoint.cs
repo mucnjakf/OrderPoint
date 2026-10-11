@@ -22,11 +22,6 @@ internal sealed class DeleteAccountImageEndpoint : IEndpoint
                 Removes the profile image and deletes the file. Succeeds when there is no image.
                 """)
             .ProducesProblem(StatusCodes.Status404NotFound)
-            .WithSummary("Remove my profile image")
-            .WithDescription("""
-                Removes the profile image and deletes the file. Succeeds when there is no image.
-                """)
-            .ProducesProblem(StatusCodes.Status404NotFound)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

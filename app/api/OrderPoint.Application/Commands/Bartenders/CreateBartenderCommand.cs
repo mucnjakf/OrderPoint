@@ -1,4 +1,5 @@
-﻿using OrderPoint.Application.Dtos;
+﻿using Microsoft.Extensions.Logging;
+using OrderPoint.Application.Dtos;
 using OrderPoint.Application.Dtos.Mappers;
 using OrderPoint.Application.Identity;
 using OrderPoint.Application.Mediator;
@@ -20,10 +21,11 @@ public sealed record CreateBartenderCommand(
     string? Notes)
     : ICommand<BartenderDto>;
 
-internal sealed class CreateBartenderCommandHandler(
+internal sealed partial class CreateBartenderCommandHandler(
     IBartenderRepository bartenderRepository,
     IIdentityService identityService,
-    IUnitOfWork unitOfWork)
+    IUnitOfWork unitOfWork,
+    ILogger<CreateBartenderCommandHandler> logger)
     : ICommandHandler<CreateBartenderCommand, BartenderDto>
 {
     public async Task<Result<BartenderDto>> Handle(CreateBartenderCommand command, CancellationToken cancellationToken)
@@ -66,8 +68,15 @@ internal sealed class CreateBartenderCommandHandler(
         // The bartender and their login are saved together, so neither exists without the other
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
+        LogBartenderCreated(result.Value.Id, command.Email);
+
         var bartenderDto = result.Value.ToBartenderDto(ordersCount: 0);
 
         return Result.Success(bartenderDto);
     }
+
+    [LoggerMessage(
+        Level = LogLevel.Information,
+        Message = "Bartender {BartenderId} ({Email}) created with a temporary password")]
+    private partial void LogBartenderCreated(Guid bartenderId, string email);
 }

@@ -1,0 +1,7 @@
+﻿<div @onmouseenter="@ShowMessage" @onmouseleave="@HideMessage">
+    <MudButton Href="/system" Variant="Variant.Text" Color="Color.Inherit" Class="px-3" Style="min-width: 0">
+        <span style="@MessageStyle">@HealthService.Status.GetSummary()</span>
+
+        <MudIcon Icon="@HealthService.Status.GetIcon()" Color="@IconColor"/>
+    </MudButton>
+</div>

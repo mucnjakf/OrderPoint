@@ -1,4 +1,5 @@
-﻿using OrderPoint.Application.Mediator;
+﻿using Microsoft.Extensions.Logging;
+using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Domain.Entities;
 using OrderPoint.Domain.Enumerations;
@@ -12,9 +13,10 @@ public sealed record AdjustItemsPriceCommand(
     PriceAdjustmentMode Mode,
     decimal Value) : ICommand;
 
-internal sealed class AdjustItemsPriceCommandHandler(
+internal sealed partial class AdjustItemsPriceCommandHandler(
     IItemRepository itemRepository,
-    IUnitOfWork unitOfWork)
+    IUnitOfWork unitOfWork,
+    ILogger<AdjustItemsPriceCommandHandler> logger)
     : ICommandHandler<AdjustItemsPriceCommand>
 {
     private const decimal PercentBase = 100m;
@@ -44,6 +46,8 @@ internal sealed class AdjustItemsPriceCommandHandler(
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
+        LogPricesAdjusted(items.Count, command.Mode, command.Value);
+
         return Result.Success();
     }
 
@@ -59,4 +63,7 @@ internal sealed class AdjustItemsPriceCommandHandler(
 
         return Math.Round(newPrice, PriceDecimals, MidpointRounding.AwayFromZero);
     }
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "Prices of {ItemCount} items adjusted: {Mode} {Value}")]
+    private partial void LogPricesAdjusted(int itemCount, PriceAdjustmentMode mode, decimal value);
 }

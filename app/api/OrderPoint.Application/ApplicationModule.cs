@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OrderPoint.Application.Mediator;
+using OrderPoint.Application.Telemetry;
 
 namespace OrderPoint.Application;
 
@@ -13,7 +15,10 @@ public static class ApplicationModule
         {
             configure.LicenseKey = configuration["MediatR:LicenseKey"];
             configure.RegisterServicesFromAssembly(typeof(ApplicationModule).Assembly);
+            configure.AddOpenBehavior(typeof(TelemetryBehavior<,>));
         });
+
+        services.AddSingleton<ApplicationTelemetry>();
 
         return services;
     }

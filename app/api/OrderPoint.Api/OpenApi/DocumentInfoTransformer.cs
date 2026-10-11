@@ -20,7 +20,8 @@ internal sealed class DocumentInfoTransformer : IOpenApiDocumentTransformer
         ("Bartenders", "Bartenders and their logins: create, read, update and delete, image, password reset and " +
                        "bulk actions."),
         ("Orders", "Orders placed by customers. Placing an order is anonymous; reading them requires the Admin role."),
-        ("Dashboard", "Aggregated numbers for the Admin dashboard, one endpoint per widget so they load in parallel.")
+        ("Dashboard", "Aggregated numbers for the Admin dashboard, one endpoint per widget so they load in parallel."),
+        ("Health", "The health of the API, the database and the blob storage, for the Admin's system health page.")
     ];
 
     private static readonly (string Name, string[] Tags)[] TagGroups =
@@ -29,7 +30,8 @@ internal sealed class DocumentInfoTransformer : IOpenApiDocumentTransformer
         ("Menu", ["Categories", "Items"]),
         ("Staff", ["Bartenders"]),
         ("Orders", ["Orders"]),
-        ("Insights", ["Dashboard"])
+        ("Insights", ["Dashboard"]),
+        ("System", ["Health"])
     ];
 
     public Task TransformAsync(

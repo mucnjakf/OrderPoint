@@ -4,7 +4,7 @@ using OrderPoint.Admin.Shared.Services;
 
 namespace OrderPoint.Admin.Account.Services;
 
-// One instance per circuit; the drawer and the account page show the same profile image
+// One instance per circuit; MainLayout loads it after sign-in, the account page shows and changes the image
 internal sealed class AccountService(ApiService apiService, AccountApiClient accountApiClient)
 {
     internal event Action? Changed;

@@ -10,6 +10,8 @@ using OrderPoint.Admin.Auth.Services;
 using OrderPoint.Admin.Bartenders.Api;
 using OrderPoint.Admin.Categories.Api;
 using OrderPoint.Admin.Dashboard.Api;
+using OrderPoint.Admin.Health.Api;
+using OrderPoint.Admin.Health.Services;
 using OrderPoint.Admin.Items.Api;
 using OrderPoint.Admin.Orders.Api;
 using OrderPoint.Admin.Search.Services;
@@ -34,6 +36,7 @@ builder.Services.AddScoped<ApiService>();
 builder.Services.AddScoped<TimeZoneService>();
 builder.Services.AddScoped<SearchService>();
 builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<HealthService>();
 
 // The auth endpoints are anonymous and called without AccessTokenHandler, which uses them to refresh tokens
 builder.Services.AddHttpClient<AuthApiClient>(ConfigureApiClient);
@@ -43,6 +46,7 @@ builder.Services.AddHttpClient<BartenderApiClient>(ConfigureApiClient).AddHttpMe
 builder.Services.AddHttpClient<OrderApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 builder.Services.AddHttpClient<DashboardApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 builder.Services.AddHttpClient<AccountApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
+builder.Services.AddHttpClient<HealthApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 
 builder.Services.AddMudServices(configuration =>
 {

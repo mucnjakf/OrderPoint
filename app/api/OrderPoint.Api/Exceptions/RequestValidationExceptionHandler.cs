@@ -5,7 +5,9 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Exceptions;
 
-internal sealed class RequestValidationExceptionHandler(IProblemDetailsService problemDetailsService)
+internal sealed partial class RequestValidationExceptionHandler(
+    IProblemDetailsService problemDetailsService,
+    ILogger<RequestValidationExceptionHandler> logger)
     : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(
@@ -26,6 +28,11 @@ internal sealed class RequestValidationExceptionHandler(IProblemDetailsService p
                 failure.ErrorMessage))
             .ToArray();
 
+        LogValidationFailed(
+            httpContext.Request.Method,
+            httpContext.Request.Path,
+            string.Join(", ", errors.Select(error => error.Code).Distinct()));
+
         return await problemDetailsService.TryWriteAsync(new ProblemDetailsContext
         {
             HttpContext = httpContext,
@@ -43,4 +50,7 @@ internal sealed class RequestValidationExceptionHandler(IProblemDetailsService p
             }
         });
     }
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Request validation failed for {Method} {Path}: {ErrorCodes}")]
+    private partial void LogValidationFailed(string method, string path, string errorCodes);
 }

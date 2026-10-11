@@ -1,0 +1,25 @@
+﻿<MudPaper Class="pa-5 mb-3">
+    <StatefulView IsLoading="@IsLoading" ShowContent="true" Compact="true">
+        <LoadingContent>
+            <HealthSummarySkeleton/>
+        </LoadingContent>
+
+        <ChildContent>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudAvatar Color="@Status.GetColor()" Size="Size.Large" Rounded="true">
+                    <MudIcon Icon="@Status.GetIcon()"/>
+                </MudAvatar>
+
+                <MudStack Spacing="0">
+                    <MudText Typo="Typo.h6">
+                        @Status.GetSummary()
+                    </MudText>
+
+                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                        @CheckedAtText
+                    </MudText>
+                </MudStack>
+            </MudStack>
+        </ChildContent>
+    </StatefulView>
+</MudPaper>

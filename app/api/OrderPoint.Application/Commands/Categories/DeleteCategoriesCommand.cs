@@ -1,4 +1,5 @@
-﻿using OrderPoint.Application.Mediator;
+﻿using Microsoft.Extensions.Logging;
+using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Application.Storage;
 using OrderPoint.Domain.Entities;
@@ -9,11 +10,12 @@ namespace OrderPoint.Application.Commands.Categories;
 
 public sealed record DeleteCategoriesCommand(IReadOnlyList<Guid> Ids) : ICommand;
 
-internal sealed class DeleteCategoriesCommandHandler(
+internal sealed partial class DeleteCategoriesCommandHandler(
     ICategoryRepository categoryRepository,
     IItemRepository itemRepository,
     IImageStorage imageStorage,
-    IUnitOfWork unitOfWork)
+    IUnitOfWork unitOfWork,
+    ILogger<DeleteCategoriesCommandHandler> logger)
     : ICommandHandler<DeleteCategoriesCommand>
 {
     public async Task<Result> Handle(DeleteCategoriesCommand command, CancellationToken cancellationToken)
@@ -44,6 +46,11 @@ internal sealed class DeleteCategoriesCommandHandler(
             await imageStorage.DeleteAsync(category.ImageUrl!, cancellationToken);
         }
 
+        LogCategoriesDeleted(categories.Count);
+
         return Result.Success();
     }
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "{CategoryCount} categories deleted")]
+    private partial void LogCategoriesDeleted(int categoryCount);
 }

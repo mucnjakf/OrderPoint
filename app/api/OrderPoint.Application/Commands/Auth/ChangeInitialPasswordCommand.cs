@@ -1,4 +1,5 @@
-﻿using OrderPoint.Application.Dtos;
+﻿using Microsoft.Extensions.Logging;
+using OrderPoint.Application.Dtos;
 using OrderPoint.Application.Identity;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
@@ -16,11 +17,12 @@ public sealed record ChangeInitialPasswordCommand(
     UserRole Role)
     : ICommand<AuthTokensDto>;
 
-internal sealed class ChangeInitialPasswordCommandHandler(
+internal sealed partial class ChangeInitialPasswordCommandHandler(
     IIdentityService identityService,
     ITokenService tokenService,
     IBartenderRepository bartenderRepository,
-    IUnitOfWork unitOfWork)
+    IUnitOfWork unitOfWork,
+    ILogger<ChangeInitialPasswordCommandHandler> logger)
     : ICommandHandler<ChangeInitialPasswordCommand, AuthTokensDto>
 {
     public async Task<Result<AuthTokensDto>> Handle(
@@ -72,6 +74,11 @@ internal sealed class ChangeInitialPasswordCommandHandler(
         AuthTokensDto tokens = await tokenService.CreateTokensAsync(user, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
+        LogInitialPasswordChanged(user.Email, user.Role);
+
         return Result.Success(tokens);
     }
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "{Email} set their first password and signed in as {Role}")]
+    private partial void LogInitialPasswordChanged(string email, UserRole role);
 }

@@ -11,6 +11,7 @@ using OrderPoint.Api.OpenApi;
 using OrderPoint.Application;
 using OrderPoint.Domain.Enumerations;
 using OrderPoint.Infrastructure;
+using OrderPoint.Infrastructure.EfCore;
 using OrderPoint.Infrastructure.Identity;
 using OrderPoint.ServiceDefaults;
 
@@ -74,6 +75,9 @@ builder.AddAzureBlobContainerClient("images");
 // Modules
 builder.Services.AddApplicationModule(builder.Configuration);
 builder.Services.AddInfrastructureModule(builder.Configuration);
+
+// Database: health check, Npgsql traces and metrics, retries on transient errors
+builder.EnrichNpgsqlDbContext<ApplicationDbContext>();
 
 // ---------------------------------------------------------------------------------------------------------------------
 

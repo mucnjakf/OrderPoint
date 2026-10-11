@@ -30,14 +30,6 @@ internal sealed class UpdateAccountImageEndpoint : IEndpoint
                 The previous image is deleted after the new one is saved.
                 """)
             .ProducesProblem(StatusCodes.Status404NotFound)
-            .WithSummary("Upload my profile image")
-            .WithDescription("""
-                Sets the signed-in admin's profile image, shown in the Admin menu. Send the file as
-                `multipart/form-data` in the field `image`: JPEG, PNG or WebP, at most 2 MB.
-
-                The previous image is deleted after the new one is saved.
-                """)
-            .ProducesProblem(StatusCodes.Status404NotFound)
             .DisableAntiforgery()
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }

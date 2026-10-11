@@ -1,4 +1,5 @@
-﻿using OrderPoint.Application.Mediator;
+﻿using Microsoft.Extensions.Logging;
+using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Domain.Entities;
 using OrderPoint.Domain.Errors;
@@ -8,10 +9,11 @@ namespace OrderPoint.Application.Commands.Items;
 
 public sealed record ChangeItemsCategoryCommand(IReadOnlyList<Guid> Ids, Guid CategoryId) : ICommand;
 
-internal sealed class ChangeItemsCategoryCommandHandler(
+internal sealed partial class ChangeItemsCategoryCommandHandler(
     IItemRepository itemRepository,
     ICategoryRepository categoryRepository,
-    IUnitOfWork unitOfWork)
+    IUnitOfWork unitOfWork,
+    ILogger<ChangeItemsCategoryCommandHandler> logger)
     : ICommandHandler<ChangeItemsCategoryCommand>
 {
     public async Task<Result> Handle(ChangeItemsCategoryCommand command, CancellationToken cancellationToken)
@@ -37,6 +39,11 @@ internal sealed class ChangeItemsCategoryCommandHandler(
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
+        LogCategoryChanged(items.Count, command.CategoryId);
+
         return Result.Success();
     }
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "{ItemCount} items moved to category {CategoryId}")]
+    private partial void LogCategoryChanged(int itemCount, Guid categoryId);
 }

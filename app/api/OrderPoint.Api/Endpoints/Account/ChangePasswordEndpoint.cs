@@ -38,15 +38,6 @@ internal sealed class ChangePasswordEndpoint : IEndpoint
                 - `400 Auth.InvalidPassword`: the new password needs 8+ characters, upper and lower case and a digit.
                 """)
             .ProducesProblem(StatusCodes.Status404NotFound)
-            .WithSummary("Change my password")
-            .WithDescription("""
-                Changes the signed-in admin's password. Every refresh token is revoked, so other devices are signed
-                out; the response contains a new token pair for this session.
-
-                - `400 Auth.InvalidCurrentPassword`: the current password is wrong.
-                - `400 Auth.InvalidPassword`: the new password needs 8+ characters, upper and lower case and a digit.
-                """)
-            .ProducesProblem(StatusCodes.Status404NotFound)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
 

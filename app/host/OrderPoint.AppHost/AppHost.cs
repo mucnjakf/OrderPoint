@@ -23,6 +23,7 @@ IResourceBuilder<AzureBlobStorageContainerResource> images = storage
 
 IResourceBuilder<ProjectResource> api = builder
     .AddProject<Projects.OrderPoint_Api>("order-point-api")
+    .WithUrlForEndpoint("https", _ => new ResourceUrlAnnotation { Url = "/scalar", DisplayText = "API reference" })
     .WithHttpHealthCheck("/health")
     .WithReference(database)
     .WithReference(images)
