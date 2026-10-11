@@ -1,0 +1,57 @@
+﻿<MudStack Row="true" Spacing="4">
+    <MudStack Spacing="3" Style="flex: 0 0 45%">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle"
+                         Width="72px"
+                         Height="44px"
+                         Style="border-radius: var(--mud-default-borderradius);"/>
+
+            <MudStack Spacing="0">
+                <MudText Typo="Typo.body1">
+                    <MudSkeleton Width="90px"/>
+                </MudText>
+
+                <MudText Typo="Typo.caption">
+                    <MudSkeleton Width="150px"/>
+                </MudText>
+            </MudStack>
+
+            <MudSpacer/>
+
+            <ChipSkeleton Width="90px"/>
+        </MudStack>
+
+        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mt-auto">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                <MudSkeleton SkeletonType="SkeletonType.Circle" Width="40px" Height="40px"/>
+
+                <MudText Typo="Typo.body2">
+                    <MudSkeleton Width="110px"/>
+                </MudText>
+            </MudStack>
+
+            <MudText Typo="Typo.h6">
+                <MudSkeleton Width="80px"/>
+            </MudText>
+        </MudStack>
+    </MudStack>
+
+    <MudDivider Vertical="true" FlexItem="true"/>
+
+    <MudStack Spacing="2" Class="flex-1">
+        @for (int i = 0; i < OrderLinesCount; i++)
+        {
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="32px" Height="32px"/>
+
+                <MudText Typo="Typo.body2" Class="flex-1">
+                    <MudSkeleton Width="140px"/>
+                </MudText>
+
+                <MudText Typo="Typo.body2">
+                    <MudSkeleton Width="60px"/>
+                </MudText>
+            </MudStack>
+        }
+    </MudStack>
+</MudStack>

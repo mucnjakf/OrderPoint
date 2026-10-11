@@ -32,7 +32,10 @@ public sealed partial class DashboardTile
 
     [Parameter]
     [EditorRequired]
-    public RenderFragment ChildContent { get; set; } = null!;
+    public RenderFragment ChildContent { get; set; }
+
+    [Parameter]
+    public RenderFragment? LoadingContent { get; set; } = null!;
 
     private string ContentStyle => ContentHeight is null
         ? "display: contents;"

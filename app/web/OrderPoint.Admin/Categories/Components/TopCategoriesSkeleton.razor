@@ -1,0 +1,20 @@
+﻿<MudStack Row="true" Spacing="3" Class="mb-5">
+    @for (int i = 0; i < Count; i++)
+    {
+        <MudPaper Class="pa-5 d-flex flex-column align-center flex-1" Style="@CardStyle">
+            <ChipSkeleton Size="Size.Small" Width="48px" Class="ma-0 mb-3"/>
+
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="40px" Height="40px" Class="mt-2 mb-3"/>
+
+            <MudText Typo="Typo.body1">
+                <MudSkeleton Width="100px"/>
+            </MudText>
+
+            <ChipSkeleton Size="Size.Small" Width="56px"/>
+
+            <MudText Typo="Typo.h6">
+                <MudSkeleton Width="70px"/>
+            </MudText>
+        </MudPaper>
+    }
+</MudStack>

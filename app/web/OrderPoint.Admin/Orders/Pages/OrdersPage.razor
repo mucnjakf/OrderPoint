@@ -30,6 +30,10 @@
               EmptyStateIcon="@Icons.Material.Filled.Receipt"
               EmptyStateText="No orders found">
 
+    <LoadingTemplate>
+        <OrderTicketSkeleton/>
+    </LoadingTemplate>
+
     <FilterContent>
         <MudAutocomplete @ref="@BartenderAutocomplete"
                          @bind-Value="@SelectedBartender"

@@ -66,7 +66,13 @@
                                ShowContent="@RevenueTrend.Any(point => point.Revenue > 0)"
                                EmptyStateText="No completed orders in this period"
                                ContentHeight="@RevenueTrendChart.ChartHeight">
-                    <RevenueTrendChart Points="@RevenueTrend" IsHourly="@(SelectedPeriod is DashboardPeriod.Today)"/>
+                    <LoadingContent>
+                        <RevenueTrendChartSkeleton/>
+                    </LoadingContent>
+
+                    <ChildContent>
+                        <RevenueTrendChart Points="@RevenueTrend" IsHourly="@(SelectedPeriod is DashboardPeriod.Today)"/>
+                    </ChildContent>
                 </DashboardTile>
             </MudItem>
 
@@ -76,7 +82,13 @@
                                IsLoading="@IsLoadingBusiestTimes"
                                ShowContent="@BusiestTimes.Any(slot => slot.OrdersCount > 0)"
                                EmptyStateText="No orders in the last 4 weeks">
-                    <BusiestTimesHeatMap BusiestTimes="@BusiestTimes"/>
+                    <LoadingContent>
+                        <BusiestTimesHeatMapSkeleton/>
+                    </LoadingContent>
+
+                    <ChildContent>
+                        <BusiestTimesHeatMap BusiestTimes="@BusiestTimes"/>
+                    </ChildContent>
                 </DashboardTile>
             </MudItem>
 
@@ -86,7 +98,13 @@
                                IsLoading="@IsLoadingCategoryRevenue"
                                ShowContent="@CategoryRevenue.Any()"
                                EmptyStateText="No completed orders in this period">
-                    <CategoryRevenueDonut CategoryRevenue="@CategoryRevenue"/>
+                    <LoadingContent>
+                        <CategoryRevenueDonutSkeleton/>
+                    </LoadingContent>
+
+                    <ChildContent>
+                        <CategoryRevenueDonut CategoryRevenue="@CategoryRevenue"/>
+                    </ChildContent>
                 </DashboardTile>
             </MudItem>
         </MudGrid>
@@ -98,10 +116,16 @@
                        IsLoading="@IsLoadingLive"
                        ShowContent="@(Live is not null)"
                        EmptyStateText="Live data unavailable">
-            @if (Live is not null)
-            {
-                <LiveOrdersPanel Live="@Live" UpdatedAtUtc="@LiveUpdatedAtUtc"/>
-            }
+            <LoadingContent>
+                <LiveOrdersPanelSkeleton/>
+            </LoadingContent>
+
+            <ChildContent>
+                @if (Live is not null)
+                {
+                    <LiveOrdersPanel Live="@Live" UpdatedAtUtc="@LiveUpdatedAtUtc"/>
+                }
+            </ChildContent>
         </DashboardTile>
     </MudItem>
 
@@ -111,7 +135,13 @@
                        IsLoading="@IsLoadingTopItems"
                        ShowContent="@TopItems.Any()"
                        EmptyStateText="No items sold in this period">
-            <TopItemsList Items="@TopItems" OnItemClick="@ShowItemDetailsDialogAsync"/>
+            <LoadingContent>
+                <TopItemsListSkeleton/>
+            </LoadingContent>
+
+            <ChildContent>
+                <TopItemsList Items="@TopItems" OnItemClick="@ShowItemDetailsDialogAsync"/>
+            </ChildContent>
         </DashboardTile>
     </MudItem>
 
@@ -121,7 +151,13 @@
                        IsLoading="@IsLoadingLeaderboard"
                        ShowContent="@Leaderboard.Any()"
                        EmptyStateText="No handled orders in this period">
-            <BartenderLeaderboard Entries="@Leaderboard" OnBartenderClick="@ShowBartenderOrdersDialogAsync"/>
+            <LoadingContent>
+                <BartenderLeaderboardSkeleton/>
+            </LoadingContent>
+
+            <ChildContent>
+                <BartenderLeaderboard Entries="@Leaderboard" OnBartenderClick="@ShowBartenderOrdersDialogAsync"/>
+            </ChildContent>
         </DashboardTile>
     </MudItem>
 
@@ -131,7 +167,13 @@
                        IsLoading="@IsLoadingRecentOrders"
                        ShowContent="@RecentOrders.Any()"
                        EmptyStateText="No orders yet">
-            <RecentOrdersList Orders="@RecentOrders" OnOrderClick="@ShowOrderDetailsDialogAsync"/>
+            <LoadingContent>
+                <RecentOrdersListSkeleton/>
+            </LoadingContent>
+
+            <ChildContent>
+                <RecentOrdersList Orders="@RecentOrders" OnOrderClick="@ShowOrderDetailsDialogAsync"/>
+            </ChildContent>
         </DashboardTile>
     </MudItem>
 </MudGrid>

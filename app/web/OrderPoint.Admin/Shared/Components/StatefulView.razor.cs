@@ -22,6 +22,9 @@ public sealed partial class StatefulView
     public bool Compact { get; set; }
 
     [Parameter]
+    public RenderFragment? LoadingContent { get; set; }
+
+    [Parameter]
     [EditorRequired]
     public RenderFragment ChildContent { get; set; } = null!;
 }

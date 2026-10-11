@@ -5,6 +5,9 @@ namespace OrderPoint.Admin.Shared.Components;
 
 public sealed partial class DataGrid<TItem>
 {
+    // 3 rows of 4 cards
+    private const int LoadingItemsCount = 12;
+
     [Parameter]
     [EditorRequired]
     public IReadOnlyList<TItem> Items { get; set; } = [];
@@ -100,6 +103,9 @@ public sealed partial class DataGrid<TItem>
     [Parameter]
     [EditorRequired]
     public string EmptyStateText { get; set; }
+
+    [Parameter]
+    public RenderFragment? LoadingTemplate { get; set; }
 
     private async Task OnSearchChangedAsync()
     {

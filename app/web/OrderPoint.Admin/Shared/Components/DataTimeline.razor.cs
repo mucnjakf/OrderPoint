@@ -6,6 +6,8 @@ namespace OrderPoint.Admin.Shared.Components;
 
 public sealed partial class DataTimeline<TItem>
 {
+    private const int LoadingItemsCount = 3;
+
     private const string TimelineStyle =
         "border-top: 1px solid var(--mud-palette-lines-default); " +
         "border-bottom: 1px solid var(--mud-palette-lines-default);";
@@ -96,6 +98,9 @@ public sealed partial class DataTimeline<TItem>
     [Parameter]
     [EditorRequired]
     public string EmptyStateText { get; set; }
+
+    [Parameter]
+    public RenderFragment? LoadingTemplate { get; set; }
 
     private TItem? HoveredItem { get; set; }
 

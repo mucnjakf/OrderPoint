@@ -36,6 +36,10 @@
                EmptyStateIcon="@Icons.Material.Filled.People"
                EmptyStateText="No bartenders found">
 
+    <LoadingTemplate>
+        <BartenderRowSkeleton/>
+    </LoadingTemplate>
+
     <FilterContent>
         <MudSelect @bind-Value="@SelectedStatus"
                    @bind-Value:after="@OnStatusChangedAsync"

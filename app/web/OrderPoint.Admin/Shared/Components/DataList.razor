@@ -45,44 +45,65 @@
     </MudStack>
 }
 
-<StatefulView IsLoading="@IsLoading"
-              ShowContent="@Items.Any()"
-              EmptyStateIcon="@EmptyStateIcon"
-              EmptyStateText="@EmptyStateText">
+@if (IsLoading && LoadingTemplate is not null)
+{
     <MudPaper Class="pa-5">
         <MudList T="string" ReadOnly="true">
-            @for (int i = 0; i < Items.Count; i++)
+            @for (int i = 0; i < LoadingItemsCount; i++)
             {
-                TItem item = Items[i];
-
                 <MudListItem>
-                    @RowTemplate(item)
+                    @LoadingTemplate
                 </MudListItem>
 
-                if (i < Items.Count - 1)
+                if (i < LoadingItemsCount - 1)
                 {
                     <MudDivider/>
                 }
             }
         </MudList>
     </MudPaper>
+}
+else
+{
+    <StatefulView IsLoading="@IsLoading"
+                  ShowContent="@Items.Any()"
+                  EmptyStateIcon="@EmptyStateIcon"
+                  EmptyStateText="@EmptyStateText">
+        <MudPaper Class="pa-5">
+            <MudList T="string" ReadOnly="true">
+                @for (int i = 0; i < Items.Count; i++)
+                {
+                    TItem item = Items[i];
 
-    @if (ShowControls && Pagination is not null && Pagination.TotalPages > 1)
-    {
-        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mt-3">
-            <MudText Typo="Typo.caption">
-                Showing @((Pagination.PageNumber - 1) * Pagination.PageSize + 1)
-                to @(Math.Min(Pagination.PageNumber * Pagination.PageSize, Pagination.TotalCount))
-                of @Pagination.TotalCount items
-            </MudText>
+                    <MudListItem>
+                        @RowTemplate(item)
+                    </MudListItem>
 
-            <MudPagination Count="@Pagination.TotalPages"
-                           Selected="@Pagination.PageNumber"
-                           SelectedChanged="@OnPageChanged"
-                           BoundaryCount="1"
-                           MiddleCount="3"
-                           ShowFirstButton="true"
-                           ShowLastButton="true"/>
-        </MudStack>
-    }
-</StatefulView>
+                    if (i < Items.Count - 1)
+                    {
+                        <MudDivider/>
+                    }
+                }
+            </MudList>
+        </MudPaper>
+
+        @if (ShowControls && Pagination is not null && Pagination.TotalPages > 1)
+        {
+            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mt-3">
+                <MudText Typo="Typo.caption">
+                    Showing @((Pagination.PageNumber - 1) * Pagination.PageSize + 1)
+                    to @(Math.Min(Pagination.PageNumber * Pagination.PageSize, Pagination.TotalCount))
+                    of @Pagination.TotalCount items
+                </MudText>
+
+                <MudPagination Count="@Pagination.TotalPages"
+                               Selected="@Pagination.PageNumber"
+                               SelectedChanged="@OnPageChanged"
+                               BoundaryCount="1"
+                               MiddleCount="3"
+                               ShowFirstButton="true"
+                               ShowLastButton="true"/>
+            </MudStack>
+        }
+    </StatefulView>
+}

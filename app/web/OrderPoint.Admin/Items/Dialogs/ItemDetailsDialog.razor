@@ -82,6 +82,10 @@
                   EmptyStateIcon="@Icons.Material.Filled.Receipt"
                   EmptyStateText="No orders found">
 
+            <LoadingTemplate>
+                <OrderRowSkeleton/>
+            </LoadingTemplate>
+
             <RowTemplate>
                 @{
                     OrderItemDto orderItem = GetOrderItem(context);

@@ -5,6 +5,8 @@ namespace OrderPoint.Admin.Shared.Components;
 
 public sealed partial class DataAccordion<TItem>
 {
+    private const int LoadingItemsCount = 3;
+
     [Parameter]
     [EditorRequired]
     public IReadOnlyList<TItem> Items { get; set; } = [];
@@ -106,6 +108,9 @@ public sealed partial class DataAccordion<TItem>
     [Parameter]
     [EditorRequired]
     public string EmptyStateText { get; set; }
+
+    [Parameter]
+    public RenderFragment? LoadingTemplate { get; set; }
 
     private TItem? HoveredItem { get; set; }
 

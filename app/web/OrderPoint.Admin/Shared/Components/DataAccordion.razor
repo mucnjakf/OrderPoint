@@ -42,85 +42,101 @@
     </MudButton>
 </MudStack>
 
-<StatefulView IsLoading="@IsLoading"
-              ShowContent="@Items.Any()"
-              EmptyStateIcon="@EmptyStateIcon"
-              EmptyStateText="@EmptyStateText">
-
+@if (IsLoading && LoadingTemplate is not null)
+{
     <MudExpansionPanels Elevation="1">
-        @foreach (TItem item in Items)
+        @for (int i = 0; i < LoadingItemsCount; i++)
         {
-            <MudExpansionPanel @key="@item"
-                               Style="@GetPanelStyle(item)"
-                               ExpandedChanged="@((bool isExpanded) => OnExpandedChanged(item, isExpanded))"
-                               @onmouseenter="@(() => HoveredItem = item)"
-                               @onmouseleave="@(() => HoveredItem = default)">
+            <MudExpansionPanel Disabled="true">
                 <TitleContent>
-                    @HeaderTemplate(item)
+                    @LoadingTemplate
                 </TitleContent>
-
-                <ChildContent>
-                    <div class="pt-4">
-                        @DetailsTemplate(item)
-                    </div>
-
-                    <MudDivider Class="mt-4"/>
-
-                    <MudStack Row="true" Justify="Justify.FlexEnd" Class="mt-3">
-                        @if (ActionsTemplate is not null)
-                        {
-                            @ActionsTemplate(item)
-                        }
-
-                        @if (OnDetailsClick.HasDelegate)
-                        {
-                            <MudTooltip Text="Details">
-                                <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye"
-                                               Color="Color.Primary"
-                                               Size="Size.Small"
-                                               OnClick="@(() => OnDetailsClickAsync(item))"/>
-                            </MudTooltip>
-                        }
-
-                        <MudTooltip Text="Edit">
-                            <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                           Color="Color.Secondary"
-                                           Size="Size.Small"
-                                           OnClick="@(() => OnUpdateClickAsync(item))"/>
-                        </MudTooltip>
-
-                        @if (OnDeleteClick.HasDelegate)
-                        {
-                            <MudTooltip Text="@GetDeleteButtonTooltipText(item)">
-                                <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                               Color="Color.Error"
-                                               Size="Size.Small"
-                                               Disabled="@IsDeleteButtonDisabled(item)"
-                                               OnClick="@(() => OnDeleteClickAsync(item))"/>
-                            </MudTooltip>
-                        }
-                    </MudStack>
-                </ChildContent>
             </MudExpansionPanel>
         }
     </MudExpansionPanels>
+}
+else
+{
+    <StatefulView IsLoading="@IsLoading"
+                  ShowContent="@Items.Any()"
+                  EmptyStateIcon="@EmptyStateIcon"
+                  EmptyStateText="@EmptyStateText">
 
-    @if (Pagination is not null && Pagination.TotalPages > 1)
-    {
-        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mt-3">
-            <MudText Typo="Typo.caption">
-                Showing @((Pagination.PageNumber - 1) * Pagination.PageSize + 1)
-                to @(Math.Min(Pagination.PageNumber * Pagination.PageSize, Pagination.TotalCount))
-                of @Pagination.TotalCount items
-            </MudText>
+        <MudExpansionPanels Elevation="1">
+            @foreach (TItem item in Items)
+            {
+                <MudExpansionPanel @key="@item"
+                                   Style="@GetPanelStyle(item)"
+                                   ExpandedChanged="@((bool isExpanded) => OnExpandedChanged(item, isExpanded))"
+                                   @onmouseenter="@(() => HoveredItem = item)"
+                                   @onmouseleave="@(() => HoveredItem = default)">
+                    <TitleContent>
+                        @HeaderTemplate(item)
+                    </TitleContent>
 
-            <MudPagination Count="@Pagination.TotalPages"
-                           Selected="@Pagination.PageNumber"
-                           SelectedChanged="@OnPageChanged"
-                           BoundaryCount="1"
-                           MiddleCount="3"
-                           ShowFirstButton="true"
-                           ShowLastButton="true"/>
-        </MudStack>
-    }
-</StatefulView>
+                    <ChildContent>
+                        <div class="pt-4">
+                            @DetailsTemplate(item)
+                        </div>
+
+                        <MudDivider Class="mt-4"/>
+
+                        <MudStack Row="true" Justify="Justify.FlexEnd" Class="mt-3">
+                            @if (ActionsTemplate is not null)
+                            {
+                                @ActionsTemplate(item)
+                            }
+
+                            @if (OnDetailsClick.HasDelegate)
+                            {
+                                <MudTooltip Text="Details">
+                                    <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye"
+                                                   Color="Color.Primary"
+                                                   Size="Size.Small"
+                                                   OnClick="@(() => OnDetailsClickAsync(item))"/>
+                                </MudTooltip>
+                            }
+
+                            <MudTooltip Text="Edit">
+                                <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                               Color="Color.Secondary"
+                                               Size="Size.Small"
+                                               OnClick="@(() => OnUpdateClickAsync(item))"/>
+                            </MudTooltip>
+
+                            @if (OnDeleteClick.HasDelegate)
+                            {
+                                <MudTooltip Text="@GetDeleteButtonTooltipText(item)">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                                   Color="Color.Error"
+                                                   Size="Size.Small"
+                                                   Disabled="@IsDeleteButtonDisabled(item)"
+                                                   OnClick="@(() => OnDeleteClickAsync(item))"/>
+                                </MudTooltip>
+                            }
+                        </MudStack>
+                    </ChildContent>
+                </MudExpansionPanel>
+            }
+        </MudExpansionPanels>
+
+        @if (Pagination is not null && Pagination.TotalPages > 1)
+        {
+            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mt-3">
+                <MudText Typo="Typo.caption">
+                    Showing @((Pagination.PageNumber - 1) * Pagination.PageSize + 1)
+                    to @(Math.Min(Pagination.PageNumber * Pagination.PageSize, Pagination.TotalCount))
+                    of @Pagination.TotalCount items
+                </MudText>
+
+                <MudPagination Count="@Pagination.TotalPages"
+                               Selected="@Pagination.PageNumber"
+                               SelectedChanged="@OnPageChanged"
+                               BoundaryCount="1"
+                               MiddleCount="3"
+                               ShowFirstButton="true"
+                               ShowLastButton="true"/>
+            </MudStack>
+        }
+    </StatefulView>
+}

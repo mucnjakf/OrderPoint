@@ -44,66 +44,93 @@
     </MudButton>
 </MudStack>
 
-<StatefulView IsLoading="@IsLoading"
-              ShowContent="@Items.Any()"
-              EmptyStateIcon="@EmptyStateIcon"
-              EmptyStateText="@EmptyStateText">
-
+@if (IsLoading && LoadingTemplate is not null)
+{
     <MudPaper Style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; background-color: transparent"
               Elevation="0">
-        @foreach (TItem item in Items)
+        @for (int i = 0; i < LoadingItemsCount; i++)
         {
             <MudCard>
-                @RowTemplate(item)
+                @LoadingTemplate
 
                 <MudCardActions Class="d-flex justify-center pa-4"
                                 Style="border-top: 1px solid var(--mud-palette-lines-default)">
-                    <MudTooltip Text="Details">
-                        <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye"
-                                       Color="Color.Primary"
-                                       Size="Size.Small"
-                                       OnClick="@(() => OnDetailsClickAsync(item))"/>
-                    </MudTooltip>
+                    <MudSkeleton SkeletonType="SkeletonType.Circle" Width="30px" Height="30px"/>
 
-                    <MudTooltip Text="Edit">
-                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                       Color="Color.Secondary"
-                                       Size="Size.Small"
-                                       Class="mx-3"
-                                       OnClick="@(() => OnUpdateClickAsync(item))"/>
-                    </MudTooltip>
+                    <MudSkeleton SkeletonType="SkeletonType.Circle" Width="30px" Height="30px" Class="mx-3"/>
 
                     @if (OnDeleteClick.HasDelegate)
                     {
-                        <MudTooltip Text="@GetDeleteButtonTooltipText(item)">
-                            <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                           Color="Color.Error"
-                                           Size="Size.Small"
-                                           Disabled="@IsDeleteButtonDisabled(item)"
-                                           OnClick="@(() => OnDeleteClickAsync(item))"/>
-                        </MudTooltip>
+                        <MudSkeleton SkeletonType="SkeletonType.Circle" Width="30px" Height="30px"/>
                     }
                 </MudCardActions>
             </MudCard>
         }
     </MudPaper>
+}
+else
+{
+    <StatefulView IsLoading="@IsLoading"
+                  ShowContent="@Items.Any()"
+                  EmptyStateIcon="@EmptyStateIcon"
+                  EmptyStateText="@EmptyStateText">
 
-    @if (Pagination is not null && Pagination.TotalPages > 1)
-    {
-        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mt-3">
-            <MudText Typo="Typo.caption">
-                Showing @((Pagination.PageNumber - 1) * Pagination.PageSize + 1)
-                to @(Math.Min(Pagination.PageNumber * Pagination.PageSize, Pagination.TotalCount))
-                of @Pagination.TotalCount items
-            </MudText>
+        <MudPaper Style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; background-color: transparent"
+                  Elevation="0">
+            @foreach (TItem item in Items)
+            {
+                <MudCard>
+                    @RowTemplate(item)
 
-            <MudPagination Count="@Pagination.TotalPages"
-                           Selected="@Pagination.PageNumber"
-                           SelectedChanged="@OnPageChanged"
-                           BoundaryCount="1"
-                           MiddleCount="3"
-                           ShowFirstButton="true"
-                           ShowLastButton="true"/>
-        </MudStack>
-    }
-</StatefulView>
+                    <MudCardActions Class="d-flex justify-center pa-4"
+                                    Style="border-top: 1px solid var(--mud-palette-lines-default)">
+                        <MudTooltip Text="Details">
+                            <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye"
+                                           Color="Color.Primary"
+                                           Size="Size.Small"
+                                           OnClick="@(() => OnDetailsClickAsync(item))"/>
+                        </MudTooltip>
+
+                        <MudTooltip Text="Edit">
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                           Color="Color.Secondary"
+                                           Size="Size.Small"
+                                           Class="mx-3"
+                                           OnClick="@(() => OnUpdateClickAsync(item))"/>
+                        </MudTooltip>
+
+                        @if (OnDeleteClick.HasDelegate)
+                        {
+                            <MudTooltip Text="@GetDeleteButtonTooltipText(item)">
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                               Color="Color.Error"
+                                               Size="Size.Small"
+                                               Disabled="@IsDeleteButtonDisabled(item)"
+                                               OnClick="@(() => OnDeleteClickAsync(item))"/>
+                            </MudTooltip>
+                        }
+                    </MudCardActions>
+                </MudCard>
+            }
+        </MudPaper>
+
+        @if (Pagination is not null && Pagination.TotalPages > 1)
+        {
+            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mt-3">
+                <MudText Typo="Typo.caption">
+                    Showing @((Pagination.PageNumber - 1) * Pagination.PageSize + 1)
+                    to @(Math.Min(Pagination.PageNumber * Pagination.PageSize, Pagination.TotalCount))
+                    of @Pagination.TotalCount items
+                </MudText>
+
+                <MudPagination Count="@Pagination.TotalPages"
+                               Selected="@Pagination.PageNumber"
+                               SelectedChanged="@OnPageChanged"
+                               BoundaryCount="1"
+                               MiddleCount="3"
+                               ShowFirstButton="true"
+                               ShowLastButton="true"/>
+            </MudStack>
+        }
+    </StatefulView>
+}

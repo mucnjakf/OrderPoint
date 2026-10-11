@@ -1,0 +1,8 @@
+﻿<MudAvatarGroup Spacing="3" Outlined="true" Class="my-auto">
+    @for (int i = 0; i < AvatarsCount; i++)
+    {
+        <MudAvatar Style="background-color: var(--mud-palette-surface);">
+            <MudSkeleton SkeletonType="SkeletonType.Circle" Width="40px" Height="40px"/>
+        </MudAvatar>
+    }
+</MudAvatarGroup>

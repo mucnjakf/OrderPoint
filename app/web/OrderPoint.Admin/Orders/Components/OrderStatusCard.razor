@@ -6,11 +6,17 @@
                Height="@CardHeight"
                IsSelected="@IsSelected"
                OnClick="@OnCardClickAsync">
-    <MudText Typo="Typo.h4">
-        @Count
-    </MudText>
+    <LoadingContent>
+        <OrderStatusCardSkeleton/>
+    </LoadingContent>
 
-    <MudText Typo="Typo.caption">
-        @(Count == 1 ? "order" : "orders")
-    </MudText>
+    <ChildContent>
+        <MudText Typo="Typo.h4">
+            @Count
+        </MudText>
+
+        <MudText Typo="Typo.caption">
+            @(Count == 1 ? "order" : "orders")
+        </MudText>
+    </ChildContent>
 </HighlightCard>

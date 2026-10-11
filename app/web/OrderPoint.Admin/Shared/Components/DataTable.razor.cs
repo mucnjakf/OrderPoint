@@ -5,6 +5,8 @@ namespace OrderPoint.Admin.Shared.Components;
 
 public sealed partial class DataTable<TItem>
 {
+    private const int LoadingItemsCount = 3;
+
     [Parameter]
     [EditorRequired]
     public IReadOnlyList<TItem> Items { get; set; } = [];
@@ -104,6 +106,11 @@ public sealed partial class DataTable<TItem>
     [Parameter]
     [EditorRequired]
     public string EmptyStateText { get; set; }
+
+    [Parameter]
+    public RenderFragment? LoadingTemplate { get; set; }
+
+    private IEnumerable<int> LoadingRows => Enumerable.Range(0, LoadingItemsCount);
 
     private async Task OnSearchChangedAsync()
     {

@@ -5,7 +5,7 @@ namespace OrderPoint.Admin.Shared.Components;
 
 public sealed partial class HighlightCard
 {
-    private const int DefaultHeight = 250;
+    internal const int DefaultHeight = 250;
 
     [Parameter]
     [EditorRequired]
@@ -43,6 +43,9 @@ public sealed partial class HighlightCard
     [Parameter]
     [EditorRequired]
     public RenderFragment ChildContent { get; set; } = null!;
+
+    [Parameter]
+    public RenderFragment? LoadingContent { get; set; }
 
     private bool IsHovered { get; set; }
 

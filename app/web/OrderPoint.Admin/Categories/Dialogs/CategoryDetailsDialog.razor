@@ -59,6 +59,10 @@
                   EmptyStateIcon="@Icons.Material.Filled.MenuBook"
                   EmptyStateText="No items found">
 
+            <LoadingTemplate>
+                <CategoryItemRowSkeleton/>
+            </LoadingTemplate>
+
             <RowTemplate>
                 <MudStack Row="true" Class="d-flex justify-space-between">
                     <MudStack Row="true" AlignItems="AlignItems.Center">

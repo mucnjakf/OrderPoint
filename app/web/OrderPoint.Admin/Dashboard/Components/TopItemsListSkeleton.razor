@@ -1,0 +1,28 @@
+﻿<MudStack Spacing="2">
+    @for (int i = 0; i < RowsCount; i++)
+    {
+        <MudPaper Outlined="true" Class="pa-3">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="40px" Height="40px"/>
+
+                <MudStack Spacing="1" Class="flex-1">
+                    <MudStack Row="true" Justify="Justify.SpaceBetween">
+                        <MudText Typo="Typo.body2">
+                            <MudSkeleton Width="110px"/>
+                        </MudText>
+
+                        <MudText Typo="Typo.body2">
+                            <MudSkeleton Width="50px"/>
+                        </MudText>
+                    </MudStack>
+
+                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="4px" Style="border-radius: 2px;"/>
+
+                    <MudText Typo="Typo.caption">
+                        <MudSkeleton Width="60px"/>
+                    </MudText>
+                </MudStack>
+            </MudStack>
+        </MudPaper>
+    }
+</MudStack>

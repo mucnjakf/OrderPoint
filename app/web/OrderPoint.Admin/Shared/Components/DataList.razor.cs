@@ -5,6 +5,8 @@ namespace OrderPoint.Admin.Shared.Components;
 
 public sealed partial class DataList<TItem>
 {
+    private const int LoadingItemsCount = 3;
+
     [Parameter]
     [EditorRequired]
     public IReadOnlyList<TItem> Items { get; set; } = [];
@@ -78,6 +80,9 @@ public sealed partial class DataList<TItem>
     [Parameter]
     [EditorRequired]
     public string EmptyStateText { get; set; }
+
+    [Parameter]
+    public RenderFragment? LoadingTemplate { get; set; }
 
     [Parameter]
     public bool ShowControls { get; set; } = true;

@@ -8,19 +8,25 @@
                           EmptyStateIcon="@Icons.Material.Filled.Groups"
                           EmptyStateText="No active bartenders"
                           Compact="true">
-                <MudAvatarGroup Spacing="3" Outlined="true" Class="my-auto">
-                    @foreach (BartenderDto bartender in ActiveBartenders)
-                    {
-                        <BartenderAvatar FirstName="@bartender.FirstName"
-                                         LastName="@bartender.LastName"
-                                         ImageUrl="@bartender.ImageUrl"/>
-                    }
+                <LoadingContent>
+                    <TeamStripActiveSkeleton/>
+                </LoadingContent>
 
-                    @if (HiddenActiveCount > 0)
-                    {
-                        <MudAvatar>+@HiddenActiveCount</MudAvatar>
-                    }
-                </MudAvatarGroup>
+                <ChildContent>
+                    <MudAvatarGroup Spacing="3" Outlined="true" Class="my-auto">
+                        @foreach (BartenderDto bartender in ActiveBartenders)
+                        {
+                            <BartenderAvatar FirstName="@bartender.FirstName"
+                                             LastName="@bartender.LastName"
+                                             ImageUrl="@bartender.ImageUrl"/>
+                        }
+
+                        @if (HiddenActiveCount > 0)
+                        {
+                            <MudAvatar>+@HiddenActiveCount</MudAvatar>
+                        }
+                    </MudAvatarGroup>
+                </ChildContent>
             </StatefulView>
         </MudStack>
     </MudPaper>
@@ -34,19 +40,25 @@
                           EmptyStateIcon="@Icons.Material.Filled.Balance"
                           EmptyStateText="No bartenders yet"
                           Compact="true">
-                <MudText Typo="Typo.body1">
-                    @ActiveCount active · @InactiveCount inactive
-                </MudText>
+                <LoadingContent>
+                    <TeamStripBalanceSkeleton/>
+                </LoadingContent>
 
-                <MudProgressLinear Color="Color.Success"
-                                   Value="@ActivePercentage"
-                                   Rounded="true"
-                                   Size="Size.Large"
-                                   Style="width: 100%;"/>
+                <ChildContent>
+                    <MudText Typo="Typo.body1">
+                        @ActiveCount active · @InactiveCount inactive
+                    </MudText>
 
-                <MudText Typo="Typo.caption">
-                    @($"{ActivePercentage:0}% active")
-                </MudText>
+                    <MudProgressLinear Color="Color.Success"
+                                       Value="@ActivePercentage"
+                                       Rounded="true"
+                                       Size="Size.Large"
+                                       Style="width: 100%;"/>
+
+                    <MudText Typo="Typo.caption">
+                        @($"{ActivePercentage:0}% active")
+                    </MudText>
+                </ChildContent>
             </StatefulView>
         </MudStack>
     </MudPaper>
@@ -60,24 +72,30 @@
                           EmptyStateIcon="@Icons.Material.Filled.PersonAdd"
                           EmptyStateText="No bartenders yet"
                           Compact="true">
-                @if (NewestBartender is not null)
-                {
-                    <MudStack Row="true" AlignItems="AlignItems.Center" Class="my-auto">
-                        <BartenderAvatar FirstName="@NewestBartender.FirstName"
-                                         LastName="@NewestBartender.LastName"
-                                         ImageUrl="@NewestBartender.ImageUrl"/>
+                <LoadingContent>
+                    <TeamStripNewestSkeleton/>
+                </LoadingContent>
 
-                        <MudStack Spacing="0">
-                            <MudText Typo="Typo.body1">
-                                @NewestBartender.FirstName @NewestBartender.LastName
-                            </MudText>
+                <ChildContent>
+                    @if (NewestBartender is not null)
+                    {
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Class="my-auto">
+                            <BartenderAvatar FirstName="@NewestBartender.FirstName"
+                                             LastName="@NewestBartender.LastName"
+                                             ImageUrl="@NewestBartender.ImageUrl"/>
 
-                            <MudText Typo="Typo.caption">
-                                Joined @NewestBartender.CreatedAtUtc.ToRelativeTime()
-                            </MudText>
+                            <MudStack Spacing="0">
+                                <MudText Typo="Typo.body1">
+                                    @NewestBartender.FirstName @NewestBartender.LastName
+                                </MudText>
+
+                                <MudText Typo="Typo.caption">
+                                    Joined @NewestBartender.CreatedAtUtc.ToRelativeTime()
+                                </MudText>
+                            </MudStack>
                         </MudStack>
-                    </MudStack>
-                }
+                    }
+                </ChildContent>
             </StatefulView>
         </MudStack>
     </MudPaper>

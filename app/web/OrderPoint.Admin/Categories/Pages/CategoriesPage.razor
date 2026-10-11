@@ -8,14 +8,20 @@
               ShowContent="@TopCategories.Any()"
               EmptyStateIcon="@Icons.Material.Filled.Category"
               EmptyStateText="No categories found">
-    <MudStack Row="true" Spacing="3" Class="mb-5">
-        @for (int i = 0; i < TopCategories.Count; i++)
-        {
-            <TopCategoryCard Rank="@(i + 1)"
-                             Category="@TopCategories[i]"
-                             OnClick="@ShowCategoryDetailsDialogAsync"/>
-        }
-    </MudStack>
+    <LoadingContent>
+        <TopCategoriesSkeleton Count="@TopCategoriesCount"/>
+    </LoadingContent>
+
+    <ChildContent>
+        <MudStack Row="true" Spacing="3" Class="mb-5">
+            @for (int i = 0; i < TopCategories.Count; i++)
+            {
+                <TopCategoryCard Rank="@(i + 1)"
+                                 Category="@TopCategories[i]"
+                                 OnClick="@ShowCategoryDetailsDialogAsync"/>
+            }
+        </MudStack>
+    </ChildContent>
 </StatefulView>
 
 <DataTable TItem="CategoryDto"
@@ -42,6 +48,10 @@
            OnDeleteClick="@ShowDeleteCategoryDialogAsync"
            EmptyStateIcon="@Icons.Material.Filled.Category"
            EmptyStateText="No categories found">
+
+    <LoadingTemplate>
+        <CategoryRowSkeleton/>
+    </LoadingTemplate>
 
     <FilterContent>
         <MudSelect @bind-Value="@SelectedStatus"

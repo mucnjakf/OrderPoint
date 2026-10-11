@@ -65,6 +65,10 @@
           EmptyStateIcon="@Icons.Material.Filled.MenuBook"
           EmptyStateText="No items found">
 
+    <LoadingTemplate>
+        <ItemCardSkeleton/>
+    </LoadingTemplate>
+
     <FilterContent>
         <MudSelect @bind-Value="@SelectedStatus"
                    @bind-Value:after="@OnStatusChangedAsync"

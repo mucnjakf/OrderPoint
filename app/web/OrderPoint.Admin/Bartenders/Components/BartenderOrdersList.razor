@@ -17,6 +17,10 @@
           EmptyStateText="No orders found"
           ShowControls="@ShowControls">
 
+    <LoadingTemplate>
+        <OrderRowSkeleton/>
+    </LoadingTemplate>
+
     <RowTemplate>
         <MudStack Row="true" Class="d-flex justify-space-between">
             <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
