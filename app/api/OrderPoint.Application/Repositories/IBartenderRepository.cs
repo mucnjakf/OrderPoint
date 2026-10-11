@@ -14,6 +14,8 @@ public interface IBartenderRepository
         BartenderSortBy? sortBy = null,
         CancellationToken cancellationToken = default);
 
+    Task<IReadOnlyList<Bartender>> SearchAsync(string searchQuery, CancellationToken cancellationToken = default);
+
     Task<Bartender?> GetAsync(Guid id, CancellationToken cancellationToken = default);
 
     Task CreateAsync(Bartender bartender, CancellationToken cancellationToken = default);

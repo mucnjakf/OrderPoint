@@ -37,26 +37,14 @@
                         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
                             <BartenderAvatar FirstName="@Order.Bartender?.FirstName"
                                              LastName="@Order.Bartender?.LastName"
-                                             ImageUrl="@Order.Bartender?.ImageUrl"/>
+                                             ImageUrl="@Order.Bartender?.ImageUrl"
+                                             Size="Size.Small"/>
 
-                            @if (Order.Bartender is null)
-                            {
-                                <MudText Typo="Typo.body1">
-                                    Unassigned
-                                </MudText>
-                            }
-                            else
-                            {
-                                <MudStack Spacing="0">
-                                    <MudText Typo="Typo.body1">
-                                        @Order.Bartender.FirstName @Order.Bartender.LastName
-                                    </MudText>
-
-                                    <MudText Typo="Typo.caption">
-                                        @Order.Bartender.Email
-                                    </MudText>
-                                </MudStack>
-                            }
+                            <MudText Typo="Typo.body1">
+                                @(Order.Bartender is null
+                                    ? "Unassigned"
+                                    : $"{Order.Bartender.FirstName} {Order.Bartender.LastName}")
+                            </MudText>
                         </MudStack>
                     </TextDisplayRow>
 
@@ -67,15 +55,17 @@
             </MudItem>
 
             <MudItem xs="12" md="6">
-                <MudPaper Class="pa-5" Style="height: 100%">
+                <MudPaper Class="px-5" Style="height: 100%">
                     <MudTimeline TimelineOrientation="TimelineOrientation.Vertical"
-                                 TimelinePosition="TimelinePosition.Start">
+                                 TimelinePosition="TimelinePosition.Start"
+                                 Style="height: 100%">
                         @foreach ((OrderStatus status, DateTimeOffset? reachedAtUtc) in TimelineSteps)
                         {
                             <MudTimelineItem Color="@(reachedAtUtc is null ? Color.Default : status.GetColor())"
                                              Icon="@status.GetIcon()"
                                              Variant="@(reachedAtUtc is null ? Variant.Outlined : Variant.Filled)"
-                                             Size="Size.Medium">
+                                             Size="Size.Medium"
+                                             Elevation="0">
                                 <ItemContent>
                                     <MudText Typo="Typo.body1">
                                         @status.ToString()

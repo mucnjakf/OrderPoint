@@ -73,6 +73,8 @@ public sealed partial class ItemsPage
 
     private CategoryDto? SelectedCategory { get; set; }
 
+    private MudAutocomplete<CategoryDto> CategoryAutocomplete { get; set; } = null!;
+
     private ItemStatus? SelectedStatus { get; set; }
 
     private bool IsLoading { get; set; } = true;
@@ -200,6 +202,11 @@ public sealed partial class ItemsPage
             cancellationToken);
 
         return categories ?? [];
+    }
+
+    private async Task OnCategoryClearedAsync()
+    {
+        await CategoryAutocomplete.OpenMenuAsync();
     }
 
     private async Task ShowCreateItemDialogAsync()

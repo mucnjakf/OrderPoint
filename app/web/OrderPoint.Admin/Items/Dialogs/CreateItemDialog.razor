@@ -65,7 +65,8 @@
                     </MudStack>
                     <MudGrid Spacing="3">
                         <MudItem xs="6">
-                            <MudAutocomplete @bind-Value="@SelectedCategory"
+                            <MudAutocomplete @ref="@CategoryAutocomplete"
+                                             @bind-Value="@SelectedCategory"
                                              @bind-Value:after="@OnSelectedCategoryChanged"
                                              T="CategoryDto"
                                              SearchFunc="@OnCategorySearchAsync"
@@ -73,6 +74,7 @@
                                              HelperText="The category this item belongs to."
                                              Label="Category"
                                              Clearable="true"
+                                             OnClearButtonClick="@OnCategoryClearedAsync"
                                              ShowProgressIndicator="true"
                                              ToStringFunc="@(category => category?.Name)"
                                              Error="@(IsFormSubmitted && Request.CategoryId == Guid.Empty)"

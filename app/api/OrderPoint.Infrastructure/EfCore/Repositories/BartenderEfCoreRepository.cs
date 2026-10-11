@@ -33,6 +33,19 @@ internal sealed class BartenderEfCoreRepository(ApplicationDbContext dbContext) 
         return (bartenders.AsReadOnly(), totalCount);
     }
 
+    public async Task<IReadOnlyList<Bartender>> SearchAsync(
+        string searchQuery,
+        CancellationToken cancellationToken = default)
+    {
+        IQueryable<Bartender> query = dbContext.Bartenders
+            .AsNoTracking();
+
+        query = SearchBartenders(query, searchQuery);
+        query = SortBartenders(query, BartenderSortBy.NameAsc);
+
+        return await query.ToListAsync(cancellationToken);
+    }
+
     public async Task<Bartender?> GetAsync(Guid id, CancellationToken cancellationToken = default)
         => await dbContext.Bartenders.SingleOrDefaultAsync(bartender => bartender.Id == id, cancellationToken);
 

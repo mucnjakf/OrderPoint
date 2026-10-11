@@ -30,6 +30,41 @@
               EmptyStateIcon="@Icons.Material.Filled.Receipt"
               EmptyStateText="No orders found">
 
+    <FilterContent>
+        <MudAutocomplete @ref="@BartenderAutocomplete"
+                         @bind-Value="@SelectedBartender"
+                         @bind-Value:after="@OnBartenderChangedAsync"
+                         T="BartenderDto"
+                         SearchFunc="@OnBartenderSearchAsync"
+                         Variant="Variant.Outlined"
+                         Label="Filter by bartender"
+                         Clearable="true"
+                         OnClearButtonClick="@OnBartenderClearedAsync"
+                         ShowProgressIndicator="true"
+                         ToStringFunc="@(bartender => bartender is null
+                                             ? null
+                                             : $"{bartender.FirstName} {bartender.LastName}")">
+            <ItemTemplate Context="bartender">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                    <BartenderAvatar FirstName="@bartender.FirstName"
+                                     LastName="@bartender.LastName"
+                                     ImageUrl="@bartender.ImageUrl"
+                                     Size="Size.Small"/>
+
+                    <MudText Typo="Typo.body1">
+                        @bartender.FirstName @bartender.LastName
+                    </MudText>
+                </MudStack>
+            </ItemTemplate>
+
+            <NoItemsTemplate>
+                <MudText Align="Align.Center" Class="px-3 py-1">
+                    No bartenders found
+                </MudText>
+            </NoItemsTemplate>
+        </MudAutocomplete>
+    </FilterContent>
+
     <ItemTemplate>
         <MudStack Row="true" AlignItems="AlignItems.Center">
             <MudText Typo="Typo.h6">

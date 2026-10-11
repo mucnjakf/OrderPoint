@@ -3,6 +3,7 @@ using OrderPoint.Admin.Bartenders.Api.Requests;
 using OrderPoint.Admin.Bartenders.Api.Responses;
 using OrderPoint.Admin.Bartenders.Dtos;
 using OrderPoint.Admin.Bartenders.Enumerations;
+using OrderPoint.Admin.Bartenders.Sorting;
 using OrderPoint.Admin.Shared.Dtos;
 using OrderPoint.Admin.Shared.Errors;
 
@@ -10,6 +11,8 @@ namespace OrderPoint.Admin.Bartenders.Api;
 
 internal sealed class BartenderApiClient(HttpClient httpClient)
 {
+    private const int DefaultSearchResultsCount = 5;
+
     private const string ImageFormFieldName = "image";
 
     internal async Task<PaginationDto<BartenderDto>> GetBartendersAsync(
@@ -44,6 +47,37 @@ internal sealed class BartenderApiClient(HttpClient httpClient)
             ?? throw new InvalidOperationException($"Unable to parse {nameof(GetBartendersResponse)}");
 
         return result.Data;
+    }
+
+    internal async Task<IReadOnlyList<BartenderDto>> SearchBartendersAsync(
+        string? searchQuery,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(searchQuery))
+        {
+            PaginationDto<BartenderDto> result = await GetBartendersAsync(
+                1,
+                DefaultSearchResultsCount,
+                nameof(BartenderSortBy.NameAsc),
+                cancellationToken: cancellationToken);
+
+            return result.Items;
+        }
+
+        HttpResponseMessage response = await httpClient.GetAsync(
+            $"api/bartenders/search?searchQuery={Uri.EscapeDataString(searchQuery)}",
+            cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+
+        SearchBartendersResponse searchResult =
+            await response.Content.ReadFromJsonAsync<SearchBartendersResponse>(cancellationToken)
+            ?? throw new InvalidOperationException($"Unable to parse {nameof(SearchBartendersResponse)}");
+
+        return searchResult.Data;
     }
 
     internal async Task<BartenderDto> GetBartenderAsync(Guid id, CancellationToken cancellationToken = default)

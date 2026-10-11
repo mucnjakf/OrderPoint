@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using OrderPoint.Admin.Bartenders.Api;
+using OrderPoint.Admin.Bartenders.Dtos;
 using OrderPoint.Admin.Orders.Api;
 using OrderPoint.Admin.Orders.Dialogs;
 using OrderPoint.Admin.Orders.Dtos;
@@ -26,6 +28,9 @@ public sealed partial class OrdersPage
     [Inject]
     private OrderApiClient OrderApiClient { get; set; } = null!;
 
+    [Inject]
+    private BartenderApiClient BartenderApiClient { get; set; } = null!;
+
     private List<BreadcrumbItem> Breadcrumbs { get; set; } =
     [
         new("Dashboard", href: "/", icon: Icons.Material.Filled.Dashboard),
@@ -45,6 +50,10 @@ public sealed partial class OrdersPage
     private string? SearchQuery { get; set; }
 
     private OrderStatus? SelectedStatus { get; set; }
+
+    private BartenderDto? SelectedBartender { get; set; }
+
+    private MudAutocomplete<BartenderDto> BartenderAutocomplete { get; set; } = null!;
 
     private bool IsLoading { get; set; } = true;
 
@@ -69,7 +78,8 @@ public sealed partial class OrdersPage
                 pageNumber: 1,
                 pageSize: 1,
                 nameof(OrderSortBy.CreatedAtUtcDesc),
-                status: status));
+                status: status,
+                bartenderId: SelectedBartender?.Id));
 
         StatusCounts[status] = pagination?.TotalCount ?? 0;
 
@@ -87,7 +97,8 @@ public sealed partial class OrdersPage
             PageSize,
             SelectedSortBy,
             SearchQuery,
-            SelectedStatus));
+            SelectedStatus,
+            bartenderId: SelectedBartender?.Id));
 
         Orders = Pagination?.Items ?? [];
 
@@ -113,9 +124,32 @@ public sealed partial class OrdersPage
         await GetOrdersAsync(pageNumber: 1);
     }
 
+    private async Task OnBartenderChangedAsync()
+    {
+        await Task.WhenAll(
+            GetStatusCountsAsync(),
+            GetOrdersAsync(pageNumber: 1));
+    }
+
     private async Task OnPageChangedAsync(int pageNumber)
     {
         await GetOrdersAsync(pageNumber);
+    }
+
+    private async Task<IEnumerable<BartenderDto>> OnBartenderSearchAsync(
+        string? value,
+        CancellationToken cancellationToken)
+    {
+        IReadOnlyList<BartenderDto>? bartenders = await ApiService.ExecuteAsync(
+            () => BartenderApiClient.SearchBartendersAsync(value, cancellationToken),
+            cancellationToken);
+
+        return bartenders ?? [];
+    }
+
+    private async Task OnBartenderClearedAsync()
+    {
+        await BartenderAutocomplete.OpenMenuAsync();
     }
 
     private async Task ShowOrderDetailsDialogAsync(OrderDto order)

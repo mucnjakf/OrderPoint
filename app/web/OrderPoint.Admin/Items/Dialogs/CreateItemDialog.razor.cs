@@ -29,6 +29,8 @@ public sealed partial class CreateItemDialog
 
     private CategoryDto? SelectedCategory { get; set; }
 
+    private MudAutocomplete<CategoryDto> CategoryAutocomplete { get; set; } = null!;
+
     private bool IsPreviewActive =>
         Request.Status == ItemStatus.Active && SelectedCategory?.Status != CategoryStatus.Inactive;
 
@@ -54,6 +56,11 @@ public sealed partial class CreateItemDialog
             cancellationToken);
 
         return categories ?? [];
+    }
+
+    private async Task OnCategoryClearedAsync()
+    {
+        await CategoryAutocomplete.OpenMenuAsync();
     }
 
     private void OnSelectedCategoryChanged()

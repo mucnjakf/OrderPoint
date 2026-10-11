@@ -71,6 +71,9 @@ public sealed partial class DataTimeline<TItem>
     public Func<string, string> GetSortByIcon { get; set; }
 
     [Parameter]
+    public RenderFragment? FilterContent { get; set; }
+
+    [Parameter]
     [EditorRequired]
     public Func<TItem, Color> GetItemColor { get; set; }
 

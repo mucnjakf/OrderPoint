@@ -88,13 +88,15 @@
             }
         </MudSelect>
 
-        <MudAutocomplete @bind-Value="@SelectedCategory"
+        <MudAutocomplete @ref="@CategoryAutocomplete"
+                         @bind-Value="@SelectedCategory"
                          @bind-Value:after="@OnCategoryChangedAsync"
                          T="CategoryDto"
                          SearchFunc="@OnCategorySearchAsync"
                          Variant="Variant.Outlined"
                          Label="Filter by category"
                          Clearable="true"
+                         OnClearButtonClick="@OnCategoryClearedAsync"
                          ShowProgressIndicator="true"
                          Class="mt-0"
                          ToStringFunc="@(category => category?.Name)">
