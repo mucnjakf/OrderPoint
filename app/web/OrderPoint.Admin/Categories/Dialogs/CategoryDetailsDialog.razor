@@ -108,7 +108,7 @@
                                            Color="Color.Error"
                                            Size="Size.Small"
                                            Disabled="@(context.OrdersCount > 0)"
-                                           OnClick="@(() => ShowDeleteItemDialogAsync(context.Id, context.Name))"/>
+                                           OnClick="@(() => ShowDeleteItemDialogAsync(context))"/>
                         </MudTooltip>
                     </MudStack>
                 </MudStack>

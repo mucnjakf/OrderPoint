@@ -320,7 +320,7 @@ public sealed partial class BartendersPage
 
         var parameters = new DialogParameters<DeleteBartenderDialog>
         {
-            { dialog => dialog.BartenderName, bartenderName }
+            { dialog => dialog.Bartender, bartender }
         };
 
         var options = new DialogOptions

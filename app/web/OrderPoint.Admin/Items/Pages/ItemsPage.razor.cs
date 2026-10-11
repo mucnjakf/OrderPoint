@@ -323,11 +323,11 @@ public sealed partial class ItemsPage
         }
     }
 
-    private async Task ShowDeleteItemDialogAsync(Guid id, string itemName)
+    private async Task ShowDeleteItemDialogAsync(ItemDto item)
     {
         var parameters = new DialogParameters<DeleteItemDialog>
         {
-            { dialog => dialog.ItemName, itemName }
+            { dialog => dialog.Item, item }
         };
 
         var options = new DialogOptions
@@ -347,8 +347,8 @@ public sealed partial class ItemsPage
         }
 
         bool isSuccess = await ApiService.ExecuteAsync(
-            () => ItemApiClient.DeleteItemAsync(id),
-            $"Item {itemName} deleted successfully");
+            () => ItemApiClient.DeleteItemAsync(item.Id),
+            $"Item {item.Name} deleted successfully");
 
         if (isSuccess)
         {

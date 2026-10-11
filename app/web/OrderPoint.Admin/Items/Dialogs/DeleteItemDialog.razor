@@ -7,17 +7,65 @@
     </TitleContent>
 
     <DialogContent>
-        <MudStack Class="mb-3">
-            <MudAlert Severity="Severity.Error" Variant="Variant.Text" Dense="true" Class="mb-3">
-                <MudText Typo="Typo.body2">
-                    This action cannot be undone.
-                </MudText>
-            </MudAlert>
-
-            <MudText Typo="Typo.body1">
-                @($"Are you sure you want to delete {ItemName}?")
+        <MudAlert Severity="Severity.Error" Variant="Variant.Text" Dense="true" Class="mb-4">
+            <MudText Typo="Typo.body2">
+                This action cannot be undone.
             </MudText>
-        </MudStack>
+        </MudAlert>
+
+        <MudPaper Outlined="true" Class="pa-4">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="4">
+                <MudImage Src="@(Item.ImageUrl ?? "images/image-placeholder.svg")"
+                          Alt="Item image"
+                          Width="72"
+                          Height="72"
+                          ObjectFit="ObjectFit.Cover"/>
+
+                <MudStack Spacing="1" Class="flex-1">
+                    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                        <MudText Typo="Typo.h6">
+                            @Item.Name
+                        </MudText>
+
+                        <MudChip T="string"
+                                 Variant="Variant.Text"
+                                 Size="Size.Small"
+                                 Color="@(Item.IsActive ? Color.Success : Color.Error)">
+                            @(Item.IsActive ? nameof(ItemStatus.Active) : nameof(ItemStatus.Inactive))
+                        </MudChip>
+                    </MudStack>
+
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                        <MudImage Src="@(Item.Category.ImageUrl ?? "images/image-placeholder.svg")"
+                                  Alt="Category image"
+                                  Width="20"
+                                  Height="20"
+                                  ObjectFit="ObjectFit.Cover"/>
+
+                        <MudText Typo="Typo.body2">
+                            @Item.Category.Name
+                            · @Item.Portion x @Item.Price.ToString("C", CultureInfo.CurrentCulture)
+                        </MudText>
+                    </MudStack>
+
+                    <MudText Typo="Typo.caption">
+                        Created @Item.CreatedAtUtc.ToRelativeTime()
+                    </MudText>
+                </MudStack>
+            </MudStack>
+        </MudPaper>
+
+        @if (Item.ImageUrl is not null)
+        {
+            <MudText Typo="Typo.body2" Class="mt-4 mb-2">
+                This also deletes:
+            </MudText>
+
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                <MudIcon Icon="@Icons.Material.Filled.Image" Size="Size.Small"/>
+                <MudText Typo="Typo.body2">The item image</MudText>
+            </MudStack>
+        }
     </DialogContent>
 
     <DialogActions>
@@ -29,7 +77,7 @@
                    Variant="Variant.Filled"
                    Color="Color.Error"
                    StartIcon="@Icons.Material.Filled.Delete">
-            Confirm
+            Delete @Item.Name
         </MudButton>
     </DialogActions>
 </MudDialog>

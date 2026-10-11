@@ -59,7 +59,7 @@
           OnCreateClick="@ShowCreateItemDialogAsync"
           OnDetailsClick="@ShowItemDetailsDialogAsync"
           OnUpdateClick="@ShowUpdateItemDialogAsync"
-          OnDeleteClick="@(item => ShowDeleteItemDialogAsync(item.Id, item.Name))"
+          OnDeleteClick="@ShowDeleteItemDialogAsync"
           DeleteButtonDisabled="@(item => item.OrdersCount > 0)"
           DeleteButtonDisabledTooltipText="Item has orders"
           EmptyStateIcon="@Icons.Material.Filled.MenuBook"

@@ -235,11 +235,11 @@ public sealed partial class CategoriesPage
         }
     }
 
-    private async Task ShowDeleteCategoryDialogAsync(Guid id, string categoryName)
+    private async Task ShowDeleteCategoryDialogAsync(CategoryDto category)
     {
         var parameters = new DialogParameters<DeleteCategoryDialog>
         {
-            { dialog => dialog.CategoryName, categoryName }
+            { dialog => dialog.Category, category }
         };
 
         var options = new DialogOptions
@@ -259,8 +259,8 @@ public sealed partial class CategoriesPage
         }
 
         bool isSuccess = await ApiService.ExecuteAsync(
-            () => CategoryApiClient.DeleteCategoryAsync(id),
-            $"Category {categoryName} deleted successfully");
+            () => CategoryApiClient.DeleteCategoryAsync(category.Id),
+            $"Category {category.Name} deleted successfully");
 
         if (isSuccess)
         {

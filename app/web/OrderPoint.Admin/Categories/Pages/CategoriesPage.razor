@@ -39,7 +39,7 @@
            OnUpdateClick="@ShowUpdateCategoryDialogAsync"
            DeleteButtonDisabled="@(category => category.ItemsCount > 0)"
            DeleteButtonDisabledTooltipText="Category contains items"
-           OnDeleteClick="@(category => ShowDeleteCategoryDialogAsync(category.Id, category.Name))"
+           OnDeleteClick="@ShowDeleteCategoryDialogAsync"
            EmptyStateIcon="@Icons.Material.Filled.Category"
            EmptyStateText="No categories found">
 
