@@ -123,7 +123,18 @@
             </div>
 
             <div class="flex-1">
-                <BartenderOrdersList BartenderId="@context.Id"/>
+                <BartenderOrdersList BartenderId="@context.Id" ShowControls="false"/>
+
+                @if (context.OrdersCount > 0)
+                {
+                    <MudStack Row="true" Justify="Justify.FlexEnd" Class="mt-3">
+                        <MudButton Variant="Variant.Text"
+                                   EndIcon="@Icons.Material.Filled.ArrowForward"
+                                   OnClick="@(() => ShowBartenderOrdersDialogAsync(context))">
+                            View all
+                        </MudButton>
+                    </MudStack>
+                }
             </div>
         </MudStack>
     </DetailsTemplate>

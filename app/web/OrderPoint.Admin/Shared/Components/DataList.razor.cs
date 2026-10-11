@@ -79,6 +79,9 @@ public sealed partial class DataList<TItem>
     [EditorRequired]
     public string EmptyStateText { get; set; }
 
+    [Parameter]
+    public bool ShowControls { get; set; } = true;
+
     private async Task OnSearchChangedAsync()
     {
         await SearchQueryChanged.InvokeAsync(SearchQuery);
