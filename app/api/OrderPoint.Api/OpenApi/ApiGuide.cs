@@ -22,8 +22,10 @@ internal static class ApiGuide
           account is locked for 5 minutes (`401 Auth.LockedOut`).
         - A bartender created by the admin starts with a temporary password: login returns
           `403 Auth.PasswordChangeRequired` until `POST /api/auth/initial-password` sets a new one.
-        - Every endpoint requires the **Admin** role, except Auth, `POST /api/orders` (used by the customer app)
-          and the health checks. Endpoints that need a token show a lock and list `401` and `403`.
+        - Every endpoint requires the **Admin** role, except Auth, `POST /api/orders` (used by the customer app),
+          the health checks and the order status changes (`PUT /api/orders/{id}/accept`, `decline`, `activate`,
+          `complete`), which require the **Bartender** role. Endpoints that need a token show a lock and list `401`
+          and `403`.
 
         ## Responses
 

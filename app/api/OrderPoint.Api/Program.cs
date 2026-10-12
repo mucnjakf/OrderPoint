@@ -43,7 +43,8 @@ builder.Services
 // Authorization
 builder.Services
     .AddAuthorizationBuilder()
-    .AddPolicy(AuthorizationPolicies.Admin, policy => policy.RequireRole(nameof(UserRole.Admin)));
+    .AddPolicy(AuthorizationPolicies.Admin, policy => policy.RequireRole(nameof(UserRole.Admin)))
+    .AddPolicy(AuthorizationPolicies.Bartender, policy => policy.RequireRole(nameof(UserRole.Bartender)));
 
 // Cors
 const string corsPolicyName = "AllowedOrigins";

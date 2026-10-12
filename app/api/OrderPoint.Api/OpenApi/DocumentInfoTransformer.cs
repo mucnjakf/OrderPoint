@@ -19,7 +19,8 @@ internal sealed class DocumentInfoTransformer : IOpenApiDocumentTransformer
                   "delete)."),
         ("Bartenders", "Bartenders and their logins: create, read, update and delete, image, password reset and " +
                        "bulk actions."),
-        ("Orders", "Orders placed by customers. Placing an order is anonymous; reading them requires the Admin role."),
+        ("Orders", "Orders placed by customers. Placing an order is anonymous, reading them requires the Admin role, " +
+                   "and bartenders accept, decline, start and complete them."),
         ("Dashboard", "Aggregated numbers for the Admin dashboard, one endpoint per widget so they load in parallel."),
         ("Health", "The health of the API, the database and the blob storage, for the Admin's system health page.")
     ];
