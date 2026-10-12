@@ -1,8 +1,8 @@
 ﻿using MudBlazor;
 
-namespace OrderPoint.Admin.Shared.Layout;
+namespace OrderPoint.Shared.Layout;
 
-internal static class AdminTheme
+internal static class AppTheme
 {
     private const string BorderRadius = "8px";
     private const string NoShadow = "none";

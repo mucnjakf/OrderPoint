@@ -9,6 +9,7 @@ using OrderPoint.Admin.Health.Services;
 using OrderPoint.Admin.Search.Dialogs;
 using OrderPoint.Admin.Search.Dtos;
 using OrderPoint.Admin.Search.Services;
+using OrderPoint.Shared.Layout;
 using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Shared.Layout;
@@ -58,7 +59,7 @@ public sealed partial class MainLayout : IDisposable
 
     private bool IsSearchOpen { get; set; }
 
-    private MudTheme Theme { get; } = AdminTheme.Create();
+    private MudTheme Theme { get; } = AppTheme.Create();
 
     private bool DrawerOpen { get; set; } = true;
 

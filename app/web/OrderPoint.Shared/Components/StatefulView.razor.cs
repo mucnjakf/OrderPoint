@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace OrderPoint.Admin.Shared.Components;
+namespace OrderPoint.Shared.Components;
 
 public sealed partial class StatefulView
 {

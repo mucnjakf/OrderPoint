@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace OrderPoint.Admin.Shared.Components;
+namespace OrderPoint.Shared.Components;
 
 public sealed partial class ChipSkeleton
 {
