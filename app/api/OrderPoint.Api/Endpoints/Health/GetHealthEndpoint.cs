@@ -99,8 +99,7 @@ internal sealed class GetHealthEndpoint : IEndpoint
         return TypedResults.Ok(new GetHealthResponse(healthReport));
     }
 
-    // A timed-out check is cancelled ("The operation was canceled." says nothing), and Redis' connection error is a
-    // long diagnostic dump; both get a short message instead
+    // Timeouts ("The operation was canceled.") and Redis' long connection dump get a readable message
     private static string? GetError(Exception? exception)
     {
         return exception switch

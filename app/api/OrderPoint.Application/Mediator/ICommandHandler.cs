@@ -4,11 +4,9 @@ using OrderPoint.Domain.Outcomes;
 namespace OrderPoint.Application.Mediator;
 
 internal interface ICommandHandler<in TCommand>
-    : IRequestHandler<TCommand, Result>, IBaseCommandHandler
+    : IRequestHandler<TCommand, Result>
     where TCommand : ICommand;
 
 internal interface ICommandHandler<in TCommand, TResponse>
-    : IRequestHandler<TCommand, Result<TResponse>>, IBaseCommandHandler
+    : IRequestHandler<TCommand, Result<TResponse>>
     where TCommand : ICommand<TResponse>;
-
-internal interface IBaseCommandHandler;

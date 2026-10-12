@@ -73,8 +73,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<Program>(includeInternalTyp
 // Storage
 builder.AddAzureBlobContainerClient("images");
 
-// Cache: Redis behind HybridCache. While Redis is down, commands fail fast instead of waiting for a timeout, reads
-// fall back to memory and the database, and the health check reports Degraded
+// Cache: while Redis is down, calls fail fast so reads fall back to memory and the database
 builder.AddRedisDistributedCache(
     "cache",
     configureOptions: options => options.BacklogPolicy = BacklogPolicy.FailFast);

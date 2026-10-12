@@ -237,7 +237,7 @@ public sealed partial class GlobalSearchDialog : IDisposable
         StateHasChanged();
     }
 
-    private async Task OnKeyDownAsync(KeyboardEventArgs args)
+    private void OnKeyDown(KeyboardEventArgs args)
     {
         IReadOnlyList<SearchResultDto> results = VisibleResults;
 
@@ -257,7 +257,7 @@ public sealed partial class GlobalSearchDialog : IDisposable
                 ActiveResult = results[Math.Max(activeIndex - 1, 0)];
                 break;
             case "Enter" when ActiveResult is not null:
-                await Select(ActiveResult);
+                Select(ActiveResult);
                 break;
         }
     }
@@ -267,11 +267,9 @@ public sealed partial class GlobalSearchDialog : IDisposable
         ActiveResult = result;
     }
 
-    private Task Select(SearchResultDto result)
+    private void Select(SearchResultDto result)
     {
         MudDialogInstance.Close(DialogResult.Ok(result));
-
-        return Task.CompletedTask;
     }
 
     private SearchResultDto ToSearchResult(OrderDto order)
