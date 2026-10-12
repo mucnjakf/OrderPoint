@@ -77,4 +77,90 @@ public sealed class Order : Entity
 
         return Result.Success(order);
     }
+
+    public Result Accept(Guid bartenderId)
+    {
+        if (Status != OrderStatus.Pending)
+        {
+            return Result.Failure(OrderErrors.InvalidStatusTransition);
+        }
+
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+
+        Status = OrderStatus.Accepted;
+        BartenderId = bartenderId;
+        AcceptedAtUtc = now;
+
+        UpdatedAtUtc = now;
+
+        return Result.Success();
+    }
+
+    // A pending order can be declined by any bartender, an accepted one only by the bartender who accepted it
+    public Result Decline(Guid bartenderId)
+    {
+        if (Status is not (OrderStatus.Pending or OrderStatus.Accepted))
+        {
+            return Result.Failure(OrderErrors.InvalidStatusTransition);
+        }
+
+        if (Status == OrderStatus.Accepted && BartenderId != bartenderId)
+        {
+            return Result.Failure(OrderErrors.AssignedToAnotherBartender);
+        }
+
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+
+        Status = OrderStatus.Declined;
+        BartenderId = bartenderId;
+        DeclinedAtUtc = now;
+
+        UpdatedAtUtc = now;
+
+        return Result.Success();
+    }
+
+    public Result Activate(Guid bartenderId)
+    {
+        if (Status != OrderStatus.Accepted)
+        {
+            return Result.Failure(OrderErrors.InvalidStatusTransition);
+        }
+
+        if (BartenderId != bartenderId)
+        {
+            return Result.Failure(OrderErrors.AssignedToAnotherBartender);
+        }
+
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+
+        Status = OrderStatus.Active;
+        ActivatedAtUtc = now;
+
+        UpdatedAtUtc = now;
+
+        return Result.Success();
+    }
+
+    public Result Complete(Guid bartenderId)
+    {
+        if (Status != OrderStatus.Active)
+        {
+            return Result.Failure(OrderErrors.InvalidStatusTransition);
+        }
+
+        if (BartenderId != bartenderId)
+        {
+            return Result.Failure(OrderErrors.AssignedToAnotherBartender);
+        }
+
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+
+        Status = OrderStatus.Completed;
+        CompletedAtUtc = now;
+
+        UpdatedAtUtc = now;
+
+        return Result.Success();
+    }
 }

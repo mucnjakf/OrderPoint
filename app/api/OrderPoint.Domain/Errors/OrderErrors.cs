@@ -23,4 +23,12 @@ public static class OrderErrors
     internal static readonly Error ItemIsUnavailable = Error.Conflict(
         "Order.ItemIsUnavailable",
         "Order contains an item that is not available");
+
+    internal static readonly Error InvalidStatusTransition = Error.Conflict(
+        "Order.InvalidStatusTransition",
+        "Order status does not allow this change");
+
+    internal static readonly Error AssignedToAnotherBartender = Error.Conflict(
+        "Order.AssignedToAnotherBartender",
+        "Order is assigned to another bartender");
 }
