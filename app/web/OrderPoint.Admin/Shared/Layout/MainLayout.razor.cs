@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.JSInterop;
 using MudBlazor;
-using OrderPoint.Admin.Account.Services;
-using OrderPoint.Admin.Auth.Services;
 using OrderPoint.Admin.Health.Services;
 using OrderPoint.Admin.Search.Dialogs;
 using OrderPoint.Admin.Search.Dtos;
 using OrderPoint.Admin.Search.Services;
+using OrderPoint.Shared.Account.Services;
+using OrderPoint.Shared.Auth.Services;
 using OrderPoint.Shared.Layout;
 using OrderPoint.Shared.Services;
 

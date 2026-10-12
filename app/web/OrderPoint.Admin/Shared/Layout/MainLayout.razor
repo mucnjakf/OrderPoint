@@ -12,7 +12,7 @@
 
 @if (!AuthService.IsSignedIn)
 {
-    <LoginForm />
+    <LoginForm Role="UserRole.Admin" AppName="Admin web" />
 
     return;
 }

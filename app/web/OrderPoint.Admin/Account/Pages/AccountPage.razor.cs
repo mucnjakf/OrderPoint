@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using OrderPoint.Admin.Account.Api;
-using OrderPoint.Admin.Account.Api.Requests;
-using OrderPoint.Admin.Account.Dialogs;
-using OrderPoint.Admin.Account.Services;
-using OrderPoint.Admin.Auth.Dtos;
-using OrderPoint.Admin.Auth.Services;
+using OrderPoint.Shared.Account.Api;
+using OrderPoint.Shared.Account.Api.Requests;
+using OrderPoint.Shared.Account.Dialogs;
+using OrderPoint.Shared.Account.Services;
+using OrderPoint.Shared.Auth.Dtos;
+using OrderPoint.Shared.Auth.Services;
 using OrderPoint.Shared.Dtos;
 using OrderPoint.Shared.Services;
 
