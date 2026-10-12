@@ -51,7 +51,7 @@ internal sealed class TokenService(
             },
             cancellationToken);
 
-        return new AuthTokensDto(accessToken, accessTokenExpiresAtUtc, refreshToken, user.Email, user.Role);
+        return new AuthTokensDto(accessToken, accessTokenExpiresAtUtc, refreshToken, user.Id, user.Email, user.Role);
     }
 
     public async Task<Result<AuthTokensDto>> RefreshTokensAsync(

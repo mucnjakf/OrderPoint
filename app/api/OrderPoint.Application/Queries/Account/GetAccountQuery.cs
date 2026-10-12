@@ -1,6 +1,9 @@
 ﻿using OrderPoint.Application.Dtos;
 using OrderPoint.Application.Identity;
 using OrderPoint.Application.Mediator;
+using OrderPoint.Application.Repositories;
+using OrderPoint.Domain.Entities;
+using OrderPoint.Domain.Enumerations;
 using OrderPoint.Domain.Errors;
 using OrderPoint.Domain.Outcomes;
 
@@ -8,15 +11,26 @@ namespace OrderPoint.Application.Queries.Account;
 
 public sealed record GetAccountQuery(Guid UserId) : IQuery<AccountDto>;
 
-internal sealed class GetAccountQueryHandler(IIdentityService identityService)
+internal sealed class GetAccountQueryHandler(IIdentityService identityService, IBartenderRepository bartenderRepository)
     : IQueryHandler<GetAccountQuery, AccountDto>
 {
     public async Task<Result<AccountDto>> Handle(GetAccountQuery query, CancellationToken cancellationToken)
     {
         UserDto? user = await identityService.GetUserAsync(query.UserId, cancellationToken);
 
-        return user is null
-            ? Result.Failure<AccountDto>(AuthErrors.UserNotFound)
-            : Result.Success(new AccountDto(user.Email, user.ImageUrl));
+        if (user is null)
+        {
+            return Result.Failure<AccountDto>(AuthErrors.UserNotFound);
+        }
+
+        if (user.Role != UserRole.Bartender)
+        {
+            return Result.Success(new AccountDto(user.Email, user.ImageUrl));
+        }
+
+        // A bartender's photo is set by the admin on the bartender, whose id is the user's id
+        Bartender? bartender = await bartenderRepository.GetAsync(user.Id, cancellationToken);
+
+        return Result.Success(new AccountDto(user.Email, bartender?.ImageUrl));
     }
 }

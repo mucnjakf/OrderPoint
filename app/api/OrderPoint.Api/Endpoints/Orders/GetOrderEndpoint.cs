@@ -26,7 +26,7 @@ internal sealed class GetOrderEndpoint : IEndpoint
                 Returns one order with its lines, its bartender and the time of every status change.
                 """)
             .ProducesProblem(StatusCodes.Status404NotFound)
-            .RequireAuthorization(AuthorizationPolicies.Admin);
+            .RequireAuthorization(AuthorizationPolicies.AdminOrBartender);
     }
 
     private static async Task<Results<Ok<GetOrderResponse>, ProblemHttpResult>> HandleAsync(

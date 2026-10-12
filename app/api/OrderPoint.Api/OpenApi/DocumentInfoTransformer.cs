@@ -13,13 +13,13 @@ internal sealed class DocumentInfoTransformer : IOpenApiDocumentTransformer
     [
         ("Auth", "Sign in, refresh and sign out. Anonymous; each app sends its own role, so an admin cannot sign in " +
                  "to the bartender app and the other way round."),
-        ("Account", "The signed-in admin's own account: profile, profile image, password and sessions."),
+        ("Account", "The signed-in user's own account: profile, profile image (admin only), password and sessions."),
         ("Categories", "Menu categories: create, read, update and delete, image, menu order and bulk actions."),
         ("Items", "Menu items: create, read, update and delete, image and bulk actions (status, category, price, " +
                   "delete)."),
         ("Bartenders", "Bartenders and their logins: create, read, update and delete, image, password reset and " +
                        "bulk actions."),
-        ("Orders", "Orders placed by customers. Placing an order is anonymous, reading them requires the Admin role, " +
+        ("Orders", "Orders placed by customers. Placing an order is anonymous, admins and bartenders read them, " +
                    "and bartenders accept, decline, start and complete them."),
         ("Dashboard", "Aggregated numbers for the Admin dashboard, one endpoint per widget so they load in parallel."),
         ("Health", "The health of the API, the database and the blob storage, for the Admin's system health page.")

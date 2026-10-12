@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.OpenApi;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
 
 namespace OrderPoint.Api.OpenApi;
 
 // Only endpoints with RequireAuthorization get the bearer requirement and the 401 and 403 responses
-internal sealed class SecurityTransformer : IOpenApiOperationTransformer
+internal sealed class SecurityTransformer(IOptions<AuthorizationOptions> authorizationOptions)
+    : IOpenApiOperationTransformer
 {
     public Task TransformAsync(
         OpenApiOperation operation,
@@ -29,11 +32,15 @@ internal sealed class SecurityTransformer : IOpenApiOperationTransformer
             }
         ];
 
-        string roles = string.Join(", ", authorizeData
+        string roles = string.Join(" or ", authorizeData
             .Select(data => data.Policy)
             .OfType<string>()
+            .Select(authorizationOptions.Value.GetPolicy)
+            .OfType<AuthorizationPolicy>()
+            .SelectMany(policy => policy.Requirements.OfType<RolesAuthorizationRequirement>())
+            .SelectMany(requirement => requirement.AllowedRoles)
             .Distinct()
-            .Select(policy => $"`{policy}`"));
+            .Select(role => $"`{role}`"));
 
         string requirement = $"**Requires** a bearer token with the {roles} role.";
 

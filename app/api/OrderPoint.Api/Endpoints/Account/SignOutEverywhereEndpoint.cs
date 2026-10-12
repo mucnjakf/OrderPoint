@@ -19,10 +19,10 @@ internal sealed class SignOutEverywhereEndpoint : IEndpoint
             .WithTags("Account")
             .WithSummary("Sign out everywhere")
             .WithDescription("""
-                Revokes every refresh token of the signed-in admin, including the one of this session. Access tokens
+                Revokes every refresh token of the signed-in user, including the one of this session. Access tokens
                 already issued stay valid until they expire (15 minutes).
                 """)
-            .RequireAuthorization(AuthorizationPolicies.Admin);
+            .RequireAuthorization(AuthorizationPolicies.AdminOrBartender);
     }
 
     private static async Task<Results<NoContent, ProblemHttpResult>> HandleAsync(

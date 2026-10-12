@@ -46,7 +46,7 @@ internal sealed class GetOrdersEndpoint : IEndpoint
                 A page of orders with search (order number or table code), filters (status, item, bartender) and
                 sorting (default: newest first). `total` is calculated from the order lines.
                 """)
-            .RequireAuthorization(AuthorizationPolicies.Admin);
+            .RequireAuthorization(AuthorizationPolicies.AdminOrBartender);
     }
 
     private static async Task<Results<Ok<GetOrdersResponse>, ProblemHttpResult>> HandleAsync(

@@ -12,7 +12,7 @@ using OrderPoint.Domain.Outcomes;
 namespace OrderPoint.Api.Endpoints.Account;
 
 /// <summary>The current and the new password.</summary>
-/// <param name="CurrentPassword">The password the admin signs in with now.</param>
+/// <param name="CurrentPassword">The password the user signs in with now.</param>
 /// <param name="NewPassword">The new password. At least 8 characters with an uppercase letter, a lowercase letter and
 /// a digit. It must differ from the current one.</param>
 internal sealed record ChangePasswordRequest(string CurrentPassword, string NewPassword);
@@ -31,14 +31,14 @@ internal sealed class ChangePasswordEndpoint : IEndpoint
             .WithTags("Account")
             .WithSummary("Change my password")
             .WithDescription("""
-                Changes the signed-in admin's password. Every refresh token is revoked, so other devices are signed
+                Changes the signed-in user's password. Every refresh token is revoked, so other devices are signed
                 out; the response contains a new token pair for this session.
 
                 - `400 Auth.InvalidCurrentPassword`: the current password is wrong.
                 - `400 Auth.InvalidPassword`: the new password needs 8+ characters, upper and lower case and a digit.
                 """)
             .ProducesProblem(StatusCodes.Status404NotFound)
-            .RequireAuthorization(AuthorizationPolicies.Admin);
+            .RequireAuthorization(AuthorizationPolicies.AdminOrBartender);
     }
 
     private static async Task<Results<Ok<ChangePasswordResponse>, ProblemHttpResult>> HandleAsync(

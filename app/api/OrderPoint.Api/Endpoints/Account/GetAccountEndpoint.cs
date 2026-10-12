@@ -10,7 +10,7 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Account;
 
-/// <summary>The signed-in admin's account.</summary>
+/// <summary>The signed-in user's account.</summary>
 /// <param name="Data">The account.</param>
 internal sealed record GetAccountResponse(AccountDto Data);
 
@@ -24,10 +24,11 @@ internal sealed class GetAccountEndpoint : IEndpoint
             .WithTags("Account")
             .WithSummary("Get my account")
             .WithDescription("""
-                Returns the signed-in admin's email and profile image. The user is taken from the access token.
+                Returns the signed-in user's email and profile image: the admin's own image, or for a bartender the
+                photo the admin set. The user is taken from the access token.
                 """)
             .ProducesProblem(StatusCodes.Status404NotFound)
-            .RequireAuthorization(AuthorizationPolicies.Admin);
+            .RequireAuthorization(AuthorizationPolicies.AdminOrBartender);
     }
 
     private static async Task<Results<Ok<GetAccountResponse>, ProblemHttpResult>> HandleAsync(
