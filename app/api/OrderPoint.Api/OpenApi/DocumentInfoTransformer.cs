@@ -21,6 +21,7 @@ internal sealed class DocumentInfoTransformer : IOpenApiDocumentTransformer
                        "bulk actions."),
         ("Orders", "Orders placed by customers. Placing an order is anonymous, admins and bartenders read them, " +
                    "and bartenders accept, decline, start and complete them."),
+        ("Shift", "The signed-in bartender's figures for today, for the bartender app."),
         ("Dashboard", "Aggregated numbers for the Admin dashboard, one endpoint per widget so they load in parallel."),
         ("Health", "The health of the API, the database and the blob storage, for the Admin's system health page.")
     ];
@@ -30,7 +31,7 @@ internal sealed class DocumentInfoTransformer : IOpenApiDocumentTransformer
         ("Authentication", ["Auth", "Account"]),
         ("Menu", ["Categories", "Items"]),
         ("Staff", ["Bartenders"]),
-        ("Orders", ["Orders"]),
+        ("Orders", ["Orders", "Shift"]),
         ("Insights", ["Dashboard"]),
         ("System", ["Health"])
     ];

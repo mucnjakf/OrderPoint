@@ -14,6 +14,12 @@ public interface IDashboardRepository
         DateTimeOffset nowUtc,
         CancellationToken cancellationToken = default);
 
+    Task<ShiftDto> GetShiftAsync(
+        Guid bartenderId,
+        DateTimeOffset todayFromUtc,
+        DateTimeOffset nowUtc,
+        CancellationToken cancellationToken = default);
+
     Task<IReadOnlyList<CategoryRevenueDto>> GetCategoryRevenueAsync(
         DateTimeOffset fromUtc,
         DateTimeOffset toUtc,

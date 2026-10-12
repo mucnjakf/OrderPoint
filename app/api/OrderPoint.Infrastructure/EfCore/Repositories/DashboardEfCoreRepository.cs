@@ -51,6 +51,42 @@ internal sealed class DashboardEfCoreRepository(ApplicationDbContext dbContext) 
             todayCompletedOrders.Count == 0 ? 0 : todayCompletedOrders.Average(order => order.Total));
     }
 
+    public async Task<ShiftDto> GetShiftAsync(
+        Guid bartenderId,
+        DateTimeOffset todayFromUtc,
+        DateTimeOffset nowUtc,
+        CancellationToken cancellationToken = default)
+    {
+        int pendingCount = await dbContext.Orders
+            .CountAsync(order => order.Status == OrderStatus.Pending, cancellationToken);
+
+        int myOpenCount = await dbContext.Orders
+            .CountAsync(
+                order =>
+                    order.BartenderId == bartenderId &&
+                    (order.Status == OrderStatus.Accepted || order.Status == OrderStatus.Active),
+                cancellationToken);
+
+        // Completed today, wherever the order was placed, so an order taken before midnight still counts
+        var completedOrders = await dbContext.Orders
+            .AsNoTracking()
+            .Where(order =>
+                order.BartenderId == bartenderId &&
+                order.Status == OrderStatus.Completed &&
+                order.CompletedAtUtc >= todayFromUtc &&
+                order.CompletedAtUtc < nowUtc)
+            .Select(order => new { order.CreatedAtUtc, CompletedAtUtc = order.CompletedAtUtc!.Value })
+            .ToListAsync(cancellationToken);
+
+        return new ShiftDto(
+            pendingCount,
+            myOpenCount,
+            completedOrders.Count,
+            completedOrders.Count == 0
+                ? null
+                : completedOrders.Average(order => (order.CompletedAtUtc - order.CreatedAtUtc).TotalMinutes));
+    }
+
     public async Task<IReadOnlyList<CategoryRevenueDto>> GetCategoryRevenueAsync(
         DateTimeOffset fromUtc,
         DateTimeOffset toUtc,
