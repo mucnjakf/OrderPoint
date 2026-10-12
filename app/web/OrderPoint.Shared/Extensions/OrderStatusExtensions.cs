@@ -1,7 +1,7 @@
 ﻿using MudBlazor;
-using OrderPoint.Admin.Orders.Enumerations;
+using OrderPoint.Shared.Orders.Enumerations;
 
-namespace OrderPoint.Admin.Shared.Extensions;
+namespace OrderPoint.Shared.Extensions;
 
 internal static class OrderStatusExtensions
 {

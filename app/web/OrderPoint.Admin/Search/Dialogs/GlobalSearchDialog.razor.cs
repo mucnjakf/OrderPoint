@@ -10,13 +10,13 @@ using OrderPoint.Admin.Items.Api;
 using OrderPoint.Admin.Items.Dtos;
 using OrderPoint.Admin.Items.Sorting;
 using OrderPoint.Admin.Orders.Api;
-using OrderPoint.Admin.Orders.Dtos;
 using OrderPoint.Admin.Orders.Sorting;
 using OrderPoint.Admin.Search.Dtos;
 using OrderPoint.Admin.Search.Enumerations;
 using OrderPoint.Admin.Search.Services;
 using OrderPoint.Shared.Dtos;
 using OrderPoint.Shared.Extensions;
+using OrderPoint.Shared.Orders.Dtos;
 using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Search.Dialogs;

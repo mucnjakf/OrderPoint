@@ -1,4 +1,4 @@
-﻿namespace OrderPoint.Admin.Orders.Enumerations;
+﻿namespace OrderPoint.Shared.Orders.Enumerations;
 
 public enum OrderStatus
 {

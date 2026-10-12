@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using OrderPoint.Admin.Orders.Dtos;
-using OrderPoint.Admin.Orders.Enumerations;
+using OrderPoint.Shared.Orders.Dtos;
+using OrderPoint.Shared.Orders.Enumerations;
 using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Orders.Dialogs;

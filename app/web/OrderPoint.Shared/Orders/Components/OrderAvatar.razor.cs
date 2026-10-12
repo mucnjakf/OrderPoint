@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace OrderPoint.Admin.Orders.Components;
+namespace OrderPoint.Shared.Orders.Components;
 
 public sealed partial class OrderAvatar
 {

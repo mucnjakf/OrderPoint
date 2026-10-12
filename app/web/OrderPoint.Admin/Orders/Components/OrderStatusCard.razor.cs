@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using OrderPoint.Admin.Orders.Enumerations;
+using OrderPoint.Shared.Orders.Enumerations;
 
 namespace OrderPoint.Admin.Orders.Components;
 

@@ -1,5 +1,5 @@
-﻿using OrderPoint.Admin.Orders.Dtos;
-using OrderPoint.Shared.Dtos;
+﻿using OrderPoint.Shared.Dtos;
+using OrderPoint.Shared.Orders.Dtos;
 
 namespace OrderPoint.Admin.Orders.Api.Responses;
 

@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
 using OrderPoint.Admin.Orders.Api;
-using OrderPoint.Admin.Orders.Dtos;
 using OrderPoint.Admin.Orders.Sorting;
 using OrderPoint.Shared.Dtos;
 using OrderPoint.Shared.Extensions;
+using OrderPoint.Shared.Orders.Dtos;
 using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Bartenders.Components;

@@ -1,6 +1,6 @@
-﻿using OrderPoint.Admin.Orders.Enumerations;
+﻿using OrderPoint.Shared.Orders.Enumerations;
 
-namespace OrderPoint.Admin.Orders.Dtos;
+namespace OrderPoint.Shared.Orders.Dtos;
 
 public sealed record OrderDto(
     Guid Id,
