@@ -1,8 +1,8 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Components;
 using OrderPoint.Admin.Dashboard.Dtos;
-using OrderPoint.Admin.Shared.Extensions;
-using OrderPoint.Admin.Shared.Services;
+using OrderPoint.Shared.Extensions;
+using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Dashboard.Components;
 

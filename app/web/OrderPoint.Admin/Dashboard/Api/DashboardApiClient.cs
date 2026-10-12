@@ -1,8 +1,8 @@
 ﻿using OrderPoint.Admin.Dashboard.Api.Responses;
 using OrderPoint.Admin.Dashboard.Dtos;
 using OrderPoint.Admin.Dashboard.Enumerations;
-using OrderPoint.Admin.Shared.Errors;
-using OrderPoint.Admin.Shared.Services;
+using OrderPoint.Shared.Errors;
+using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Dashboard.Api;
 

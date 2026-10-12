@@ -3,8 +3,8 @@ using OrderPoint.Admin.Account.Api.Requests;
 using OrderPoint.Admin.Account.Api.Responses;
 using OrderPoint.Admin.Account.Dtos;
 using OrderPoint.Admin.Auth.Dtos;
-using OrderPoint.Admin.Shared.Dtos;
-using OrderPoint.Admin.Shared.Errors;
+using OrderPoint.Shared.Dtos;
+using OrderPoint.Shared.Errors;
 
 namespace OrderPoint.Admin.Account.Api;
 

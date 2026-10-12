@@ -6,9 +6,9 @@ using OrderPoint.Admin.Items.Api.Requests;
 using OrderPoint.Admin.Items.Dialogs;
 using OrderPoint.Admin.Items.Dtos;
 using OrderPoint.Admin.Items.Sorting;
-using OrderPoint.Admin.Shared.Dtos;
-using OrderPoint.Admin.Shared.Extensions;
-using OrderPoint.Admin.Shared.Services;
+using OrderPoint.Shared.Dtos;
+using OrderPoint.Shared.Extensions;
+using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Categories.Dialogs;
 

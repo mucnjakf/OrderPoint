@@ -4,9 +4,9 @@ using OrderPoint.Admin.Items.Dtos;
 using OrderPoint.Admin.Orders.Api;
 using OrderPoint.Admin.Orders.Dtos;
 using OrderPoint.Admin.Orders.Sorting;
-using OrderPoint.Admin.Shared.Dtos;
-using OrderPoint.Admin.Shared.Extensions;
-using OrderPoint.Admin.Shared.Services;
+using OrderPoint.Shared.Dtos;
+using OrderPoint.Shared.Extensions;
+using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Items.Dialogs;
 

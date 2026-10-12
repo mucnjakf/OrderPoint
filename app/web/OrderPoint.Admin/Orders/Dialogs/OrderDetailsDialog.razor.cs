@@ -2,7 +2,7 @@
 using MudBlazor;
 using OrderPoint.Admin.Orders.Dtos;
 using OrderPoint.Admin.Orders.Enumerations;
-using OrderPoint.Admin.Shared.Services;
+using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Orders.Dialogs;
 

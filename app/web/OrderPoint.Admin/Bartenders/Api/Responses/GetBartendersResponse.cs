@@ -1,5 +1,5 @@
 ﻿using OrderPoint.Admin.Bartenders.Dtos;
-using OrderPoint.Admin.Shared.Dtos;
+using OrderPoint.Shared.Dtos;
 
 namespace OrderPoint.Admin.Bartenders.Api.Responses;
 

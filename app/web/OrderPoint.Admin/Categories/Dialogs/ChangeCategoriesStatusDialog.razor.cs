@@ -2,7 +2,7 @@
 using MudBlazor;
 using OrderPoint.Admin.Categories.Dtos;
 using OrderPoint.Admin.Categories.Enumerations;
-using OrderPoint.Admin.Shared.Extensions;
+using OrderPoint.Shared.Extensions;
 
 namespace OrderPoint.Admin.Categories.Dialogs;
 

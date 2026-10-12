@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace OrderPoint.Admin.Shared.Extensions;
+namespace OrderPoint.Shared.Extensions;
 
 internal static class DateTimeOffsetExtensions
 {

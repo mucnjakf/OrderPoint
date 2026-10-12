@@ -4,8 +4,8 @@ using OrderPoint.Admin.Bartenders.Api.Responses;
 using OrderPoint.Admin.Bartenders.Dtos;
 using OrderPoint.Admin.Bartenders.Enumerations;
 using OrderPoint.Admin.Bartenders.Sorting;
-using OrderPoint.Admin.Shared.Dtos;
-using OrderPoint.Admin.Shared.Errors;
+using OrderPoint.Shared.Dtos;
+using OrderPoint.Shared.Errors;
 
 namespace OrderPoint.Admin.Bartenders.Api;
 

@@ -1,4 +1,4 @@
-﻿namespace OrderPoint.Admin.Shared.Extensions;
+﻿namespace OrderPoint.Shared.Extensions;
 
 internal static class IntExtensions
 {

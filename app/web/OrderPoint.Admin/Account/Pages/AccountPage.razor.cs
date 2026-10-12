@@ -6,8 +6,8 @@ using OrderPoint.Admin.Account.Dialogs;
 using OrderPoint.Admin.Account.Services;
 using OrderPoint.Admin.Auth.Dtos;
 using OrderPoint.Admin.Auth.Services;
-using OrderPoint.Admin.Shared.Dtos;
-using OrderPoint.Admin.Shared.Services;
+using OrderPoint.Shared.Dtos;
+using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Account.Pages;
 

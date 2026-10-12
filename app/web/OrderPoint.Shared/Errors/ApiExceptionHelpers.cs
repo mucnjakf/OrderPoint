@@ -1,6 +1,7 @@
-﻿using System.Text.Json;
+﻿using System.Net.Http.Json;
+using System.Text.Json;
 
-namespace OrderPoint.Admin.Shared.Errors;
+namespace OrderPoint.Shared.Errors;
 
 internal static class ApiExceptionHelpers
 {

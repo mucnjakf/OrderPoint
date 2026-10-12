@@ -2,7 +2,7 @@
 using OrderPoint.Admin.Health.Api;
 using OrderPoint.Admin.Health.Dtos;
 using OrderPoint.Admin.Health.Enumerations;
-using OrderPoint.Admin.Shared.Errors;
+using OrderPoint.Shared.Errors;
 
 namespace OrderPoint.Admin.Health.Services;
 

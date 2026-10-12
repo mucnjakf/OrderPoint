@@ -13,6 +13,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\host\OrderPoint.ServiceDefaults\OrderPoint.ServiceDefaults.csproj" />
+      <ProjectReference Include="..\OrderPoint.Shared\OrderPoint.Shared.csproj" />
     </ItemGroup>
 
 </Project>

@@ -6,9 +6,9 @@ using OrderPoint.Admin.Bartenders.Dialogs;
 using OrderPoint.Admin.Bartenders.Dtos;
 using OrderPoint.Admin.Bartenders.Enumerations;
 using OrderPoint.Admin.Bartenders.Sorting;
-using OrderPoint.Admin.Shared.Dtos;
-using OrderPoint.Admin.Shared.Extensions;
-using OrderPoint.Admin.Shared.Services;
+using OrderPoint.Shared.Dtos;
+using OrderPoint.Shared.Extensions;
+using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Bartenders.Pages;
 

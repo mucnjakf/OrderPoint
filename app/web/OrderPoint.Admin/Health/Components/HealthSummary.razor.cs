@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using OrderPoint.Admin.Health.Enumerations;
-using OrderPoint.Admin.Shared.Extensions;
-using OrderPoint.Admin.Shared.Services;
+using OrderPoint.Shared.Extensions;
+using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Health.Components;
 

@@ -1,3 +1,3 @@
-﻿namespace OrderPoint.Admin.Shared.Dtos;
+﻿namespace OrderPoint.Shared.Dtos;
 
 public sealed record ImageFileDto(byte[] Content, string ContentType, string FileName);

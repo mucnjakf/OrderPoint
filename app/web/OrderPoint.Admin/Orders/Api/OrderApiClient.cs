@@ -1,8 +1,8 @@
 ﻿using OrderPoint.Admin.Orders.Api.Responses;
 using OrderPoint.Admin.Orders.Dtos;
 using OrderPoint.Admin.Orders.Enumerations;
-using OrderPoint.Admin.Shared.Dtos;
-using OrderPoint.Admin.Shared.Errors;
+using OrderPoint.Shared.Dtos;
+using OrderPoint.Shared.Errors;
 
 namespace OrderPoint.Admin.Orders.Api;
 

@@ -1,6 +1,6 @@
 ﻿using OrderPoint.Admin.Health.Api.Responses;
 using OrderPoint.Admin.Health.Dtos;
-using OrderPoint.Admin.Shared.Errors;
+using OrderPoint.Shared.Errors;
 
 namespace OrderPoint.Admin.Health.Api;
 

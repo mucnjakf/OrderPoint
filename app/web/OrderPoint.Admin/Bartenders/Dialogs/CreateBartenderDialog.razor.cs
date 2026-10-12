@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using OrderPoint.Admin.Bartenders.Api.Requests;
-using OrderPoint.Admin.Shared.Dtos;
-using OrderPoint.Admin.Shared.Extensions;
+using OrderPoint.Shared.Dtos;
+using OrderPoint.Shared.Extensions;
 
 namespace OrderPoint.Admin.Bartenders.Dialogs;
 

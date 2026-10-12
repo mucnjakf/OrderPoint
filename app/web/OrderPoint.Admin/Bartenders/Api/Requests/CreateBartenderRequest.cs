@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using OrderPoint.Admin.Bartenders.Enumerations;
-using OrderPoint.Admin.Shared.Dtos;
+using OrderPoint.Shared.Dtos;
 
 namespace OrderPoint.Admin.Bartenders.Api.Requests;
 

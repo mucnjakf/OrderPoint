@@ -15,9 +15,9 @@ using OrderPoint.Admin.Health.Services;
 using OrderPoint.Admin.Items.Api;
 using OrderPoint.Admin.Orders.Api;
 using OrderPoint.Admin.Search.Services;
-using OrderPoint.Admin.Shared.Extensions;
-using OrderPoint.Admin.Shared.Services;
 using OrderPoint.ServiceDefaults;
+using OrderPoint.Shared.Extensions;
+using OrderPoint.Shared.Services;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 

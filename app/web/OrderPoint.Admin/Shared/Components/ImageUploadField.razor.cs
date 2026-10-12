@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using OrderPoint.Admin.Shared.Dtos;
+using OrderPoint.Shared.Dtos;
 
 namespace OrderPoint.Admin.Shared.Components;
 

@@ -2,7 +2,7 @@
 using MudBlazor;
 using OrderPoint.Admin.Auth.Api.Requests;
 using OrderPoint.Admin.Auth.Services;
-using OrderPoint.Admin.Shared.Services;
+using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Auth.Components;
 

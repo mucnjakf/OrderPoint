@@ -1,4 +1,4 @@
-﻿namespace OrderPoint.Admin.Shared.Errors;
+﻿namespace OrderPoint.Shared.Errors;
 
 internal sealed record ProblemDetails(
     string Type,

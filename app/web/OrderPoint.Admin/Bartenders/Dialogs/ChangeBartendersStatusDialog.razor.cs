@@ -2,7 +2,7 @@
 using MudBlazor;
 using OrderPoint.Admin.Bartenders.Dtos;
 using OrderPoint.Admin.Bartenders.Enumerations;
-using OrderPoint.Admin.Shared.Extensions;
+using OrderPoint.Shared.Extensions;
 
 namespace OrderPoint.Admin.Bartenders.Dialogs;
 

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using OrderPoint.Admin.Categories.Enumerations;
-using OrderPoint.Admin.Shared.Dtos;
+using OrderPoint.Shared.Dtos;
 
 namespace OrderPoint.Admin.Categories.Api.Requests;
 

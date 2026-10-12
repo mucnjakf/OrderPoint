@@ -4,7 +4,7 @@ using OrderPoint.Admin.Categories.Api;
 using OrderPoint.Admin.Categories.Dtos;
 using OrderPoint.Admin.Items.Api.Requests;
 using OrderPoint.Admin.Items.Dtos;
-using OrderPoint.Admin.Shared.Services;
+using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Items.Dialogs;
 

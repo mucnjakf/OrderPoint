@@ -4,8 +4,8 @@ using OrderPoint.Admin.Categories.Api;
 using OrderPoint.Admin.Categories.Api.Requests;
 using OrderPoint.Admin.Categories.Dtos;
 using OrderPoint.Admin.Categories.Sorting;
-using OrderPoint.Admin.Shared.Dtos;
-using OrderPoint.Admin.Shared.Services;
+using OrderPoint.Shared.Dtos;
+using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Categories.Dialogs;
 

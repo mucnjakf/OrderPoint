@@ -4,8 +4,8 @@ using OrderPoint.Admin.Categories.Api.Responses;
 using OrderPoint.Admin.Categories.Dtos;
 using OrderPoint.Admin.Categories.Enumerations;
 using OrderPoint.Admin.Categories.Sorting;
-using OrderPoint.Admin.Shared.Dtos;
-using OrderPoint.Admin.Shared.Errors;
+using OrderPoint.Shared.Dtos;
+using OrderPoint.Shared.Errors;
 
 namespace OrderPoint.Admin.Categories.Api;
 

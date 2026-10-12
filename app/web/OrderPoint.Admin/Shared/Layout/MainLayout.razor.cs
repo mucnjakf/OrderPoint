@@ -9,7 +9,7 @@ using OrderPoint.Admin.Health.Services;
 using OrderPoint.Admin.Search.Dialogs;
 using OrderPoint.Admin.Search.Dtos;
 using OrderPoint.Admin.Search.Services;
-using OrderPoint.Admin.Shared.Services;
+using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Shared.Layout;
 

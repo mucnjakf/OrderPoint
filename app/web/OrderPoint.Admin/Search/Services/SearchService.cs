@@ -16,7 +16,7 @@ using OrderPoint.Admin.Orders.Dialogs;
 using OrderPoint.Admin.Orders.Dtos;
 using OrderPoint.Admin.Search.Dtos;
 using OrderPoint.Admin.Search.Enumerations;
-using OrderPoint.Admin.Shared.Services;
+using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Search.Services;
 

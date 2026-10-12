@@ -1,6 +1,6 @@
 ﻿using Microsoft.JSInterop;
 
-namespace OrderPoint.Admin.Shared.Services;
+namespace OrderPoint.Shared.Services;
 
 internal sealed class TimeZoneService(IJSRuntime jsRuntime)
 {

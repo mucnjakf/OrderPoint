@@ -3,8 +3,8 @@ using OrderPoint.Admin.Items.Api.Requests;
 using OrderPoint.Admin.Items.Api.Responses;
 using OrderPoint.Admin.Items.Dtos;
 using OrderPoint.Admin.Items.Enumerations;
-using OrderPoint.Admin.Shared.Dtos;
-using OrderPoint.Admin.Shared.Errors;
+using OrderPoint.Shared.Dtos;
+using OrderPoint.Shared.Errors;
 
 namespace OrderPoint.Admin.Items.Api;
 

@@ -2,8 +2,8 @@
 using MudBlazor;
 using OrderPoint.Admin.Categories.Api.Requests;
 using OrderPoint.Admin.Categories.Dtos;
-using OrderPoint.Admin.Shared.Dtos;
-using OrderPoint.Admin.Shared.Extensions;
+using OrderPoint.Shared.Dtos;
+using OrderPoint.Shared.Extensions;
 
 namespace OrderPoint.Admin.Categories.Dialogs;
 

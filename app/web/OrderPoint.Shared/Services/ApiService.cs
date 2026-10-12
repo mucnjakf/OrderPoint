@@ -1,7 +1,8 @@
-﻿using MudBlazor;
-using OrderPoint.Admin.Shared.Errors;
+﻿using Microsoft.Extensions.Logging;
+using MudBlazor;
+using OrderPoint.Shared.Errors;
 
-namespace OrderPoint.Admin.Shared.Services;
+namespace OrderPoint.Shared.Services;
 
 // A SessionExpiredException is silent: the layout already replaced the page with the login form
 internal sealed class ApiService(ISnackbar snackbar, ILogger<ApiService> logger)

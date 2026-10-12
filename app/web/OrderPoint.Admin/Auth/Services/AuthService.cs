@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using OrderPoint.Admin.Auth.Api;
 using OrderPoint.Admin.Auth.Api.Requests;
 using OrderPoint.Admin.Auth.Dtos;
-using OrderPoint.Admin.Shared.Errors;
+using OrderPoint.Shared.Errors;
 
 namespace OrderPoint.Admin.Auth.Services;
 

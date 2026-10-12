@@ -1,6 +1,6 @@
-﻿using OrderPoint.Admin.Shared.Dtos;
+﻿using OrderPoint.Shared.Dtos;
 
-namespace OrderPoint.Admin.Shared.Extensions;
+namespace OrderPoint.Shared.Extensions;
 
 internal static class ImageFileDtoExtensions
 {

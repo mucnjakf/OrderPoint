@@ -7,8 +7,8 @@ using OrderPoint.Admin.Orders.Dialogs;
 using OrderPoint.Admin.Orders.Dtos;
 using OrderPoint.Admin.Orders.Enumerations;
 using OrderPoint.Admin.Orders.Sorting;
-using OrderPoint.Admin.Shared.Dtos;
-using OrderPoint.Admin.Shared.Services;
+using OrderPoint.Shared.Dtos;
+using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Orders.Pages;
 

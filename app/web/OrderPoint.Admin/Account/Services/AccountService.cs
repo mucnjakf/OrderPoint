@@ -1,6 +1,6 @@
 ﻿using OrderPoint.Admin.Account.Api;
 using OrderPoint.Admin.Account.Dtos;
-using OrderPoint.Admin.Shared.Services;
+using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Account.Services;
 

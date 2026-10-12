@@ -1,4 +1,4 @@
-﻿namespace OrderPoint.Admin.Shared.Errors;
+﻿namespace OrderPoint.Shared.Errors;
 
 internal sealed class ApiException(ProblemDetails problemDetails) : Exception(problemDetails.Detail)
 {
