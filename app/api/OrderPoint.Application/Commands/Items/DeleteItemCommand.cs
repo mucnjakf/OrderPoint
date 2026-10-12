@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using OrderPoint.Application.Caching;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Application.Storage;
@@ -8,7 +9,10 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Commands.Items;
 
-public sealed record DeleteItemCommand(Guid Id) : ICommand;
+public sealed record DeleteItemCommand(Guid Id) : ICommand, ICacheInvalidatingCommand
+{
+    IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.ItemChanges;
+}
 
 internal sealed partial class DeleteItemCommandHandler(
     IItemRepository itemRepository,

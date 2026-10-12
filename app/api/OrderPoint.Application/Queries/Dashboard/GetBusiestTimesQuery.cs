@@ -1,4 +1,6 @@
-﻿using OrderPoint.Application.Dtos;
+﻿using Microsoft.Extensions.Caching.Hybrid;
+using OrderPoint.Application.Caching;
+using OrderPoint.Application.Dtos;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Domain.Outcomes;
@@ -7,7 +9,7 @@ namespace OrderPoint.Application.Queries.Dashboard;
 
 public sealed record GetBusiestTimesQuery(TimeZoneInfo TimeZone) : IQuery<IReadOnlyList<BusiestTimeDto>>;
 
-internal sealed class GetBusiestTimesQueryHandler(IDashboardRepository dashboardRepository)
+internal sealed class GetBusiestTimesQueryHandler(IDashboardRepository dashboardRepository, HybridCache cache)
     : IQueryHandler<GetBusiestTimesQuery, IReadOnlyList<BusiestTimeDto>>
 {
     private const int DaysCount = 28;
@@ -15,6 +17,20 @@ internal sealed class GetBusiestTimesQueryHandler(IDashboardRepository dashboard
     private const int HoursPerDay = 24;
 
     public async Task<Result<IReadOnlyList<BusiestTimeDto>>> Handle(
+        GetBusiestTimesQuery query,
+        CancellationToken cancellationToken)
+    {
+        IReadOnlyList<BusiestTimeDto> busiestTimes = await cache.GetOrCreateAsync(
+            CacheKeys.For(query),
+            query,
+            GetBusiestTimesAsync,
+            tags: [CacheTags.Dashboard],
+            cancellationToken: cancellationToken);
+
+        return Result.Success(busiestTimes);
+    }
+
+    private async ValueTask<IReadOnlyList<BusiestTimeDto>> GetBusiestTimesAsync(
         GetBusiestTimesQuery query,
         CancellationToken cancellationToken)
     {

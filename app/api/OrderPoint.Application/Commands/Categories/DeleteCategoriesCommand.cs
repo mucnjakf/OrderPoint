@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using OrderPoint.Application.Caching;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Application.Storage;
@@ -8,7 +9,10 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Commands.Categories;
 
-public sealed record DeleteCategoriesCommand(IReadOnlyList<Guid> Ids) : ICommand;
+public sealed record DeleteCategoriesCommand(IReadOnlyList<Guid> Ids) : ICommand, ICacheInvalidatingCommand
+{
+    IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.CategoryChanges;
+}
 
 internal sealed partial class DeleteCategoriesCommandHandler(
     ICategoryRepository categoryRepository,

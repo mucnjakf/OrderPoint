@@ -1,4 +1,5 @@
-﻿using OrderPoint.Application.Mediator;
+﻿using OrderPoint.Application.Caching;
+using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Application.Storage;
 using OrderPoint.Domain.Entities;
@@ -7,7 +8,11 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Commands.Items;
 
-public sealed record UpdateItemImageCommand(Guid Id, Stream Content, string ContentType) : ICommand;
+public sealed record UpdateItemImageCommand(Guid Id, Stream Content, string ContentType)
+    : ICommand, ICacheInvalidatingCommand
+{
+    IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.ItemChanges;
+}
 
 internal sealed class UpdateItemImageCommandHandler(
     IItemRepository itemRepository,

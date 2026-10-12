@@ -1,4 +1,6 @@
-﻿using OrderPoint.Application.Dtos;
+﻿using Microsoft.Extensions.Caching.Hybrid;
+using OrderPoint.Application.Caching;
+using OrderPoint.Application.Dtos;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Domain.Enumerations;
@@ -9,10 +11,24 @@ namespace OrderPoint.Application.Queries.Dashboard;
 public sealed record GetDashboardSummaryQuery(DashboardPeriod Period, TimeZoneInfo TimeZone)
     : IQuery<DashboardSummaryDto>;
 
-internal sealed class GetDashboardSummaryQueryHandler(IDashboardRepository dashboardRepository)
+internal sealed class GetDashboardSummaryQueryHandler(IDashboardRepository dashboardRepository, HybridCache cache)
     : IQueryHandler<GetDashboardSummaryQuery, DashboardSummaryDto>
 {
     public async Task<Result<DashboardSummaryDto>> Handle(
+        GetDashboardSummaryQuery query,
+        CancellationToken cancellationToken)
+    {
+        DashboardSummaryDto summary = await cache.GetOrCreateAsync(
+            CacheKeys.For(query),
+            query,
+            GetDashboardSummaryAsync,
+            tags: [CacheTags.Dashboard],
+            cancellationToken: cancellationToken);
+
+        return Result.Success(summary);
+    }
+
+    private async ValueTask<DashboardSummaryDto> GetDashboardSummaryAsync(
         GetDashboardSummaryQuery query,
         CancellationToken cancellationToken)
     {

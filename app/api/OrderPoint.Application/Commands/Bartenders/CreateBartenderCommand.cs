@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using OrderPoint.Application.Caching;
 using OrderPoint.Application.Dtos;
 using OrderPoint.Application.Dtos.Mappers;
 using OrderPoint.Application.Identity;
@@ -19,7 +20,10 @@ public sealed record CreateBartenderCommand(
     string? PhoneNumber,
     BartenderStatus Status,
     string? Notes)
-    : ICommand<BartenderDto>;
+    : ICommand<BartenderDto>, ICacheInvalidatingCommand
+{
+    IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.BartenderChanges;
+}
 
 internal sealed partial class CreateBartenderCommandHandler(
     IBartenderRepository bartenderRepository,

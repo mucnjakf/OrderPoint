@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using OrderPoint.Application.Caching;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Domain.Entities;
@@ -8,7 +9,11 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Commands.Categories;
 
-public sealed record ChangeCategoriesStatusCommand(IReadOnlyList<Guid> Ids, CategoryStatus Status) : ICommand;
+public sealed record ChangeCategoriesStatusCommand(IReadOnlyList<Guid> Ids, CategoryStatus Status)
+    : ICommand, ICacheInvalidatingCommand
+{
+    IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.CategoryChanges;
+}
 
 internal sealed partial class ChangeCategoriesStatusCommandHandler(
     ICategoryRepository categoryRepository,

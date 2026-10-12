@@ -1,4 +1,5 @@
-﻿using OrderPoint.Application.Mediator;
+﻿using OrderPoint.Application.Caching;
+using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Application.Storage;
 using OrderPoint.Domain.Entities;
@@ -7,7 +8,10 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Commands.Bartenders;
 
-public sealed record DeleteBartenderImageCommand(Guid Id) : ICommand;
+public sealed record DeleteBartenderImageCommand(Guid Id) : ICommand, ICacheInvalidatingCommand
+{
+    IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.BartenderChanges;
+}
 
 internal sealed class DeleteBartenderImageCommandHandler(
     IBartenderRepository bartenderRepository,

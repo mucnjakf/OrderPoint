@@ -1,4 +1,6 @@
-﻿using OrderPoint.Application.Dtos;
+﻿using Microsoft.Extensions.Caching.Hybrid;
+using OrderPoint.Application.Caching;
+using OrderPoint.Application.Dtos;
 using OrderPoint.Application.Dtos.Mappers;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
@@ -18,10 +20,25 @@ public sealed record GetItemsQuery(
     ItemSortBy? SortBy)
     : IQuery<PaginationDto<ItemDto>>;
 
-internal sealed class GetItemsQueryHandler(IItemRepository itemRepository, IOrderRepository orderRepository)
+internal sealed class GetItemsQueryHandler(
+    IItemRepository itemRepository,
+    IOrderRepository orderRepository,
+    HybridCache cache)
     : IQueryHandler<GetItemsQuery, PaginationDto<ItemDto>>
 {
-    public async Task<Result<PaginationDto<ItemDto>>> Handle(
+    public async Task<Result<PaginationDto<ItemDto>>> Handle(GetItemsQuery query, CancellationToken cancellationToken)
+    {
+        PaginationDto<ItemDto> items = await cache.GetOrCreateAsync(
+            CacheKeys.For(query),
+            query,
+            GetItemsAsync,
+            tags: [CacheTags.Items],
+            cancellationToken: cancellationToken);
+
+        return Result.Success(items);
+    }
+
+    private async ValueTask<PaginationDto<ItemDto>> GetItemsAsync(
         GetItemsQuery query,
         CancellationToken cancellationToken)
     {

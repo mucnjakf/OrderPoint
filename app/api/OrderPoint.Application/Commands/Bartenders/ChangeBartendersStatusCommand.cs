@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using OrderPoint.Application.Caching;
 using OrderPoint.Application.Identity;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
@@ -9,7 +10,11 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Commands.Bartenders;
 
-public sealed record ChangeBartendersStatusCommand(IReadOnlyList<Guid> Ids, BartenderStatus Status) : ICommand;
+public sealed record ChangeBartendersStatusCommand(IReadOnlyList<Guid> Ids, BartenderStatus Status)
+    : ICommand, ICacheInvalidatingCommand
+{
+    IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.BartenderChanges;
+}
 
 internal sealed partial class ChangeBartendersStatusCommandHandler(
     IBartenderRepository bartenderRepository,

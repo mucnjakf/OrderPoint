@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using OrderPoint.Application.Caching;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Domain.Entities;
@@ -11,7 +12,10 @@ namespace OrderPoint.Application.Commands.Items;
 public sealed record AdjustItemsPriceCommand(
     IReadOnlyList<Guid> Ids,
     PriceAdjustmentMode Mode,
-    decimal Value) : ICommand;
+    decimal Value) : ICommand, ICacheInvalidatingCommand
+{
+    IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.ItemChanges;
+}
 
 internal sealed partial class AdjustItemsPriceCommandHandler(
     IItemRepository itemRepository,

@@ -14,6 +14,7 @@ using OrderPoint.Infrastructure;
 using OrderPoint.Infrastructure.EfCore;
 using OrderPoint.Infrastructure.Identity;
 using OrderPoint.ServiceDefaults;
+using StackExchange.Redis;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -72,6 +73,13 @@ builder.Services.AddValidatorsFromAssemblyContaining<Program>(includeInternalTyp
 // Storage
 builder.AddAzureBlobContainerClient("images");
 
+// Cache: Redis behind HybridCache. While Redis is down, commands fail fast instead of waiting for a timeout, reads
+// fall back to memory and the database, and the health check reports Degraded
+builder.AddRedisDistributedCache(
+    "cache",
+    configureOptions: options => options.BacklogPolicy = BacklogPolicy.FailFast);
+builder.ReportHealthCheckFailureAsDegraded("StackExchange.Redis");
+
 // Modules
 builder.Services.AddApplicationModule(builder.Configuration);
 builder.Services.AddInfrastructureModule(builder.Configuration);
@@ -79,9 +87,10 @@ builder.Services.AddInfrastructureModule(builder.Configuration);
 // Database: health check, Npgsql traces and metrics, retries on transient errors
 builder.EnrichNpgsqlDbContext<ApplicationDbContext>();
 
-// Developer tools: pgweb and Storage Explorer in the health report
+// Developer tools: pgweb, Storage Explorer and RedisInsight in the health report
 builder.AddDevToolHealthCheck("pgweb");
 builder.AddDevToolHealthCheck("storage-blobs-explorer");
+builder.AddDevToolHealthCheck("redisinsight");
 
 // ---------------------------------------------------------------------------------------------------------------------
 

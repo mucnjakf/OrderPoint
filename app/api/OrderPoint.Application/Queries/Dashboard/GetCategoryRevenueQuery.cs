@@ -1,4 +1,6 @@
-﻿using OrderPoint.Application.Dtos;
+﻿using Microsoft.Extensions.Caching.Hybrid;
+using OrderPoint.Application.Caching;
+using OrderPoint.Application.Dtos;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Domain.Enumerations;
@@ -9,12 +11,26 @@ namespace OrderPoint.Application.Queries.Dashboard;
 public sealed record GetCategoryRevenueQuery(DashboardPeriod Period, TimeZoneInfo TimeZone)
     : IQuery<IReadOnlyList<CategoryRevenueDto>>;
 
-internal sealed class GetCategoryRevenueQueryHandler(IDashboardRepository dashboardRepository)
+internal sealed class GetCategoryRevenueQueryHandler(IDashboardRepository dashboardRepository, HybridCache cache)
     : IQueryHandler<GetCategoryRevenueQuery, IReadOnlyList<CategoryRevenueDto>>
 {
     private const int TopCategoriesCount = 5;
 
     public async Task<Result<IReadOnlyList<CategoryRevenueDto>>> Handle(
+        GetCategoryRevenueQuery query,
+        CancellationToken cancellationToken)
+    {
+        IReadOnlyList<CategoryRevenueDto> categoryRevenue = await cache.GetOrCreateAsync(
+            CacheKeys.For(query),
+            query,
+            GetCategoryRevenueAsync,
+            tags: [CacheTags.Dashboard],
+            cancellationToken: cancellationToken);
+
+        return Result.Success(categoryRevenue);
+    }
+
+    private async ValueTask<IReadOnlyList<CategoryRevenueDto>> GetCategoryRevenueAsync(
         GetCategoryRevenueQuery query,
         CancellationToken cancellationToken)
     {
@@ -26,6 +42,6 @@ internal sealed class GetCategoryRevenueQueryHandler(IDashboardRepository dashbo
             TopCategoriesCount,
             cancellationToken);
 
-        return Result.Success(categoryRevenue);
+        return categoryRevenue;
     }
 }

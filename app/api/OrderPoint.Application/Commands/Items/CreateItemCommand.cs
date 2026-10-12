@@ -1,4 +1,5 @@
-﻿using OrderPoint.Application.Dtos;
+﻿using OrderPoint.Application.Caching;
+using OrderPoint.Application.Dtos;
 using OrderPoint.Application.Dtos.Mappers;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
@@ -16,7 +17,10 @@ public sealed record CreateItemCommand(
     decimal Price,
     ItemStatus Status,
     Guid CategoryId)
-    : ICommand<ItemDto>;
+    : ICommand<ItemDto>, ICacheInvalidatingCommand
+{
+    IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.ItemChanges;
+}
 
 internal sealed class CreateItemCommandHandler(
     IItemRepository itemRepository,

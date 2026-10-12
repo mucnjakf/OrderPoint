@@ -1,4 +1,6 @@
-﻿using OrderPoint.Application.Dtos;
+﻿using Microsoft.Extensions.Caching.Hybrid;
+using OrderPoint.Application.Caching;
+using OrderPoint.Application.Dtos;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Domain.Enumerations;
@@ -9,7 +11,7 @@ namespace OrderPoint.Application.Queries.Dashboard;
 public sealed record GetBartenderLeaderboardQuery(DashboardPeriod Period, TimeZoneInfo TimeZone)
     : IQuery<IReadOnlyList<BartenderLeaderboardEntryDto>>;
 
-internal sealed class GetBartenderLeaderboardQueryHandler(IDashboardRepository dashboardRepository)
+internal sealed class GetBartenderLeaderboardQueryHandler(IDashboardRepository dashboardRepository, HybridCache cache)
     : IQueryHandler<GetBartenderLeaderboardQuery, IReadOnlyList<BartenderLeaderboardEntryDto>>
 {
     private const int LeaderboardSize = 5;
@@ -18,11 +20,25 @@ internal sealed class GetBartenderLeaderboardQueryHandler(IDashboardRepository d
         GetBartenderLeaderboardQuery query,
         CancellationToken cancellationToken)
     {
+        IReadOnlyList<BartenderLeaderboardEntryDto> leaderboard = await cache.GetOrCreateAsync(
+            CacheKeys.For(query),
+            query,
+            GetBartenderLeaderboardAsync,
+            tags: [CacheTags.Dashboard],
+            cancellationToken: cancellationToken);
+
+        return Result.Success(leaderboard);
+    }
+
+    private async ValueTask<IReadOnlyList<BartenderLeaderboardEntryDto>> GetBartenderLeaderboardAsync(
+        GetBartenderLeaderboardQuery query,
+        CancellationToken cancellationToken)
+    {
         var range = DashboardPeriodRange.For(query.Period, DateTimeOffset.UtcNow, query.TimeZone);
 
         IReadOnlyList<BartenderLeaderboardEntryDto> leaderboard = await dashboardRepository
             .GetBartenderLeaderboardAsync(range.FromUtc, range.ToUtc, LeaderboardSize, cancellationToken);
 
-        return Result.Success(leaderboard);
+        return leaderboard;
     }
 }

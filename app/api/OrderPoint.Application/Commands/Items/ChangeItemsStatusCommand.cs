@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using OrderPoint.Application.Caching;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Domain.Entities;
@@ -8,7 +9,11 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Commands.Items;
 
-public sealed record ChangeItemsStatusCommand(IReadOnlyList<Guid> Ids, ItemStatus Status) : ICommand;
+public sealed record ChangeItemsStatusCommand(IReadOnlyList<Guid> Ids, ItemStatus Status)
+    : ICommand, ICacheInvalidatingCommand
+{
+    IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.ItemChanges;
+}
 
 internal sealed partial class ChangeItemsStatusCommandHandler(
     IItemRepository itemRepository,

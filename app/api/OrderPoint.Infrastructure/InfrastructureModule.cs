@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OrderPoint.Application.Identity;
@@ -15,6 +16,10 @@ namespace OrderPoint.Infrastructure;
 public static class InfrastructureModule
 {
     private const int MinimumPasswordLength = 8;
+
+    private static readonly TimeSpan LocalCacheExpiration = TimeSpan.FromMinutes(5);
+
+    private static readonly TimeSpan CacheExpiration = TimeSpan.FromMinutes(30);
 
     public static IServiceCollection AddInfrastructureModule(
         this IServiceCollection services,
@@ -34,6 +39,13 @@ public static class InfrastructureModule
         services.AddScoped<IDashboardRepository, DashboardEfCoreRepository>();
 
         services.AddScoped<IImageStorage, BlobImageStorage>();
+
+        // In memory and, through the IDistributedCache the API registers, in Redis; writes remove entries by tag
+        services.AddHybridCache(options => options.DefaultEntryOptions = new HybridCacheEntryOptions
+        {
+            LocalCacheExpiration = LocalCacheExpiration,
+            Expiration = CacheExpiration
+        });
 
         // Lockout defaults: 5 failed attempts lock the account for 5 minutes
         services.AddIdentityCore<ApplicationUser>(options =>

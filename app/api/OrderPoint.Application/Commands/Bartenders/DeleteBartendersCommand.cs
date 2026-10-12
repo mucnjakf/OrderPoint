@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using OrderPoint.Application.Caching;
 using OrderPoint.Application.Identity;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
@@ -9,7 +10,10 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Commands.Bartenders;
 
-public sealed record DeleteBartendersCommand(IReadOnlyList<Guid> Ids) : ICommand;
+public sealed record DeleteBartendersCommand(IReadOnlyList<Guid> Ids) : ICommand, ICacheInvalidatingCommand
+{
+    IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.BartenderChanges;
+}
 
 internal sealed partial class DeleteBartendersCommandHandler(
     IBartenderRepository bartenderRepository,

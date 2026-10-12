@@ -1,4 +1,6 @@
-﻿using OrderPoint.Application.Dtos;
+﻿using Microsoft.Extensions.Caching.Hybrid;
+using OrderPoint.Application.Caching;
+using OrderPoint.Application.Dtos;
 using OrderPoint.Application.Dtos.Mappers;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
@@ -17,10 +19,24 @@ public sealed record GetCategoriesQuery(
     CategorySortBy? SortBy)
     : IQuery<PaginationDto<CategoryDto>>;
 
-internal sealed class GetCategoriesQueryHandler(ICategoryRepository categoryRepository)
+internal sealed class GetCategoriesQueryHandler(ICategoryRepository categoryRepository, HybridCache cache)
     : IQueryHandler<GetCategoriesQuery, PaginationDto<CategoryDto>>
 {
     public async Task<Result<PaginationDto<CategoryDto>>> Handle(
+        GetCategoriesQuery query,
+        CancellationToken cancellationToken)
+    {
+        PaginationDto<CategoryDto> categories = await cache.GetOrCreateAsync(
+            CacheKeys.For(query),
+            query,
+            GetCategoriesAsync,
+            tags: [CacheTags.Categories],
+            cancellationToken: cancellationToken);
+
+        return Result.Success(categories);
+    }
+
+    private async ValueTask<PaginationDto<CategoryDto>> GetCategoriesAsync(
         GetCategoriesQuery query,
         CancellationToken cancellationToken)
     {

@@ -12,13 +12,15 @@ public sealed partial class HealthPage : IDisposable
     [
         (HealthService.ApiCheckName, "OrderPoint API", Icons.Material.Filled.Api),
         ("Database", "PostgreSQL", Icons.Material.Filled.Storage),
-        ("Blob storage", "Images in Azure Blob Storage", Icons.Material.Filled.PhotoLibrary)
+        ("Storage", "Azure Storage", Icons.Material.Filled.PhotoLibrary),
+        ("Cache", "Redis", Icons.Material.Filled.Memory)
     ];
 
     private static readonly (string Name, string Subtitle, string Icon)[] DevTools =
     [
-        ("pgweb", "Database browser", Icons.Material.Filled.TableView),
-        ("Storage Explorer", "Blob storage browser", Icons.Material.Filled.FolderOpen)
+        ("Database browser", "pgweb", Icons.Material.Filled.TableView),
+        ("Storage browser", "Azure Storage Explorer", Icons.Material.Filled.FolderOpen),
+        ("Cache browser", "RedisInsight", Icons.Material.Filled.ManageSearch)
     ];
 
     [Inject]

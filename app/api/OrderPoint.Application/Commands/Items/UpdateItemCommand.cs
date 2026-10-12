@@ -1,4 +1,5 @@
-﻿using OrderPoint.Application.Mediator;
+﻿using OrderPoint.Application.Caching;
+using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Domain.Entities;
 using OrderPoint.Domain.Enumerations;
@@ -14,7 +15,10 @@ public sealed record UpdateItemCommand(
     double Portion,
     decimal Price,
     ItemStatus Status,
-    Guid CategoryId) : ICommand;
+    Guid CategoryId) : ICommand, ICacheInvalidatingCommand
+{
+    IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.ItemChanges;
+}
 
 internal sealed class UpdateItemCommandHandler(
     IItemRepository itemRepository,

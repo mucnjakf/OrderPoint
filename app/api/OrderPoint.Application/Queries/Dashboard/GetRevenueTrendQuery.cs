@@ -1,4 +1,6 @@
-﻿using OrderPoint.Application.Dtos;
+﻿using Microsoft.Extensions.Caching.Hybrid;
+using OrderPoint.Application.Caching;
+using OrderPoint.Application.Dtos;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Domain.Enumerations;
@@ -9,12 +11,26 @@ namespace OrderPoint.Application.Queries.Dashboard;
 public sealed record GetRevenueTrendQuery(DashboardPeriod Period, TimeZoneInfo TimeZone)
     : IQuery<IReadOnlyList<RevenueTrendPointDto>>;
 
-internal sealed class GetRevenueTrendQueryHandler(IDashboardRepository dashboardRepository)
+internal sealed class GetRevenueTrendQueryHandler(IDashboardRepository dashboardRepository, HybridCache cache)
     : IQueryHandler<GetRevenueTrendQuery, IReadOnlyList<RevenueTrendPointDto>>
 {
     private const int HoursPerDay = 24;
 
     public async Task<Result<IReadOnlyList<RevenueTrendPointDto>>> Handle(
+        GetRevenueTrendQuery query,
+        CancellationToken cancellationToken)
+    {
+        IReadOnlyList<RevenueTrendPointDto> revenueTrend = await cache.GetOrCreateAsync(
+            CacheKeys.For(query),
+            query,
+            GetRevenueTrendAsync,
+            tags: [CacheTags.Dashboard],
+            cancellationToken: cancellationToken);
+
+        return Result.Success(revenueTrend);
+    }
+
+    private async ValueTask<IReadOnlyList<RevenueTrendPointDto>> GetRevenueTrendAsync(
         GetRevenueTrendQuery query,
         CancellationToken cancellationToken)
     {

@@ -1,4 +1,5 @@
-﻿using OrderPoint.Application.Dtos;
+﻿using OrderPoint.Application.Caching;
+using OrderPoint.Application.Dtos;
 using OrderPoint.Application.Dtos.Mappers;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
@@ -12,7 +13,10 @@ public sealed record CreateCategoryCommand(
     string Name,
     string Description,
     CategoryStatus Status)
-    : ICommand<CategoryDto>;
+    : ICommand<CategoryDto>, ICacheInvalidatingCommand
+{
+    IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.CategoryChanges;
+}
 
 internal sealed class CreateCategoryCommandHandler(ICategoryRepository categoryRepository, IUnitOfWork unitOfWork)
     : ICommandHandler<CreateCategoryCommand, CategoryDto>

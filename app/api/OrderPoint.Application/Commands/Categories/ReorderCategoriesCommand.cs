@@ -1,4 +1,5 @@
-﻿using OrderPoint.Application.Mediator;
+﻿using OrderPoint.Application.Caching;
+using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Domain.Entities;
 using OrderPoint.Domain.Errors;
@@ -6,7 +7,10 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Commands.Categories;
 
-public sealed record ReorderCategoriesCommand(IReadOnlyList<Guid> Ids) : ICommand;
+public sealed record ReorderCategoriesCommand(IReadOnlyList<Guid> Ids) : ICommand, ICacheInvalidatingCommand
+{
+    IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.CategoryChanges;
+}
 
 internal sealed class ReorderCategoriesCommandHandler(
     ICategoryRepository categoryRepository,

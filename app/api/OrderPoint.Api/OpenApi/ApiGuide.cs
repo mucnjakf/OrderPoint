@@ -96,5 +96,7 @@ internal static class ApiGuide
         - **Bulk operations** (`.../status`, `.../delete`, and `items/category` and `items/price`) take 1 to 100
           unique ids and are all-or-nothing: if any id is missing or blocked, nothing changes.
         - **Availability**: an item can be ordered only while both the item and its category are Active.
+        - **Caching**: gets, lists, searches and dashboard widgets (except `dashboard/live`) are cached in memory
+          and in Redis. Every successful change removes the reads it affects, so a read after a write is current.
         """;
 }

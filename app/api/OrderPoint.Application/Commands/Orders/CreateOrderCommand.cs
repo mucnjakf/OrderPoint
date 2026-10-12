@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using OrderPoint.Application.Caching;
 using OrderPoint.Application.Dtos;
 using OrderPoint.Application.Dtos.Mappers;
 using OrderPoint.Application.Mediator;
@@ -16,7 +17,10 @@ public sealed record CreateOrderCommand(
     string TableCode,
     string? Note,
     IReadOnlyList<CreateOrderItemCommand> Items)
-    : ICommand<OrderDto>;
+    : ICommand<OrderDto>, ICacheInvalidatingCommand
+{
+    IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.OrderChanges;
+}
 
 internal sealed partial class CreateOrderCommandHandler(
     IOrderRepository orderRepository,

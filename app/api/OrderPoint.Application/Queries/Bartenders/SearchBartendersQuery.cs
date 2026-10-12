@@ -1,4 +1,6 @@
-﻿using OrderPoint.Application.Dtos;
+﻿using Microsoft.Extensions.Caching.Hybrid;
+using OrderPoint.Application.Caching;
+using OrderPoint.Application.Dtos;
 using OrderPoint.Application.Dtos.Mappers;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
@@ -11,10 +13,25 @@ public sealed record SearchBartendersQuery(string SearchQuery) : IQuery<IReadOnl
 
 internal sealed class SearchBartendersQueryHandler(
     IBartenderRepository bartenderRepository,
-    IOrderRepository orderRepository)
+    IOrderRepository orderRepository,
+    HybridCache cache)
     : IQueryHandler<SearchBartendersQuery, IReadOnlyList<BartenderDto>>
 {
     public async Task<Result<IReadOnlyList<BartenderDto>>> Handle(
+        SearchBartendersQuery query,
+        CancellationToken cancellationToken)
+    {
+        IReadOnlyList<BartenderDto> bartenders = await cache.GetOrCreateAsync(
+            CacheKeys.For(query),
+            query,
+            SearchBartendersAsync,
+            tags: [CacheTags.Bartenders],
+            cancellationToken: cancellationToken);
+
+        return Result.Success(bartenders);
+    }
+
+    private async ValueTask<IReadOnlyList<BartenderDto>> SearchBartendersAsync(
         SearchBartendersQuery query,
         CancellationToken cancellationToken)
     {

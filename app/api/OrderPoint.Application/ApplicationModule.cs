@@ -16,6 +16,7 @@ public static class ApplicationModule
             configure.LicenseKey = configuration["MediatR:LicenseKey"];
             configure.RegisterServicesFromAssembly(typeof(ApplicationModule).Assembly);
             configure.AddOpenBehavior(typeof(TelemetryBehavior<,>));
+            configure.AddOpenBehavior(typeof(CacheInvalidationBehavior<,>));
         });
 
         services.AddSingleton<ApplicationTelemetry>();

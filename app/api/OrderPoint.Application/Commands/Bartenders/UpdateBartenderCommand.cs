@@ -1,4 +1,5 @@
-﻿using OrderPoint.Application.Identity;
+﻿using OrderPoint.Application.Caching;
+using OrderPoint.Application.Identity;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Domain.Entities;
@@ -15,7 +16,10 @@ public sealed record UpdateBartenderCommand(
     string Email,
     string? PhoneNumber,
     BartenderStatus Status,
-    string? Notes) : ICommand;
+    string? Notes) : ICommand, ICacheInvalidatingCommand
+{
+    IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.BartenderChanges;
+}
 
 internal sealed class UpdateBartenderCommandHandler(
     IBartenderRepository bartenderRepository,

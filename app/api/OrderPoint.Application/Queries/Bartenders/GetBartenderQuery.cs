@@ -1,4 +1,6 @@
-﻿using OrderPoint.Application.Dtos;
+﻿using Microsoft.Extensions.Caching.Hybrid;
+using OrderPoint.Application.Caching;
+using OrderPoint.Application.Dtos;
 using OrderPoint.Application.Dtos.Mappers;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
@@ -12,22 +14,40 @@ public sealed record GetBartenderQuery(Guid Id) : IQuery<BartenderDto>;
 
 internal sealed class GetBartenderQueryHandler(
     IBartenderRepository bartenderRepository,
-    IOrderRepository orderRepository)
+    IOrderRepository orderRepository,
+    HybridCache cache)
     : IQueryHandler<GetBartenderQuery, BartenderDto>
 {
     public async Task<Result<BartenderDto>> Handle(GetBartenderQuery query, CancellationToken cancellationToken)
+    {
+        BartenderDto? bartenderDto = await cache.GetOrCreateAsync(
+            CacheKeys.For(query),
+            query,
+            GetBartenderAsync,
+            tags: [CacheTags.Bartenders],
+            cancellationToken: cancellationToken);
+
+        if (bartenderDto is null)
+        {
+            return Result.Failure<BartenderDto>(BartenderErrors.NotFound);
+        }
+
+        return Result.Success(bartenderDto);
+    }
+
+    private async ValueTask<BartenderDto?> GetBartenderAsync(
+        GetBartenderQuery query,
+        CancellationToken cancellationToken)
     {
         Bartender? bartender = await bartenderRepository.GetAsync(query.Id, cancellationToken);
 
         if (bartender is null)
         {
-            return Result.Failure<BartenderDto>(BartenderErrors.NotFound);
+            return null;
         }
 
         int ordersCount = await orderRepository.CountByBartenderAsync(bartender.Id, cancellationToken);
 
-        var bartenderDto = bartender.ToBartenderDto(ordersCount);
-
-        return Result.Success(bartenderDto);
+        return bartender.ToBartenderDto(ordersCount);
     }
 }

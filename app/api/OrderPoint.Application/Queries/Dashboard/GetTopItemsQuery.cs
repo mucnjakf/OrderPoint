@@ -1,4 +1,6 @@
-﻿using OrderPoint.Application.Dtos;
+﻿using Microsoft.Extensions.Caching.Hybrid;
+using OrderPoint.Application.Caching;
+using OrderPoint.Application.Dtos;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Domain.Enumerations;
@@ -9,12 +11,26 @@ namespace OrderPoint.Application.Queries.Dashboard;
 public sealed record GetTopItemsQuery(DashboardPeriod Period, TimeZoneInfo TimeZone)
     : IQuery<IReadOnlyList<TopItemDto>>;
 
-internal sealed class GetTopItemsQueryHandler(IDashboardRepository dashboardRepository)
+internal sealed class GetTopItemsQueryHandler(IDashboardRepository dashboardRepository, HybridCache cache)
     : IQueryHandler<GetTopItemsQuery, IReadOnlyList<TopItemDto>>
 {
     private const int TopItemsCount = 5;
 
     public async Task<Result<IReadOnlyList<TopItemDto>>> Handle(
+        GetTopItemsQuery query,
+        CancellationToken cancellationToken)
+    {
+        IReadOnlyList<TopItemDto> topItems = await cache.GetOrCreateAsync(
+            CacheKeys.For(query),
+            query,
+            GetTopItemsAsync,
+            tags: [CacheTags.Dashboard],
+            cancellationToken: cancellationToken);
+
+        return Result.Success(topItems);
+    }
+
+    private async ValueTask<IReadOnlyList<TopItemDto>> GetTopItemsAsync(
         GetTopItemsQuery query,
         CancellationToken cancellationToken)
     {
@@ -26,6 +42,6 @@ internal sealed class GetTopItemsQueryHandler(IDashboardRepository dashboardRepo
             TopItemsCount,
             cancellationToken);
 
-        return Result.Success(topItems);
+        return topItems;
     }
 }
