@@ -18,6 +18,10 @@ public sealed partial class StatefulView
     [Parameter]
     public string? EmptyStateText { get; set; }
 
+    // A second, quieter line under the empty state text (full-size states only)
+    [Parameter]
+    public string? EmptyStateDetail { get; set; }
+
     [Parameter]
     public bool Compact { get; set; }
 

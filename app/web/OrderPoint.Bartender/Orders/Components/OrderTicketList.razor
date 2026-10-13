@@ -1,0 +1,27 @@
+﻿<StatefulView IsLoading="@IsLoading"
+              ShowContent="@Orders.Any()"
+              EmptyStateIcon="@EmptyStateIcon"
+              EmptyStateText="@EmptyStateText"
+              EmptyStateDetail="@EmptyStateDetail">
+    <LoadingContent>
+        <MudStack Spacing="3">
+            @for (int i = 0; i < LoadingTicketsCount; i++)
+            {
+                <MudPaper Class="pa-3">
+                    <OrderTicketSkeleton/>
+                </MudPaper>
+            }
+        </MudStack>
+    </LoadingContent>
+
+    <ChildContent>
+        <MudStack Spacing="3">
+            @foreach (OrderDto order in Orders)
+            {
+                <OrderTicket @key="@order.Id"
+                             Order="@order"
+                             IsNew="@(IsOrderNew?.Invoke(order) ?? false)"/>
+            }
+        </MudStack>
+    </ChildContent>
+</StatefulView>

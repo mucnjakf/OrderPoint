@@ -1,0 +1,31 @@
+﻿<MudStack Spacing="2">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle"
+                     Width="72px"
+                     Height="44px"
+                     Style="border-radius: var(--mud-default-borderradius);"/>
+
+        <MudStack Spacing="0" Class="flex-1">
+            <MudText Typo="Typo.body1">
+                <MudSkeleton Width="80px"/>
+            </MudText>
+
+            <MudText Typo="Typo.caption">
+                <MudSkeleton Width="110px"/>
+            </MudText>
+        </MudStack>
+
+        <MudText Typo="Typo.h6">
+            <MudSkeleton Width="70px"/>
+        </MudText>
+    </MudStack>
+
+    <MudDivider/>
+
+    @for (int i = 0; i < OrderLinesCount; i++)
+    {
+        <MudText Typo="Typo.body1">
+            <MudSkeleton Width="160px"/>
+        </MudText>
+    }
+</MudStack>

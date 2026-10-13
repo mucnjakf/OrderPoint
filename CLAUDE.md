@@ -273,6 +273,13 @@ Field rules live in several places. Changing one means changing all of them:
   - `@(...)` for lambdas and expressions: `OnClick="@(() => ShowDeleteItemDialogAsync(item.Id, item.Name))"`.
 - The mockups in `design/` are inspiration only; the owner decides layout and fields per screen. Do not add fields or screens from a mockup unless asked.
 
+## Bartender app conventions (`web/OrderPoint.Bartender`)
+
+Same structure and rules as the Admin (feature folders, `X.razor` + `X.razor.cs`, typed API clients called through `ApiService`, skeletons, live reloads), but built for phones and tablets.
+
+- **Shell:** `Shared/Layout/MainLayout`: a dense app bar (logo, "OrderPoint / Bartender", `LiveIndicator` showing the `OrdersHubService` state: green Live, amber Connecting, red Offline) and `BottomNavigation`, fixed to the bottom (Orders `/`, which also matches `/orders/...`, My shift `/shift`, Account `/account`); `MainContent` is padded by its height. Snackbars sit at the top. Pages have one `h1` (`Typo.h6`/`h5`, no `PageHeader`). Empty states use a short title plus `StatefulView.EmptyStateDetail` for the hint on a second line ("Nothing in progress" / "Accept an order from the queue.").
+- **Orders (`/`):** Queue / Mine / Done tabs (`OrdersTab`; the scoped `OrdersTabState` remembers the last one for the session, so coming back from My shift, Account or an order opens it again; the tab bar is a paper like the tickets (border, theme radius, `overflow: hidden`) holding a row of three `flex-1` text buttons with a 2px primary underline on the selected one, not `MudTabs`, whose tab bar only grows as wide as its tabs; the selected tab's list renders below), each an `OrderTicketList` of `OrderTicket`s (number tile, table, "Placed 3 min ago" or "Completed Today 14:30", total, status chip, one line per item, note). Queue: every Pending order, oldest first (new ones highlighted with `NewOrdersTracker`). Mine: my Active, then my Accepted orders. Done: my Completed and Declined orders finished since local midnight (`TimeZoneInfo.GetTodayStartUtc()`), newest first. Each status is one `GET api/orders` call of up to 50 (`bartenderId` = `AuthService.UserId`), no paging. Tab counts are `TabCount` pills with `RollingNumber`. Every tab reloads silently on `OrdersChanged`, and a 30 s timer re-renders so relative times move on.
+
 ## C# style
 
 - File-scoped namespaces matching the folder path; `using` directives at the top, outside the namespace.

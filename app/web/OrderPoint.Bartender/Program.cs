@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Components.Server.Circuits;
 using MudBlazor;
 using MudBlazor.Services;
 using OrderPoint.Bartender;
+using OrderPoint.Bartender.Orders.Api;
+using OrderPoint.Bartender.Orders.Services;
 using OrderPoint.ServiceDefaults;
 using OrderPoint.Shared.Account.Api;
 using OrderPoint.Shared.Account.Services;
@@ -30,10 +32,12 @@ builder.Services.AddScoped<TimeZoneService>();
 builder.Services.AddScoped<DarkModeService>();
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<OrdersHubService>();
+builder.Services.AddScoped<OrdersTabState>();
 
 // The auth endpoints are anonymous and called without AccessTokenHandler, which uses them to refresh tokens
 builder.Services.AddHttpClient<AuthApiClient>(ConfigureApiClient);
 builder.Services.AddHttpClient<AccountApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
+builder.Services.AddHttpClient<OrderApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 
 // At the top, so snackbars never cover the bottom navigation
 builder.Services.AddMudServices(configuration =>

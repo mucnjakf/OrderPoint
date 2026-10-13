@@ -56,9 +56,18 @@ else if (EmptyStateIcon is not null && EmptyStateText is not null)
         <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Class="pa-10 flex-grow-1">
             <MudIcon Icon="@EmptyStateIcon" Size="Size.Large" Class="mb-1"/>
 
-            <MudText Typo="Typo.body1">
-                @EmptyStateText
-            </MudText>
+            <MudStack AlignItems="AlignItems.Center" Spacing="0">
+                <MudText Typo="Typo.body1" Align="Align.Center">
+                    @EmptyStateText
+                </MudText>
+
+                @if (EmptyStateDetail is not null)
+                {
+                    <MudText Typo="Typo.body2" Align="Align.Center" Style="color: var(--mud-palette-text-secondary)">
+                        @EmptyStateDetail
+                    </MudText>
+                }
+            </MudStack>
         </MudStack>
     }
     else
@@ -67,9 +76,20 @@ else if (EmptyStateIcon is not null && EmptyStateText is not null)
             <MudStack AlignItems="AlignItems.Center">
                 <MudIcon Icon="@EmptyStateIcon" Size="Size.Large" Class="mb-1"/>
 
-                <MudText Typo="Typo.body1">
-                    @EmptyStateText
-                </MudText>
+                <MudStack AlignItems="AlignItems.Center" Spacing="0">
+                    <MudText Typo="Typo.body1" Align="Align.Center">
+                        @EmptyStateText
+                    </MudText>
+
+                    @if (EmptyStateDetail is not null)
+                    {
+                        <MudText Typo="Typo.body2"
+                                 Align="Align.Center"
+                                 Style="color: var(--mud-palette-text-secondary)">
+                            @EmptyStateDetail
+                        </MudText>
+                    }
+                </MudStack>
             </MudStack>
         </MudPaper>
     }

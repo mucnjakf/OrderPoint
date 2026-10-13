@@ -32,6 +32,9 @@ internal sealed class AuthService(ProtectedLocalStorage protectedLocalStorage, A
 
     internal string? Email => _tokens?.Email;
 
+    // A bartender's user id is their Bartender.Id
+    internal Guid? UserId => _tokens?.UserId;
+
     internal async Task LoadAsync()
     {
         try

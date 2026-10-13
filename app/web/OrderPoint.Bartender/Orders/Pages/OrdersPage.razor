@@ -2,11 +2,48 @@
 
 <PageTitle>Orders</PageTitle>
 
-<MudText Typo="Typo.h5" HtmlTag="h1" Class="mb-2">
+<MudText Typo="Typo.h6" HtmlTag="h1" Class="mb-2">
     Orders
 </MudText>
 
-<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Style="color: var(--mud-palette-text-secondary);">
-    <MudIcon Icon="@Icons.Material.Filled.Receipt" Size="Size.Small" />
-    <MudText Typo="Typo.body2">The queue, your orders and what you finished today.</MudText>
-</MudStack>
+<MudPaper Class="d-flex mb-3" Style="@TabBarStyle">
+    @foreach (OrdersTab tab in Enum.GetValues<OrdersTab>())
+    {
+        OrdersTab tabValue = tab;
+
+        <MudButton Variant="Variant.Text"
+                   Class="flex-1"
+                   Style="@GetTabStyle(tabValue)"
+                   OnClick="@(() => SelectTab(tabValue))">
+            @tabValue.ToString() <TabCount Count="@GetTabCount(tabValue)"/>
+        </MudButton>
+    }
+</MudPaper>
+
+@switch (OrdersTabState.Tab)
+{
+    case OrdersTab.Queue:
+        <OrderTicketList Orders="@QueueOrders"
+                         IsLoading="@IsLoadingQueue"
+                         IsOrderNew="@(order => NewQueueOrders.IsNew(order.Id))"
+                         EmptyStateIcon="@Icons.Material.Filled.Inbox"
+                         EmptyStateText="No orders waiting"
+                         EmptyStateDetail="New orders show up here by themselves."/>
+        break;
+
+    case OrdersTab.Mine:
+        <OrderTicketList Orders="@MyOrders"
+                         IsLoading="@IsLoadingMine"
+                         EmptyStateIcon="@Icons.Material.Filled.LocalBar"
+                         EmptyStateText="Nothing in progress"
+                         EmptyStateDetail="Accept an order from the queue."/>
+        break;
+
+    case OrdersTab.Done:
+        <OrderTicketList Orders="@DoneOrders"
+                         IsLoading="@IsLoadingDone"
+                         EmptyStateIcon="@Icons.Material.Filled.TaskAlt"
+                         EmptyStateText="Nothing finished today yet"
+                         EmptyStateDetail="Completed and declined orders show up here."/>
+        break;
+}
