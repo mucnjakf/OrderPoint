@@ -69,11 +69,14 @@
         <MudStack Spacing="2">
             @foreach (MenuItemDto item in FoundItems)
             {
-                <MenuItemRow @key="@item.Id"
+                Guid itemId = item.Id;
+
+                <MenuItemRow @key="@itemId"
                              Item="@item"
-                             CartQuantity="@CartService.GetQuantity(item.Id)"
+                             CartQuantity="@CartService.GetQuantity(itemId)"
                              OnClick="@OpenItem"
-                             OnAdd="@AddToCartAsync"/>
+                             OnAdd="@AddToCartAsync"
+                             OnCartQuantityChanged="@(quantity => CartService.SetQuantityAsync(itemId, quantity))"/>
             }
         </MudStack>
     </ChildContent>

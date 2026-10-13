@@ -38,30 +38,47 @@
                              Name="@Item.Name"
                              Description="@Item.Description"
                              Price="@Item.Price"
-                             Portion="@Item.Portion"
                              IsDescriptionClamped="false"/>
         </MudCard>
 
         <MudPaper Class="pa-3 mt-3">
-            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
-                <QuantityStepper @bind-Value="@Quantity" Max="@Math.Max(1, MaxQuantityToAdd)"/>
-
-                <MudButton Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           Size="Size.Large"
-                           Class="flex-1"
-                           StartIcon="@Icons.Material.Filled.AddShoppingCart"
-                           Disabled="@(MaxQuantityToAdd == 0)"
-                           OnClick="@AddToCartAsync">
-                    @AddButtonText
-                </MudButton>
-            </MudStack>
-
-            @if (CartQuantity > 0)
+            @if (CartQuantity == 0)
             {
-                <MudText Typo="Typo.caption" Class="d-block mt-2" Style="color: var(--mud-palette-text-secondary)">
-                    @CartQuantity in your cart already
-                </MudText>
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                    <QuantityStepper @bind-Value="@Quantity" Max="@CartService.MaxQuantity"/>
+
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Size="Size.Large"
+                               Class="flex-1"
+                               StartIcon="@Icons.Material.Filled.AddShoppingCart"
+                               OnClick="@AddToCartAsync">
+                        @AddButtonText
+                    </MudButton>
+                </MudStack>
+            }
+            else
+            {
+                <MudStack Spacing="3">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                        <MudText Typo="Typo.body1">
+                            In your cart
+                        </MudText>
+
+                        <QuantityStepper Value="@CartQuantity"
+                                         ValueChanged="@OnCartQuantityChangedAsync"
+                                         Min="0"
+                                         Max="@CartService.MaxQuantity"/>
+                    </MudStack>
+
+                    <MudButton Variant="Variant.Outlined"
+                               Size="Size.Large"
+                               FullWidth="true"
+                               StartIcon="@Icons.Material.Filled.ShoppingCart"
+                               Href="/cart">
+                        View cart
+                    </MudButton>
+                </MudStack>
             }
         </MudPaper>
     </ChildContent>

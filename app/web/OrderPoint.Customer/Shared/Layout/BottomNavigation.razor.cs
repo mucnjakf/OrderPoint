@@ -17,9 +17,11 @@ public sealed partial class BottomNavigation : IDisposable
 
     private const string CartHref = "/cart";
 
-    private const string ActiveButtonStyle = "text-transform: none; font-weight: 600;";
+    // Visible overflow, so the cart badge above the icon isn't cut off by the button
+    private const string ActiveButtonStyle = "text-transform: none; font-weight: 600; overflow: visible;";
 
-    private const string InactiveButtonStyle = "text-transform: none; color: var(--mud-palette-text-secondary);";
+    private const string InactiveButtonStyle =
+        "text-transform: none; color: var(--mud-palette-text-secondary); overflow: visible;";
 
     private static readonly (string Href, string Label, string Icon)[] Destinations =
     [

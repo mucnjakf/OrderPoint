@@ -31,10 +31,14 @@ builder.Services.AddScoped<CartService>();
 builder.Services.AddHttpClient<MenuApiClient>(ConfigureApiClient);
 builder.Services.AddHttpClient<OrderApiClient>(ConfigureApiClient);
 
-// At the top, so snackbars never cover the bottom navigation
+// MudBlazor's default is 5000
+const int SnackbarVisibleMilliseconds = 2000;
+
+// At the top, so snackbars never cover the bottom navigation; short, because guests tap quickly through the menu
 builder.Services.AddMudServices(configuration =>
 {
     configuration.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopCenter;
+    configuration.SnackbarConfiguration.VisibleStateDuration = SnackbarVisibleMilliseconds;
     configuration.SnackbarConfiguration.SnackbarVariant = Variant.Outlined;
     configuration.SnackbarConfiguration.ClearAfterNavigation = false;
 });

@@ -27,11 +27,19 @@
         </MudText>
 
         <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
-            @PortionText
+            @if (Portion is not null)
+            {
+                @PortionText
+            }
+
+            @if (Portion is not null && OrdersCount is not null)
+            {
+                @Separator
+            }
 
             @if (OrdersCount is not null)
             {
-                <text>· </text><RollingNumber Value="@OrdersCount.Value" Text="@OrdersCountText"/>
+                <RollingNumber Value="@OrdersCount.Value" Text="@OrdersCountText"/>
             }
         </MudText>
     </MudStack>

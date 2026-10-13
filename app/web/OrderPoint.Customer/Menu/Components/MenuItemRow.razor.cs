@@ -14,7 +14,7 @@ public sealed partial class MenuItemRow
     [EditorRequired]
     public MenuItemDto Item { get; set; } = null!;
 
-    // How many are in the cart, shown on the + button
+    // 0 shows a + button, more shows − n +
     [Parameter]
     [EditorRequired]
     public int CartQuantity { get; set; }
@@ -26,6 +26,10 @@ public sealed partial class MenuItemRow
     [Parameter]
     [EditorRequired]
     public EventCallback<MenuItemDto> OnAdd { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public EventCallback<int> OnCartQuantityChanged { get; set; }
 
     private string DetailsText => string.IsNullOrWhiteSpace(Item.Description)
         ? $"Portion {Item.Portion.ToString(CultureInfo.CurrentCulture)}"
@@ -39,5 +43,10 @@ public sealed partial class MenuItemRow
     private async Task OnAddClickAsync()
     {
         await OnAdd.InvokeAsync(Item);
+    }
+
+    private async Task OnCartQuantityChangedAsync(int quantity)
+    {
+        await OnCartQuantityChanged.InvokeAsync(quantity);
     }
 }

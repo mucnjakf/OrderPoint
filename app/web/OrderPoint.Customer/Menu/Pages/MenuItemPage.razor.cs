@@ -8,8 +8,9 @@ using OrderPoint.Customer.Shared.Extensions;
 
 namespace OrderPoint.Customer.Menu.Pages;
 
-// Under its category's route, so the back arrow returns to that category
-public sealed partial class MenuItemPage
+// Under its category's route, so the back arrow returns to that category. Before the item is in the cart the page
+// adds it; afterwards it changes the quantity there or removes it.
+public sealed partial class MenuItemPage : IDisposable
 {
     [Inject]
     private MenuService MenuService { get; set; } = null!;
@@ -39,13 +40,11 @@ public sealed partial class MenuItemPage
 
     private int CartQuantity => CartService.GetQuantity(ItemId);
 
-    // A line holds at most CartService.MaxQuantity
-    private int MaxQuantityToAdd => CartService.MaxQuantity - CartQuantity;
-
     private string AddButtonText => $"Add · {(Item!.Price * Quantity).ToString("C", CultureInfo.CurrentCulture)}";
 
     protected override async Task OnInitializedAsync()
     {
+        CartService.Changed += OnCartChanged;
         IReadOnlyList<MenuCategoryDto> menu = await MenuService.GetMenuAsync() ?? [];
 
         Category = menu.FirstOrDefault(category => category.Id == CategoryId);
@@ -54,14 +53,27 @@ public sealed partial class MenuItemPage
         IsLoading = false;
     }
 
+    public void Dispose()
+    {
+        CartService.Changed -= OnCartChanged;
+    }
+
     private async Task AddToCartAsync()
     {
-        int quantity = Math.Min(Quantity, MaxQuantityToAdd);
+        await CartService.AddAsync(Item!.Id, CategoryId, Item.Name, Quantity);
 
-        await CartService.AddAsync(Item!.Id, CategoryId, Item.Name, quantity);
-
-        Snackbar.AddCartConfirmation($"{quantity}× {Item.Name} added", NavigationManager);
+        Snackbar.AddCartConfirmation($"{Quantity}× {Item.Name} added", NavigationManager);
 
         Quantity = 1;
+    }
+
+    private async Task OnCartQuantityChangedAsync(int quantity)
+    {
+        await CartService.SetQuantityAsync(ItemId, quantity);
+    }
+
+    private void OnCartChanged()
+    {
+        _ = InvokeAsync(StateHasChanged);
     }
 }

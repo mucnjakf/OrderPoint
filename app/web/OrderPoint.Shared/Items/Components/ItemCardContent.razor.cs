@@ -10,6 +10,8 @@ public sealed partial class ItemCardContent
 {
     private const string SecondaryTextStyle = "color: var(--mud-palette-text-secondary);";
 
+    private const string Separator = " · ";
+
     private const string ClampedDescriptionStyle =
         $"{SecondaryTextStyle} display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; " +
         "overflow: hidden;";
@@ -42,9 +44,9 @@ public sealed partial class ItemCardContent
     [EditorRequired]
     public decimal Price { get; set; }
 
+    // Null leaves it out (guests, who see no unit next to it)
     [Parameter]
-    [EditorRequired]
-    public double Portion { get; set; }
+    public double? Portion { get; set; }
 
     // Staff see how often the item was ordered; null leaves it out (guests)
     [Parameter]
@@ -61,7 +63,7 @@ public sealed partial class ItemCardContent
 
     private string PriceText => Price.ToString("C", CultureInfo.CurrentCulture);
 
-    private string PortionText => Portion.ToString(CultureInfo.CurrentCulture);
+    private string PortionText => (Portion ?? 0).ToString(CultureInfo.CurrentCulture);
 
     private string OrdersCountText => (OrdersCount ?? 0).ToCountText("order", "orders");
 }

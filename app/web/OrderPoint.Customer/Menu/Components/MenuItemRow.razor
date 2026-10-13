@@ -12,26 +12,33 @@
                 @Item.Name
             </MudText>
 
+            <MudText Typo="Typo.body2" Style="font-weight: 600">
+                @Item.Price.ToString("C", CultureInfo.CurrentCulture)
+            </MudText>
+
             <MudText Typo="Typo.caption" Style="@($"color: var(--mud-palette-text-secondary); {SingleLineStyle}")">
                 @DetailsText
             </MudText>
         </MudStack>
 
-        <MudText Typo="Typo.body1" Style="font-weight: 600; white-space: nowrap">
-            @Item.Price.ToString("C", CultureInfo.CurrentCulture)
-        </MudText>
-
-        @* Adding must not open the item as well *@
+        @* Changing the cart must not open the item as well *@
         <div @onclick:stopPropagation="true">
-            <MudBadge Content="@CartQuantity" Visible="@(CartQuantity > 0)" Color="Color.Primary" Overlap="true">
+            @if (CartQuantity == 0)
+            {
                 <MudIconButton Icon="@Icons.Material.Filled.Add"
                                Variant="Variant.Filled"
                                Color="Color.Primary"
                                Size="Size.Small"
-                               Disabled="@(CartQuantity >= CartService.MaxQuantity)"
                                aria-label="@($"Add {Item.Name} to the cart")"
                                OnClick="@OnAddClickAsync"/>
-            </MudBadge>
+            }
+            else
+            {
+                <QuantityStepper Value="@CartQuantity"
+                                 ValueChanged="@OnCartQuantityChangedAsync"
+                                 Min="0"
+                                 Max="@CartService.MaxQuantity"/>
+            }
         </div>
     </MudStack>
 </MudPaper>
