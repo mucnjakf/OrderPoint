@@ -3,6 +3,7 @@ using OrderPoint.Application.Caching;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Domain.Entities;
+using OrderPoint.Domain.Enumerations;
 using OrderPoint.Domain.Errors;
 using OrderPoint.Domain.Outcomes;
 
@@ -16,6 +17,7 @@ public sealed record CompleteOrderCommand(Guid Id, Guid BartenderId)
 
 internal sealed partial class CompleteOrderCommandHandler(
     IOrderRepository orderRepository,
+    IBartenderRepository bartenderRepository,
     IUnitOfWork unitOfWork,
     ILogger<CompleteOrderCommandHandler> logger)
     : ICommandHandler<CompleteOrderCommand>
@@ -27,6 +29,19 @@ internal sealed partial class CompleteOrderCommandHandler(
         if (order is null)
         {
             return Result.Failure(OrderErrors.NotFound);
+        }
+
+        Bartender? bartender = await bartenderRepository.GetAsync(command.BartenderId, cancellationToken);
+
+        if (bartender is null)
+        {
+            return Result.Failure(BartenderErrors.NotFound);
+        }
+
+        // The access token outlives a deactivation by up to 15 minutes
+        if (bartender.Status == BartenderStatus.Inactive)
+        {
+            return Result.Failure(AuthErrors.AccountInactive);
         }
 
         Result result = order.Complete(command.BartenderId);

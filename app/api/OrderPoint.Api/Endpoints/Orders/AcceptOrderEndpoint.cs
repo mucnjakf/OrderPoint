@@ -22,6 +22,7 @@ internal sealed class AcceptOrderEndpoint : IEndpoint
                 Accepts a pending order and assigns it to the signed-in bartender, who is then the only one who can
                 start, complete or decline it.
 
+                - `403 Auth.AccountInactive`: the signed-in bartender was deactivated
                 - `404 Bartender.NotFound`: the signed-in bartender no longer exists
                 - `409 Order.InvalidStatusTransition`: the order is not pending (e.g. another bartender accepted it
                   first)

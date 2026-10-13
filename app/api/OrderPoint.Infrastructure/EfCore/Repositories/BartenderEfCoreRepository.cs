@@ -62,9 +62,6 @@ internal sealed class BartenderEfCoreRepository(ApplicationDbContext dbContext) 
     public void Delete(Bartender bartender)
         => dbContext.Bartenders.Remove(bartender);
 
-    public async Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default)
-        => await dbContext.Bartenders.AnyAsync(bartender => bartender.Id == id, cancellationToken);
-
     public async Task<bool> ExistsByEmailAsync(string email, CancellationToken cancellationToken = default)
         => await dbContext.Bartenders.AnyAsync(bartender => bartender.Email == email, cancellationToken);
 

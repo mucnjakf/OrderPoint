@@ -67,14 +67,7 @@ internal sealed class DashboardEfCoreRepository(ApplicationDbContext dbContext) 
                     (order.Status == OrderStatus.Accepted || order.Status == OrderStatus.Active),
                 cancellationToken);
 
-        // Completed today, wherever the order was placed, so an order taken before midnight still counts
-        var completedOrders = await dbContext.Orders
-            .AsNoTracking()
-            .Where(order =>
-                order.BartenderId == bartenderId &&
-                order.Status == OrderStatus.Completed &&
-                order.CompletedAtUtc >= todayFromUtc &&
-                order.CompletedAtUtc < nowUtc)
+        var completedOrders = await GetCompletedByBartenderInRange(bartenderId, todayFromUtc, nowUtc)
             .Select(order => new { order.CreatedAtUtc, CompletedAtUtc = order.CompletedAtUtc!.Value })
             .ToListAsync(cancellationToken);
 
@@ -85,6 +78,45 @@ internal sealed class DashboardEfCoreRepository(ApplicationDbContext dbContext) 
             completedOrders.Count == 0
                 ? null
                 : completedOrders.Average(order => (order.CompletedAtUtc - order.CreatedAtUtc).TotalMinutes));
+    }
+
+    public async Task<IReadOnlyList<DashboardOrderDto>> GetCompletedOrdersByBartenderAsync(
+        Guid bartenderId,
+        DateTimeOffset fromUtc,
+        DateTimeOffset toUtc,
+        CancellationToken cancellationToken = default)
+        => await GetCompletedByBartenderInRange(bartenderId, fromUtc, toUtc)
+            .Select(order => new DashboardOrderDto(
+                order.Status,
+                order.Items.Sum(orderItem => orderItem.Quantity * orderItem.UnitPrice),
+                order.CreatedAtUtc,
+                order.CompletedAtUtc))
+            .ToListAsync(cancellationToken);
+
+    public async Task<IReadOnlyList<TopItemDto>> GetCompletedItemsByBartenderAsync(
+        Guid bartenderId,
+        DateTimeOffset fromUtc,
+        DateTimeOffset toUtc,
+        CancellationToken cancellationToken = default)
+    {
+        var items = await GetCompletedByBartenderInRange(bartenderId, fromUtc, toUtc)
+            .SelectMany(order => order.Items)
+            .GroupBy(orderItem => new { orderItem.ItemId, orderItem.Item.Name, orderItem.Item.ImageUrl })
+            .Select(group => new
+            {
+                group.Key.ItemId,
+                group.Key.Name,
+                group.Key.ImageUrl,
+                Quantity = group.Sum(orderItem => orderItem.Quantity),
+                Revenue = group.Sum(orderItem => orderItem.Quantity * orderItem.UnitPrice)
+            })
+            .OrderByDescending(item => item.Quantity)
+            .ThenByDescending(item => item.Revenue)
+            .ToListAsync(cancellationToken);
+
+        return items
+            .Select(item => new TopItemDto(item.ItemId, item.Name, item.ImageUrl, item.Quantity, item.Revenue))
+            .ToList();
     }
 
     public async Task<IReadOnlyList<CategoryRevenueDto>> GetCategoryRevenueAsync(
@@ -181,4 +213,17 @@ internal sealed class DashboardEfCoreRepository(ApplicationDbContext dbContext) 
         => GetOrdersInRange(fromUtc, toUtc)
             .Where(order => order.Status == OrderStatus.Completed)
             .SelectMany(order => order.Items);
+
+    // By completion time, wherever the order was placed, so an order taken before midnight still counts today
+    private IQueryable<Order> GetCompletedByBartenderInRange(
+        Guid bartenderId,
+        DateTimeOffset fromUtc,
+        DateTimeOffset toUtc)
+        => dbContext.Orders
+            .AsNoTracking()
+            .Where(order =>
+                order.BartenderId == bartenderId &&
+                order.Status == OrderStatus.Completed &&
+                order.CompletedAtUtc >= fromUtc &&
+                order.CompletedAtUtc < toUtc);
 }

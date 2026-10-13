@@ -25,4 +25,24 @@ internal sealed class ShiftApiClient(HttpClient httpClient, TimeZoneService time
 
         return result.Data;
     }
+
+    internal async Task<ShiftDayDto> GetShiftDayAsync(CancellationToken cancellationToken = default)
+    {
+        string timeZone = Uri.EscapeDataString(timeZoneService.TimeZone.Id);
+
+        HttpResponseMessage response = await httpClient.GetAsync(
+            $"api/shift/day?timeZone={timeZone}",
+            cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+
+        GetShiftDayResponse result =
+            await response.Content.ReadFromJsonAsync<GetShiftDayResponse>(cancellationToken)
+            ?? throw new InvalidOperationException($"Unable to parse {nameof(GetShiftDayResponse)}");
+
+        return result.Data;
+    }
 }

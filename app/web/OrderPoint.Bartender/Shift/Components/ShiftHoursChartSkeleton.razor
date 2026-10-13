@@ -1,0 +1,12 @@
+﻿<div style="@BarsStyle">
+    @foreach (int height in BarHeights)
+    {
+        <div style="flex: 1; min-width: 0;">
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="@($"{height}px")"/>
+        </div>
+    }
+</div>
+
+<MudText Typo="Typo.caption" Class="mt-1">
+    <MudSkeleton Width="100%"/>
+</MudText>

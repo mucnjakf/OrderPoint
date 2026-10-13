@@ -6,6 +6,7 @@ using OrderPoint.Bartender.Orders.Dialogs;
 using OrderPoint.Bartender.Orders.Enumerations;
 using OrderPoint.Bartender.Shared.Layout;
 using OrderPoint.Shared.Auth.Services;
+using OrderPoint.Shared.Errors;
 using OrderPoint.Shared.Orders.Dtos;
 using OrderPoint.Shared.Orders.Enumerations;
 using OrderPoint.Shared.Orders.Services;
@@ -16,6 +17,8 @@ namespace OrderPoint.Bartender.Orders.Components;
 // Loads the order itself and follows it live; the buttons match what this bartender may do next
 public sealed partial class OrderDetails : IDisposable
 {
+    private const string AccountInactiveCode = "Auth.AccountInactive";
+
     private const string NotReachedStyle = "color: var(--mud-palette-text-disabled)";
 
     private const string SpinnerStyle = "height: 20px; width: 20px;";
@@ -235,9 +238,14 @@ public sealed partial class OrderDetails : IDisposable
     {
         WorkingAction = action;
 
-        bool isSuccess = await ApiService.ExecuteAsync(changeStatus, successMessage);
+        bool isSuccess = await ApiService.ExecuteAsync(() => EndSessionIfInactiveAsync(changeStatus), successMessage);
 
         WorkingAction = null;
+
+        if (!AuthService.IsSignedIn)
+        {
+            return;
+        }
 
         if (isSuccess && isFinishing)
         {
@@ -247,5 +255,21 @@ public sealed partial class OrderDetails : IDisposable
         }
 
         await GetOrderAsync();
+    }
+
+    // A bartender deactivated while signed in is refused by the API; the snackbar says why and the layout shows the
+    // login form
+    private async Task EndSessionIfInactiveAsync(Func<Task> changeStatus)
+    {
+        try
+        {
+            await changeStatus();
+        }
+        catch (ApiException exception) when (exception.HasErrorCode(AccountInactiveCode))
+        {
+            await AuthService.EndSessionAsync();
+
+            throw;
+        }
     }
 }

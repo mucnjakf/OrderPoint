@@ -62,3 +62,21 @@
         </MudItem>
     }
 </MudGrid>
+
+<MudText Typo="Typo.subtitle1" HtmlTag="h2" Class="mt-6 mb-3">
+    My day
+</MudText>
+
+<StatefulView IsLoading="@IsLoadingDay"
+              ShowContent="@HasDay"
+              EmptyStateIcon="@Icons.Material.Filled.LocalBar"
+              EmptyStateText="Nothing served yet"
+              EmptyStateDetail="Your day fills up as you complete orders.">
+    <LoadingContent>
+        <ShiftDaySkeleton/>
+    </LoadingContent>
+
+    <ChildContent>
+        <ShiftDay Day="@(Day!)"/>
+    </ChildContent>
+</StatefulView>

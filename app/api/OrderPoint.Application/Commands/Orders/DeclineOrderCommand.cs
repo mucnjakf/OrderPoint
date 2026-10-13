@@ -3,6 +3,7 @@ using OrderPoint.Application.Caching;
 using OrderPoint.Application.Mediator;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Domain.Entities;
+using OrderPoint.Domain.Enumerations;
 using OrderPoint.Domain.Errors;
 using OrderPoint.Domain.Outcomes;
 
@@ -30,11 +31,17 @@ internal sealed partial class DeclineOrderCommandHandler(
             return Result.Failure(OrderErrors.NotFound);
         }
 
-        bool bartenderExists = await bartenderRepository.ExistsAsync(command.BartenderId, cancellationToken);
+        Bartender? bartender = await bartenderRepository.GetAsync(command.BartenderId, cancellationToken);
 
-        if (!bartenderExists)
+        if (bartender is null)
         {
             return Result.Failure(BartenderErrors.NotFound);
+        }
+
+        // The access token outlives a deactivation by up to 15 minutes
+        if (bartender.Status == BartenderStatus.Inactive)
+        {
+            return Result.Failure(AuthErrors.AccountInactive);
         }
 
         Result result = order.Decline(command.BartenderId);

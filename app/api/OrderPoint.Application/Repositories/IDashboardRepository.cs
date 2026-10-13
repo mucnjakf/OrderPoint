@@ -20,6 +20,18 @@ public interface IDashboardRepository
         DateTimeOffset nowUtc,
         CancellationToken cancellationToken = default);
 
+    Task<IReadOnlyList<DashboardOrderDto>> GetCompletedOrdersByBartenderAsync(
+        Guid bartenderId,
+        DateTimeOffset fromUtc,
+        DateTimeOffset toUtc,
+        CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<TopItemDto>> GetCompletedItemsByBartenderAsync(
+        Guid bartenderId,
+        DateTimeOffset fromUtc,
+        DateTimeOffset toUtc,
+        CancellationToken cancellationToken = default);
+
     Task<IReadOnlyList<CategoryRevenueDto>> GetCategoryRevenueAsync(
         DateTimeOffset fromUtc,
         DateTimeOffset toUtc,

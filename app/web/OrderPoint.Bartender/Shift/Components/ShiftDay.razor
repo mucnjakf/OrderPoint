@@ -1,0 +1,83 @@
+﻿<MudGrid Spacing="3">
+    <MudItem xs="12" sm="7">
+        <MudPaper Class="pa-4" Style="height: 100%;">
+            <MudStack Spacing="4">
+                <MudStack Row="true" Spacing="6">
+                    <MudStack Spacing="0">
+                        <MudText Typo="Typo.overline" Style="line-height: 1.4">
+                            Served
+                        </MudText>
+
+                        <MudText Typo="Typo.h5">
+                            <RollingNumber Value="@Day.Revenue"
+                                           Text="@Day.Revenue.ToString("C", CultureInfo.CurrentCulture)"/>
+                        </MudText>
+                    </MudStack>
+
+                    <MudStack Spacing="0">
+                        <MudText Typo="Typo.overline" Style="line-height: 1.4">
+                            Items served
+                        </MudText>
+
+                        <MudText Typo="Typo.h5">
+                            <RollingNumber Value="@Day.ItemsCount" Text="@Day.ItemsCount.ToString()"/>
+                        </MudText>
+                    </MudStack>
+                </MudStack>
+
+                <MudStack Spacing="2">
+                    <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                        Completed orders per hour
+                    </MudText>
+
+                    <ShiftHoursChart Hours="@Day.Hours"/>
+                </MudStack>
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12" sm="5">
+        <MudPaper Class="pa-4" Style="height: 100%;">
+            <MudStack Spacing="2">
+                <MudText Typo="Typo.overline" Style="line-height: 1.4">
+                    Most served
+                </MudText>
+
+                @foreach (TopItemDto item in Day.TopItems)
+                {
+                    <MudPaper @key="@item.ItemId" Outlined="true" Class="pa-3">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                            <MudImage Src="@(item.ImageUrl ?? ImageUrls.Placeholder)"
+                                      Alt="Item image"
+                                      Width="40"
+                                      Height="40"
+                                      ObjectFit="ObjectFit.Cover"/>
+
+                            <MudStack Spacing="1" Class="flex-1" Style="min-width: 0">
+                                <MudStack Row="true" Justify="Justify.SpaceBetween">
+                                    <MudText Typo="Typo.body2">
+                                        @item.Name
+                                    </MudText>
+
+                                    <MudText Typo="Typo.body2">
+                                        <RollingNumber Value="@item.Quantity" Text="@($"{item.Quantity}×")"/>
+                                    </MudText>
+                                </MudStack>
+
+                                <MudProgressLinear Color="Color.Primary"
+                                                   Value="@GetShareOfTop(item)"
+                                                   Rounded="true"
+                                                   Size="Size.Small"/>
+
+                                <MudText Typo="Typo.caption">
+                                    <RollingNumber Value="@item.Revenue"
+                                                   Text="@item.Revenue.ToString("C", CultureInfo.CurrentCulture)"/>
+                                </MudText>
+                            </MudStack>
+                        </MudStack>
+                    </MudPaper>
+                }
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+</MudGrid>

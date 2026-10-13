@@ -1,0 +1,31 @@
+﻿<div style="@BarsStyle">
+    @foreach (ShiftHourDto hour in Hours)
+    {
+        <div @key="@hour.Hour" style="@ColumnStyle">
+            @if (hour.CompletedCount > 0)
+            {
+                <MudText Typo="Typo.caption">
+                    <RollingNumber Value="@hour.CompletedCount" Text="@hour.CompletedCount.ToString()"/>
+                </MudText>
+            }
+
+            <div style="@GetBarStyle(hour)"></div>
+        </div>
+    }
+</div>
+
+<div style="@LabelsStyle" class="mt-1">
+    @for (int i = 0; i < Hours.Count; i++)
+    {
+        ShiftHourDto hour = Hours[i];
+
+        <div @key="@hour.Hour" style="@LabelStyle">
+            @if (i % LabelStep == 0)
+            {
+                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                    @GetHourLabel(hour.Hour)
+                </MudText>
+            }
+        </div>
+    }
+</div>

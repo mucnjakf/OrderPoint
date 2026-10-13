@@ -8,7 +8,7 @@ using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Bartender.Shift.Pages;
 
-// Today's figures, live; the order tiles open the matching tab of the Orders page
+// Today's figures and what the bartender served, live; the order tiles open the matching tab of the Orders page
 public sealed partial class ShiftPage : IDisposable
 {
     private const int TilesCount = 4;
@@ -32,6 +32,12 @@ public sealed partial class ShiftPage : IDisposable
 
     private bool IsLoading { get; set; } = true;
 
+    private ShiftDayDto? Day { get; set; }
+
+    private bool IsLoadingDay { get; set; } = true;
+
+    private bool HasDay => Day is not null && Day.Hours.Count != 0;
+
     private string ServiceTimeText => Shift?.AverageServiceMinutes is null
         ? "-"
         : $"{Shift.AverageServiceMinutes.Value:0} min";
@@ -40,7 +46,7 @@ public sealed partial class ShiftPage : IDisposable
     {
         OrdersHubService.OrdersChanged += OnOrdersChanged;
 
-        await GetShiftAsync();
+        await Task.WhenAll(GetShiftAsync(), GetShiftDayAsync());
     }
 
     public void Dispose()
@@ -51,7 +57,7 @@ public sealed partial class ShiftPage : IDisposable
     // A failed reload keeps the figures shown
     private void OnOrdersChanged()
     {
-        _ = InvokeAsync(GetShiftAsync);
+        _ = InvokeAsync(() => Task.WhenAll(GetShiftAsync(), GetShiftDayAsync()));
     }
 
     private async Task GetShiftAsync()
@@ -61,6 +67,17 @@ public sealed partial class ShiftPage : IDisposable
         Shift = shift ?? Shift;
 
         IsLoading = false;
+
+        StateHasChanged();
+    }
+
+    private async Task GetShiftDayAsync()
+    {
+        ShiftDayDto? day = await ApiService.ExecuteAsync(() => ShiftApiClient.GetShiftDayAsync());
+
+        Day = day ?? Day;
+
+        IsLoadingDay = false;
 
         StateHasChanged();
     }
