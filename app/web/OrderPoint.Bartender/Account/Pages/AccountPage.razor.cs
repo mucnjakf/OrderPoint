@@ -10,7 +10,7 @@ using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Bartender.Account.Pages;
 
-// Like the Admin's account page, without the image upload: the admin sets the bartender's photo
+// Like the Admin's account page, without the image upload: the admin sets the bartender's profile and photo
 public sealed partial class AccountPage : IDisposable
 {
     [Inject]
@@ -31,9 +31,13 @@ public sealed partial class AccountPage : IDisposable
     [Inject]
     private DarkModeService DarkModeService { get; set; } = null!;
 
-    private string Initial => string.IsNullOrEmpty(AuthService.Email)
-        ? string.Empty
-        : char.ToUpperInvariant(AuthService.Email[0]).ToString();
+    private string? FullName => AccountService.FirstName is null || AccountService.LastName is null
+        ? null
+        : $"{AccountService.FirstName} {AccountService.LastName}";
+
+    private string Initials => FullName is null
+        ? GetInitial(AuthService.Email)
+        : $"{GetInitial(AccountService.FirstName)}{GetInitial(AccountService.LastName)}";
 
     protected override void OnInitialized()
     {
@@ -48,6 +52,11 @@ public sealed partial class AccountPage : IDisposable
     private void OnAccountChanged()
     {
         _ = InvokeAsync(StateHasChanged);
+    }
+
+    private static string GetInitial(string? text)
+    {
+        return string.IsNullOrEmpty(text) ? string.Empty : char.ToUpperInvariant(text[0]).ToString();
     }
 
     private async Task OnDarkModeChangedAsync(bool isDarkMode)

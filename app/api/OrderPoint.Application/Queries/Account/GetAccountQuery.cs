@@ -25,12 +25,17 @@ internal sealed class GetAccountQueryHandler(IIdentityService identityService, I
 
         if (user.Role != UserRole.Bartender)
         {
-            return Result.Success(new AccountDto(user.Email, user.ImageUrl));
+            return Result.Success(new AccountDto(user.Email, user.ImageUrl, null, null, null));
         }
 
-        // A bartender's photo is set by the admin on the bartender, whose id is the user's id
+        // A bartender's profile is set by the admin on the bartender, whose id is the user's id
         Bartender? bartender = await bartenderRepository.GetAsync(user.Id, cancellationToken);
 
-        return Result.Success(new AccountDto(user.Email, bartender?.ImageUrl));
+        return Result.Success(new AccountDto(
+            user.Email,
+            bartender?.ImageUrl,
+            bartender?.FirstName,
+            bartender?.LastName,
+            bartender?.PhoneNumber));
     }
 }

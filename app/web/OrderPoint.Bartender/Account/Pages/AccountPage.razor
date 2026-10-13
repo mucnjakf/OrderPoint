@@ -16,20 +16,40 @@
                 }
                 else
                 {
-                    @Initial
+                    @Initials
                 }
             </MudAvatar>
 
-            <MudText Typo="Typo.h6" Align="Align.Center" Style="overflow-wrap: anywhere">
-                @AuthService.Email
-            </MudText>
+            <MudStack AlignItems="AlignItems.Center" Spacing="1">
+                <MudText Typo="Typo.h6" Align="Align.Center" Style="overflow-wrap: anywhere">
+                    @(FullName ?? AuthService.Email)
+                </MudText>
+
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                    <MudIcon Icon="@Icons.Material.Filled.Email" Size="Size.Small" Color="Color.Secondary"/>
+                    <MudText Typo="Typo.body2"
+                             Style="color: var(--mud-palette-text-secondary); overflow-wrap: anywhere">
+                        @AuthService.Email
+                    </MudText>
+                </MudStack>
+
+                @if (AccountService.PhoneNumber is not null)
+                {
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                        <MudIcon Icon="@Icons.Material.Filled.Phone" Size="Size.Small" Color="Color.Secondary"/>
+                        <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                            @AccountService.PhoneNumber
+                        </MudText>
+                    </MudStack>
+                }
+            </MudStack>
 
             <MudChip T="string" Variant="Variant.Text" Size="Size.Small" Color="Color.Primary" Class="ma-0">
                 Bartender
             </MudChip>
 
             <MudText Typo="Typo.caption" Align="Align.Center" Style="color: var(--mud-palette-text-secondary)">
-                Your photo is set by the admin.
+                Your name, email, phone number and photo are set by the admin.
             </MudText>
         </MudPaper>
     </MudItem>

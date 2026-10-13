@@ -19,14 +19,15 @@
     </DialogContent>
 
     <DialogActions>
-        <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
+        <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-2 mr-sm-5">
             Cancel
         </MudButton>
 
         <MudButton OnClick="@Confirm"
                    Variant="Variant.Filled"
                    Color="Color.Warning"
-                   StartIcon="@Icons.Material.Filled.Logout">
+                   StartIcon="@Icons.Material.Filled.Logout"
+                   Style="white-space: nowrap">
             Sign out everywhere
         </MudButton>
     </DialogActions>
