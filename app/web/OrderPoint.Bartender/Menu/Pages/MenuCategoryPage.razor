@@ -52,7 +52,7 @@
     <MudTextField @bind-Value="@SearchQuery"
                   @bind-Value:after="@OnSearchChangedAsync"
                   T="string"
-                  Label="Search items"
+                  Placeholder="Search items"
                   Variant="Variant.Outlined"
                   Adornment="Adornment.Start"
                   AdornmentIcon="@Icons.Material.Filled.Search"
@@ -81,7 +81,7 @@
         <MudStack Spacing="2">
             @foreach (ItemDto item in Items)
             {
-                <MenuItemRow @key="@item.Id" Item="@item" OnClick="@ShowItemDialogAsync"/>
+                <MenuItemRow @key="@item.Id" Item="@item" OnClick="@OpenItem"/>
             }
 
             @if (HasMoreItems)

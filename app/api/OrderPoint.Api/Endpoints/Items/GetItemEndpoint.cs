@@ -23,10 +23,11 @@ internal sealed class GetItemEndpoint : IEndpoint
             .WithTags("Items")
             .WithSummary("Get an item")
             .WithDescription("""
-                Returns one item with its category and the number of orders that contain it.
+                Returns one item with its category and the number of orders that contain it. The bartender app reads
+                it for its menu.
                 """)
             .ProducesProblem(StatusCodes.Status404NotFound)
-            .RequireAuthorization(AuthorizationPolicies.Admin);
+            .RequireAuthorization(AuthorizationPolicies.AdminOrBartender);
     }
 
     private static async Task<Results<Ok<GetItemResponse>, ProblemHttpResult>> HandleAsync(

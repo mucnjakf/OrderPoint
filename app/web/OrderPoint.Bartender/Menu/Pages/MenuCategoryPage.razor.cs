@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using MudBlazor;
 using OrderPoint.Bartender.Menu.Api;
-using OrderPoint.Bartender.Menu.Dialogs;
 using OrderPoint.Bartender.Menu.Dtos;
 using OrderPoint.Shared.Dtos;
 using OrderPoint.Shared.Services;
@@ -27,7 +25,7 @@ public sealed partial class MenuCategoryPage
     private MenuApiClient MenuApiClient { get; set; } = null!;
 
     [Inject]
-    private IDialogService DialogService { get; set; } = null!;
+    private NavigationManager NavigationManager { get; set; } = null!;
 
     [Parameter]
     public Guid CategoryId { get; set; }
@@ -106,19 +104,8 @@ public sealed partial class MenuCategoryPage
         await GetItemsAsync();
     }
 
-    private async Task ShowItemDialogAsync(ItemDto item)
+    private void OpenItem(ItemDto item)
     {
-        var parameters = new DialogParameters<MenuItemDialog>
-        {
-            { dialog => dialog.Item, item }
-        };
-
-        var options = new DialogOptions
-        {
-            MaxWidth = MaxWidth.Small,
-            FullWidth = true
-        };
-
-        await DialogService.ShowAsync<MenuItemDialog>(string.Empty, parameters, options);
+        NavigationManager.NavigateTo($"/menu/{CategoryId}/items/{item.Id}");
     }
 }

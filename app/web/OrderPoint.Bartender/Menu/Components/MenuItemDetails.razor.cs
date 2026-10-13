@@ -1,21 +1,17 @@
 ﻿using Microsoft.AspNetCore.Components;
-using MudBlazor;
 using OrderPoint.Bartender.Menu.Dtos;
 using OrderPoint.Bartender.Menu.Enumerations;
 
-namespace OrderPoint.Bartender.Menu.Dialogs;
+namespace OrderPoint.Bartender.Menu.Components;
 
-// Read-only: everything comes from the row, so opening it needs no call
-public sealed partial class MenuItemDialog
+public sealed partial class MenuItemDetails
 {
-    private const string ImageBaseStyle = "width: 100%; height: 220px; border-radius: var(--mud-default-borderradius);";
+    private const string ImageBaseStyle =
+        "display: block; width: 100%; height: 220px; border-radius: var(--mud-default-borderradius);";
 
     [Parameter]
     [EditorRequired]
     public ItemDto Item { get; set; } = null!;
-
-    [CascadingParameter]
-    private IMudDialogInstance MudDialogInstance { get; set; } = null!;
 
     private string ImageStyle => Item.IsActive
         ? ImageBaseStyle
@@ -37,10 +33,5 @@ public sealed partial class MenuItemDialog
 
             return null;
         }
-    }
-
-    private void Close()
-    {
-        MudDialogInstance.Close();
     }
 }

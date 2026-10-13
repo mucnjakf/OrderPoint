@@ -52,6 +52,22 @@ internal sealed class MenuApiClient(HttpClient httpClient)
         return result.Data;
     }
 
+    internal async Task<ItemDto> GetItemAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await httpClient.GetAsync($"api/items/{id}", cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+
+        GetItemResponse result =
+            await response.Content.ReadFromJsonAsync<GetItemResponse>(cancellationToken)
+            ?? throw new InvalidOperationException($"Unable to parse {nameof(GetItemResponse)}");
+
+        return result.Data;
+    }
+
     internal async Task<PaginationDto<ItemDto>> GetItemsAsync(
         int pageNumber,
         int pageSize,
