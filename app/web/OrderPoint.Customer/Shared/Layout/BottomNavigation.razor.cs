@@ -18,7 +18,8 @@ public sealed partial class BottomNavigation : IDisposable
 
     private const string CartHref = "/cart";
 
-    // Visible overflow, so the cart badge above the icon isn't cut off by the button
+    // Visible overflow, so the cart badge above the icon isn't cut off by the button (the buttons have no ripple,
+    // which would spill out too)
     private const string ActiveButtonStyle = "text-transform: none; font-weight: 600; overflow: visible;";
 
     private const string InactiveButtonStyle =

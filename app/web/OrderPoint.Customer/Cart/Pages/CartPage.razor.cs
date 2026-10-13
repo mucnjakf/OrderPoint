@@ -141,6 +141,14 @@ public sealed partial class CartPage : IDisposable
         }
     }
 
+    // Every line and the note at once
+    private async Task ClearCartAsync()
+    {
+        Note = null;
+
+        await CartService.ClearAsync();
+    }
+
     private void OnCartChanged()
     {
         _ = InvokeAsync(StateHasChanged);
