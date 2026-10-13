@@ -6,44 +6,90 @@
     Orders
 </MudText>
 
-<MudPaper Class="d-flex mb-3" Style="@TabBarStyle">
-    @foreach (OrdersTab tab in Enum.GetValues<OrdersTab>())
+<MudGrid Spacing="3">
+    <MudItem xs="12" sm="@(IsSplitView ? 5 : 12)">
+        <div style="@TabBarWrapperStyle">
+            <MudPaper Class="d-flex" Style="@TabBarStyle">
+                @foreach (OrdersTab tab in Enum.GetValues<OrdersTab>())
+                {
+                    OrdersTab tabValue = tab;
+
+                    <MudButton Variant="Variant.Text"
+                               Class="flex-1"
+                               Style="@GetTabStyle(tabValue)"
+                               OnClick="@(() => SelectTab(tabValue))">
+                        @tabValue.ToString() <TabCount Count="@GetTabCount(tabValue)"/>
+                    </MudButton>
+                }
+            </MudPaper>
+        </div>
+
+        @switch (OrdersTabState.Tab)
+        {
+            case OrdersTab.Queue:
+                <OrderTicketList Orders="@QueueOrders"
+                                 IsLoading="@IsLoadingQueue"
+                                 SelectedOrderId="@SelectedOrderId"
+                                 OnOrderClick="@SelectOrder"
+                                 IsOrderNew="@(order => NewQueueOrders.IsNew(order.Id))"
+                                 EmptyStateIcon="@Icons.Material.Filled.Inbox"
+                                 EmptyStateText="No orders waiting"
+                                 EmptyStateDetail="New orders show up here by themselves."/>
+                break;
+
+            case OrdersTab.Mine:
+                <OrderTicketList Orders="@MyOrders"
+                                 IsLoading="@IsLoadingMine"
+                                 SelectedOrderId="@SelectedOrderId"
+                                 OnOrderClick="@SelectOrder"
+                                 EmptyStateIcon="@Icons.Material.Filled.LocalBar"
+                                 EmptyStateText="Nothing in progress"
+                                 EmptyStateDetail="Accept an order from the queue."/>
+                break;
+
+            case OrdersTab.Done:
+                <OrderTicketList Orders="@DoneOrders"
+                                 IsLoading="@IsLoadingDone"
+                                 SelectedOrderId="@SelectedOrderId"
+                                 OnOrderClick="@SelectOrder"
+                                 EmptyStateIcon="@Icons.Material.Filled.TaskAlt"
+                                 EmptyStateText="Nothing finished today yet"
+                                 EmptyStateDetail="Completed and declined orders show up here."/>
+                break;
+        }
+    </MudItem>
+
+    @if (IsSplitView)
     {
-        OrdersTab tabValue = tab;
+        <MudItem sm="7">
+            <div style="@DetailsPanelStyle">
+                @if (SelectedOrderId is not null)
+                {
+                    <OrderDetails @key="@SelectedOrderId"
+                                  OrderId="@SelectedOrderId.Value"
+                                  IsInPanel="true"
+                                  OnFinished="@ClearSelection"
+                                  OnClose="@ClearSelection"/>
+                }
+                else
+                {
+                    <MudPaper Class="pa-10">
+                        <MudStack AlignItems="AlignItems.Center" Spacing="1">
+                            <MudIcon Icon="@Icons.Material.Filled.TouchApp" Size="Size.Large" Class="mb-2"/>
 
-        <MudButton Variant="Variant.Text"
-                   Class="flex-1"
-                   Style="@GetTabStyle(tabValue)"
-                   OnClick="@(() => SelectTab(tabValue))">
-            @tabValue.ToString() <TabCount Count="@GetTabCount(tabValue)"/>
-        </MudButton>
+                            <MudText Typo="Typo.body1" Align="Align.Center">
+                                Select an order
+                            </MudText>
+
+                            <MudText Typo="Typo.body2"
+                                     Align="Align.Center"
+                                     Style="color: var(--mud-palette-text-secondary)">
+                                Its details and actions show up here.
+                            </MudText>
+                        </MudStack>
+                    </MudPaper>
+                }
+            </div>
+        </MudItem>
     }
-</MudPaper>
-
-@switch (OrdersTabState.Tab)
-{
-    case OrdersTab.Queue:
-        <OrderTicketList Orders="@QueueOrders"
-                         IsLoading="@IsLoadingQueue"
-                         IsOrderNew="@(order => NewQueueOrders.IsNew(order.Id))"
-                         EmptyStateIcon="@Icons.Material.Filled.Inbox"
-                         EmptyStateText="No orders waiting"
-                         EmptyStateDetail="New orders show up here by themselves."/>
-        break;
-
-    case OrdersTab.Mine:
-        <OrderTicketList Orders="@MyOrders"
-                         IsLoading="@IsLoadingMine"
-                         EmptyStateIcon="@Icons.Material.Filled.LocalBar"
-                         EmptyStateText="Nothing in progress"
-                         EmptyStateDetail="Accept an order from the queue."/>
-        break;
-
-    case OrdersTab.Done:
-        <OrderTicketList Orders="@DoneOrders"
-                         IsLoading="@IsLoadingDone"
-                         EmptyStateIcon="@Icons.Material.Filled.TaskAlt"
-                         EmptyStateText="Nothing finished today yet"
-                         EmptyStateDetail="Completed and declined orders show up here."/>
-        break;
-}
+</MudGrid>

@@ -12,7 +12,7 @@
 
 @if (!AuthService.IsSignedIn)
 {
-    <LoginForm Role="UserRole.Bartender" AppName="Bartender app" />
+    <LoginForm Role="UserRole.Bartender" AppName="Bartender web" />
 
     return;
 }
@@ -24,7 +24,7 @@
 
             <MudStack Spacing="0">
                 <MudText Typo="Typo.subtitle1" Style="line-height: 1.2">OrderPoint</MudText>
-                <MudText Typo="Typo.caption" Style="line-height: 1.2">Bartender</MudText>
+                <MudText Typo="Typo.caption" Style="line-height: 1.2">Bartender web</MudText>
             </MudStack>
         </MudStack>
 

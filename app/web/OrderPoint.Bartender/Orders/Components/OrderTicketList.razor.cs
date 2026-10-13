@@ -30,4 +30,11 @@ public sealed partial class OrderTicketList
 
     [Parameter]
     public Func<OrderDto, bool>? IsOrderNew { get; set; }
+
+    [Parameter]
+    public Guid? SelectedOrderId { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public EventCallback<OrderDto> OnOrderClick { get; set; }
 }

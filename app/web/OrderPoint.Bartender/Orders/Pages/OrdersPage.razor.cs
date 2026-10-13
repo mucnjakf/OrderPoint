@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using OrderPoint.Bartender.Orders.Api;
 using OrderPoint.Bartender.Orders.Enumerations;
 using OrderPoint.Bartender.Orders.Services;
@@ -14,7 +15,8 @@ using OrderPoint.Shared.Services;
 namespace OrderPoint.Bartender.Orders.Pages;
 
 // Queue: every pending order, oldest first. Mine: my active, then my accepted orders. Done: what I finished today.
-public sealed partial class OrdersPage : IDisposable
+// From 600 px (tablets) the selected order shows next to the list; phones open it on its own page.
+public sealed partial class OrdersPage : IAsyncDisposable
 {
     // Far more than one bartender handles at once or in a shift, so no paging
     private const int MaxOrdersPerStatus = 50;
@@ -26,10 +28,22 @@ public sealed partial class OrdersPage : IDisposable
     // like the tickets (border, theme radius) and clips the square buttons to its rounded corners
     private const string TabBarStyle = "overflow: hidden;";
 
+    // The tabs stay right under the dense app bar while scrolling; the wrapper's background hides the tickets passing
+    // underneath, and its padding replaces the gap to the list
+    private const string TabBarWrapperStyle =
+        "position: sticky; top: 48px; z-index: 2; padding: 12px 0; margin-top: -12px; " +
+        "background-color: var(--mud-palette-background);";
+
     private const string ActiveTabStyle = "border-radius: 0; border-bottom: 2px solid var(--mud-palette-primary);";
 
     private const string InactiveTabStyle =
         "border-radius: 0; border-bottom: 2px solid transparent; color: var(--mud-palette-text-secondary);";
+
+    // Below the dense app bar and as tall as the space above the bottom navigation, so the order's buttons sit at
+    // the bottom of the screen
+    private const string DetailsPanelStyle = "position: sticky; top: 60px; height: calc(100vh - 60px - 76px);";
+
+    private readonly Guid _viewportSubscriptionId = Guid.NewGuid();
 
     private readonly PeriodicTimer _timeRefreshTimer = new(TimeSpan.FromSeconds(TimeRefreshIntervalInSeconds));
 
@@ -51,7 +65,17 @@ public sealed partial class OrdersPage : IDisposable
     [Inject]
     private OrdersHubService OrdersHubService { get; set; } = null!;
 
+    [Inject]
+    private IBrowserViewportService BrowserViewportService { get; set; } = null!;
+
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = null!;
+
     private NewOrdersTracker NewQueueOrders { get; } = new();
+
+    private bool IsSplitView { get; set; }
+
+    private Guid? SelectedOrderId { get; set; }
 
     private IReadOnlyList<OrderDto> QueueOrders { get; set; } = [];
 
@@ -78,10 +102,49 @@ public sealed partial class OrdersPage : IDisposable
         await GetTabsAsync();
     }
 
-    public void Dispose()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        await BrowserViewportService.SubscribeAsync(
+            _viewportSubscriptionId,
+            OnViewportChangedAsync,
+            options: null,
+            fireImmediately: true);
+    }
+
+    public async ValueTask DisposeAsync()
     {
         OrdersHubService.OrdersChanged -= OnOrdersChanged;
         _timeRefreshTimer.Dispose();
+
+        await BrowserViewportService.UnsubscribeAsync(_viewportSubscriptionId);
+    }
+
+    private async Task OnViewportChangedAsync(BrowserViewportEventArgs args)
+    {
+        IsSplitView = args.Breakpoint is not Breakpoint.Xs;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private void SelectOrder(OrderDto order)
+    {
+        if (IsSplitView)
+        {
+            SelectedOrderId = order.Id;
+            return;
+        }
+
+        NavigationManager.NavigateTo($"/orders/{order.Id}");
+    }
+
+    private void ClearSelection()
+    {
+        SelectedOrderId = null;
     }
 
     // The loading flags start true and are never set again, so live updates swap the tickets in place

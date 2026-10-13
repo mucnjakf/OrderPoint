@@ -1,5 +1,5 @@
 ﻿<NewItemHighlight IsNew="@IsNew">
-    <MudPaper Class="pa-3">
+    <MudPaper Class="pa-3 cursor-pointer" Style="@PaperStyle" @onclick="@OnTicketClickAsync">
         <MudStack Spacing="2">
             <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
                 <OrderAvatar Number="@Order.Number"/>

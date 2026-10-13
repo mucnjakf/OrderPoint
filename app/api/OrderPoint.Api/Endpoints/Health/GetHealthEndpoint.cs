@@ -52,7 +52,7 @@ internal sealed class GetHealthEndpoint : IEndpoint
         ["pgweb"] = "Database browser",
         ["storage-blobs-explorer"] = "Storage browser",
         ["redisinsight"] = "Cache browser",
-        ["order-point-bartender"] = "Bartender app"
+        ["order-point-bartender"] = "Bartender web"
     };
 
     public void MapEndpoint(IEndpointRouteBuilder app)

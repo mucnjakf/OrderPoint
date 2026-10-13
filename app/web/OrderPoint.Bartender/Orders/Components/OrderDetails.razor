@@ -1,0 +1,239 @@
+﻿<div style="@RootStyle">
+    <div style="@ContentStyle">
+        <StatefulView IsLoading="@IsLoading"
+                      ShowContent="@(Order is not null)"
+                      EmptyStateIcon="@Icons.Material.Filled.SearchOff"
+                      EmptyStateText="Order not found"
+                      EmptyStateDetail="Go back to the orders and pick another one.">
+            <LoadingContent>
+                <MudPaper Class="pa-4">
+                    <OrderDetailsSkeleton/>
+                </MudPaper>
+            </LoadingContent>
+
+            <ChildContent>
+                @if (Order is not null)
+                {
+                    <MudStack Spacing="3">
+                        <MudPaper Class="pa-4">
+                            <MudStack Spacing="3">
+                                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                                    <OrderAvatar Number="@Order.Number"/>
+
+                                    <MudStack Spacing="0" Class="flex-1" Style="min-width: 0">
+                                        <MudText Typo="Typo.h6">
+                                            Table @Order.TableCode
+                                        </MudText>
+
+                                        <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                                            Placed @Order.CreatedAtUtc.ToRelativeTime()
+                                        </MudText>
+                                    </MudStack>
+
+                                    <MudChip T="string"
+                                             Variant="Variant.Text"
+                                             Color="@Order.Status.GetColor()"
+                                             Class="ma-0">
+                                        @Order.Status.ToString()
+                                    </MudChip>
+
+                                    @if (OnClose.HasDelegate)
+                                    {
+                                        <MudTooltip Text="Close">
+                                            <MudIconButton Icon="@Icons.Material.Filled.Close"
+                                                           Size="Size.Small"
+                                                           aria-label="Close order"
+                                                           OnClick="@CloseAsync"/>
+                                        </MudTooltip>
+                                    }
+                                </MudStack>
+
+                                <MudDivider/>
+
+                                @foreach (OrderItemDto orderItem in Order.Items)
+                                {
+                                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                                        <MudImage Src="@(orderItem.ImageUrl ?? ImageUrls.Placeholder)"
+                                                  Alt="Item image"
+                                                  Width="40"
+                                                  Height="40"
+                                                  ObjectFit="ObjectFit.Cover"/>
+
+                                        <MudText Typo="Typo.body1" Class="flex-1">
+                                            <strong>@orderItem.Quantity×</strong> @orderItem.Name
+                                        </MudText>
+
+                                        <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                                            @GetLineTotalText(orderItem)
+                                        </MudText>
+                                    </MudStack>
+                                }
+
+                                @if (Order.Note is not null)
+                                {
+                                    <MudAlert Severity="Severity.Info"
+                                              Variant="Variant.Text"
+                                              Dense="true"
+                                              Icon="@Icons.Material.Filled.Notes">
+                                        <MudText Typo="Typo.body1">
+                                            @Order.Note
+                                        </MudText>
+                                    </MudAlert>
+                                }
+
+                                <MudDivider/>
+
+                                <MudStack Row="true" Justify="Justify.SpaceBetween">
+                                    <MudText Typo="Typo.h6">Total</MudText>
+
+                                    <MudText Typo="Typo.h6">
+                                        @Order.Total.ToString("C", CultureInfo.CurrentCulture)
+                                    </MudText>
+                                </MudStack>
+                            </MudStack>
+                        </MudPaper>
+
+                        <MudPaper Class="pa-4">
+                            <MudStack Spacing="2">
+                                @foreach ((OrderStatus status, DateTimeOffset? reachedAtUtc) in StatusSteps)
+                                {
+                                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                                        <MudIcon Icon="@status.GetIcon()"
+                                                 Size="Size.Small"
+                                                 Color="@(reachedAtUtc is null ? Color.Default : status.GetColor())"
+                                                 Style="@(reachedAtUtc is null ? NotReachedStyle : null)"/>
+
+                                        <MudText Typo="Typo.body2"
+                                                 Class="flex-1"
+                                                 Style="@(reachedAtUtc is null ? NotReachedStyle : null)">
+                                            @status.ToString()
+                                        </MudText>
+
+                                        <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                                            @(reachedAtUtc?.ToDisplayDateTime(TimeZoneService.TimeZone) ?? "Not yet")
+                                        </MudText>
+                                    </MudStack>
+                                }
+
+                                @if (Order.Bartender is not null)
+                                {
+                                    <MudDivider Class="my-1"/>
+
+                                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                                        <MudAvatar Size="Size.Small" Color="Color.Primary">
+                                            @if (Order.Bartender.ImageUrl is not null)
+                                            {
+                                                <MudImage Src="@Order.Bartender.ImageUrl"
+                                                          Alt="Bartender image"
+                                                          ObjectFit="ObjectFit.Cover"/>
+                                            }
+                                            else
+                                            {
+                                                @BartenderInitials
+                                            }
+                                        </MudAvatar>
+
+                                        <MudText Typo="Typo.body2">
+                                            @BartenderText
+                                        </MudText>
+                                    </MudStack>
+                                }
+                            </MudStack>
+                        </MudPaper>
+                    </MudStack>
+                }
+            </ChildContent>
+        </StatefulView>
+    </div>
+
+    @if (HasActions)
+    {
+        <MudPaper Class="pa-3" Elevation="@ActionBarElevation" Style="@ActionBarStyle">
+            <MudStack Row="true" Spacing="3">
+                @if (CanDecline)
+                {
+                    <MudButton Variant="Variant.Outlined"
+                               Color="Color.Error"
+                               Size="Size.Large"
+                               Class="flex-1"
+                               StartIcon="@GetStartIcon(OrderAction.Decline, Icons.Material.Filled.Block)"
+                               Disabled="@(WorkingAction is not null)"
+                               OnClick="@ShowDeclineDialogAsync">
+                        @if (WorkingAction is OrderAction.Decline)
+                        {
+                            <MudProgressCircular Indeterminate="true"
+                                                 Size="Size.Small"
+                                                 Class="mr-2"
+                                                 Style="@SpinnerStyle"/>
+                        }
+
+                        Decline
+                    </MudButton>
+                }
+
+                @if (CanAccept)
+                {
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Size="Size.Large"
+                               Class="flex-1"
+                               StartIcon="@GetStartIcon(OrderAction.Accept, Icons.Material.Filled.Check)"
+                               Disabled="@(WorkingAction is not null)"
+                               OnClick="@AcceptAsync">
+                        @if (WorkingAction is OrderAction.Accept)
+                        {
+                            <MudProgressCircular Indeterminate="true"
+                                                 Size="Size.Small"
+                                                 Class="mr-2"
+                                                 Style="@SpinnerStyle"/>
+                        }
+
+                        Accept
+                    </MudButton>
+                }
+
+                @if (CanStart)
+                {
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Size="Size.Large"
+                               Class="flex-1"
+                               StartIcon="@GetStartIcon(OrderAction.Start, Icons.Material.Filled.PlayArrow)"
+                               Disabled="@(WorkingAction is not null)"
+                               OnClick="@StartAsync">
+                        @if (WorkingAction is OrderAction.Start)
+                        {
+                            <MudProgressCircular Indeterminate="true"
+                                                 Size="Size.Small"
+                                                 Class="mr-2"
+                                                 Style="@SpinnerStyle"/>
+                        }
+
+                        Start
+                    </MudButton>
+                }
+
+                @if (CanComplete)
+                {
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Success"
+                               Size="Size.Large"
+                               Class="flex-1"
+                               StartIcon="@GetStartIcon(OrderAction.Complete, Icons.Material.Filled.TaskAlt)"
+                               Disabled="@(WorkingAction is not null)"
+                               OnClick="@CompleteAsync">
+                        @if (WorkingAction is OrderAction.Complete)
+                        {
+                            <MudProgressCircular Indeterminate="true"
+                                                 Size="Size.Small"
+                                                 Class="mr-2"
+                                                 Style="@SpinnerStyle"/>
+                        }
+
+                        Complete
+                    </MudButton>
+                }
+            </MudStack>
+        </MudPaper>
+    }
+</div>

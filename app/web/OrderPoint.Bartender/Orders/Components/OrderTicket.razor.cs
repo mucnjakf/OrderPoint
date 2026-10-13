@@ -19,6 +19,18 @@ public sealed partial class OrderTicket
     [Parameter]
     public bool IsNew { get; set; }
 
+    // The order open in the tablet's details panel
+    [Parameter]
+    public bool IsSelected { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public EventCallback<OrderDto> OnClick { get; set; }
+
+    private string? PaperStyle => IsSelected
+        ? "background-color: var(--mud-palette-table-hover); border-color: var(--mud-palette-primary);"
+        : null;
+
     private string TimeText => Order.Status switch
     {
         OrderStatus.Completed when Order.CompletedAtUtc is not null =>
@@ -27,4 +39,9 @@ public sealed partial class OrderTicket
             $"Declined {Order.DeclinedAtUtc.Value.ToDisplayDateTime(TimeZoneService.TimeZone)}",
         _ => $"Placed {Order.CreatedAtUtc.ToRelativeTime()}"
     };
+
+    private async Task OnTicketClickAsync()
+    {
+        await OnClick.InvokeAsync(Order);
+    }
 }

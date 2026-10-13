@@ -20,7 +20,9 @@
             {
                 <OrderTicket @key="@order.Id"
                              Order="@order"
-                             IsNew="@(IsOrderNew?.Invoke(order) ?? false)"/>
+                             IsNew="@(IsOrderNew?.Invoke(order) ?? false)"
+                             IsSelected="@(order.Id == SelectedOrderId)"
+                             OnClick="@OnOrderClick"/>
             }
         </MudStack>
     </ChildContent>
