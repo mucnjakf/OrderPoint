@@ -75,18 +75,18 @@ public sealed partial class OrdersPage : IDisposable
     private void OnOrdersChanged()
     {
         _ = InvokeAsync(() => Task.WhenAll(
-            GetStatusCountsAsync(showLoading: false),
-            GetOrdersAsync(Pagination?.PageNumber ?? 1, showLoading: false)));
+            GetStatusCountsAsync(isLiveUpdate: true),
+            GetOrdersAsync(Pagination?.PageNumber ?? 1, isLiveUpdate: true)));
     }
 
-    private async Task GetStatusCountsAsync(bool showLoading = true)
+    private async Task GetStatusCountsAsync(bool isLiveUpdate = false)
     {
-        await Task.WhenAll(Enum.GetValues<OrderStatus>().Select(status => GetStatusCountAsync(status, showLoading)));
+        await Task.WhenAll(Enum.GetValues<OrderStatus>().Select(status => GetStatusCountAsync(status, isLiveUpdate)));
     }
 
-    private async Task GetStatusCountAsync(OrderStatus status, bool showLoading)
+    private async Task GetStatusCountAsync(OrderStatus status, bool isLiveUpdate)
     {
-        if (showLoading)
+        if (!isLiveUpdate)
         {
             LoadingStatuses.Add(status);
         }
@@ -106,9 +106,9 @@ public sealed partial class OrdersPage : IDisposable
         StateHasChanged();
     }
 
-    private async Task GetOrdersAsync(int pageNumber, bool showLoading = true)
+    private async Task GetOrdersAsync(int pageNumber, bool isLiveUpdate = false)
     {
-        if (showLoading)
+        if (!isLiveUpdate)
         {
             IsLoading = true;
         }

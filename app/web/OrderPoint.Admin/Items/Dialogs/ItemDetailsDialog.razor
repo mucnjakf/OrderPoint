@@ -49,8 +49,12 @@
 
                     <TextDisplayRow Icon="@Icons.Material.Filled.Receipt"
                                     Label="Orders"
-                                    Text="@Item.OrdersCount.ToString(CultureInfo.CurrentCulture)"
-                                    ShowDivider="true"/>
+                                    ShowDivider="true">
+                        <MudText Typo="Typo.body1">
+                            <RollingNumber Value="@OrdersCount"
+                                           Text="@OrdersCount.ToString(CultureInfo.CurrentCulture)"/>
+                        </MudText>
+                    </TextDisplayRow>
 
                     <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
                                     Label="Created"

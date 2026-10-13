@@ -199,7 +199,8 @@
 
                 <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
                     @context.Portion.ToString(CultureInfo.CurrentCulture)
-                    · @context.OrdersCount.ToCountText("order", "orders")
+                    · <RollingNumber Value="@context.OrdersCount"
+                                     Text="@context.OrdersCount.ToCountText("order", "orders")"/>
                 </MudText>
             </MudStack>
         </MudCardContent>

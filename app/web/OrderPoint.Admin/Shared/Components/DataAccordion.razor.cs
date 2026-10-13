@@ -121,11 +121,16 @@ public sealed partial class DataAccordion<TItem>
     [Parameter]
     public RenderFragment? BulkActionsTemplate { get; set; }
 
+    // Reloaded items are new instances; the key keeps their panels (and expanded state) across reloads
+    [Parameter]
+    [EditorRequired]
+    public Func<TItem, object> GetItemKey { get; set; }
+
     private bool IsSelectable => SelectedItemsChanged.HasDelegate;
 
-    private TItem? HoveredItem { get; set; }
+    private object? HoveredItemKey { get; set; }
 
-    private TItem? ExpandedItem { get; set; }
+    private object? ExpandedItemKey { get; set; }
 
     private async Task OnSearchChangedAsync()
     {
@@ -166,22 +171,25 @@ public sealed partial class DataAccordion<TItem>
 
     private void OnExpandedChanged(TItem item, bool isExpanded)
     {
+        object itemKey = GetItemKey(item);
+
         if (isExpanded)
         {
-            ExpandedItem = item;
+            ExpandedItemKey = itemKey;
             return;
         }
 
-        if (EqualityComparer<TItem>.Default.Equals(item, ExpandedItem))
+        if (itemKey.Equals(ExpandedItemKey))
         {
-            ExpandedItem = default;
+            ExpandedItemKey = null;
         }
     }
 
     private string? GetPanelStyle(TItem item)
     {
-        bool isHovered = EqualityComparer<TItem>.Default.Equals(item, HoveredItem);
-        bool isExpanded = EqualityComparer<TItem>.Default.Equals(item, ExpandedItem);
+        object itemKey = GetItemKey(item);
+        bool isHovered = itemKey.Equals(HoveredItemKey);
+        bool isExpanded = itemKey.Equals(ExpandedItemKey);
 
         return (isHovered || IsSelected(item)) && !isExpanded
             ? "background-color: var(--mud-palette-table-hover);"

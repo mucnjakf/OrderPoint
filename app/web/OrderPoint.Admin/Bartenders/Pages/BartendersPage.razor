@@ -31,6 +31,7 @@
                OnCreateClick="@ShowCreateBartenderDialogAsync"
                OnUpdateClick="@ShowUpdateBartenderDialogAsync"
                OnDeleteClick="@ShowDeleteBartenderDialogAsync"
+               GetItemKey="@(bartender => bartender.Id)"
                DeleteButtonDisabled="@(bartender => bartender.OrdersCount > 0)"
                DeleteButtonDisabledTooltipText="Bartender has orders"
                @bind-SelectedItems="@SelectedBartenders"
@@ -156,7 +157,7 @@
             <div class="flex-1">
                 <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mb-3">
                     <MudText Typo="Typo.h6">
-                        Orders · @context.OrdersCount
+                        Orders · <RollingNumber Value="@context.OrdersCount" Text="@context.OrdersCount.ToString()"/>
                     </MudText>
 
                     @if (context.OrdersCount > 0)

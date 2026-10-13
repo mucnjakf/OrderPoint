@@ -52,36 +52,36 @@
                 <MudPaper Class="pa-5" Style="height: 100%">
                     <TextDisplayRow Icon="@Icons.Material.Filled.Numbers"
                                     Label="ID"
-                                    Text="@Order.Id.ToString()"
+                                    Text="@CurrentOrder.Id.ToString()"
                                     ShowDivider="true"/>
 
                     <TextDisplayRow Icon="@Icons.Material.Filled.Tag"
                                     Label="Number"
-                                    Text="@($"#{Order.Number}")"
+                                    Text="@($"#{CurrentOrder.Number}")"
                                     ShowDivider="true"/>
 
                     <TextDisplayRow Icon="@Icons.Material.Filled.TableBar"
                                     Label="Table"
-                                    Text="@Order.TableCode"
+                                    Text="@CurrentOrder.TableCode"
                                     ShowDivider="true"/>
 
                     <TextDisplayRow Icon="@Icons.Material.Filled.Notes"
                                     Label="Note"
-                                    Text="@(Order.Note ?? "-")"
+                                    Text="@(CurrentOrder.Note ?? "-")"
                                     ShowDivider="true"/>
 
                     <TextDisplayRow Icon="@Icons.Material.Filled.Person"
                                     Label="Bartender">
                         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                            <BartenderAvatar FirstName="@Order.Bartender?.FirstName"
-                                             LastName="@Order.Bartender?.LastName"
-                                             ImageUrl="@Order.Bartender?.ImageUrl"
+                            <BartenderAvatar FirstName="@CurrentOrder.Bartender?.FirstName"
+                                             LastName="@CurrentOrder.Bartender?.LastName"
+                                             ImageUrl="@CurrentOrder.Bartender?.ImageUrl"
                                              Size="Size.Small"/>
 
                             <MudText Typo="Typo.body1">
-                                @(Order.Bartender is null
+                                @(CurrentOrder.Bartender is null
                                     ? "Unassigned"
-                                    : $"{Order.Bartender.FirstName} {Order.Bartender.LastName}")
+                                    : $"{CurrentOrder.Bartender.FirstName} {CurrentOrder.Bartender.LastName}")
                             </MudText>
                         </MudStack>
                     </TextDisplayRow>
@@ -101,7 +101,7 @@
                         </thead>
 
                         <tbody>
-                            @foreach (OrderItemDto orderItem in Order.Items)
+                            @foreach (OrderItemDto orderItem in CurrentOrder.Items)
                             {
                                 <tr>
                                     <td>
@@ -131,7 +131,7 @@
                         <MudText Typo="Typo.h6">Total</MudText>
 
                         <MudText Typo="Typo.h6">
-                            @Order.Total.ToString("C", CultureInfo.CurrentCulture)
+                            @CurrentOrder.Total.ToString("C", CultureInfo.CurrentCulture)
                         </MudText>
                     </MudStack>
                 </MudPaper>

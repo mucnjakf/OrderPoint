@@ -82,11 +82,11 @@ else
         <MudExpansionPanels Elevation="1">
             @foreach (TItem item in Items)
             {
-                <MudExpansionPanel @key="@item"
+                <MudExpansionPanel @key="@GetItemKey(item)"
                                    Style="@GetPanelStyle(item)"
                                    ExpandedChanged="@((bool isExpanded) => OnExpandedChanged(item, isExpanded))"
-                                   @onmouseenter="@(() => HoveredItem = item)"
-                                   @onmouseleave="@(() => HoveredItem = default)">
+                                   @onmouseenter="@(() => HoveredItemKey = GetItemKey(item))"
+                                   @onmouseleave="@(() => HoveredItemKey = null)">
                     <TitleContent>
                         <div class="d-flex align-center">
                             @if (IsSelectable)

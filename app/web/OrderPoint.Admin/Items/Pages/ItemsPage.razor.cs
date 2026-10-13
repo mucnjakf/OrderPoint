@@ -10,11 +10,12 @@ using OrderPoint.Admin.Items.Enumerations;
 using OrderPoint.Admin.Items.Sorting;
 using OrderPoint.Shared.Dtos;
 using OrderPoint.Shared.Extensions;
+using OrderPoint.Shared.Orders.Services;
 using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Items.Pages;
 
-public sealed partial class ItemsPage
+public sealed partial class ItemsPage : IDisposable
 {
     private const int PageSize = 16;
 
@@ -29,6 +30,9 @@ public sealed partial class ItemsPage
 
     [Inject]
     private CategoryApiClient CategoryApiClient { get; set; } = null!;
+
+    [Inject]
+    private OrdersHubService OrdersHubService { get; set; } = null!;
 
     private ItemDto? NewestItem { get; set; }
 
@@ -86,9 +90,22 @@ public sealed partial class ItemsPage
 
     protected override async Task OnInitializedAsync()
     {
+        OrdersHubService.OrdersChanged += OnOrdersChanged;
+
         await Task.WhenAll(
             GetSpotlightAsync(),
             GetItemsAsync(pageNumber: 1));
+    }
+
+    public void Dispose()
+    {
+        OrdersHubService.OrdersChanged -= OnOrdersChanged;
+    }
+
+    // Orders only change the items' order counts; the spotlight doesn't show them
+    private void OnOrdersChanged()
+    {
+        _ = InvokeAsync(() => GetItemsAsync(Pagination?.PageNumber ?? 1, isLiveUpdate: true));
     }
 
     private async Task GetSpotlightAsync()
@@ -154,11 +171,13 @@ public sealed partial class ItemsPage
         return pagination?.Items.FirstOrDefault();
     }
 
-    private async Task GetItemsAsync(int pageNumber)
+    private async Task GetItemsAsync(int pageNumber, bool isLiveUpdate = false)
     {
-        SelectedItems = [];
-
-        IsLoading = true;
+        if (!isLiveUpdate)
+        {
+            SelectedItems = [];
+            IsLoading = true;
+        }
 
         Pagination = await ApiService.ExecuteAsync(() => ItemApiClient.GetItemsAsync(
             pageNumber,
@@ -169,6 +188,13 @@ public sealed partial class ItemsPage
             SelectedStatus));
 
         Items = Pagination?.Items ?? [];
+
+        if (isLiveUpdate)
+        {
+            // The reloaded items are new instances, so the selection moves over to them
+            HashSet<Guid> selectedIds = [.. SelectedItems.Select(item => item.Id)];
+            SelectedItems = [.. Items.Where(item => selectedIds.Contains(item.Id))];
+        }
 
         IsLoading = false;
 

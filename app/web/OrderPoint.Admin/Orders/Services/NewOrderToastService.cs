@@ -91,6 +91,7 @@ internal sealed class NewOrderToastService(
             options =>
             {
                 options.Action = "View";
+                options.ActionVariant = Variant.Text;
                 options.OnClick = _ => ShowOrderDetailsDialogAsync(order);
             });
     }
@@ -103,6 +104,7 @@ internal sealed class NewOrderToastService(
             options =>
             {
                 options.Action = "View";
+                options.ActionVariant = Variant.Text;
                 options.OnClick = _ => ShowOrdersPageAsync();
             });
     }

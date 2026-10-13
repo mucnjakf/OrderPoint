@@ -26,7 +26,6 @@ internal static class ApiDocumentationExtensions
         {
             options
                 .WithTitle("OrderPoint API")
-                .WithClassicLayout()
                 .WithTheme(ScalarTheme.Alternate)
                 .ExpandAllTags()
                 .SortOperationsByMethod()

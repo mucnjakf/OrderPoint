@@ -8,11 +8,12 @@ using OrderPoint.Admin.Bartenders.Enumerations;
 using OrderPoint.Admin.Bartenders.Sorting;
 using OrderPoint.Shared.Dtos;
 using OrderPoint.Shared.Extensions;
+using OrderPoint.Shared.Orders.Services;
 using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Bartenders.Pages;
 
-public sealed partial class BartendersPage
+public sealed partial class BartendersPage : IDisposable
 {
     private const int PageSize = 10;
 
@@ -29,6 +30,9 @@ public sealed partial class BartendersPage
 
     [Inject]
     private BartenderApiClient BartenderApiClient { get; set; } = null!;
+
+    [Inject]
+    private OrdersHubService OrdersHubService { get; set; } = null!;
 
     private IReadOnlyList<BartenderDto> ActiveBartenders { get; set; } = [];
 
@@ -72,9 +76,22 @@ public sealed partial class BartendersPage
 
     protected override async Task OnInitializedAsync()
     {
+        OrdersHubService.OrdersChanged += OnOrdersChanged;
+
         await Task.WhenAll(
             GetTeamStripAsync(),
             GetBartendersAsync(pageNumber: 1));
+    }
+
+    public void Dispose()
+    {
+        OrdersHubService.OrdersChanged -= OnOrdersChanged;
+    }
+
+    // Orders only change the bartenders' order counts; the team strip doesn't show them
+    private void OnOrdersChanged()
+    {
+        _ = InvokeAsync(() => GetBartendersAsync(Pagination?.PageNumber ?? 1, isLiveUpdate: true));
     }
 
     private async Task GetTeamStripAsync()
@@ -139,11 +156,13 @@ public sealed partial class BartendersPage
         StateHasChanged();
     }
 
-    private async Task GetBartendersAsync(int pageNumber)
+    private async Task GetBartendersAsync(int pageNumber, bool isLiveUpdate = false)
     {
-        SelectedBartenders = [];
-
-        IsLoading = true;
+        if (!isLiveUpdate)
+        {
+            SelectedBartenders = [];
+            IsLoading = true;
+        }
 
         Pagination = await ApiService.ExecuteAsync(() => BartenderApiClient.GetBartendersAsync(
             pageNumber,
@@ -153,6 +172,13 @@ public sealed partial class BartendersPage
             SelectedStatus));
 
         Bartenders = Pagination?.Items ?? [];
+
+        if (isLiveUpdate)
+        {
+            // The reloaded bartenders are new instances, so the selection moves over to them
+            HashSet<Guid> selectedIds = [.. SelectedBartenders.Select(bartender => bartender.Id)];
+            SelectedBartenders = [.. Bartenders.Where(bartender => selectedIds.Contains(bartender.Id))];
+        }
 
         IsLoading = false;
 

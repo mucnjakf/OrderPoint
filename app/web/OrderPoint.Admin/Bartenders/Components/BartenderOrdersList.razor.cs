@@ -4,11 +4,12 @@ using OrderPoint.Admin.Orders.Sorting;
 using OrderPoint.Shared.Dtos;
 using OrderPoint.Shared.Extensions;
 using OrderPoint.Shared.Orders.Dtos;
+using OrderPoint.Shared.Orders.Services;
 using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Bartenders.Components;
 
-public sealed partial class BartenderOrdersList
+public sealed partial class BartenderOrdersList : IDisposable
 {
     private const int PageSize = 5;
 
@@ -28,6 +29,9 @@ public sealed partial class BartenderOrdersList
     [Inject]
     private OrderApiClient OrderApiClient { get; set; } = null!;
 
+    [Inject]
+    private OrdersHubService OrdersHubService { get; set; } = null!;
+
     private PaginationDto<OrderDto>? Pagination { get; set; }
 
     private IReadOnlyList<OrderDto> Orders { get; set; } = [];
@@ -40,12 +44,27 @@ public sealed partial class BartenderOrdersList
 
     protected override async Task OnInitializedAsync()
     {
+        OrdersHubService.OrdersChanged += OnOrdersChanged;
+
         await GetOrdersAsync(pageNumber: 1);
     }
 
-    private async Task GetOrdersAsync(int pageNumber)
+    public void Dispose()
     {
-        IsLoading = true;
+        OrdersHubService.OrdersChanged -= OnOrdersChanged;
+    }
+
+    private void OnOrdersChanged()
+    {
+        _ = InvokeAsync(() => GetOrdersAsync(Pagination?.PageNumber ?? 1, isLiveUpdate: true));
+    }
+
+    private async Task GetOrdersAsync(int pageNumber, bool isLiveUpdate = false)
+    {
+        if (!isLiveUpdate)
+        {
+            IsLoading = true;
+        }
 
         Pagination = await ApiService.ExecuteAsync(() => OrderApiClient.GetOrdersAsync(
             pageNumber,

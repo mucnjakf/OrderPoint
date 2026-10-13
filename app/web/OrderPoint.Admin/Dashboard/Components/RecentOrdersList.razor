@@ -29,13 +29,15 @@
                             New
                         </MudChip>
                     }
-
-                    <MudChip T="string"
-                             Variant="Variant.Text"
-                             Size="Size.Small"
-                             Color="@rowOrder.Status.GetColor()">
-                        @rowOrder.Status.ToString()
-                    </MudChip>
+                    else
+                    {
+                        <MudChip T="string"
+                                 Variant="Variant.Text"
+                                 Size="Size.Small"
+                                 Color="@rowOrder.Status.GetColor()">
+                            @rowOrder.Status.ToString()
+                        </MudChip>
+                    }
 
                     <MudText Typo="Typo.body1">
                         @rowOrder.Total.ToString("C", CultureInfo.CurrentCulture)
