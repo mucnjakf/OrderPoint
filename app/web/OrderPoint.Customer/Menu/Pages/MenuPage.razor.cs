@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using OrderPoint.Customer.Menu.Dtos;
 using OrderPoint.Customer.Menu.Services;
 using OrderPoint.Customer.Tables.Services;
 
 namespace OrderPoint.Customer.Menu.Pages;
 
-// The categories in menu order; searching shows matching items from every category instead
+// The categories in menu order; a category opens its items
 public sealed partial class MenuPage
 {
     // Three rows of two cards on a phone
@@ -38,10 +39,18 @@ public sealed partial class MenuPage
         ? "What would you like?"
         : $"Table {TableService.TableCode} · What would you like?";
 
-    private IEnumerable<(MenuCategoryDto Category, MenuItemDto Item)> FoundItems => Categories
-        .SelectMany(category => category.Items, (category, item) => (category, item))
-        .Where(found => found.item.Name.Contains(SearchQuery!.Trim(), StringComparison.CurrentCultureIgnoreCase))
-        .OrderBy(found => found.item.Name);
+    private IEnumerable<MenuCategoryDto> FoundCategories => IsSearching
+        ? Categories.Where(category =>
+            category.Name.Contains(SearchQuery!.Trim(), StringComparison.CurrentCultureIgnoreCase))
+        : Categories;
+
+    private string EmptyStateIcon => IsSearching ? Icons.Material.Filled.SearchOff : Icons.Material.Filled.MenuBook;
+
+    private string EmptyStateText => IsSearching ? "Nothing found" : "The menu is empty";
+
+    private string EmptyStateDetail => IsSearching
+        ? "Try another name."
+        : "Please ask the staff what they can serve.";
 
     protected override async Task OnInitializedAsync()
     {
@@ -53,10 +62,5 @@ public sealed partial class MenuPage
     private void OpenCategory(MenuCategoryDto category)
     {
         NavigationManager.NavigateTo($"/menu/{category.Id}");
-    }
-
-    private void OpenItem(MenuCategoryDto category, MenuItemDto item)
-    {
-        NavigationManager.NavigateTo($"/menu/{category.Id}/items/{item.Id}");
     }
 }

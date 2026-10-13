@@ -13,7 +13,7 @@
 <div style="@SearchWrapperStyle">
     <MudTextField @bind-Value="@SearchQuery"
                   T="string"
-                  Placeholder="Search the menu"
+                  Placeholder="Search categories"
                   Variant="Variant.Outlined"
                   Adornment="Adornment.Start"
                   AdornmentIcon="@Icons.Material.Filled.Search"
@@ -22,51 +22,30 @@
                   Immediate="true"/>
 </div>
 
-@if (IsSearching)
-{
-    <StatefulView IsLoading="@IsLoading"
-                  ShowContent="@FoundItems.Any()"
-                  EmptyStateIcon="@Icons.Material.Filled.SearchOff"
-                  EmptyStateText="Nothing found"
-                  EmptyStateDetail="Try another name.">
-        <MudStack Spacing="2">
-            @foreach ((MenuCategoryDto category, MenuItemDto item) in FoundItems)
+<StatefulView IsLoading="@IsLoading"
+              ShowContent="@FoundCategories.Any()"
+              EmptyStateIcon="@EmptyStateIcon"
+              EmptyStateText="@EmptyStateText"
+              EmptyStateDetail="@EmptyStateDetail">
+    <LoadingContent>
+        <MudGrid Spacing="2">
+            @for (int i = 0; i < LoadingCardsCount; i++)
             {
-                <MenuItemRow @key="@item.Id"
-                             Item="@item"
-                             CategoryName="@category.Name"
-                             OnClick="@(() => OpenItem(category, item))"/>
+                <MudItem xs="6" sm="4">
+                    <MenuCategoryCardSkeleton/>
+                </MudItem>
             }
-        </MudStack>
-    </StatefulView>
-}
-else
-{
-    <StatefulView IsLoading="@IsLoading"
-                  ShowContent="@Categories.Any()"
-                  EmptyStateIcon="@Icons.Material.Filled.MenuBook"
-                  EmptyStateText="The menu is empty"
-                  EmptyStateDetail="Please ask the staff what they can serve.">
-        <LoadingContent>
-            <MudGrid Spacing="2">
-                @for (int i = 0; i < LoadingCardsCount; i++)
-                {
-                    <MudItem xs="6" sm="4">
-                        <MenuCategoryCardSkeleton/>
-                    </MudItem>
-                }
-            </MudGrid>
-        </LoadingContent>
+        </MudGrid>
+    </LoadingContent>
 
-        <ChildContent>
-            <MudGrid Spacing="2">
-                @foreach (MenuCategoryDto category in Categories)
-                {
-                    <MudItem @key="@category.Id" xs="6" sm="4">
-                        <MenuCategoryCard Category="@category" OnClick="@OpenCategory"/>
-                    </MudItem>
-                }
-            </MudGrid>
-        </ChildContent>
-    </StatefulView>
-}
+    <ChildContent>
+        <MudGrid Spacing="2">
+            @foreach (MenuCategoryDto category in FoundCategories)
+            {
+                <MudItem @key="@category.Id" xs="6" sm="4">
+                    <MenuCategoryCard Category="@category" OnClick="@OpenCategory"/>
+                </MudItem>
+            }
+        </MudGrid>
+    </ChildContent>
+</StatefulView>
