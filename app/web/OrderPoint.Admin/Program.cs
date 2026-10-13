@@ -10,6 +10,7 @@ using OrderPoint.Admin.Health.Api;
 using OrderPoint.Admin.Health.Services;
 using OrderPoint.Admin.Items.Api;
 using OrderPoint.Admin.Orders.Api;
+using OrderPoint.Admin.Orders.Services;
 using OrderPoint.Admin.Search.Services;
 using OrderPoint.ServiceDefaults;
 using OrderPoint.Shared.Account.Api;
@@ -39,6 +40,7 @@ builder.Services.AddScoped<SearchService>();
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<HealthService>();
 builder.Services.AddScoped<OrdersHubService>();
+builder.Services.AddScoped<NewOrderToastService>();
 
 // The auth endpoints are anonymous and called without AccessTokenHandler, which uses them to refresh tokens
 builder.Services.AddHttpClient<AuthApiClient>(ConfigureApiClient);

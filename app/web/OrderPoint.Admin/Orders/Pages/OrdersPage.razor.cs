@@ -8,11 +8,12 @@ using OrderPoint.Admin.Orders.Sorting;
 using OrderPoint.Shared.Dtos;
 using OrderPoint.Shared.Orders.Dtos;
 using OrderPoint.Shared.Orders.Enumerations;
+using OrderPoint.Shared.Orders.Services;
 using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Orders.Pages;
 
-public sealed partial class OrdersPage
+public sealed partial class OrdersPage : IDisposable
 {
     private const int PageSize = 10;
 
@@ -30,6 +31,11 @@ public sealed partial class OrdersPage
 
     [Inject]
     private BartenderApiClient BartenderApiClient { get; set; } = null!;
+
+    [Inject]
+    private OrdersHubService OrdersHubService { get; set; } = null!;
+
+    private NewOrdersTracker NewOrders { get; } = new();
 
     private Dictionary<OrderStatus, int> StatusCounts { get; } = [];
 
@@ -53,19 +59,37 @@ public sealed partial class OrdersPage
 
     protected override async Task OnInitializedAsync()
     {
+        OrdersHubService.OrdersChanged += OnOrdersChanged;
+
         await Task.WhenAll(
             GetStatusCountsAsync(),
             GetOrdersAsync(pageNumber: 1));
     }
 
-    private async Task GetStatusCountsAsync()
+    public void Dispose()
     {
-        await Task.WhenAll(Enum.GetValues<OrderStatus>().Select(GetStatusCountAsync));
+        OrdersHubService.OrdersChanged -= OnOrdersChanged;
     }
 
-    private async Task GetStatusCountAsync(OrderStatus status)
+    // Live updates swap the data in place on the current page, without skeletons
+    private void OnOrdersChanged()
     {
-        LoadingStatuses.Add(status);
+        _ = InvokeAsync(() => Task.WhenAll(
+            GetStatusCountsAsync(showLoading: false),
+            GetOrdersAsync(Pagination?.PageNumber ?? 1, showLoading: false)));
+    }
+
+    private async Task GetStatusCountsAsync(bool showLoading = true)
+    {
+        await Task.WhenAll(Enum.GetValues<OrderStatus>().Select(status => GetStatusCountAsync(status, showLoading)));
+    }
+
+    private async Task GetStatusCountAsync(OrderStatus status, bool showLoading)
+    {
+        if (showLoading)
+        {
+            LoadingStatuses.Add(status);
+        }
 
         PaginationDto<OrderDto>? pagination = await ApiService.ExecuteAsync(
             () => OrderApiClient.GetOrdersAsync(
@@ -82,9 +106,14 @@ public sealed partial class OrdersPage
         StateHasChanged();
     }
 
-    private async Task GetOrdersAsync(int pageNumber)
+    private async Task GetOrdersAsync(int pageNumber, bool showLoading = true)
     {
-        IsLoading = true;
+        if (showLoading)
+        {
+            IsLoading = true;
+        }
+
+        DateTimeOffset loadStartedAtUtc = DateTimeOffset.UtcNow;
 
         Pagination = await ApiService.ExecuteAsync(() => OrderApiClient.GetOrdersAsync(
             pageNumber,
@@ -95,6 +124,8 @@ public sealed partial class OrdersPage
             bartenderId: SelectedBartender?.Id));
 
         Orders = Pagination?.Items ?? [];
+
+        NewOrders.Track(Orders, loadStartedAtUtc, () => InvokeAsync(StateHasChanged));
 
         IsLoading = false;
 

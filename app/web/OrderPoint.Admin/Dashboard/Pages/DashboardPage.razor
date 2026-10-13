@@ -172,7 +172,9 @@
             </LoadingContent>
 
             <ChildContent>
-                <RecentOrdersList Orders="@RecentOrders" OnOrderClick="@ShowOrderDetailsDialogAsync"/>
+                <RecentOrdersList Orders="@RecentOrders"
+                                  IsOrderNew="@(order => NewRecentOrders.IsNew(order.Id))"
+                                  OnOrderClick="@ShowOrderDetailsDialogAsync"/>
             </ChildContent>
         </DashboardTile>
     </MudItem>

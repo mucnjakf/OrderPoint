@@ -14,6 +14,7 @@ using OrderPoint.Admin.Orders.Dialogs;
 using OrderPoint.Admin.Orders.Sorting;
 using OrderPoint.Shared.Dtos;
 using OrderPoint.Shared.Orders.Dtos;
+using OrderPoint.Shared.Orders.Services;
 using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Dashboard.Pages;
@@ -43,6 +44,11 @@ public sealed partial class DashboardPage : IDisposable
 
     [Inject]
     private BartenderApiClient BartenderApiClient { get; set; } = null!;
+
+    [Inject]
+    private OrdersHubService OrdersHubService { get; set; } = null!;
+
+    private NewOrdersTracker NewRecentOrders { get; } = new();
 
     private DashboardPeriod SelectedPeriod { get; set; } = DashboardPeriod.Last7Days;
 
@@ -86,23 +92,43 @@ public sealed partial class DashboardPage : IDisposable
 
     protected override async Task OnInitializedAsync()
     {
+        OrdersHubService.OrdersChanged += OnOrdersChanged;
+
         _ = RefreshLiveAsync();
 
+        await GetSectionsAsync();
+    }
+
+    public void Dispose()
+    {
+        OrdersHubService.OrdersChanged -= OnOrdersChanged;
+        _liveRefreshTimer.Dispose();
+    }
+
+    // The loading flags start true and only a period change sets them again, so live updates swap data in place
+    private void OnOrdersChanged()
+    {
+        _ = InvokeAsync(GetSectionsAsync);
+    }
+
+    private async Task OnPeriodChangedAsync()
+    {
+        IsLoadingSummary = true;
+        IsLoadingRevenueTrend = true;
+        IsLoadingCategoryRevenue = true;
+        IsLoadingTopItems = true;
+        IsLoadingLeaderboard = true;
+
+        await GetPeriodSectionsAsync();
+    }
+
+    private async Task GetSectionsAsync()
+    {
         await Task.WhenAll(
             GetPeriodSectionsAsync(),
             GetLiveAsync(),
             GetBusiestTimesAsync(),
             GetRecentOrdersAsync());
-    }
-
-    public void Dispose()
-    {
-        _liveRefreshTimer.Dispose();
-    }
-
-    private async Task OnPeriodChangedAsync()
-    {
-        await GetPeriodSectionsAsync();
     }
 
     private async Task GetPeriodSectionsAsync()
@@ -125,8 +151,6 @@ public sealed partial class DashboardPage : IDisposable
 
     private async Task GetSummaryAsync()
     {
-        IsLoadingSummary = true;
-
         Summary = await ApiService.ExecuteAsync(() => DashboardApiClient.GetSummaryAsync(SelectedPeriod));
 
         IsLoadingSummary = false;
@@ -146,8 +170,6 @@ public sealed partial class DashboardPage : IDisposable
 
     private async Task GetRevenueTrendAsync()
     {
-        IsLoadingRevenueTrend = true;
-
         IReadOnlyList<RevenueTrendPointDto>? revenueTrend = await ApiService.ExecuteAsync(
             () => DashboardApiClient.GetRevenueTrendAsync(SelectedPeriod));
 
@@ -160,8 +182,6 @@ public sealed partial class DashboardPage : IDisposable
 
     private async Task GetBusiestTimesAsync()
     {
-        IsLoadingBusiestTimes = true;
-
         IReadOnlyList<BusiestTimeDto>? busiestTimes = await ApiService.ExecuteAsync(
             () => DashboardApiClient.GetBusiestTimesAsync());
 
@@ -174,8 +194,6 @@ public sealed partial class DashboardPage : IDisposable
 
     private async Task GetCategoryRevenueAsync()
     {
-        IsLoadingCategoryRevenue = true;
-
         IReadOnlyList<CategoryRevenueDto>? categoryRevenue = await ApiService.ExecuteAsync(
             () => DashboardApiClient.GetCategoryRevenueAsync(SelectedPeriod));
 
@@ -188,8 +206,6 @@ public sealed partial class DashboardPage : IDisposable
 
     private async Task GetTopItemsAsync()
     {
-        IsLoadingTopItems = true;
-
         IReadOnlyList<TopItemDto>? topItems = await ApiService.ExecuteAsync(
             () => DashboardApiClient.GetTopItemsAsync(SelectedPeriod));
 
@@ -202,8 +218,6 @@ public sealed partial class DashboardPage : IDisposable
 
     private async Task GetLeaderboardAsync()
     {
-        IsLoadingLeaderboard = true;
-
         IReadOnlyList<BartenderLeaderboardEntryDto>? leaderboard = await ApiService.ExecuteAsync(
             () => DashboardApiClient.GetBartenderLeaderboardAsync(SelectedPeriod));
 
@@ -216,7 +230,7 @@ public sealed partial class DashboardPage : IDisposable
 
     private async Task GetRecentOrdersAsync()
     {
-        IsLoadingRecentOrders = true;
+        DateTimeOffset loadStartedAtUtc = DateTimeOffset.UtcNow;
 
         PaginationDto<OrderDto>? pagination = await ApiService.ExecuteAsync(
             () => OrderApiClient.GetOrdersAsync(
@@ -225,6 +239,8 @@ public sealed partial class DashboardPage : IDisposable
                 nameof(OrderSortBy.CreatedAtUtcDesc)));
 
         RecentOrders = pagination?.Items ?? [];
+
+        NewRecentOrders.Track(RecentOrders, loadStartedAtUtc, () => InvokeAsync(StateHasChanged));
 
         IsLoadingRecentOrders = false;
 

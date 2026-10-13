@@ -27,6 +27,7 @@
               GetItemColor="@(order => order.Status.GetColor())"
               GetItemIcon="@(order => order.Status.GetIcon())"
               OnItemClick="@ShowOrderDetailsDialogAsync"
+              IsItemNew="@(order => NewOrders.IsNew(order.Id))"
               EmptyStateIcon="@Icons.Material.Filled.Receipt"
               EmptyStateText="No orders found">
 
@@ -87,6 +88,13 @@
                     </MudStack>
 
                     <MudSpacer/>
+
+                    @if (NewOrders.IsNew(context.Id))
+                    {
+                        <MudChip T="string" Variant="Variant.Filled" Color="Color.Primary">
+                            New
+                        </MudChip>
+                    }
 
                     <MudChip T="string"
                              Variant="Variant.Text"

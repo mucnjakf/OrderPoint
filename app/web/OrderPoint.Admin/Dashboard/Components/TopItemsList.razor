@@ -23,7 +23,7 @@
                         </MudText>
 
                         <MudText Typo="Typo.body2">
-                            @item.Quantity sold
+                            <RollingNumber Value="@item.Quantity" Text="@item.Quantity.ToString()"/> sold
                         </MudText>
                     </MudStack>
 
@@ -33,7 +33,8 @@
                                        Size="Size.Small"/>
 
                     <MudText Typo="Typo.caption">
-                        @item.Revenue.ToString("C", CultureInfo.CurrentCulture)
+                        <RollingNumber Value="@item.Revenue"
+                                       Text="@item.Revenue.ToString("C", CultureInfo.CurrentCulture)"/>
                     </MudText>
                 </MudStack>
             </MudStack>

@@ -25,12 +25,15 @@
                     </MudText>
 
                     <MudText Typo="Typo.caption">
-                        @entry.CompletedOrdersCount completed · @GetDeclineRateText(entry) declined
+                        <RollingNumber Value="@entry.CompletedOrdersCount"
+                                       Text="@entry.CompletedOrdersCount.ToString()"/>
+                        completed · @GetDeclineRateText(entry) declined
                     </MudText>
                 </MudStack>
 
                 <MudText Typo="Typo.body1">
-                    @entry.Revenue.ToString("C", CultureInfo.CurrentCulture)
+                    <RollingNumber Value="@entry.Revenue"
+                                   Text="@entry.Revenue.ToString("C", CultureInfo.CurrentCulture)"/>
                 </MudText>
             </MudStack>
         </MudPaper>

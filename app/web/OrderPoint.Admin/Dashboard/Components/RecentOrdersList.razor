@@ -3,36 +3,45 @@
     {
         OrderDto rowOrder = order;
 
-        <MudPaper Outlined="true"
-                  Class="pa-3 cursor-pointer"
-                  Style="@GetRowStyle(rowOrder)"
-                  @onclick="@(() => OnOrderClickAsync(rowOrder))"
-                  @onmouseenter="@(() => HoveredOrderId = rowOrder.Id)"
-                  @onmouseleave="@(() => HoveredOrderId = null)">
-            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
-                <OrderAvatar Number="@rowOrder.Number"/>
+        <NewItemHighlight IsNew="@IsOrderNew(rowOrder)">
+            <MudPaper Outlined="true"
+                      Class="pa-3 cursor-pointer"
+                      Style="@GetRowStyle(rowOrder)"
+                      @onclick="@(() => OnOrderClickAsync(rowOrder))"
+                      @onmouseenter="@(() => HoveredOrderId = rowOrder.Id)"
+                      @onmouseleave="@(() => HoveredOrderId = null)">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                    <OrderAvatar Number="@rowOrder.Number"/>
 
-                <MudStack Spacing="0" Class="flex-1">
-                    <MudText Typo="Typo.body2">
-                        Table @rowOrder.TableCode
-                    </MudText>
+                    <MudStack Spacing="0" Class="flex-1">
+                        <MudText Typo="Typo.body2">
+                            Table @rowOrder.TableCode
+                        </MudText>
 
-                    <MudText Typo="Typo.caption">
-                        @rowOrder.CreatedAtUtc.ToRelativeTime()
+                        <MudText Typo="Typo.caption">
+                            @rowOrder.CreatedAtUtc.ToRelativeTime()
+                        </MudText>
+                    </MudStack>
+
+                    @if (IsOrderNew(rowOrder))
+                    {
+                        <MudChip T="string" Variant="Variant.Filled" Size="Size.Small" Color="Color.Primary">
+                            New
+                        </MudChip>
+                    }
+
+                    <MudChip T="string"
+                             Variant="Variant.Text"
+                             Size="Size.Small"
+                             Color="@rowOrder.Status.GetColor()">
+                        @rowOrder.Status.ToString()
+                    </MudChip>
+
+                    <MudText Typo="Typo.body1">
+                        @rowOrder.Total.ToString("C", CultureInfo.CurrentCulture)
                     </MudText>
                 </MudStack>
-
-                <MudChip T="string"
-                         Variant="Variant.Text"
-                         Size="Size.Small"
-                         Color="@rowOrder.Status.GetColor()">
-                    @rowOrder.Status.ToString()
-                </MudChip>
-
-                <MudText Typo="Typo.body1">
-                    @rowOrder.Total.ToString("C", CultureInfo.CurrentCulture)
-                </MudText>
-            </MudStack>
-        </MudPaper>
+            </MudPaper>
+        </NewItemHighlight>
     }
 </MudStack>

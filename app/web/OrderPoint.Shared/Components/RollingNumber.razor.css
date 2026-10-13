@@ -1,0 +1,88 @@
+/* The previous value lies on top of the new one while both slide; up when the value grew, down when it shrank */
+.rolling-number {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+}
+
+.rolling-number-previous {
+    position: absolute;
+    inset: 0;
+    white-space: nowrap;
+}
+
+.rolling-number-in-up {
+    animation: rolling-number-in-up 400ms ease-out;
+}
+
+.rolling-number-in-down {
+    animation: rolling-number-in-down 400ms ease-out;
+}
+
+.rolling-number-out-up {
+    animation: rolling-number-out-up 400ms ease-out forwards;
+}
+
+.rolling-number-out-down {
+    animation: rolling-number-out-down 400ms ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .rolling-number-in-up,
+    .rolling-number-in-down {
+        animation: none;
+    }
+
+    .rolling-number-previous {
+        display: none;
+    }
+}
+
+@keyframes rolling-number-in-up {
+    0% {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes rolling-number-in-down {
+    0% {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes rolling-number-out-up {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+}
+
+@keyframes rolling-number-out-down {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+}

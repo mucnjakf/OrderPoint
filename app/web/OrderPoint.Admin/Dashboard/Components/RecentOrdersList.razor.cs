@@ -11,6 +11,10 @@ public sealed partial class RecentOrdersList
 
     [Parameter]
     [EditorRequired]
+    public Func<OrderDto, bool> IsOrderNew { get; set; } = null!;
+
+    [Parameter]
+    [EditorRequired]
     public EventCallback<OrderDto> OnOrderClick { get; set; }
 
     private Guid? HoveredOrderId { get; set; }

@@ -1,0 +1,16 @@
+/* Starts tinted and fades back to the paper's own background */
+.new-item-highlight ::deep > .mud-paper {
+    animation: new-item-highlight 3s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .new-item-highlight ::deep > .mud-paper {
+        animation: none;
+    }
+}
+
+@keyframes new-item-highlight {
+    0% {
+        background-color: rgba(var(--mud-palette-primary-rgb), 0.15);
+    }
+}

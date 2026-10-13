@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.JSInterop;
 using MudBlazor;
 using OrderPoint.Admin.Health.Services;
+using OrderPoint.Admin.Orders.Services;
 using OrderPoint.Admin.Search.Dialogs;
 using OrderPoint.Admin.Search.Dtos;
 using OrderPoint.Admin.Search.Services;
@@ -59,6 +60,9 @@ public sealed partial class MainLayout : IDisposable
     [Inject]
     private OrdersHubService OrdersHubService { get; set; } = null!;
 
+    [Inject]
+    private NewOrderToastService NewOrderToastService { get; set; } = null!;
+
     private DotNetObjectReference<MainLayout>? SelfReference { get; set; }
 
     private bool IsSearchOpen { get; set; }
@@ -78,6 +82,7 @@ public sealed partial class MainLayout : IDisposable
     protected override async Task OnInitializedAsync()
     {
         AuthService.SessionChanged += OnSessionChanged;
+        OrdersHubService.OrdersChanged += OnOrdersChanged;
 
         await Task.WhenAll(LoadLayoutPreferencesAsync(), AuthService.LoadAsync(), TimeZoneService.LoadAsync());
 
@@ -87,7 +92,7 @@ public sealed partial class MainLayout : IDisposable
         {
             _ = OrdersHubService.StartAsync();
 
-            await Task.WhenAll(AccountService.LoadAsync(), HealthService.CheckAsync());
+            await Task.WhenAll(AccountService.LoadAsync(), HealthService.CheckAsync(), NewOrderToastService.LoadAsync());
         }
     }
 
@@ -106,6 +111,7 @@ public sealed partial class MainLayout : IDisposable
     public void Dispose()
     {
         AuthService.SessionChanged -= OnSessionChanged;
+        OrdersHubService.OrdersChanged -= OnOrdersChanged;
         SelfReference?.Dispose();
         _healthCheckTimer.Dispose();
     }
@@ -158,17 +164,26 @@ public sealed partial class MainLayout : IDisposable
             {
                 _ = OrdersHubService.StartAsync();
 
-                await Task.WhenAll(AccountService.LoadAsync(), HealthService.CheckAsync());
+                await Task.WhenAll(
+                    AccountService.LoadAsync(),
+                    HealthService.CheckAsync(),
+                    NewOrderToastService.LoadAsync());
             }
             else
             {
                 AccountService.Clear();
+                NewOrderToastService.Clear();
 
                 await OrdersHubService.StopAsync();
             }
 
             StateHasChanged();
         });
+    }
+
+    private void OnOrdersChanged()
+    {
+        _ = InvokeAsync(NewOrderToastService.CheckAsync);
     }
 
     private async Task RefreshHealthAsync()

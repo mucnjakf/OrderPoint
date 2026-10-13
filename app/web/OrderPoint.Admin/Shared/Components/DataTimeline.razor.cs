@@ -102,6 +102,9 @@ public sealed partial class DataTimeline<TItem>
     [Parameter]
     public RenderFragment? LoadingTemplate { get; set; }
 
+    [Parameter]
+    public Func<TItem, bool>? IsItemNew { get; set; }
+
     private TItem? HoveredItem { get; set; }
 
     private async Task OnSearchChangedAsync()
@@ -124,6 +127,11 @@ public sealed partial class DataTimeline<TItem>
     private bool IsHovered(TItem item)
     {
         return EqualityComparer<TItem>.Default.Equals(item, HoveredItem);
+    }
+
+    private bool IsNew(TItem item)
+    {
+        return IsItemNew?.Invoke(item) ?? false;
     }
 
     private string GetTicketStyle(TItem item)

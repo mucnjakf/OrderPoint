@@ -12,7 +12,7 @@
                 </MudText>
 
                 <MudText Typo="Typo.h6">
-                    @GetCount(status)
+                    <RollingNumber Value="@GetCount(status)" Text="@GetCount(status).ToString()"/>
                 </MudText>
             </MudStack>
         </MudPaper>
@@ -45,7 +45,7 @@
             </MudText>
 
             <MudText Typo="Typo.h6">
-                @Live.TodayOrdersCount
+                <RollingNumber Value="@Live.TodayOrdersCount" Text="@Live.TodayOrdersCount.ToString()"/>
             </MudText>
         </MudPaper>
 
@@ -55,7 +55,7 @@
             </MudText>
 
             <MudText Typo="Typo.h6">
-                @Live.TodayCompletedCount
+                <RollingNumber Value="@Live.TodayCompletedCount" Text="@Live.TodayCompletedCount.ToString()"/>
             </MudText>
         </MudPaper>
     </MudStack>
@@ -67,7 +67,8 @@
             </MudText>
 
             <MudText Typo="Typo.h6">
-                @Live.TodayRevenue.ToString("C", CultureInfo.CurrentCulture)
+                <RollingNumber Value="@Live.TodayRevenue"
+                               Text="@Live.TodayRevenue.ToString("C", CultureInfo.CurrentCulture)"/>
             </MudText>
         </MudPaper>
 
@@ -77,7 +78,8 @@
             </MudText>
 
             <MudText Typo="Typo.h6">
-                @Live.TodayAverageOrderValue.ToString("C", CultureInfo.CurrentCulture)
+                <RollingNumber Value="@Live.TodayAverageOrderValue"
+                               Text="@Live.TodayAverageOrderValue.ToString("C", CultureInfo.CurrentCulture)"/>
             </MudText>
         </MudPaper>
     </MudStack>

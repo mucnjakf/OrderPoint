@@ -78,13 +78,15 @@ else
                     </ItemDot>
 
                     <ItemContent>
-                        <MudPaper Class="pa-4 cursor-pointer"
-                                  Style="@GetTicketStyle(item)"
-                                  @onclick="@(() => OnItemClickAsync(item))"
-                                  @onmouseenter="@(() => HoveredItem = item)"
-                                  @onmouseleave="@(() => HoveredItem = default)">
-                            @ItemTemplate(item)
-                        </MudPaper>
+                        <NewItemHighlight IsNew="@IsNew(item)">
+                            <MudPaper Class="pa-4 cursor-pointer"
+                                      Style="@GetTicketStyle(item)"
+                                      @onclick="@(() => OnItemClickAsync(item))"
+                                      @onmouseenter="@(() => HoveredItem = item)"
+                                      @onmouseleave="@(() => HoveredItem = default)">
+                                @ItemTemplate(item)
+                            </MudPaper>
+                        </NewItemHighlight>
                     </ItemContent>
                 </MudTimelineItem>
             }

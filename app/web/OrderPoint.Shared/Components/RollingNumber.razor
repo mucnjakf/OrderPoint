@@ -1,0 +1,10 @@
+﻿@typeparam T
+
+<span class="rolling-number">
+    @if (PreviousText is not null)
+    {
+        <span @key="@($"previous-{Version}")" class="@PreviousClass">@PreviousText</span>
+    }
+
+    <span @key="@Version" class="@CurrentClass">@Text</span>
+</span>
