@@ -2,6 +2,7 @@
 using MudBlazor;
 using MudBlazor.Services;
 using OrderPoint.Customer;
+using OrderPoint.Customer.Settings.Services;
 using OrderPoint.Customer.Tables.Services;
 using OrderPoint.ServiceDefaults;
 using OrderPoint.Shared.Extensions;
@@ -18,6 +19,7 @@ builder.Services
 builder.Services.AddScoped<ApiService>();
 builder.Services.AddScoped<TimeZoneService>();
 builder.Services.AddScoped<TableService>();
+builder.Services.AddScoped<AppearanceService>();
 
 // At the top, so snackbars never cover the bottom navigation
 builder.Services.AddMudServices(configuration =>

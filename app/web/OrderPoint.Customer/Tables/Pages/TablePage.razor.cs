@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Components;
 using OrderPoint.Customer.Tables.Services;
 
 namespace OrderPoint.Customer.Tables.Pages;
@@ -17,13 +18,17 @@ public sealed partial class TablePage
 
     protected override async Task OnInitializedAsync()
     {
-        string tableCode = TableCode.Trim();
+        string tableCode = TableCode.Trim().ToUpperInvariant();
 
-        if (tableCode.Length is > 0 and <= TableService.MaxTableCodeLength)
+        // A mistyped or odd URL keeps the table the guest had
+        if (tableCode.Length <= TableService.MaxTableCodeLength && TableCodeRegex().IsMatch(tableCode))
         {
             await TableService.SetAsync(tableCode);
         }
 
         NavigationManager.NavigateTo("/", replace: true);
     }
+
+    [GeneratedRegex("^[A-Z0-9-]+$")]
+    private static partial Regex TableCodeRegex();
 }

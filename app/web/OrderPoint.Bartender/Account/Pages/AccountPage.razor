@@ -56,9 +56,9 @@
 
     <MudItem xs="12" sm="8">
         <MudPaper Class="pa-5" Style="height: 100%">
-            <AccountSection Icon="@Icons.Material.Filled.Contrast"
-                            Title="Appearance"
-                            Description="Light or dark colours, remembered on this device.">
+            <SettingsSection Icon="@Icons.Material.Filled.Contrast"
+                             Title="Appearance"
+                             Description="Light or dark colours, remembered on this device.">
                 <MudToggleGroup T="bool"
                                 Value="@DarkModeService.IsDarkMode"
                                 ValueChanged="@OnDarkModeChangedAsync"
@@ -78,13 +78,13 @@
                         </MudStack>
                     </MudToggleItem>
                 </MudToggleGroup>
-            </AccountSection>
+            </SettingsSection>
 
             <MudDivider Class="my-5"/>
 
-            <AccountSection Icon="@Icons.Material.Filled.Password"
-                            Title="Password"
-                            Description="Change the password you sign in with. Other devices are signed out.">
+            <SettingsSection Icon="@Icons.Material.Filled.Password"
+                             Title="Password"
+                             Description="Change the password you sign in with. Other devices are signed out.">
                 <MudButton Variant="Variant.Outlined"
                            Size="Size.Large"
                            FullWidth="true"
@@ -92,13 +92,13 @@
                            Href="/account/password">
                     Change password
                 </MudButton>
-            </AccountSection>
+            </SettingsSection>
 
             <MudDivider Class="my-5"/>
 
-            <AccountSection Icon="@Icons.Material.Filled.Devices"
-                            Title="Sessions"
-                            Description="Sign out of every device signed in with this account, including this one.">
+            <SettingsSection Icon="@Icons.Material.Filled.Devices"
+                             Title="Sessions"
+                             Description="Sign out of every device signed in with this account, including this one.">
                 <MudButton Variant="Variant.Outlined"
                            Color="Color.Warning"
                            Size="Size.Large"
@@ -107,13 +107,13 @@
                            OnClick="@ShowSignOutEverywhereDialogAsync">
                     Sign out everywhere
                 </MudButton>
-            </AccountSection>
+            </SettingsSection>
 
             <MudDivider Class="my-5"/>
 
-            <AccountSection Icon="@Icons.Material.Filled.Logout"
-                            Title="Sign out"
-                            Description="Sign out of this device.">
+            <SettingsSection Icon="@Icons.Material.Filled.Logout"
+                             Title="Sign out"
+                             Description="Sign out of this device.">
                 <MudButton Variant="Variant.Outlined"
                            Size="Size.Large"
                            FullWidth="true"
@@ -121,7 +121,7 @@
                            OnClick="@ShowSignOutDialogAsync">
                     Sign out
                 </MudButton>
-            </AccountSection>
+            </SettingsSection>
         </MudPaper>
     </MudItem>
 </MudGrid>

@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace OrderPoint.Bartender.Account.Components;
+namespace OrderPoint.Shared.Components;
 
 // Title and description, with the section's control below them at full width (phones have no room beside them)
-public sealed partial class AccountSection
+public sealed partial class SettingsSection
 {
     [Parameter]
     [EditorRequired]

@@ -22,7 +22,8 @@ public sealed partial class BottomNavigation : IDisposable
     [
         ("/", "Menu", Icons.Material.Filled.MenuBook),
         ("/cart", "Cart", Icons.Material.Filled.ShoppingCart),
-        ("/orders", "My orders", Icons.Material.Filled.Receipt)
+        ("/orders", "My orders", Icons.Material.Filled.Receipt),
+        ("/settings", "Settings", Icons.Material.Filled.Settings)
     ];
 
     [Inject]

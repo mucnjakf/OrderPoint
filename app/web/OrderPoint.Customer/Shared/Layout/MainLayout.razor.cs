@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using OrderPoint.Customer.Settings.Enumerations;
+using OrderPoint.Customer.Settings.Services;
 using OrderPoint.Customer.Tables.Services;
 using OrderPoint.Shared.Layout;
 using OrderPoint.Shared.Services;
@@ -18,18 +20,28 @@ public sealed partial class MainLayout : IDisposable
     [Inject]
     private TimeZoneService TimeZoneService { get; set; } = null!;
 
+    [Inject]
+    private AppearanceService AppearanceService { get; set; } = null!;
+
     private MudThemeProvider ThemeProvider { get; set; } = null!;
 
     private MudTheme Theme { get; } = AppTheme.Create();
 
-    // Guests have no settings page, so the app follows the phone's light or dark mode
-    private bool IsDarkMode { get; set; }
+    private bool IsSystemDarkMode { get; set; }
+
+    private bool IsDarkMode => AppearanceService.Mode switch
+    {
+        AppearanceMode.Light => false,
+        AppearanceMode.Dark => true,
+        _ => IsSystemDarkMode
+    };
 
     protected override async Task OnInitializedAsync()
     {
-        TableService.Changed += OnTableChanged;
+        TableService.Changed += OnStateChanged;
+        AppearanceService.Changed += OnStateChanged;
 
-        await Task.WhenAll(TableService.LoadAsync(), TimeZoneService.LoadAsync());
+        await Task.WhenAll(TableService.LoadAsync(), TimeZoneService.LoadAsync(), AppearanceService.LoadAsync());
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -39,7 +51,7 @@ public sealed partial class MainLayout : IDisposable
             return;
         }
 
-        IsDarkMode = await ThemeProvider.GetSystemDarkModeAsync();
+        IsSystemDarkMode = await ThemeProvider.GetSystemDarkModeAsync();
 
         await ThemeProvider.WatchSystemDarkModeAsync(OnSystemDarkModeChangedAsync);
 
@@ -48,17 +60,18 @@ public sealed partial class MainLayout : IDisposable
 
     public void Dispose()
     {
-        TableService.Changed -= OnTableChanged;
+        TableService.Changed -= OnStateChanged;
+        AppearanceService.Changed -= OnStateChanged;
     }
 
     private Task OnSystemDarkModeChangedAsync(bool isDarkMode)
     {
-        IsDarkMode = isDarkMode;
+        IsSystemDarkMode = isDarkMode;
 
         return InvokeAsync(StateHasChanged);
     }
 
-    private void OnTableChanged()
+    private void OnStateChanged()
     {
         _ = InvokeAsync(StateHasChanged);
     }
