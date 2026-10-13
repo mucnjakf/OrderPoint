@@ -1,0 +1,23 @@
+﻿@typeparam TItem
+
+@if (Pagination is not null && Pagination.TotalPages > 1)
+{
+    <div @ref="@Element" class="mt-3">
+        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+            <MudText Typo="Typo.caption">
+                Showing @((Pagination.PageNumber - 1) * Pagination.PageSize + 1)
+                to @(Math.Min(Pagination.PageNumber * Pagination.PageSize, Pagination.TotalCount))
+                of @Pagination.TotalCount items
+            </MudText>
+
+            <MudPagination Count="@Pagination.TotalPages"
+                           Selected="@Pagination.PageNumber"
+                           SelectedChanged="@OnPageSelectedAsync"
+                           Disabled="@IsLoading"
+                           BoundaryCount="1"
+                           MiddleCount="1"
+                           ShowFirstButton="true"
+                           ShowLastButton="true"/>
+        </MudStack>
+    </div>
+}

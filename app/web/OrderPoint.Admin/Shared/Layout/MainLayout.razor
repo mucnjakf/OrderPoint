@@ -1,6 +1,6 @@
 ﻿@inherits LayoutComponentBase
 
-<MudThemeProvider Theme="@Theme" @bind-IsDarkMode="@IsDarkMode" />
+<MudThemeProvider Theme="@Theme" IsDarkMode="@DarkModeService.IsDarkMode" />
 <MudPopoverProvider />
 <MudDialogProvider CloseButton="true" BackdropClick="false" Position="DialogPosition.Center" CloseOnEscapeKey="true" />
 <MudSnackbarProvider />
@@ -31,10 +31,6 @@
         <MudSpacer />
 
         <SearchTrigger OnClick="@OpenSearchAsync" />
-
-        <MudTooltip Text="@(IsDarkMode ? "Light mode" : "Dark mode")">
-            <MudIconButton Icon="@DarkModeIcon" OnClick="@ToggleDarkModeAsync" Color="Color.Inherit" />
-        </MudTooltip>
 
         <HealthStatusIndicator />
     </MudAppBar>

@@ -18,8 +18,6 @@ namespace OrderPoint.Admin.Shared.Layout;
 
 public sealed partial class MainLayout : IDisposable
 {
-    private const string DarkModeStorageKey = "dark-mode";
-
     private const string DrawerOpenStorageKey = "drawer-open";
 
     private const int HealthCheckIntervalInSeconds = 30;
@@ -41,6 +39,9 @@ public sealed partial class MainLayout : IDisposable
 
     [Inject]
     private TimeZoneService TimeZoneService { get; set; } = null!;
+
+    [Inject]
+    private DarkModeService DarkModeService { get; set; } = null!;
 
     [Inject]
     private IJSRuntime JsRuntime { get; set; } = null!;
@@ -71,10 +72,6 @@ public sealed partial class MainLayout : IDisposable
 
     private bool DrawerOpen { get; set; } = true;
 
-    private bool IsDarkMode { get; set; } = true;
-
-    private string DarkModeIcon => IsDarkMode ? Icons.Material.Filled.LightMode : Icons.Material.Filled.DarkMode;
-
     private string DrawerToggleIcon => DrawerOpen
         ? Icons.Material.Filled.ChevronLeft
         : Icons.Material.Filled.ChevronRight;
@@ -82,9 +79,14 @@ public sealed partial class MainLayout : IDisposable
     protected override async Task OnInitializedAsync()
     {
         AuthService.SessionChanged += OnSessionChanged;
+        DarkModeService.Changed += OnDarkModeChanged;
         OrdersHubService.OrdersChanged += OnOrdersChanged;
 
-        await Task.WhenAll(LoadLayoutPreferencesAsync(), AuthService.LoadAsync(), TimeZoneService.LoadAsync());
+        await Task.WhenAll(
+            LoadLayoutPreferencesAsync(),
+            DarkModeService.LoadAsync(),
+            AuthService.LoadAsync(),
+            TimeZoneService.LoadAsync());
 
         _ = RefreshHealthAsync();
 
@@ -111,6 +113,7 @@ public sealed partial class MainLayout : IDisposable
     public void Dispose()
     {
         AuthService.SessionChanged -= OnSessionChanged;
+        DarkModeService.Changed -= OnDarkModeChanged;
         OrdersHubService.OrdersChanged -= OnOrdersChanged;
         SelfReference?.Dispose();
         _healthCheckTimer.Dispose();
@@ -181,6 +184,11 @@ public sealed partial class MainLayout : IDisposable
         });
     }
 
+    private void OnDarkModeChanged()
+    {
+        _ = InvokeAsync(StateHasChanged);
+    }
+
     private void OnOrdersChanged()
     {
         _ = InvokeAsync(NewOrderToastService.CheckAsync);
@@ -199,7 +207,6 @@ public sealed partial class MainLayout : IDisposable
 
     private async Task LoadLayoutPreferencesAsync()
     {
-        IsDarkMode = await LoadPreferenceAsync(DarkModeStorageKey, defaultValue: true);
         DrawerOpen = await LoadPreferenceAsync(DrawerOpenStorageKey, defaultValue: true);
     }
 
@@ -224,12 +231,5 @@ public sealed partial class MainLayout : IDisposable
         DrawerOpen = !DrawerOpen;
 
         await ProtectedLocalStorage.SetAsync(DrawerOpenStorageKey, DrawerOpen);
-    }
-
-    private async Task ToggleDarkModeAsync()
-    {
-        IsDarkMode = !IsDarkMode;
-
-        await ProtectedLocalStorage.SetAsync(DarkModeStorageKey, IsDarkMode);
     }
 }

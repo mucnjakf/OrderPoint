@@ -1,156 +1,146 @@
 ﻿@typeparam TItem
 
-<MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.End" Class="mb-3">
-    <MudStack Row="true">
-        <MudTextField @bind-Value="@SearchQuery"
-                      @bind-Value:after="@OnSearchChangedAsync"
-                      T="string"
-                      Label="@SearchLabel"
-                      Variant="Variant.Outlined"
-                      Clearable="true"
-                      Class="mt-0"
-                      DebounceInterval="500"
-                      Immediate="false"/>
+<div class="mb-3" style="@ToolbarAreaStyle">
+    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.End" Style="@ToolbarStyle">
+        <MudStack Row="true">
+            <MudTextField @bind-Value="@SearchQuery"
+                          @bind-Value:after="@OnSearchChangedAsync"
+                          T="string"
+                          Label="@SearchLabel"
+                          Variant="Variant.Outlined"
+                          Clearable="true"
+                          Class="mt-0"
+                          DebounceInterval="500"
+                          Immediate="false"/>
 
-        <MudSelect @bind-Value="@SelectedSortBy"
-                   @bind-Value:after="@OnSortChangedAsync"
-                   T="string"
-                   Variant="Variant.Outlined"
-                   Label="Sort by"
-                   Class="mt-0"
-                   FitContent="true">
-            @foreach (string sortBy in SortByOptions)
+            <MudSelect @bind-Value="@SelectedSortBy"
+                       @bind-Value:after="@OnSortChangedAsync"
+                       T="string"
+                       Variant="Variant.Outlined"
+                       Label="Sort by"
+                       Class="mt-0"
+                       FitContent="true">
+                @foreach (string sortBy in SortByOptions)
+                {
+                    <MudSelectItem Value="@sortBy">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                            <MudText Typo="Typo.body1">@GetSortByLabel(sortBy)</MudText>
+                            <MudIcon Icon="@GetSortByIcon(sortBy)" Size="Size.Small"/>
+                        </MudStack>
+                    </MudSelectItem>
+                }
+            </MudSelect>
+
+            @if (FilterContent is not null)
             {
-                <MudSelectItem Value="@sortBy">
-                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
-                        <MudText Typo="Typo.body1">@GetSortByLabel(sortBy)</MudText>
-                        <MudIcon Icon="@GetSortByIcon(sortBy)" Size="Size.Small"/>
-                    </MudStack>
-                </MudSelectItem>
+                @FilterContent
             }
-        </MudSelect>
+        </MudStack>
 
-        @if (FilterContent is not null)
-        {
-            @FilterContent
-        }
+        <MudButton Variant="Variant.Filled"
+                   StartIcon="@Icons.Material.Filled.Add"
+                   Color="Color.Primary"
+                   OnClick="@OnCreateClickAsync">
+            @CreateButtonText
+        </MudButton>
     </MudStack>
 
-    <MudButton Variant="Variant.Filled"
-               StartIcon="@Icons.Material.Filled.Add"
-               Color="Color.Primary"
-               OnClick="@OnCreateClickAsync">
-        @CreateButtonText
-    </MudButton>
-</MudStack>
+    @if (IsBulkActionBarVisible)
+    {
+        <div style="@BulkActionBarStyle">
+            <BulkActionBar SelectedCount="@SelectedItems.Count"
+                           TotalCount="@Items.Count"
+                           OnSelectAllClick="@SelectAllAsync"
+                           OnClearClick="@ClearSelectionAsync">
+                @BulkActionsTemplate
+            </BulkActionBar>
+        </div>
+    }
+</div>
 
-@if (SelectedItems.Count > 0 && BulkActionsTemplate is not null)
-{
-    <BulkActionBar SelectedCount="@SelectedItems.Count"
-                   TotalCount="@Items.Count"
-                   OnSelectAllClick="@SelectAllAsync"
-                   OnClearClick="@ClearSelectionAsync">
-        @BulkActionsTemplate
-    </BulkActionBar>
-}
-
-@if (IsLoading && LoadingTemplate is not null)
-{
-    <MudPaper Style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; background-color: transparent"
-              Elevation="0">
-        @for (int i = 0; i < LoadingItemsCount; i++)
-        {
-            <MudCard>
-                @LoadingTemplate
-
-                <MudCardActions Class="d-flex justify-center pa-4"
-                                Style="border-top: 1px solid var(--mud-palette-lines-default)">
-                    <MudSkeleton SkeletonType="SkeletonType.Circle" Width="30px" Height="30px"/>
-
-                    <MudSkeleton SkeletonType="SkeletonType.Circle" Width="30px" Height="30px" Class="mx-3"/>
-
-                    @if (OnDeleteClick.HasDelegate)
-                    {
-                        <MudSkeleton SkeletonType="SkeletonType.Circle" Width="30px" Height="30px"/>
-                    }
-                </MudCardActions>
-            </MudCard>
-        }
-    </MudPaper>
-}
-else
-{
-    <StatefulView IsLoading="@IsLoading"
-                  ShowContent="@Items.Any()"
-                  EmptyStateIcon="@EmptyStateIcon"
-                  EmptyStateText="@EmptyStateText">
-
-        <MudPaper Style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; background-color: transparent"
+<StableHeight IsLoading="@IsLoading" KeepHeight="@(Pagination?.PageNumber > 1)" IsFramed="true" Class="pa-3">
+    @if (IsLoading && LoadingTemplate is not null)
+    {
+        <MudPaper Style="@GridStyle"
                   Elevation="0">
-            @foreach (TItem item in Items)
+            @for (int i = 0; i < LoadingItemsCount; i++)
             {
-                <MudCard Style="@GetCardStyle(item)">
-                    @if (IsSelectable)
-                    {
-                        <div style="@SelectionCheckBoxStyle">
-                            <MudCheckBox T="bool"
-                                         Value="@IsSelected(item)"
-                                         ValueChanged="@(isSelected => SetSelectedAsync(item, isSelected))"
-                                         Dense="true"/>
-                        </div>
-                    }
-
-                    @RowTemplate(item)
+                <MudCard>
+                    @LoadingTemplate
 
                     <MudCardActions Class="d-flex justify-center pa-4"
                                     Style="border-top: 1px solid var(--mud-palette-lines-default)">
-                        <MudTooltip Text="Details">
-                            <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye"
-                                           Color="Color.Primary"
-                                           Size="Size.Small"
-                                           OnClick="@(() => OnDetailsClickAsync(item))"/>
-                        </MudTooltip>
+                        <MudSkeleton SkeletonType="SkeletonType.Circle" Width="30px" Height="30px"/>
 
-                        <MudTooltip Text="Edit">
-                            <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                           Color="Color.Secondary"
-                                           Size="Size.Small"
-                                           Class="mx-3"
-                                           OnClick="@(() => OnUpdateClickAsync(item))"/>
-                        </MudTooltip>
+                        <MudSkeleton SkeletonType="SkeletonType.Circle" Width="30px" Height="30px" Class="mx-3"/>
 
                         @if (OnDeleteClick.HasDelegate)
                         {
-                            <MudTooltip Text="@GetDeleteButtonTooltipText(item)">
-                                <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                               Color="Color.Error"
-                                               Size="Size.Small"
-                                               Disabled="@IsDeleteButtonDisabled(item)"
-                                               OnClick="@(() => OnDeleteClickAsync(item))"/>
-                            </MudTooltip>
+                            <MudSkeleton SkeletonType="SkeletonType.Circle" Width="30px" Height="30px"/>
                         }
                     </MudCardActions>
                 </MudCard>
             }
         </MudPaper>
+    }
+    else
+    {
+        <StatefulView IsLoading="@IsLoading"
+                      ShowContent="@Items.Any()"
+                      Flat="true"
+                      EmptyStateIcon="@EmptyStateIcon"
+                      EmptyStateText="@EmptyStateText">
 
-        @if (Pagination is not null && Pagination.TotalPages > 1)
-        {
-            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mt-3">
-                <MudText Typo="Typo.caption">
-                    Showing @((Pagination.PageNumber - 1) * Pagination.PageSize + 1)
-                    to @(Math.Min(Pagination.PageNumber * Pagination.PageSize, Pagination.TotalCount))
-                    of @Pagination.TotalCount items
-                </MudText>
+            <MudPaper Style="@GridStyle"
+                      Elevation="0">
+                @foreach (TItem item in Items)
+                {
+                    <MudCard Style="@GetCardStyle(item)">
+                        @if (IsSelectable)
+                        {
+                            <div style="@SelectionCheckBoxStyle">
+                                <MudCheckBox T="bool"
+                                             Value="@IsSelected(item)"
+                                             ValueChanged="@(isSelected => SetSelectedAsync(item, isSelected))"
+                                             Dense="true"/>
+                            </div>
+                        }
 
-                <MudPagination Count="@Pagination.TotalPages"
-                               Selected="@Pagination.PageNumber"
-                               SelectedChanged="@OnPageChanged"
-                               BoundaryCount="1"
-                               MiddleCount="3"
-                               ShowFirstButton="true"
-                               ShowLastButton="true"/>
-            </MudStack>
-        }
-    </StatefulView>
-}
+                        @RowTemplate(item)
+
+                        <MudCardActions Class="d-flex justify-center pa-4"
+                                        Style="border-top: 1px solid var(--mud-palette-lines-default)">
+                            <MudTooltip Text="Details">
+                                <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye"
+                                               Color="Color.Primary"
+                                               Size="Size.Small"
+                                               OnClick="@(() => OnDetailsClickAsync(item))"/>
+                            </MudTooltip>
+
+                            <MudTooltip Text="Edit">
+                                <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                               Color="Color.Secondary"
+                                               Size="Size.Small"
+                                               Class="mx-3"
+                                               OnClick="@(() => OnUpdateClickAsync(item))"/>
+                            </MudTooltip>
+
+                            @if (OnDeleteClick.HasDelegate)
+                            {
+                                <MudTooltip Text="@GetDeleteButtonTooltipText(item)">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                                   Color="Color.Error"
+                                                   Size="Size.Small"
+                                                   Disabled="@IsDeleteButtonDisabled(item)"
+                                                   OnClick="@(() => OnDeleteClickAsync(item))"/>
+                                </MudTooltip>
+                            }
+                        </MudCardActions>
+                    </MudCard>
+                }
+            </MudPaper>
+        </StatefulView>
+    }
+</StableHeight>
+
+<ListPager TItem="TItem" Pagination="@Pagination" IsLoading="@IsLoading" OnPageChanged="@OnPageChanged"/>

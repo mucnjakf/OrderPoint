@@ -36,6 +36,7 @@ builder.Services.AddScoped<AuthService>();
 
 builder.Services.AddScoped<ApiService>();
 builder.Services.AddScoped<TimeZoneService>();
+builder.Services.AddScoped<DarkModeService>();
 builder.Services.AddScoped<SearchService>();
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<HealthService>();

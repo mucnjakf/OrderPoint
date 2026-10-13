@@ -5,6 +5,10 @@ namespace OrderPoint.Admin.Shared.Components;
 
 public sealed partial class DataTable<TItem>
 {
+    private const string ToolbarAreaStyle = "display: grid;";
+
+    private const string BulkActionBarStyle = "grid-area: 1 / 1;";
+
     private const int LoadingItemsCount = 3;
 
     [Parameter]
@@ -123,6 +127,13 @@ public sealed partial class DataTable<TItem>
     public RenderFragment? BulkActionsTemplate { get; set; }
 
     private bool IsSelectable => SelectedItemsChanged.HasDelegate;
+
+    // The bar covers the toolbar in the same grid cell, so selecting doesn't push the list down
+    private bool IsBulkActionBarVisible => SelectedItems.Count > 0 && BulkActionsTemplate is not null;
+
+    private string ToolbarStyle => IsBulkActionBarVisible
+        ? "grid-area: 1 / 1; visibility: hidden;"
+        : "grid-area: 1 / 1;";
 
     private IEnumerable<int> LoadingRows => Enumerable.Range(0, LoadingItemsCount);
 

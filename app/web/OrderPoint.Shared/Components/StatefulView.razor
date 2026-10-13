@@ -14,6 +14,16 @@
             </ChildContent>
         </MudProgressCircular>
     }
+    else if (Flat)
+    {
+        <div class="pa-10 d-flex flex-grow-1 justify-center align-center">
+            <MudProgressCircular Indeterminate="true" Style="height: 100px; width: 100px;">
+                <ChildContent>
+                    Loading...
+                </ChildContent>
+            </MudProgressCircular>
+        </div>
+    }
     else
     {
         <MudPaper Class="pa-10 d-flex justify-center mb-3">
@@ -37,6 +47,16 @@ else if (EmptyStateIcon is not null && EmptyStateText is not null)
             <MudIcon Icon="@EmptyStateIcon"/>
 
             <MudText Typo="Typo.body2">
+                @EmptyStateText
+            </MudText>
+        </MudStack>
+    }
+    else if (Flat)
+    {
+        <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Class="pa-10 flex-grow-1">
+            <MudIcon Icon="@EmptyStateIcon" Size="Size.Large" Class="mb-1"/>
+
+            <MudText Typo="Typo.body1">
                 @EmptyStateText
             </MudText>
         </MudStack>

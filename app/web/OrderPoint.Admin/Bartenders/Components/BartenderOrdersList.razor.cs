@@ -17,8 +17,6 @@ public sealed partial class BartenderOrdersList : IDisposable
     [EditorRequired]
     public Guid BartenderId { get; set; }
 
-    [Parameter]
-    public bool ShowControls { get; set; } = true;
 
     [Inject]
     private TimeZoneService TimeZoneService { get; set; } = null!;

@@ -21,6 +21,10 @@ public sealed partial class StatefulView
     [Parameter]
     public bool Compact { get; set; }
 
+    // Inside a framed list: the full-size states without a paper of their own, centred in the held height
+    [Parameter]
+    public bool Flat { get; set; }
+
     [Parameter]
     public RenderFragment? LoadingContent { get; set; }
 

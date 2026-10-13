@@ -46,8 +46,44 @@
                 <div style="width: 280px;">
                     <ImageUploadField FileName="@ImageFileName"
                                       OnImageSelected="@OnImageSelectedAsync"
-                                      OnImageRemoved="@OnImageRemovedAsync"/>
+                                      OnImageRemoved="@ShowRemoveImageDialogAsync"/>
                 </div>
+            </MudStack>
+
+            <MudDivider Class="my-5"/>
+
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudIcon Icon="@Icons.Material.Filled.Contrast"/>
+
+                <MudStack Spacing="0" Class="flex-1">
+                    <MudText Typo="Typo.subtitle1">
+                        Appearance
+                    </MudText>
+
+                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                        Light or dark colours, remembered in this browser.
+                    </MudText>
+                </MudStack>
+
+                <MudToggleGroup T="bool"
+                                Value="@DarkModeService.IsDarkMode"
+                                ValueChanged="@OnDarkModeChangedAsync"
+                                Color="Color.Primary"
+                                Size="Size.Small">
+                    <MudToggleItem Value="false" Class="px-4">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                            <MudIcon Icon="@Icons.Material.Filled.LightMode" Size="Size.Small"/>
+                            <MudText Typo="Typo.body2">Light</MudText>
+                        </MudStack>
+                    </MudToggleItem>
+
+                    <MudToggleItem Value="true" Class="px-4">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                            <MudIcon Icon="@Icons.Material.Filled.DarkMode" Size="Size.Small"/>
+                            <MudText Typo="Typo.body2">Dark</MudText>
+                        </MudStack>
+                    </MudToggleItem>
+                </MudToggleGroup>
             </MudStack>
 
             <MudDivider Class="my-5"/>

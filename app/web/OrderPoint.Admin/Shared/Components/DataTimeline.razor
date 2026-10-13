@@ -35,80 +35,64 @@
     </MudStack>
 </MudStack>
 
-@if (IsLoading && LoadingTemplate is not null)
-{
-    <MudTimeline TimelineOrientation="TimelineOrientation.Vertical"
-                 TimelinePosition="TimelinePosition.Start"
-                 Style="@TimelineStyle">
-        @for (int i = 0; i < LoadingItemsCount; i++)
-        {
-            <MudTimelineItem Color="Color.Transparent" Variant="Variant.Filled" Size="Size.Medium" Elevation="0">
-                <ItemDot>
-                    <MudSkeleton SkeletonType="SkeletonType.Circle" Width="38px" Height="38px"/>
-                </ItemDot>
-
-                <ItemContent>
-                    <MudPaper Class="pa-4">
-                        @LoadingTemplate
-                    </MudPaper>
-                </ItemContent>
-            </MudTimelineItem>
-        }
-    </MudTimeline>
-}
-else
-{
-    <StatefulView IsLoading="@IsLoading"
-                  ShowContent="@Items.Any()"
-                  EmptyStateIcon="@EmptyStateIcon"
-                  EmptyStateText="@EmptyStateText">
-
+<StableHeight IsLoading="@IsLoading" KeepHeight="@(Pagination?.PageNumber > 1)" IsFramed="true" Class="pa-3">
+    @if (IsLoading && LoadingTemplate is not null)
+    {
         <MudTimeline TimelineOrientation="TimelineOrientation.Vertical"
-                     TimelinePosition="TimelinePosition.Start"
-                     Style="@TimelineStyle">
-            @foreach (TItem item in Items)
+                     TimelinePosition="TimelinePosition.Start">
+            @for (int i = 0; i < LoadingItemsCount; i++)
             {
-                <MudTimelineItem @key="@item"
-                                 Color="@GetItemColor(item)"
-                                 Variant="Variant.Filled"
-                                 Size="Size.Medium"
-                                 Elevation="0">
+                <MudTimelineItem Color="Color.Transparent" Variant="Variant.Filled" Size="Size.Medium" Elevation="0">
                     <ItemDot>
-                        <MudIcon Icon="@GetItemIcon(item)" Size="Size.Small"/>
+                        <MudSkeleton SkeletonType="SkeletonType.Circle" Width="38px" Height="38px"/>
                     </ItemDot>
 
                     <ItemContent>
-                        <NewItemHighlight IsNew="@IsNew(item)">
-                            <MudPaper Class="pa-4 cursor-pointer"
-                                      Style="@GetTicketStyle(item)"
-                                      @onclick="@(() => OnItemClickAsync(item))"
-                                      @onmouseenter="@(() => HoveredItem = item)"
-                                      @onmouseleave="@(() => HoveredItem = default)">
-                                @ItemTemplate(item)
-                            </MudPaper>
-                        </NewItemHighlight>
+                        <MudPaper Class="pa-4">
+                            @LoadingTemplate
+                        </MudPaper>
                     </ItemContent>
                 </MudTimelineItem>
             }
         </MudTimeline>
+    }
+    else
+    {
+        <StatefulView IsLoading="@IsLoading"
+                      ShowContent="@Items.Any()"
+                      Flat="true"
+                      EmptyStateIcon="@EmptyStateIcon"
+                      EmptyStateText="@EmptyStateText">
 
-        @if (Pagination is not null && Pagination.TotalPages > 1)
-        {
-            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mt-3">
-                <MudText Typo="Typo.caption">
-                    Showing @((Pagination.PageNumber - 1) * Pagination.PageSize + 1)
-                    to @(Math.Min(Pagination.PageNumber * Pagination.PageSize, Pagination.TotalCount))
-                    of @Pagination.TotalCount items
-                </MudText>
+            <MudTimeline TimelineOrientation="TimelineOrientation.Vertical"
+                         TimelinePosition="TimelinePosition.Start">
+                @foreach (TItem item in Items)
+                {
+                    <MudTimelineItem @key="@item"
+                                     Color="@GetItemColor(item)"
+                                     Variant="Variant.Filled"
+                                     Size="Size.Medium"
+                                     Elevation="0">
+                        <ItemDot>
+                            <MudIcon Icon="@GetItemIcon(item)" Size="Size.Small"/>
+                        </ItemDot>
 
-                <MudPagination Count="@Pagination.TotalPages"
-                               Selected="@Pagination.PageNumber"
-                               SelectedChanged="@OnPageChanged"
-                               BoundaryCount="1"
-                               MiddleCount="3"
-                               ShowFirstButton="true"
-                               ShowLastButton="true"/>
-            </MudStack>
-        }
-    </StatefulView>
-}
+                        <ItemContent>
+                            <NewItemHighlight IsNew="@IsNew(item)">
+                                <MudPaper Class="pa-4 cursor-pointer"
+                                          Style="@GetTicketStyle(item)"
+                                          @onclick="@(() => OnItemClickAsync(item))"
+                                          @onmouseenter="@(() => HoveredItem = item)"
+                                          @onmouseleave="@(() => HoveredItem = default)">
+                                    @ItemTemplate(item)
+                                </MudPaper>
+                            </NewItemHighlight>
+                        </ItemContent>
+                    </MudTimelineItem>
+                }
+            </MudTimeline>
+        </StatefulView>
+    }
+</StableHeight>
+
+<ListPager TItem="TItem" Pagination="@Pagination" IsLoading="@IsLoading" OnPageChanged="@OnPageChanged"/>

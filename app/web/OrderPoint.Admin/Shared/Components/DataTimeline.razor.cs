@@ -8,10 +8,6 @@ public sealed partial class DataTimeline<TItem>
 {
     private const int LoadingItemsCount = 3;
 
-    private const string TimelineStyle =
-        "border-top: 1px solid var(--mud-palette-lines-default); " +
-        "border-bottom: 1px solid var(--mud-palette-lines-default);";
-
     private const string TicketStyle = "transition: all 0.2s ease-in-out;";
 
     private const string HoveredTicketStyle = TicketStyle + " background-color: var(--mud-palette-table-hover);";

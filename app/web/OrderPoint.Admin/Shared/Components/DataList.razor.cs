@@ -84,8 +84,6 @@ public sealed partial class DataList<TItem>
     [Parameter]
     public RenderFragment? LoadingTemplate { get; set; }
 
-    [Parameter]
-    public bool ShowControls { get; set; } = true;
 
     private async Task OnSearchChangedAsync()
     {

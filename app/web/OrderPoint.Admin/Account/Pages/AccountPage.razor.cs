@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using OrderPoint.Admin.Account.Dialogs;
 using OrderPoint.Shared.Account.Api;
 using OrderPoint.Shared.Account.Api.Requests;
 using OrderPoint.Shared.Account.Dialogs;
@@ -29,6 +30,9 @@ public sealed partial class AccountPage : IDisposable
 
     [Inject]
     private AccountApiClient AccountApiClient { get; set; } = null!;
+
+    [Inject]
+    private DarkModeService DarkModeService { get; set; } = null!;
 
     private string? ImageFileName => AccountService.ImageUrl is null ? null : CurrentImageFileName;
 
@@ -63,8 +67,39 @@ public sealed partial class AccountPage : IDisposable
         }
     }
 
-    private async Task OnImageRemovedAsync()
+    private async Task OnDarkModeChangedAsync(bool isDarkMode)
     {
+        await DarkModeService.SetAsync(isDarkMode);
+    }
+
+    private async Task ShowRemoveImageDialogAsync()
+    {
+        if (AccountService.ImageUrl is null)
+        {
+            return;
+        }
+
+        var parameters = new DialogParameters<RemoveAccountImageDialog>
+        {
+            { dialog => dialog.ImageUrl, AccountService.ImageUrl }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.ExtraSmall,
+            FullWidth = true
+        };
+
+        IDialogReference dialogReference = await DialogService
+            .ShowAsync<RemoveAccountImageDialog>(string.Empty, parameters, options);
+
+        DialogResult dialogResult = (await dialogReference.Result)!;
+
+        if (dialogResult.Canceled)
+        {
+            return;
+        }
+
         bool isSuccess = await ApiService.ExecuteAsync(
             () => AccountApiClient.DeleteAccountImageAsync(),
             "Image removed successfully");

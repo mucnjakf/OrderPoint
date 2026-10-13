@@ -118,6 +118,13 @@
     </HeaderTemplate>
 
     <ActionsTemplate>
+        <MudTooltip Text="Orders">
+            <MudIconButton Icon="@Icons.Material.Filled.Receipt"
+                           Color="Color.Primary"
+                           Size="Size.Small"
+                           OnClick="@(() => ShowBartenderOrdersDialogAsync(context))"/>
+        </MudTooltip>
+
         <MudTooltip Text="Reset password">
             <MudIconButton Icon="@Icons.Material.Filled.LockReset"
                            Color="Color.Warning"
@@ -128,7 +135,7 @@
 
     <DetailsTemplate>
         <MudStack Row="true" Spacing="6">
-            <div style="flex: 0 0 40%">
+            <div class="flex-1">
                 <TextDisplayRow Icon="@Icons.Material.Filled.Numbers"
                                 Label="ID"
                                 Text="@context.Id.ToString()"
@@ -141,8 +148,17 @@
 
                 <TextDisplayRow Icon="@Icons.Material.Filled.Notes"
                                 Label="Notes"
-                                Text="@(context.Notes ?? "-")"
-                                ShowDivider="true"/>
+                                Text="@(context.Notes ?? "-")"/>
+            </div>
+
+            <MudDivider Vertical="true" FlexItem="true"/>
+
+            <div class="flex-1">
+                <TextDisplayRow Icon="@Icons.Material.Filled.Receipt"
+                                Label="Orders"
+                                ShowDivider="true">
+                    <BartenderOrdersSummary BartenderId="@context.Id" OrdersCount="@context.OrdersCount"/>
+                </TextDisplayRow>
 
                 <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
                                 Label="Created"
@@ -152,25 +168,6 @@
                 <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
                                 Label="Updated"
                                 Text="@(context.UpdatedAtUtc?.ToDisplayDateTime(TimeZoneService.TimeZone) ?? "-")"/>
-            </div>
-
-            <div class="flex-1">
-                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mb-3">
-                    <MudText Typo="Typo.h6">
-                        Orders · <RollingNumber Value="@context.OrdersCount" Text="@context.OrdersCount.ToString()"/>
-                    </MudText>
-
-                    @if (context.OrdersCount > 0)
-                    {
-                        <MudButton Variant="Variant.Text"
-                                   EndIcon="@Icons.Material.Filled.ArrowForward"
-                                   OnClick="@(() => ShowBartenderOrdersDialogAsync(context))">
-                            View all
-                        </MudButton>
-                    }
-                </MudStack>
-
-                <BartenderOrdersList BartenderId="@context.Id" ShowControls="false"/>
             </div>
         </MudStack>
     </DetailsTemplate>

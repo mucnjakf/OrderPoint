@@ -1,0 +1,10 @@
+﻿<MudText Typo="Typo.body1">
+    <RollingNumber Value="@OrdersCount" Text="@OrdersCount.ToString()"/>
+
+    @if (LastOrder is not null)
+    {
+        <span style="color: var(--mud-palette-text-secondary)">
+            · last order @LastOrder.CreatedAtUtc.ToRelativeTime()
+        </span>
+    }
+</MudText>

@@ -1,0 +1,39 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.HideImage"/>
+            <MudText Typo="Typo.h6">Remove profile image</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudAlert Severity="Severity.Error" Variant="Variant.Text" Dense="true" Class="mb-4">
+            <MudText Typo="Typo.body2">
+                This action cannot be undone.
+            </MudText>
+        </MudAlert>
+
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="4">
+            <MudAvatar Style="width: 72px; height: 72px;">
+                <MudImage Src="@ImageUrl" Alt="Account image" ObjectFit="ObjectFit.Cover"/>
+            </MudAvatar>
+
+            <MudText Typo="Typo.body1">
+                Are you sure you want to remove your profile image? Your initial is shown instead.
+            </MudText>
+        </MudStack>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
+            Cancel
+        </MudButton>
+
+        <MudButton OnClick="@Confirm"
+                   Variant="Variant.Filled"
+                   Color="Color.Error"
+                   StartIcon="@Icons.Material.Filled.Delete">
+            Remove image
+        </MudButton>
+    </DialogActions>
+</MudDialog>

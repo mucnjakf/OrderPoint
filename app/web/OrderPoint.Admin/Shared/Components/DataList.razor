@@ -1,53 +1,52 @@
 ﻿@typeparam TItem
 
-@if (ShowControls)
-{
-    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.End" Class="mb-3">
-        <MudStack Row="true">
-            <MudTextField @bind-Value="@SearchQuery"
-                          @bind-Value:after="@OnSearchChangedAsync"
-                          T="string"
-                          Label="@SearchLabel"
-                          Variant="Variant.Outlined"
-                          Clearable="true"
-                          Class="mt-0"
-                          DebounceInterval="500"
-                          Immediate="false"/>
+<MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.End" Class="mb-3">
+    <MudStack Row="true">
+        <MudTextField @bind-Value="@SearchQuery"
+                      @bind-Value:after="@OnSearchChangedAsync"
+                      T="string"
+                      Label="@SearchLabel"
+                      Variant="Variant.Outlined"
+                      Margin="Margin.Dense"
+                      Clearable="true"
+                      Class="mt-0"
+                      DebounceInterval="500"
+                      Immediate="false"/>
 
-            <MudSelect @bind-Value="@SelectedSortBy"
-                       @bind-Value:after="@OnSortChangedAsync"
-                       T="string"
-                       Variant="Variant.Outlined"
-                       Label="Sort by"
-                       Class="mt-0"
-                       FitContent="true">
-                @foreach (string sortBy in SortByOptions)
-                {
-                    <MudSelectItem Value="@sortBy">
-                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
-                            <MudText Typo="Typo.body1">@GetSortByLabel(sortBy)</MudText>
-                            <MudIcon Icon="@GetSortByIcon(sortBy)" Size="Size.Small"/>
-                        </MudStack>
-                    </MudSelectItem>
-                }
-            </MudSelect>
-        </MudStack>
-
-        @if (OnCreateClick.HasDelegate)
-        {
-            <MudButton Variant="Variant.Filled"
-                       StartIcon="@Icons.Material.Filled.Add"
-                       Color="Color.Primary"
-                       OnClick="@OnCreateClickAsync">
-                @CreateButtonText
-            </MudButton>
-        }
+        <MudSelect @bind-Value="@SelectedSortBy"
+                   @bind-Value:after="@OnSortChangedAsync"
+                   T="string"
+                   Variant="Variant.Outlined"
+                   Margin="Margin.Dense"
+                   Label="Sort by"
+                   Class="mt-0"
+                   FitContent="true">
+            @foreach (string sortBy in SortByOptions)
+            {
+                <MudSelectItem Value="@sortBy">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                        <MudText Typo="Typo.body1">@GetSortByLabel(sortBy)</MudText>
+                        <MudIcon Icon="@GetSortByIcon(sortBy)" Size="Size.Small"/>
+                    </MudStack>
+                </MudSelectItem>
+            }
+        </MudSelect>
     </MudStack>
-}
 
-@if (IsLoading && LoadingTemplate is not null)
-{
-    <MudPaper Class="pa-5">
+    @if (OnCreateClick.HasDelegate)
+    {
+        <MudButton Variant="Variant.Filled"
+                   StartIcon="@Icons.Material.Filled.Add"
+                   Color="Color.Primary"
+                   OnClick="@OnCreateClickAsync">
+            @CreateButtonText
+        </MudButton>
+    }
+</MudStack>
+
+<StableHeight IsLoading="@IsLoading" KeepHeight="true" IsFramed="true" Class="pa-3">
+    @if (IsLoading && LoadingTemplate is not null)
+    {
         <MudList T="string" ReadOnly="true">
             @for (int i = 0; i < LoadingItemsCount; i++)
             {
@@ -61,15 +60,14 @@
                 }
             }
         </MudList>
-    </MudPaper>
-}
-else
-{
-    <StatefulView IsLoading="@IsLoading"
-                  ShowContent="@Items.Any()"
-                  EmptyStateIcon="@EmptyStateIcon"
-                  EmptyStateText="@EmptyStateText">
-        <MudPaper Class="pa-5">
+    }
+    else
+    {
+        <StatefulView IsLoading="@IsLoading"
+                      ShowContent="@Items.Any()"
+                      Flat="true"
+                      EmptyStateIcon="@EmptyStateIcon"
+                      EmptyStateText="@EmptyStateText">
             <MudList T="string" ReadOnly="true">
                 @for (int i = 0; i < Items.Count; i++)
                 {
@@ -85,25 +83,8 @@ else
                     }
                 }
             </MudList>
-        </MudPaper>
+        </StatefulView>
+    }
+</StableHeight>
 
-        @if (ShowControls && Pagination is not null && Pagination.TotalPages > 1)
-        {
-            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mt-3">
-                <MudText Typo="Typo.caption">
-                    Showing @((Pagination.PageNumber - 1) * Pagination.PageSize + 1)
-                    to @(Math.Min(Pagination.PageNumber * Pagination.PageSize, Pagination.TotalCount))
-                    of @Pagination.TotalCount items
-                </MudText>
-
-                <MudPagination Count="@Pagination.TotalPages"
-                               Selected="@Pagination.PageNumber"
-                               SelectedChanged="@OnPageChanged"
-                               BoundaryCount="1"
-                               MiddleCount="3"
-                               ShowFirstButton="true"
-                               ShowLastButton="true"/>
-            </MudStack>
-        }
-    </StatefulView>
-}
+<ListPager TItem="TItem" Pagination="@Pagination" IsLoading="@IsLoading" OnPageChanged="@OnPageChanged"/>
