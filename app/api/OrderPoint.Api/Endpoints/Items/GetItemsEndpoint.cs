@@ -44,9 +44,9 @@ internal sealed class GetItemsEndpoint : IEndpoint
             .WithDescription("""
                 A page of items with search (name), category and status filters and sorting (default: newest first).
                 The status filter uses the effective status: an item in an inactive category counts as inactive.
-                `ordersCount` is the number of orders that contain the item.
+                `ordersCount` is the number of orders that contain the item. The bartender app reads it for its menu.
                 """)
-            .RequireAuthorization(AuthorizationPolicies.Admin);
+            .RequireAuthorization(AuthorizationPolicies.AdminOrBartender);
     }
 
     private static async Task<Results<Ok<GetItemsResponse>, ProblemHttpResult>> HandleAsync(

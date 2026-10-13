@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Server.Circuits;
 using MudBlazor;
 using MudBlazor.Services;
 using OrderPoint.Bartender;
+using OrderPoint.Bartender.Menu.Api;
 using OrderPoint.Bartender.Orders.Api;
 using OrderPoint.Bartender.Orders.Services;
 using OrderPoint.Bartender.Shift.Api;
@@ -40,6 +41,7 @@ builder.Services.AddHttpClient<AuthApiClient>(ConfigureApiClient);
 builder.Services.AddHttpClient<AccountApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 builder.Services.AddHttpClient<OrderApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 builder.Services.AddHttpClient<ShiftApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
+builder.Services.AddHttpClient<MenuApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 
 // At the top, so snackbars never cover the bottom navigation
 builder.Services.AddMudServices(configuration =>

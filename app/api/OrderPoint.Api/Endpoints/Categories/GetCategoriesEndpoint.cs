@@ -41,9 +41,10 @@ internal sealed class GetCategoriesEndpoint : IEndpoint
             .WithSummary("List categories")
             .WithDescription("""
                 A page of categories with search (name), a status filter and sorting (default: newest first;
-                `DisplayOrderAsc` gives the menu order). `itemsCount` is the number of items in the category.
+                `DisplayOrderAsc` gives the menu order). `itemsCount` is the number of items in the category. The
+                bartender app reads it for its menu.
                 """)
-            .RequireAuthorization(AuthorizationPolicies.Admin);
+            .RequireAuthorization(AuthorizationPolicies.AdminOrBartender);
     }
 
     private static async Task<Results<Ok<GetCategoriesResponse>, ProblemHttpResult>> HandleAsync(

@@ -23,10 +23,10 @@ internal sealed class GetCategoryEndpoint : IEndpoint
             .WithTags("Categories")
             .WithSummary("Get a category")
             .WithDescription("""
-                Returns one category, including its number of items.
+                Returns one category, including its number of items. The bartender app reads it for its menu.
                 """)
             .ProducesProblem(StatusCodes.Status404NotFound)
-            .RequireAuthorization(AuthorizationPolicies.Admin);
+            .RequireAuthorization(AuthorizationPolicies.AdminOrBartender);
     }
 
     private static async Task<Results<Ok<GetCategoryResponse>, ProblemHttpResult>> HandleAsync(

@@ -1,0 +1,52 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudText Typo="Typo.h6">@Item.Name</MudText>
+    </TitleContent>
+
+    <DialogContent>
+        <MudStack Spacing="3">
+            <MudImage Src="@(Item.ImageUrl ?? ImageUrls.Placeholder)"
+                      Alt="Item image"
+                      ObjectFit="ObjectFit.Cover"
+                      Style="@ImageStyle"/>
+
+            <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                    <MudImage Src="@(Item.Category.ImageUrl ?? ImageUrls.Placeholder)"
+                              Alt="Category image"
+                              Width="20"
+                              Height="20"
+                              ObjectFit="ObjectFit.Cover"/>
+
+                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                        @Item.Category.Name · Portion @Item.Portion.ToString(CultureInfo.CurrentCulture)
+                    </MudText>
+                </MudStack>
+
+                <MudText Typo="Typo.h6">
+                    @Item.Price.ToString("C", CultureInfo.CurrentCulture)
+                </MudText>
+            </MudStack>
+
+            @if (UnavailableText is not null)
+            {
+                <MudAlert Severity="Severity.Warning" Variant="Variant.Text" Dense="true">
+                    @UnavailableText
+                </MudAlert>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Item.Description))
+            {
+                <MudText Typo="Typo.body1">
+                    @Item.Description
+                </MudText>
+            }
+        </MudStack>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="@Close" Variant="Variant.Text">
+            Close
+        </MudButton>
+    </DialogActions>
+</MudDialog>

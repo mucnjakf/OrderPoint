@@ -1,0 +1,102 @@
+﻿@page "/menu"
+
+<PageTitle>Menu</PageTitle>
+
+<MudText Typo="Typo.h6" HtmlTag="h1" Class="mb-2">
+    Menu
+</MudText>
+
+<div style="@FiltersWrapperStyle">
+    <MudTextField @bind-Value="@SearchQuery"
+                  @bind-Value:after="@OnSearchChangedAsync"
+                  T="string"
+                  Label="Search the menu"
+                  Variant="Variant.Outlined"
+                  Adornment="Adornment.Start"
+                  AdornmentIcon="@Icons.Material.Filled.Search"
+                  Clearable="true"
+                  DebounceInterval="500"
+                  Immediate="false"/>
+
+    <div style="@ChipsRowStyle" class="mt-3">
+        @if (IsLoadingCategories)
+        {
+            @for (int i = 0; i < LoadingChipsCount; i++)
+            {
+                <ChipSkeleton Class="ma-0"/>
+            }
+        }
+        else
+        {
+            <MudChip T="string"
+                     Color="Color.Primary"
+                     Variant="@GetChipVariant(null)"
+                     Class="ma-0"
+                     Style="flex-shrink: 0"
+                     OnClick="@(() => SelectCategoryAsync(null))">
+                All
+            </MudChip>
+
+            @foreach (CategoryDto category in Categories)
+            {
+                Guid categoryId = category.Id;
+
+                <MudChip @key="@categoryId"
+                         T="string"
+                         Color="Color.Primary"
+                         Variant="@GetChipVariant(categoryId)"
+                         Icon="@(category.Status == CategoryStatus.Inactive ? Icons.Material.Filled.Block : null)"
+                         Class="ma-0"
+                         Style="flex-shrink: 0"
+                         OnClick="@(() => SelectCategoryAsync(categoryId))">
+                    @category.Name
+                </MudChip>
+            }
+        }
+    </div>
+</div>
+
+<StatefulView IsLoading="@IsLoadingItems"
+              ShowContent="@Items.Any()"
+              EmptyStateIcon="@Icons.Material.Filled.MenuBook"
+              EmptyStateText="No items found"
+              EmptyStateDetail="Try another search or category.">
+    <LoadingContent>
+        <MudStack Spacing="2">
+            @for (int i = 0; i < LoadingRowsCount; i++)
+            {
+                <MudPaper Class="pa-3">
+                    <MenuItemRowSkeleton/>
+                </MudPaper>
+            }
+        </MudStack>
+    </LoadingContent>
+
+    <ChildContent>
+        <MudStack Spacing="2">
+            @foreach (ItemDto item in Items)
+            {
+                <MenuItemRow @key="@item.Id"
+                             Item="@item"
+                             ShowsCategory="@(SelectedCategoryId is null)"
+                             OnClick="@ShowItemDialogAsync"/>
+            }
+
+            @if (HasMoreItems)
+            {
+                <MudButton Variant="Variant.Outlined"
+                           Size="Size.Large"
+                           FullWidth="true"
+                           Disabled="@IsLoadingMoreItems"
+                           OnClick="@ShowMoreItemsAsync">
+                    @if (IsLoadingMoreItems)
+                    {
+                        <MudProgressCircular Indeterminate="true" Size="Size.Small" Class="mr-2"/>
+                    }
+
+                    Show more
+                </MudButton>
+            }
+        </MudStack>
+    </ChildContent>
+</StatefulView>

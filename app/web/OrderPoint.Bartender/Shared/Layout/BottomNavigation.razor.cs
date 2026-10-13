@@ -22,6 +22,7 @@ public sealed partial class BottomNavigation : IDisposable
     [
         ("/", "Orders", Icons.Material.Filled.Receipt),
         ("/shift", "My shift", Icons.Material.Filled.Schedule),
+        ("/menu", "Menu", Icons.Material.Filled.MenuBook),
         ("/account", "Account", Icons.Material.Filled.Person)
     ];
 

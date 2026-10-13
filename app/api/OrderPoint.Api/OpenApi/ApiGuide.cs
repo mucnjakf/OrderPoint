@@ -24,9 +24,10 @@ internal static class ApiGuide
           `403 Auth.PasswordChangeRequired` until `POST /api/auth/initial-password` sets a new one.
         - Every endpoint requires the **Admin** role, except Auth, `POST /api/orders` (used by the customer app)
           and the health checks (anonymous), the order status changes (`PUT /api/orders/{id}/accept`, `decline`,
-          `activate`, `complete`), `GET /api/shift` and `GET /api/shift/day` (**Bartender**), and reading orders, `GET /api/account`,
-          changing the password and signing out everywhere (**Admin** or **Bartender**). Each endpoint names its
-          roles; those that need a token show a lock and list `401` and `403`.
+          `activate`, `complete`), `GET /api/shift` and `GET /api/shift/day` (**Bartender**), and reading orders,
+          the item and category lists, one category, `GET /api/account`, changing the password and signing out
+          everywhere (**Admin** or **Bartender**). Each endpoint names its roles; those that need a token show a
+          lock and list `401` and `403`.
 
         ## Responses
 
