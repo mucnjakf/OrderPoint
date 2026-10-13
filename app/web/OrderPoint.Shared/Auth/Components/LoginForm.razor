@@ -1,106 +1,176 @@
 ﻿<PageTitle>Sign in</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.ExtraSmall" Class="d-flex align-center" Style="min-height: 100vh">
-    <MudPaper Elevation="3" Class="pa-8" Width="100%">
-        <MudStack AlignItems="AlignItems.Center" Spacing="1" Class="mb-6">
-            <MudImage Src="@ImageUrls.Logo" Alt="OrderPoint logo" Width="64" Height="64" Class="mb-2"/>
-            <MudText Typo="Typo.h5" HtmlTag="h1">OrderPoint</MudText>
-            <MudText Typo="Typo.body2">@AppName</MudText>
-        </MudStack>
+<div class="d-flex" style="min-height: 100vh">
+    <MudHidden Breakpoint="Breakpoint.SmAndDown">
+        <div class="d-flex flex-column justify-space-between pa-12" style="@BrandPanelStyle">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                <MudImage Src="@ImageUrls.Logo" Alt="OrderPoint logo" Width="36" Height="36"/>
+                <MudText Typo="Typo.h6">OrderPoint</MudText>
+            </MudStack>
 
-        @if (InitialPasswordRequest is not null)
-        {
-            <EditForm Model="@InitialPasswordRequest" OnValidSubmit="@ChangeInitialPasswordAsync">
-                <DataAnnotationsValidator/>
+            <MudStack Spacing="8" Style="max-width: 440px">
+                <MudText Typo="Typo.h3" Style="font-weight: 600; line-height: 1.15">
+                    @Tagline
+                </MudText>
 
-                <MudAlert Severity="Severity.Info" Variant="Variant.Text" Dense="true" Class="mb-5">
-                    <MudText Typo="Typo.body2">
-                        Welcome! Choose your own password to replace the temporary one.
-                    </MudText>
-                </MudAlert>
+                <MudStack Spacing="5">
+                    @foreach ((string icon, string title, string text) in Features)
+                    {
+                        <MudStack Row="true" AlignItems="AlignItems.Start" Spacing="3">
+                            <MudPaper Outlined="true" Class="pa-2 d-flex" Style="flex-shrink: 0">
+                                <MudIcon Icon="@icon" Size="Size.Small"/>
+                            </MudPaper>
 
-                <MudTextField Label="New password"
-                              @bind-Value="@InitialPasswordRequest.NewPassword"
-                              For="@(() => InitialPasswordRequest.NewPassword)"
-                              InputType="@PasswordInputType"
-                              HelperText="8+ characters, upper and lower case and a digit."
-                              Class="mb-5"
-                              Variant="Variant.Outlined"
-                              Immediate="true"/>
+                            <MudStack Spacing="0">
+                                <MudText Typo="Typo.subtitle1">@title</MudText>
+                                <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                                    @text
+                                </MudText>
+                            </MudStack>
+                        </MudStack>
+                    }
+                </MudStack>
+            </MudStack>
 
-                <MudTextField Label="Confirm new password"
-                              @bind-Value="@InitialPasswordRequest.ConfirmPassword"
-                              For="@(() => InitialPasswordRequest.ConfirmPassword)"
-                              InputType="@PasswordInputType"
-                              Adornment="Adornment.End"
-                              AdornmentIcon="@PasswordVisibilityIcon"
-                              AdornmentAriaLabel="Show or hide passwords"
-                              OnAdornmentClick="@TogglePasswordVisibility"
-                              Class="mb-8"
-                              Variant="Variant.Outlined"
-                              Immediate="true"/>
+            <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                OrderPoint · @AppName
+            </MudText>
+        </div>
+    </MudHidden>
 
-                <MudButton ButtonType="ButtonType.Submit"
-                           Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           Size="Size.Large"
-                           FullWidth="true"
-                           Disabled="@IsSigningIn"
-                           StartIcon="@Icons.Material.Filled.Password">
-                    Set password and sign in
-                </MudButton>
+    <div class="d-flex align-center justify-center pa-6" style="flex: 1">
+        <div style="width: 100%; max-width: 400px">
+            <MudHidden Breakpoint="Breakpoint.MdAndUp">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-10">
+                    <MudImage Src="@ImageUrls.Logo" Alt="OrderPoint logo" Width="32" Height="32"/>
 
-                <MudButton Variant="Variant.Text"
-                           FullWidth="true"
-                           Class="mt-2"
-                           Disabled="@IsSigningIn"
-                           StartIcon="@Icons.Material.Filled.ArrowBack"
-                           OnClick="@BackToSignIn">
-                    Back
-                </MudButton>
-            </EditForm>
-        }
-        else
-        {
-            <EditForm Model="@Request" OnValidSubmit="@SignInAsync">
-                <DataAnnotationsValidator/>
+                    <MudStack Spacing="0">
+                        <MudText Typo="Typo.subtitle1" Style="line-height: 1.2">OrderPoint</MudText>
+                        <MudText Typo="Typo.caption" Style="line-height: 1.2">@AppName</MudText>
+                    </MudStack>
+                </MudStack>
+            </MudHidden>
 
-                @if (AuthService.IsSessionExpired)
-                {
-                    <MudAlert Severity="Severity.Info" Dense="true" Class="mb-5">
-                        Your session has expired. Please sign in again.
-                    </MudAlert>
-                }
+            @if (InitialPasswordRequest is not null)
+            {
+                <MudText Typo="Typo.h5" HtmlTag="h1" Style="font-weight: 600">
+                    Choose your password
+                </MudText>
 
-                <MudTextField Label="Email"
-                              @bind-Value="@Request.Email"
-                              For="@(() => Request.Email)"
-                              Class="mb-5"
-                              Variant="Variant.Outlined"
-                              Immediate="true"/>
+                <MudText Typo="Typo.body2" Class="mb-8" Style="color: var(--mud-palette-text-secondary)">
+                    Welcome! Replace the temporary password the admin gave you.
+                </MudText>
 
-                <MudTextField Label="Password"
-                              @bind-Value="@Request.Password"
-                              For="@(() => Request.Password)"
-                              InputType="@PasswordInputType"
-                              Adornment="Adornment.End"
-                              AdornmentIcon="@PasswordVisibilityIcon"
-                              AdornmentAriaLabel="Show or hide password"
-                              OnAdornmentClick="@TogglePasswordVisibility"
-                              Class="mb-8"
-                              Variant="Variant.Outlined"
-                              Immediate="true"/>
+                <EditForm Model="@InitialPasswordRequest" OnValidSubmit="@ChangeInitialPasswordAsync">
+                    <DataAnnotationsValidator/>
 
-                <MudButton ButtonType="ButtonType.Submit"
-                           Variant="Variant.Filled"
-                           Color="Color.Primary"
-                           Size="Size.Large"
-                           FullWidth="true"
-                           Disabled="@IsSigningIn"
-                           StartIcon="@Icons.Material.Filled.Login">
+                    <MudTextField Label="New password"
+                                  @bind-Value="@InitialPasswordRequest.NewPassword"
+                                  For="@(() => InitialPasswordRequest.NewPassword)"
+                                  InputType="@PasswordInputType"
+                                  HelperText="8+ characters, upper and lower case and a digit."
+                                  Class="mb-5"
+                                  Variant="Variant.Outlined"
+                                  Immediate="true"/>
+
+                    <MudTextField Label="Confirm new password"
+                                  @bind-Value="@InitialPasswordRequest.ConfirmPassword"
+                                  For="@(() => InitialPasswordRequest.ConfirmPassword)"
+                                  InputType="@PasswordInputType"
+                                  Adornment="Adornment.End"
+                                  AdornmentIcon="@PasswordVisibilityIcon"
+                                  AdornmentAriaLabel="Show or hide passwords"
+                                  OnAdornmentClick="@TogglePasswordVisibility"
+                                  Class="mb-8"
+                                  Variant="Variant.Outlined"
+                                  Immediate="true"/>
+
+                    <MudButton ButtonType="ButtonType.Submit"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Size="Size.Large"
+                               FullWidth="true"
+                               Disabled="@IsSigningIn"
+                               StartIcon="@Icons.Material.Filled.Password">
+                        Set password and sign in
+                    </MudButton>
+
+                    <MudButton Variant="Variant.Text"
+                               FullWidth="true"
+                               Class="mt-2"
+                               Disabled="@IsSigningIn"
+                               StartIcon="@Icons.Material.Filled.ArrowBack"
+                               OnClick="@BackToSignIn">
+                        Back
+                    </MudButton>
+                </EditForm>
+            }
+            else
+            {
+                <MudText Typo="Typo.h5" HtmlTag="h1" Style="font-weight: 600">
                     Sign in
-                </MudButton>
-            </EditForm>
-        }
-    </MudPaper>
-</MudContainer>
+                </MudText>
+
+                <MudText Typo="Typo.body2" Class="mb-8" Style="color: var(--mud-palette-text-secondary)">
+                    Welcome back. Sign in to @AppName.
+                </MudText>
+
+                <EditForm Model="@Request" OnValidSubmit="@SignInAsync">
+                    <DataAnnotationsValidator/>
+
+                    @if (AuthService.IsSessionExpired)
+                    {
+                        <MudAlert Severity="Severity.Info" Variant="Variant.Text" Dense="true" Class="mb-5">
+                            Your session has expired. Please sign in again.
+                        </MudAlert>
+                    }
+
+                    <MudTextField Label="Email"
+                                  @bind-Value="@Request.Email"
+                                  For="@(() => Request.Email)"
+                                  InputType="InputType.Email"
+                                  Class="mb-5"
+                                  Variant="Variant.Outlined"
+                                  Immediate="true"/>
+
+                    <MudTextField Label="Password"
+                                  @bind-Value="@Request.Password"
+                                  For="@(() => Request.Password)"
+                                  InputType="@PasswordInputType"
+                                  Adornment="Adornment.End"
+                                  AdornmentIcon="@PasswordVisibilityIcon"
+                                  AdornmentAriaLabel="Show or hide password"
+                                  OnAdornmentClick="@TogglePasswordVisibility"
+                                  Class="mb-8"
+                                  Variant="Variant.Outlined"
+                                  Immediate="true"/>
+
+                    <MudButton ButtonType="ButtonType.Submit"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Size="Size.Large"
+                               FullWidth="true"
+                               Disabled="@IsSigningIn"
+                               StartIcon="@(IsSigningIn ? null : Icons.Material.Filled.Login)">
+                        @if (IsSigningIn)
+                        {
+                            <MudProgressCircular Indeterminate="true" Size="Size.Small" Class="mr-2"/>
+                        }
+
+                        Sign in
+                    </MudButton>
+                </EditForm>
+
+                @if (ShowsPasswordHint)
+                {
+                    <MudText Typo="Typo.body2"
+                             Align="Align.Center"
+                             Class="mt-6"
+                             Style="color: var(--mud-palette-text-secondary)">
+                        Forgot your password? Ask the admin to reset it.
+                    </MudText>
+                }
+            }
+        </div>
+    </div>
+</div>
