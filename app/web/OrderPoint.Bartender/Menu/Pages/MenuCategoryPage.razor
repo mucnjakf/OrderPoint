@@ -1,0 +1,104 @@
+﻿@page "/menu/{CategoryId:guid}"
+
+<PageTitle>@(Category?.Name ?? "Menu")</PageTitle>
+
+<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-2">
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack"
+                   Href="/menu"
+                   aria-label="Back to the menu"/>
+
+    @if (IsLoadingCategory)
+    {
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="32px" Height="32px"/>
+
+        <MudText Typo="Typo.h6" HtmlTag="h1" Class="flex-1">
+            <MudSkeleton Width="120px"/>
+        </MudText>
+    }
+    else
+    {
+        <MudImage Src="@(Category?.ImageUrl ?? ImageUrls.Placeholder)"
+                  Alt="Category image"
+                  Width="32"
+                  Height="32"
+                  ObjectFit="ObjectFit.Cover"
+                  Style="border-radius: var(--mud-default-borderradius);"/>
+
+        <MudText Typo="Typo.h6" HtmlTag="h1" Class="flex-1" Style="min-width: 0; overflow-wrap: anywhere">
+            @(Category?.Name ?? "Menu")
+        </MudText>
+
+        @if (Category is not null)
+        {
+            <MudChip T="string"
+                     Variant="Variant.Text"
+                     Size="Size.Small"
+                     Color="@(Category.Status is CategoryStatus.Active ? Color.Success : Color.Error)"
+                     Class="ma-0">
+                @Category.Status.ToString()
+            </MudChip>
+        }
+    }
+</MudStack>
+
+@if (Category?.Status is CategoryStatus.Inactive)
+{
+    <MudAlert Severity="Severity.Warning" Variant="Variant.Text" Dense="true" Class="mb-2">
+        This category is inactive, so guests can't order its items.
+    </MudAlert>
+}
+
+<div style="@SearchWrapperStyle">
+    <MudTextField @bind-Value="@SearchQuery"
+                  @bind-Value:after="@OnSearchChangedAsync"
+                  T="string"
+                  Label="Search items"
+                  Variant="Variant.Outlined"
+                  Adornment="Adornment.Start"
+                  AdornmentIcon="@Icons.Material.Filled.Search"
+                  Clearable="true"
+                  DebounceInterval="500"
+                  Immediate="false"/>
+</div>
+
+<StatefulView IsLoading="@IsLoadingItems"
+              ShowContent="@Items.Any()"
+              EmptyStateIcon="@Icons.Material.Filled.MenuBook"
+              EmptyStateText="No items found"
+              EmptyStateDetail="@EmptyStateDetail">
+    <LoadingContent>
+        <MudStack Spacing="2">
+            @for (int i = 0; i < LoadingRowsCount; i++)
+            {
+                <MudPaper Class="pa-3">
+                    <MenuItemRowSkeleton/>
+                </MudPaper>
+            }
+        </MudStack>
+    </LoadingContent>
+
+    <ChildContent>
+        <MudStack Spacing="2">
+            @foreach (ItemDto item in Items)
+            {
+                <MenuItemRow @key="@item.Id" Item="@item" OnClick="@ShowItemDialogAsync"/>
+            }
+
+            @if (HasMoreItems)
+            {
+                <MudButton Variant="Variant.Outlined"
+                           Size="Size.Large"
+                           FullWidth="true"
+                           Disabled="@IsLoadingMoreItems"
+                           OnClick="@ShowMoreItemsAsync">
+                    @if (IsLoadingMoreItems)
+                    {
+                        <MudProgressCircular Indeterminate="true" Size="Size.Small" Class="mr-2"/>
+                    }
+
+                    Show more
+                </MudButton>
+            }
+        </MudStack>
+    </ChildContent>
+</StatefulView>

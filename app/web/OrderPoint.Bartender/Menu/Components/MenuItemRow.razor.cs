@@ -16,10 +16,6 @@ public sealed partial class MenuItemRow
     [EditorRequired]
     public ItemDto Item { get; set; } = null!;
 
-    // Under "All" the row says which category the item belongs to
-    [Parameter]
-    public bool ShowsCategory { get; set; }
-
     [Parameter]
     [EditorRequired]
     public EventCallback<ItemDto> OnClick { get; set; }
@@ -28,27 +24,9 @@ public sealed partial class MenuItemRow
         ? ImageRadiusStyle
         : $"{ImageRadiusStyle} filter: grayscale(1); opacity: 0.6;";
 
-    private string DetailsText
-    {
-        get
-        {
-            List<string> details = [];
-
-            if (ShowsCategory)
-            {
-                details.Add(Item.Category.Name);
-            }
-
-            details.Add($"Portion {Item.Portion.ToString(CultureInfo.CurrentCulture)}");
-
-            if (!string.IsNullOrWhiteSpace(Item.Description))
-            {
-                details.Add(Item.Description);
-            }
-
-            return string.Join(" · ", details);
-        }
-    }
+    private string DetailsText => string.IsNullOrWhiteSpace(Item.Description)
+        ? $"Portion {Item.Portion.ToString(CultureInfo.CurrentCulture)}"
+        : $"Portion {Item.Portion.ToString(CultureInfo.CurrentCulture)} · {Item.Description}";
 
     private async Task OnRowClickAsync()
     {

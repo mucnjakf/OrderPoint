@@ -1,0 +1,21 @@
+﻿<MudPaper Class="cursor-pointer" Style="height: 100%; overflow: hidden;" @onclick="@OnCardClickAsync">
+    <MudImage Src="@(Category.ImageUrl ?? ImageUrls.Placeholder)"
+              Alt="Category image"
+              ObjectFit="ObjectFit.Cover"
+              Style="@ImageStyle"/>
+
+    <MudStack Spacing="1" Class="pa-3" AlignItems="AlignItems.Start">
+        <MudText Typo="Typo.body1"
+                 Style="max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">
+            @Category.Name
+        </MudText>
+
+        <MudChip T="string"
+                 Variant="Variant.Text"
+                 Size="Size.Small"
+                 Color="@(Category.Status is CategoryStatus.Active ? Color.Success : Color.Error)"
+                 Class="ma-0">
+            @Category.Status.ToString()
+        </MudChip>
+    </MudStack>
+</MudPaper>
