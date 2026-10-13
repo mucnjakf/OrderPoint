@@ -67,7 +67,7 @@
           EmptyStateText="No items found">
 
     <LoadingTemplate>
-        <ItemCardSkeleton/>
+        <ItemCardContentSkeleton/>
     </LoadingTemplate>
 
     <BulkActionsTemplate>
@@ -166,43 +166,14 @@
     </FilterContent>
 
     <RowTemplate>
-        <ItemCardImage ImageUrl="@context.ImageUrl" IsActive="@context.IsActive"/>
-
-        <MudCardContent Class="d-flex flex-column">
-            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mb-1">
-                <MudImage Src="@(context.Category.ImageUrl ?? ImageUrls.Placeholder)"
-                          Alt="Category image"
-                          Width="16"
-                          Height="16"
-                          ObjectFit="ObjectFit.Cover"/>
-
-                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
-                    @context.Category.Name
-                </MudText>
-            </MudStack>
-
-            <MudText Typo="Typo.h6">
-                @context.Name
-            </MudText>
-
-            <MudText Typo="Typo.body2"
-                     Class="mt-1"
-                     Style="color: var(--mud-palette-text-secondary); display: -webkit-box; -webkit-line-clamp: 2;
-                            -webkit-box-orient: vertical; overflow: hidden;">
-                @context.Description
-            </MudText>
-
-            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mt-auto pt-4">
-                <MudText Typo="Typo.h6">
-                    @context.Price.ToString("C", CultureInfo.CurrentCulture)
-                </MudText>
-
-                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
-                    @context.Portion.ToString(CultureInfo.CurrentCulture)
-                    · <RollingNumber Value="@context.OrdersCount"
-                                     Text="@context.OrdersCount.ToCountText("order", "orders")"/>
-                </MudText>
-            </MudStack>
-        </MudCardContent>
+        <ItemCardContent ImageUrl="@context.ImageUrl"
+                         IsActive="@context.IsActive"
+                         CategoryName="@context.Category.Name"
+                         CategoryImageUrl="@context.Category.ImageUrl"
+                         Name="@context.Name"
+                         Description="@context.Description"
+                         Price="@context.Price"
+                         Portion="@context.Portion"
+                         OrdersCount="@context.OrdersCount"/>
     </RowTemplate>
 </DataGrid>

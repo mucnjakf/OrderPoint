@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
-using OrderPoint.Admin.Items.Enumerations;
 
-namespace OrderPoint.Admin.Items.Components;
+namespace OrderPoint.Shared.Items.Components;
 
 public sealed partial class ItemCardImage
 {
@@ -10,6 +9,10 @@ public sealed partial class ItemCardImage
     private const int ImageHeight = 120;
 
     private const int PlaceholderSize = 100;
+
+    private const string ActiveText = "Active";
+
+    private const string InactiveText = "Inactive";
 
     [Parameter]
     [EditorRequired]
@@ -21,7 +24,7 @@ public sealed partial class ItemCardImage
 
     private static string ContainerStyle => $"position: relative; overflow: hidden; height: {AreaHeight}px;";
 
-    private string StatusText => IsActive ? nameof(ItemStatus.Active) : nameof(ItemStatus.Inactive);
+    private string StatusText => IsActive ? ActiveText : InactiveText;
 
     private string InactiveImageStyle => IsActive ? string.Empty : "filter: grayscale(1); opacity: 0.6;";
 

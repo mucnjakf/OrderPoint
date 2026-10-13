@@ -4,18 +4,12 @@ using OrderPoint.Bartender.Menu.Enumerations;
 
 namespace OrderPoint.Bartender.Menu.Components;
 
+// The Admin's item card, plus why an unavailable item can't be ordered
 public sealed partial class MenuItemDetails
 {
-    private const string ImageBaseStyle =
-        "display: block; width: 100%; height: 220px; border-radius: var(--mud-default-borderradius);";
-
     [Parameter]
     [EditorRequired]
     public ItemDto Item { get; set; } = null!;
-
-    private string ImageStyle => Item.IsActive
-        ? ImageBaseStyle
-        : $"{ImageBaseStyle} filter: grayscale(1); opacity: 0.6;";
 
     private string? UnavailableText
     {
