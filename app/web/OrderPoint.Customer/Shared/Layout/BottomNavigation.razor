@@ -9,7 +9,12 @@
                    Class="flex-1"
                    Style="@(IsActive(destinationHref) ? ActiveButtonStyle : InactiveButtonStyle)">
             <MudStack AlignItems="AlignItems.Center" Spacing="0">
-                <MudIcon Icon="@icon" />
+                <MudBadge Content="@CartService.ItemsCount"
+                          Visible="@(destinationHref == CartHref && CartService.ItemsCount > 0)"
+                          Color="Color.Primary"
+                          Overlap="true">
+                    <MudIcon Icon="@icon" />
+                </MudBadge>
                 <MudText Typo="Typo.caption">@label</MudText>
             </MudStack>
         </MudButton>

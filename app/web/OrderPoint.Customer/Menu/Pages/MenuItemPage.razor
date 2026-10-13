@@ -41,5 +41,28 @@
                              Portion="@Item.Portion"
                              IsDescriptionClamped="false"/>
         </MudCard>
+
+        <MudPaper Class="pa-3 mt-3">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <QuantityStepper @bind-Value="@Quantity" Max="@Math.Max(1, MaxQuantityToAdd)"/>
+
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Size="Size.Large"
+                           Class="flex-1"
+                           StartIcon="@Icons.Material.Filled.AddShoppingCart"
+                           Disabled="@(MaxQuantityToAdd == 0)"
+                           OnClick="@AddToCartAsync">
+                    @AddButtonText
+                </MudButton>
+            </MudStack>
+
+            @if (CartQuantity > 0)
+            {
+                <MudText Typo="Typo.caption" Class="d-block mt-2" Style="color: var(--mud-palette-text-secondary)">
+                    @CartQuantity in your cart already
+                </MudText>
+            }
+        </MudPaper>
     </ChildContent>
 </StatefulView>

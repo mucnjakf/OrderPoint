@@ -20,5 +20,18 @@
         <MudText Typo="Typo.body1" Style="font-weight: 600; white-space: nowrap">
             @Item.Price.ToString("C", CultureInfo.CurrentCulture)
         </MudText>
+
+        @* Adding must not open the item as well *@
+        <div @onclick:stopPropagation="true">
+            <MudBadge Content="@CartQuantity" Visible="@(CartQuantity > 0)" Color="Color.Primary" Overlap="true">
+                <MudIconButton Icon="@Icons.Material.Filled.Add"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Size="Size.Small"
+                               Disabled="@(CartQuantity >= CartService.MaxQuantity)"
+                               aria-label="@($"Add {Item.Name} to the cart")"
+                               OnClick="@OnAddClickAsync"/>
+            </MudBadge>
+        </div>
     </MudStack>
 </MudPaper>

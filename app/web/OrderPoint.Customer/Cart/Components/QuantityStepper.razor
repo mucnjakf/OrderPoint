@@ -1,0 +1,19 @@
+﻿<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="0">
+    <MudIconButton Icon="@DecreaseIcon"
+                   Variant="Variant.Outlined"
+                   Size="Size.Small"
+                   Disabled="@(Value <= Min)"
+                   aria-label="Fewer"
+                   OnClick="@(() => ChangeAsync(Value - 1))"/>
+
+    <MudText Typo="Typo.body1" Align="Align.Center" Style="min-width: 32px; font-weight: 600">
+        @Value
+    </MudText>
+
+    <MudIconButton Icon="@Icons.Material.Filled.Add"
+                   Variant="Variant.Outlined"
+                   Size="Size.Small"
+                   Disabled="@(Value >= Max)"
+                   aria-label="More"
+                   OnClick="@(() => ChangeAsync(Value + 1))"/>
+</MudStack>

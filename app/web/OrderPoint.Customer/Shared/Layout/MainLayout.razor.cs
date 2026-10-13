@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using OrderPoint.Customer.Cart.Services;
 using OrderPoint.Customer.Settings.Enumerations;
 using OrderPoint.Customer.Settings.Services;
 using OrderPoint.Customer.Tables.Services;
@@ -23,6 +24,9 @@ public sealed partial class MainLayout : IDisposable
     [Inject]
     private AppearanceService AppearanceService { get; set; } = null!;
 
+    [Inject]
+    private CartService CartService { get; set; } = null!;
+
     private MudThemeProvider ThemeProvider { get; set; } = null!;
 
     private MudTheme Theme { get; } = AppTheme.Create();
@@ -41,7 +45,11 @@ public sealed partial class MainLayout : IDisposable
         TableService.Changed += OnStateChanged;
         AppearanceService.Changed += OnStateChanged;
 
-        await Task.WhenAll(TableService.LoadAsync(), TimeZoneService.LoadAsync(), AppearanceService.LoadAsync());
+        await Task.WhenAll(
+            TableService.LoadAsync(),
+            TimeZoneService.LoadAsync(),
+            AppearanceService.LoadAsync(),
+            CartService.LoadAsync());
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

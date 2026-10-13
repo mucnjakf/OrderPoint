@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using OrderPoint.Customer.Cart.Services;
 using OrderPoint.Customer.Menu.Dtos;
 using OrderPoint.Customer.Menu.Services;
+using OrderPoint.Customer.Shared.Extensions;
 
 namespace OrderPoint.Customer.Menu.Pages;
 
-public sealed partial class MenuCategoryPage
+public sealed partial class MenuCategoryPage : IDisposable
 {
     private const int LoadingRowsCount = 3;
 
@@ -20,6 +22,12 @@ public sealed partial class MenuCategoryPage
 
     [Inject]
     private NavigationManager NavigationManager { get; set; } = null!;
+
+    [Inject]
+    private CartService CartService { get; set; } = null!;
+
+    [Inject]
+    private ISnackbar Snackbar { get; set; } = null!;
 
     [Parameter]
     public Guid CategoryId { get; set; }
@@ -48,6 +56,8 @@ public sealed partial class MenuCategoryPage
 
     protected override async Task OnInitializedAsync()
     {
+        CartService.Changed += OnCartChanged;
+
         IReadOnlyList<MenuCategoryDto> menu = await MenuService.GetMenuAsync() ?? [];
 
         Category = menu.FirstOrDefault(category => category.Id == CategoryId);
@@ -55,8 +65,25 @@ public sealed partial class MenuCategoryPage
         IsLoading = false;
     }
 
+    public void Dispose()
+    {
+        CartService.Changed -= OnCartChanged;
+    }
+
     private void OpenItem(MenuItemDto item)
     {
         NavigationManager.NavigateTo($"/menu/{CategoryId}/items/{item.Id}");
+    }
+
+    private async Task AddToCartAsync(MenuItemDto item)
+    {
+        await CartService.AddAsync(item.Id, CategoryId, item.Name, quantity: 1);
+
+        Snackbar.AddCartConfirmation($"{item.Name} added", NavigationManager);
+    }
+
+    private void OnCartChanged()
+    {
+        _ = InvokeAsync(StateHasChanged);
     }
 }

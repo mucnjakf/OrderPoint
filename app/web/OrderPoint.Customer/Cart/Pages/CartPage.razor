@@ -2,11 +2,89 @@
 
 <PageTitle>Cart</PageTitle>
 
-<MudText Typo="Typo.h6" HtmlTag="h1" Class="mb-2">
+<MudText Typo="Typo.h6" HtmlTag="h1" Class="mb-3">
     Cart
 </MudText>
 
-<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Style="color: var(--mud-palette-text-secondary);">
-    <MudIcon Icon="@Icons.Material.Filled.ShoppingCart" Size="Size.Small" />
-    <MudText Typo="Typo.body2">What you add from the menu shows up here.</MudText>
-</MudStack>
+@if (TableService.TableCode is null)
+{
+    <MudAlert Severity="Severity.Warning" Variant="Variant.Text" Dense="true" Class="mb-3">
+        Scan the QR code on your table to order. You can fill your cart meanwhile.
+    </MudAlert>
+}
+
+<StatefulView IsLoading="@IsLoading"
+              ShowContent="@Rows.Any()"
+              EmptyStateIcon="@Icons.Material.Filled.ShoppingCart"
+              EmptyStateText="Your cart is empty"
+              EmptyStateDetail="Add something from the menu.">
+    <LoadingContent>
+        <MudStack Spacing="2">
+            @for (int i = 0; i < LoadingRowsCount; i++)
+            {
+                <MudPaper Class="pa-3">
+                    <MenuItemRowSkeleton/>
+                </MudPaper>
+            }
+        </MudStack>
+    </LoadingContent>
+
+    <ChildContent>
+        <MudStack Spacing="2">
+            @foreach ((CartLineDto line, MenuItemDto? item) in Rows)
+            {
+                Guid itemId = line.ItemId;
+
+                <CartLineRow @key="@itemId"
+                             Line="@line"
+                             Item="@item"
+                             OnQuantityChanged="@(quantity => CartService.SetQuantityAsync(itemId, quantity))"/>
+            }
+
+            <MudTextField @bind-Value="@Note"
+                          @bind-Value:after="@OnNoteChangedAsync"
+                          T="string"
+                          Label="Note for the bartender"
+                          Placeholder="e.g. no ice"
+                          Variant="Variant.Outlined"
+                          Lines="2"
+                          MaxLength="@NoteMaxLength"
+                          Counter="@NoteMaxLength"
+                          Class="mt-2"/>
+
+            <MudPaper Class="pa-4 mt-2">
+                <MudStack Spacing="3">
+                    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                        <MudText Typo="Typo.h6">Total</MudText>
+
+                        <MudText Typo="Typo.h6">
+                            @Total.ToString("C", CultureInfo.CurrentCulture)
+                        </MudText>
+                    </MudStack>
+
+                    @if (HasUnavailableLines)
+                    {
+                        <MudText Typo="Typo.body2" Style="color: var(--mud-palette-error-text)">
+                            Remove what is no longer on the menu to place the order.
+                        </MudText>
+                    }
+
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Size="Size.Large"
+                               FullWidth="true"
+                               Disabled="@(!CanPlaceOrder)"
+                               StartIcon="@(IsPlacingOrder ? null : Icons.Material.Filled.Send)"
+                               OnClick="@PlaceOrderAsync">
+                        @if (IsPlacingOrder)
+                        {
+                            <MudProgressCircular Indeterminate="true" Size="Size.Small" Class="mr-2"/>
+                        }
+
+                        Place order
+                    </MudButton>
+                </MudStack>
+            </MudPaper>
+        </MudStack>
+    </ChildContent>
+</StatefulView>

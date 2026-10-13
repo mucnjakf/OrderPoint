@@ -23,4 +23,10 @@ internal sealed class MenuService(ApiService apiService, MenuApiClient menuApiCl
 
         return menu;
     }
+
+    // The next page that asks loads the menu again
+    internal void Reset()
+    {
+        _menuTask = null;
+    }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
 using MudBlazor;
+using OrderPoint.Customer.Cart.Services;
 
 namespace OrderPoint.Customer.Shared.Layout;
 
@@ -14,6 +15,8 @@ public sealed partial class BottomNavigation : IDisposable
         $"height: {Height}; z-index: var(--mud-zindex-appbar); " +
         "background-color: var(--mud-palette-surface); border-top: 1px solid var(--mud-palette-lines-default);";
 
+    private const string CartHref = "/cart";
+
     private const string ActiveButtonStyle = "text-transform: none; font-weight: 600;";
 
     private const string InactiveButtonStyle = "text-transform: none; color: var(--mud-palette-text-secondary);";
@@ -21,7 +24,7 @@ public sealed partial class BottomNavigation : IDisposable
     private static readonly (string Href, string Label, string Icon)[] Destinations =
     [
         ("/", "Menu", Icons.Material.Filled.MenuBook),
-        ("/cart", "Cart", Icons.Material.Filled.ShoppingCart),
+        (CartHref, "Cart", Icons.Material.Filled.ShoppingCart),
         ("/orders", "My orders", Icons.Material.Filled.Receipt),
         ("/settings", "Settings", Icons.Material.Filled.Settings)
     ];
@@ -29,14 +32,24 @@ public sealed partial class BottomNavigation : IDisposable
     [Inject]
     private NavigationManager NavigationManager { get; set; } = null!;
 
+    [Inject]
+    private CartService CartService { get; set; } = null!;
+
     protected override void OnInitialized()
     {
         NavigationManager.LocationChanged += OnLocationChanged;
+        CartService.Changed += OnCartChanged;
     }
 
     public void Dispose()
     {
         NavigationManager.LocationChanged -= OnLocationChanged;
+        CartService.Changed -= OnCartChanged;
+    }
+
+    private void OnCartChanged()
+    {
+        _ = InvokeAsync(StateHasChanged);
     }
 
     // The menu lives at "/" and its categories and items below "/menu", so it matches both

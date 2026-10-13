@@ -1,0 +1,45 @@
+﻿<MudPaper Class="pa-3">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+        <MudImage Src="@(Item?.ImageUrl ?? ImageUrls.Placeholder)"
+                  Alt="Item image"
+                  Width="56"
+                  Height="56"
+                  ObjectFit="ObjectFit.Cover"
+                  Style="@ImageStyle"/>
+
+        <MudStack Spacing="0" Class="flex-1" Style="min-width: 0">
+            <MudText Typo="Typo.body1" Style="overflow-wrap: anywhere">
+                @(Item?.Name ?? Line.Name)
+            </MudText>
+
+            @if (Item is null)
+            {
+                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-error-text)">
+                    No longer on the menu
+                </MudText>
+            }
+            else
+            {
+                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                    @PriceText
+                </MudText>
+            }
+        </MudStack>
+
+        @if (Item is null)
+        {
+            <MudIconButton Icon="@Icons.Material.Filled.DeleteOutline"
+                           Variant="Variant.Outlined"
+                           Size="Size.Small"
+                           aria-label="Remove"
+                           OnClick="@(() => OnQuantityChangedAsync(0))"/>
+        }
+        else
+        {
+            <QuantityStepper Value="@Line.Quantity"
+                             ValueChanged="@OnQuantityChangedAsync"
+                             Min="0"
+                             Max="@CartService.MaxQuantity"/>
+        }
+    </MudStack>
+</MudPaper>
