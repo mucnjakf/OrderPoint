@@ -1,0 +1,76 @@
+﻿@page "/menu/{CategoryId:guid}"
+
+<PageTitle>@(Category?.Name ?? "Menu")</PageTitle>
+
+<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-1">
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack"
+                   Href="/"
+                   aria-label="Back to the menu"/>
+
+    @if (IsLoading)
+    {
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="32px" Height="32px"/>
+
+        <MudText Typo="Typo.h6" HtmlTag="h1" Class="flex-1">
+            <MudSkeleton Width="120px"/>
+        </MudText>
+    }
+    else
+    {
+        <MudImage Src="@(Category?.ImageUrl ?? ImageUrls.Placeholder)"
+                  Alt="Category image"
+                  Width="32"
+                  Height="32"
+                  ObjectFit="ObjectFit.Cover"
+                  Style="border-radius: var(--mud-default-borderradius);"/>
+
+        <MudText Typo="Typo.h6" HtmlTag="h1" Class="flex-1" Style="min-width: 0; overflow-wrap: anywhere">
+            @(Category?.Name ?? "Menu")
+        </MudText>
+    }
+</MudStack>
+
+@if (!string.IsNullOrWhiteSpace(Category?.Description))
+{
+    <MudText Typo="Typo.body2" Class="mb-3" Style="color: var(--mud-palette-text-secondary)">
+        @Category.Description
+    </MudText>
+}
+
+<div style="@SearchWrapperStyle">
+    <MudTextField @bind-Value="@SearchQuery"
+                  T="string"
+                  Placeholder="Search items"
+                  Variant="Variant.Outlined"
+                  Adornment="Adornment.Start"
+                  AdornmentIcon="@Icons.Material.Filled.Search"
+                  Clearable="true"
+                  DebounceInterval="300"
+                  Immediate="true"/>
+</div>
+
+<StatefulView IsLoading="@IsLoading"
+              ShowContent="@FoundItems.Any()"
+              EmptyStateIcon="@EmptyStateIcon"
+              EmptyStateText="@EmptyStateText"
+              EmptyStateDetail="@EmptyStateDetail">
+    <LoadingContent>
+        <MudStack Spacing="2">
+            @for (int i = 0; i < LoadingRowsCount; i++)
+            {
+                <MudPaper Class="pa-3">
+                    <MenuItemRowSkeleton/>
+                </MudPaper>
+            }
+        </MudStack>
+    </LoadingContent>
+
+    <ChildContent>
+        <MudStack Spacing="2">
+            @foreach (MenuItemDto item in FoundItems)
+            {
+                <MenuItemRow @key="@item.Id" Item="@item" OnClick="@OpenItem"/>
+            }
+        </MudStack>
+    </ChildContent>
+</StatefulView>

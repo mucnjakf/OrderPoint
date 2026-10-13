@@ -1,4 +1,4 @@
-﻿<ItemCardImage ImageUrl="@ImageUrl" IsActive="@IsActive"/>
+﻿<ItemCardImage ImageUrl="@ImageUrl" IsActive="@IsActive" ShowsStatus="@ShowsStatus"/>
 
 <MudCardContent Class="d-flex flex-column">
     <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mb-1">
@@ -28,7 +28,11 @@
 
         <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
             @PortionText
-            · <RollingNumber Value="@OrdersCount" Text="@OrdersCountText"/>
+
+            @if (OrdersCount is not null)
+            {
+                <text>· </text><RollingNumber Value="@OrdersCount.Value" Text="@OrdersCountText"/>
+            }
         </MudText>
     </MudStack>
 </MudCardContent>

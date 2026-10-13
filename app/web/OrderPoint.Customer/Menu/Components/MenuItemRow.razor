@@ -1,0 +1,24 @@
+﻿<MudPaper Class="pa-3 cursor-pointer" @onclick="@OnRowClickAsync">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+        <MudImage Src="@(Item.ImageUrl ?? ImageUrls.Placeholder)"
+                  Alt="Item image"
+                  Width="56"
+                  Height="56"
+                  ObjectFit="ObjectFit.Cover"
+                  Style="border-radius: var(--mud-default-borderradius); flex-shrink: 0;"/>
+
+        <MudStack Spacing="0" Class="flex-1" Style="min-width: 0">
+            <MudText Typo="Typo.body1" Style="@SingleLineStyle">
+                @Item.Name
+            </MudText>
+
+            <MudText Typo="Typo.caption" Style="@($"color: var(--mud-palette-text-secondary); {SingleLineStyle}")">
+                @DetailsText
+            </MudText>
+        </MudStack>
+
+        <MudText Typo="Typo.body1" Style="font-weight: 600; white-space: nowrap">
+            @Item.Price.ToString("C", CultureInfo.CurrentCulture)
+        </MudText>
+    </MudStack>
+</MudPaper>

@@ -17,10 +17,13 @@
                   Style="@($"position: relative; max-width: 100%; {InactiveImageStyle}")"/>
     }
 
-    <MudChip T="string"
-             Variant="Variant.Text"
-             Color="@(IsActive ? Color.Success : Color.Error)"
-             Style="position: absolute; top: 8px; right: 8px; margin: 0;">
-        @StatusText
-    </MudChip>
+    @if (ShowsStatus)
+    {
+        <MudChip T="string"
+                 Variant="Variant.Text"
+                 Color="@(IsActive ? Color.Success : Color.Error)"
+                 Style="position: absolute; top: 8px; right: 8px; margin: 0;">
+            @StatusText
+        </MudChip>
+    }
 </div>

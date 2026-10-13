@@ -1,0 +1,18 @@
+﻿<MudPaper Class="pa-3 cursor-pointer" Style="height: 100%;" @onclick="@OnCardClickAsync">
+    <MudStack AlignItems="AlignItems.Center" Spacing="2">
+        <MudImage Src="@(Category.ImageUrl ?? ImageUrls.Placeholder)"
+                  Alt="Category image"
+                  Width="64"
+                  Height="64"
+                  ObjectFit="ObjectFit.Cover"
+                  Style="border-radius: var(--mud-default-borderradius);"/>
+
+        <MudText Typo="Typo.body1" Align="Align.Center" Style="@NameStyle">
+            @Category.Name
+        </MudText>
+
+        <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+            @Category.Items.Count.ToCountText("item", "items")
+        </MudText>
+    </MudStack>
+</MudPaper>

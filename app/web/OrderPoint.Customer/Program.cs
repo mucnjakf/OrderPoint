@@ -2,6 +2,8 @@
 using MudBlazor;
 using MudBlazor.Services;
 using OrderPoint.Customer;
+using OrderPoint.Customer.Menu.Api;
+using OrderPoint.Customer.Menu.Services;
 using OrderPoint.Customer.Settings.Services;
 using OrderPoint.Customer.Tables.Services;
 using OrderPoint.ServiceDefaults;
@@ -20,6 +22,10 @@ builder.Services.AddScoped<ApiService>();
 builder.Services.AddScoped<TimeZoneService>();
 builder.Services.AddScoped<TableService>();
 builder.Services.AddScoped<AppearanceService>();
+builder.Services.AddScoped<MenuService>();
+
+// Guests are anonymous, so no client sends a token
+builder.Services.AddHttpClient<MenuApiClient>(ConfigureApiClient);
 
 // At the top, so snackbars never cover the bottom navigation
 builder.Services.AddMudServices(configuration =>
@@ -67,3 +73,8 @@ app
 app.MapDefaultEndpoints();
 
 app.Run();
+
+static void ConfigureApiClient(HttpClient client)
+{
+    client.BaseAddress = new Uri("https+http://order-point-api");
+}

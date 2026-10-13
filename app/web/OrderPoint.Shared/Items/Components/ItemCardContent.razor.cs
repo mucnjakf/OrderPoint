@@ -46,9 +46,12 @@ public sealed partial class ItemCardContent
     [EditorRequired]
     public double Portion { get; set; }
 
+    // Staff see how often the item was ordered; null leaves it out (guests)
     [Parameter]
-    [EditorRequired]
-    public int OrdersCount { get; set; }
+    public int? OrdersCount { get; set; }
+
+    [Parameter]
+    public bool ShowsStatus { get; set; } = true;
 
     // Cards in a grid cut the description after 2 lines; a details page shows all of it
     [Parameter]
@@ -60,5 +63,5 @@ public sealed partial class ItemCardContent
 
     private string PortionText => Portion.ToString(CultureInfo.CurrentCulture);
 
-    private string OrdersCountText => OrdersCount.ToCountText("order", "orders");
+    private string OrdersCountText => (OrdersCount ?? 0).ToCountText("order", "orders");
 }
