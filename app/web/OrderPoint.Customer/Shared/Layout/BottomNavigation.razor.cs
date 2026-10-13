@@ -8,10 +8,11 @@ namespace OrderPoint.Customer.Shared.Layout;
 // Fixed to the bottom of the screen, within thumb reach on a phone
 public sealed partial class BottomNavigation : IDisposable
 {
-    internal const string Height = "64px";
+    internal const string Height = "72px";
 
+    // The extra room at the top holds the cart badge, which sits above the icon
     private const string NavigationStyle =
-        $"position: fixed; left: 0; right: 0; bottom: 0; display: flex; padding: 4px 8px; " +
+        $"position: fixed; left: 0; right: 0; bottom: 0; display: flex; padding: 12px 8px 4px; " +
         $"height: {Height}; z-index: var(--mud-zindex-appbar); " +
         "background-color: var(--mud-palette-surface); border-top: 1px solid var(--mud-palette-lines-default);";
 

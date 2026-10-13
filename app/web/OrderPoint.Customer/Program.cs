@@ -34,7 +34,7 @@ builder.Services.AddHttpClient<OrderApiClient>(ConfigureApiClient);
 // MudBlazor's default is 5000
 const int SnackbarVisibleMilliseconds = 2000;
 
-// At the top, so snackbars never cover the bottom navigation; short, because guests tap quickly through the menu
+// At the top, so snackbars never cover the bottom navigation
 builder.Services.AddMudServices(configuration =>
 {
     configuration.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopCenter;

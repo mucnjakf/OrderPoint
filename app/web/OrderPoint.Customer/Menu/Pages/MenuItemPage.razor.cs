@@ -1,10 +1,8 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Components;
-using MudBlazor;
 using OrderPoint.Customer.Cart.Services;
 using OrderPoint.Customer.Menu.Dtos;
 using OrderPoint.Customer.Menu.Services;
-using OrderPoint.Customer.Shared.Extensions;
 
 namespace OrderPoint.Customer.Menu.Pages;
 
@@ -17,12 +15,6 @@ public sealed partial class MenuItemPage : IDisposable
 
     [Inject]
     private CartService CartService { get; set; } = null!;
-
-    [Inject]
-    private ISnackbar Snackbar { get; set; } = null!;
-
-    [Inject]
-    private NavigationManager NavigationManager { get; set; } = null!;
 
     [Parameter]
     public Guid CategoryId { get; set; }
@@ -61,8 +53,6 @@ public sealed partial class MenuItemPage : IDisposable
     private async Task AddToCartAsync()
     {
         await CartService.AddAsync(Item!.Id, CategoryId, Item.Name, Quantity);
-
-        Snackbar.AddCartConfirmation($"{Quantity}× {Item.Name} added", NavigationManager);
 
         Quantity = 1;
     }

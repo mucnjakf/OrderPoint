@@ -3,7 +3,6 @@ using MudBlazor;
 using OrderPoint.Customer.Cart.Services;
 using OrderPoint.Customer.Menu.Dtos;
 using OrderPoint.Customer.Menu.Services;
-using OrderPoint.Customer.Shared.Extensions;
 
 namespace OrderPoint.Customer.Menu.Pages;
 
@@ -25,9 +24,6 @@ public sealed partial class MenuCategoryPage : IDisposable
 
     [Inject]
     private CartService CartService { get; set; } = null!;
-
-    [Inject]
-    private ISnackbar Snackbar { get; set; } = null!;
 
     [Parameter]
     public Guid CategoryId { get; set; }
@@ -78,8 +74,6 @@ public sealed partial class MenuCategoryPage : IDisposable
     private async Task AddToCartAsync(MenuItemDto item)
     {
         await CartService.AddAsync(item.Id, CategoryId, item.Name, quantity: 1);
-
-        Snackbar.AddCartConfirmation($"{item.Name} added", NavigationManager);
     }
 
     private void OnCartChanged()
