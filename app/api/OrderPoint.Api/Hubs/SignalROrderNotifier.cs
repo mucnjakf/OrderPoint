@@ -4,15 +4,23 @@ using OrderPoint.Application.Notifications;
 namespace OrderPoint.Api.Hubs;
 
 internal sealed partial class SignalROrderNotifier(
-    IHubContext<OrdersHub> hubContext,
+    IHubContext<OrdersHub> ordersHubContext,
+    IHubContext<OrderTrackingHub> orderTrackingHubContext,
     ILogger<SignalROrderNotifier> logger)
     : IOrderNotifier
 {
-    public async Task NotifyOrdersChangedAsync(CancellationToken cancellationToken = default)
+    public async Task NotifyOrdersChangedAsync(Guid? trackedOrderId, CancellationToken cancellationToken = default)
     {
         try
         {
-            await hubContext.Clients.All.SendAsync(OrdersHub.OrdersChangedMethod, cancellationToken);
+            await ordersHubContext.Clients.All.SendAsync(OrdersHub.OrdersChangedMethod, cancellationToken);
+
+            if (trackedOrderId is not null)
+            {
+                await orderTrackingHubContext.Clients
+                    .Group(OrderTrackingHub.GetGroupName(trackedOrderId.Value))
+                    .SendAsync(OrderTrackingHub.OrderChangedMethod, cancellationToken);
+            }
         }
         catch (Exception exception)
         {

@@ -20,6 +20,20 @@ internal static class OrderMapper
         order.CreatedAtUtc,
         order.UpdatedAtUtc);
 
+    internal static OrderTrackingDto ToOrderTrackingDto(this Order order) => new(
+        order.Id,
+        order.Number,
+        order.TableCode,
+        order.Note,
+        order.Status,
+        order.Items.Sum(orderItem => orderItem.Quantity * orderItem.UnitPrice),
+        order.Items.Select(orderItem => orderItem.ToOrderItemDto()).ToList(),
+        order.AcceptedAtUtc,
+        order.DeclinedAtUtc,
+        order.ActivatedAtUtc,
+        order.CompletedAtUtc,
+        order.CreatedAtUtc);
+
     internal static OrderItemDto ToOrderItemDto(this OrderItem orderItem) => new(
         orderItem.Id,
         orderItem.ItemId,

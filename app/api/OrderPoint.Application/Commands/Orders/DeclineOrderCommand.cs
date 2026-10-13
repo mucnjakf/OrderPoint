@@ -13,6 +13,8 @@ public sealed record DeclineOrderCommand(Guid Id, Guid BartenderId)
     : ICommand, ICacheInvalidatingCommand, IOrderNotifyingCommand
 {
     IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.OrderChanges;
+
+    Guid? IOrderNotifyingCommand.TrackedOrderId => Id;
 }
 
 internal sealed partial class DeclineOrderCommandHandler(

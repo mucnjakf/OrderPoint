@@ -22,8 +22,9 @@ internal static class ApiGuide
           account is locked for 5 minutes (`401 Auth.LockedOut`).
         - A bartender created by the admin starts with a temporary password: login returns
           `403 Auth.PasswordChangeRequired` until `POST /api/auth/initial-password` sets a new one.
-        - Every endpoint requires the **Admin** role, except Auth, `POST /api/orders` (used by the customer app)
-          and the health checks (anonymous), the order status changes (`PUT /api/orders/{id}/accept`, `decline`,
+        - Every endpoint requires the **Admin** role, except Auth, the customer app's `GET /api/menu`,
+          `POST /api/orders` and `GET /api/orders/{id}/tracking`, and the health checks (anonymous), the order
+          status changes (`PUT /api/orders/{id}/accept`, `decline`,
           `activate`, `complete`), `GET /api/shift` and `GET /api/shift/day` (**Bartender**), and reading orders,
           the item and category lists, one item or category, `GET /api/account`, changing the password and
           signing out everywhere (**Admin** or **Bartender**). Each endpoint names its roles; those that need a
@@ -91,6 +92,11 @@ internal static class ApiGuide
         The SignalR hub at `/hubs/orders` (role **Admin** or **Bartender**, bearer token as for the endpoints)
         sends `OrdersChanged`, without arguments, after an order is placed or changes status. Clients then reload
         what they show; the cache is already cleared when the signal arrives. The hub has no methods to call.
+
+        The anonymous hub at `/hubs/order-tracking` is for the customer app. A connection calls
+        `TrackOrder(orderId)` for each order it follows (again after a reconnect) and then receives `OrderChanged`,
+        without arguments, whenever one of them changes status; it reloads them with
+        `GET /api/orders/{id}/tracking`.
 
         ## Conventions
 

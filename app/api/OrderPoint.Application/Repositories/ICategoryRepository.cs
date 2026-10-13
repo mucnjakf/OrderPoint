@@ -20,6 +20,10 @@ public interface ICategoryRepository
 
     Task<IReadOnlyList<Category>> GetAsync(IReadOnlyList<Guid> ids, CancellationToken cancellationToken = default);
 
+    Task<IReadOnlyList<Category>> GetByStatusAsync(
+        CategoryStatus status,
+        CancellationToken cancellationToken = default);
+
     Task CreateAsync(Category category, CancellationToken cancellationToken = default);
 
     void Delete(Category category);

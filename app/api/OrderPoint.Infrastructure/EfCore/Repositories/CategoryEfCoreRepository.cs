@@ -51,6 +51,18 @@ internal sealed class CategoryEfCoreRepository(ApplicationDbContext dbContext) :
     public async Task<Category?> GetAsync(Guid id, CancellationToken cancellationToken = default)
         => await dbContext.Categories.SingleOrDefaultAsync(category => category.Id == id, cancellationToken);
 
+    // In menu order, with the items, for the guests' menu
+    public async Task<IReadOnlyList<Category>> GetByStatusAsync(
+        CategoryStatus status,
+        CancellationToken cancellationToken = default)
+        => await dbContext.Categories
+            .AsNoTracking()
+            .Include(category => category.Items)
+            .Where(category => category.Status == status)
+            .OrderBy(category => category.DisplayOrder)
+            .ThenBy(category => category.Id)
+            .ToListAsync(cancellationToken);
+
     public async Task<IReadOnlyList<Category>> GetAsync(
         IReadOnlyList<Guid> ids,
         CancellationToken cancellationToken = default)

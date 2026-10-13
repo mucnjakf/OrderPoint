@@ -3,6 +3,7 @@ using OrderPoint.Application.Queries.Bartenders;
 using OrderPoint.Application.Queries.Categories;
 using OrderPoint.Application.Queries.Dashboard;
 using OrderPoint.Application.Queries.Items;
+using OrderPoint.Application.Queries.Menu;
 using OrderPoint.Application.Queries.Orders;
 using OrderPoint.Domain.Enumerations;
 
@@ -33,6 +34,10 @@ internal static class CacheKeys
     internal static string For(SearchBartendersQuery query) => $"bartenders:search:{query.SearchQuery}";
 
     internal static string For(GetOrderQuery query) => $"orders:{query.Id}";
+
+    internal static string For(GetOrderTrackingQuery query) => $"orders:{query.Id}:tracking";
+
+    internal static string For(GetMenuQuery query) => "menu";
 
     internal static string For(GetOrdersQuery query)
         => $"orders:page:{query.PageNumber}:{query.PageSize}:{query.Status}:{query.ItemId}:{query.BartenderId}:" +

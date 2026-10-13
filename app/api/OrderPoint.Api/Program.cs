@@ -136,6 +136,8 @@ app
     .MapHub<OrdersHub>("hubs/orders")
     .RequireAuthorization(AuthorizationPolicies.AdminOrBartender);
 
+app.MapHub<OrderTrackingHub>("hubs/order-tracking");
+
 // API docs
 app.MapApiDocumentation();
 

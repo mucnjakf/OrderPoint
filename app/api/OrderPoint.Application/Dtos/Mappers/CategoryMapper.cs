@@ -1,4 +1,5 @@
 ﻿using OrderPoint.Domain.Entities;
+using OrderPoint.Domain.Enumerations;
 
 namespace OrderPoint.Application.Dtos.Mappers;
 
@@ -14,4 +15,15 @@ internal static class CategoryMapper
         itemsCount,
         category.CreatedAtUtc,
         category.UpdatedAtUtc);
+
+    internal static MenuCategoryDto ToMenuCategoryDto(this Category category) => new(
+        category.Id,
+        category.Name,
+        category.Description,
+        category.ImageUrl,
+        category.Items
+            .Where(item => item.Status == ItemStatus.Active)
+            .OrderBy(item => item.Name)
+            .Select(item => item.ToMenuItemDto())
+            .ToList());
 }

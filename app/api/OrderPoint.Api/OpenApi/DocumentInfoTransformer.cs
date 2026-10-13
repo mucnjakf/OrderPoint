@@ -19,8 +19,10 @@ internal sealed class DocumentInfoTransformer : IOpenApiDocumentTransformer
                   "delete)."),
         ("Bartenders", "Bartenders and their logins: create, read, update and delete, image, password reset and " +
                        "bulk actions."),
-        ("Orders", "Orders placed by customers. Placing an order is anonymous, admins and bartenders read them, " +
-                   "and bartenders accept, decline, start and complete them."),
+        ("Menu", "The menu as guests see it in the customer app: active categories with their active items. " +
+                 "Anonymous."),
+        ("Orders", "Orders placed by customers. Placing and tracking an order are anonymous, admins and bartenders " +
+                   "read them, and bartenders accept, decline, start and complete them."),
         ("Shift", "The signed-in bartender's figures for today, for the bartender app."),
         ("Dashboard", "Aggregated numbers for the Admin dashboard, one endpoint per widget so they load in parallel."),
         ("Health", "The health of the API, the database and the blob storage, for the Admin's system health page.")
@@ -29,7 +31,7 @@ internal sealed class DocumentInfoTransformer : IOpenApiDocumentTransformer
     private static readonly (string Name, string[] Tags)[] TagGroups =
     [
         ("Authentication", ["Auth", "Account"]),
-        ("Menu", ["Categories", "Items"]),
+        ("Menu", ["Categories", "Items", "Menu"]),
         ("Staff", ["Bartenders"]),
         ("Orders", ["Orders", "Shift"]),
         ("Insights", ["Dashboard"]),

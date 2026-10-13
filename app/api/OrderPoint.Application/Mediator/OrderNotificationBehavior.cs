@@ -17,9 +17,9 @@ internal sealed class OrderNotificationBehavior<TRequest, TResponse>(IOrderNotif
     {
         TResponse response = await next(cancellationToken);
 
-        if (response.IsSuccess && request is IOrderNotifyingCommand)
+        if (response.IsSuccess && request is IOrderNotifyingCommand orderNotifyingCommand)
         {
-            await orderNotifier.NotifyOrdersChangedAsync(CancellationToken.None);
+            await orderNotifier.NotifyOrdersChangedAsync(orderNotifyingCommand.TrackedOrderId, CancellationToken.None);
         }
 
         return response;

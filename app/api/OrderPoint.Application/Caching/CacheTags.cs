@@ -7,10 +7,11 @@ internal static class CacheTags
     internal const string Bartenders = "bartenders";
     internal const string Orders = "orders";
     internal const string Dashboard = "dashboard";
+    internal const string Menu = "menu";
 
-    internal static readonly IReadOnlyList<string> CategoryChanges = [Categories, Items, Dashboard];
+    internal static readonly IReadOnlyList<string> CategoryChanges = [Categories, Items, Dashboard, Menu];
 
-    internal static readonly IReadOnlyList<string> ItemChanges = [Items, Categories, Orders, Dashboard];
+    internal static readonly IReadOnlyList<string> ItemChanges = [Items, Categories, Orders, Dashboard, Menu];
 
     internal static readonly IReadOnlyList<string> BartenderChanges = [Bartenders, Orders, Dashboard];
 
