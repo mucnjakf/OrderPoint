@@ -1,0 +1,17 @@
+﻿<nav style="@NavigationStyle">
+    @foreach ((string href, string label, string icon) in Destinations)
+    {
+        string destinationHref = href;
+
+        <MudButton Href="@destinationHref"
+                   Variant="Variant.Text"
+                   Color="@(IsActive(destinationHref) ? Color.Primary : Color.Default)"
+                   Class="flex-1"
+                   Style="@(IsActive(destinationHref) ? ActiveButtonStyle : InactiveButtonStyle)">
+            <MudStack AlignItems="AlignItems.Center" Spacing="0">
+                <MudIcon Icon="@icon" />
+                <MudText Typo="Typo.caption">@label</MudText>
+            </MudStack>
+        </MudButton>
+    }
+</nav>

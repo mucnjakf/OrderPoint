@@ -101,8 +101,9 @@ builder.AddDevToolHealthCheck("pgweb");
 builder.AddDevToolHealthCheck("storage-blobs-explorer");
 builder.AddDevToolHealthCheck("redisinsight");
 
-// Apps: the bartender app in the health report
+// Apps: the bartender and customer apps in the health report
 builder.AddDevToolHealthCheck("order-point-bartender");
+builder.AddDevToolHealthCheck("order-point-customer");
 
 // ---------------------------------------------------------------------------------------------------------------------
 

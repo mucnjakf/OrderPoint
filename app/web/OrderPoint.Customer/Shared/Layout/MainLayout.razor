@@ -1,0 +1,42 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider @ref="@ThemeProvider" Theme="@Theme" IsDarkMode="@IsDarkMode" />
+<MudPopoverProvider />
+<MudDialogProvider CloseButton="true" BackdropClick="false" Position="DialogPosition.Center" CloseOnEscapeKey="true" />
+<MudSnackbarProvider />
+
+@if (!TableService.IsLoaded)
+{
+    return;
+}
+
+<MudLayout>
+    <MudAppBar Elevation="0" Dense="true" Style="border-bottom: 1px solid var(--mud-palette-lines-default)">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudImage Src="@ImageUrls.Logo" Alt="OrderPoint logo" Width="32" Height="32" />
+
+            <MudText Typo="Typo.subtitle1">OrderPoint</MudText>
+        </MudStack>
+
+        <MudSpacer />
+
+        @if (TableService.TableCode is not null)
+        {
+            <MudChip T="string"
+                     Icon="@Icons.Material.Filled.TableRestaurant"
+                     Variant="Variant.Outlined"
+                     Size="Size.Small"
+                     Class="ma-0">
+                Table @TableService.TableCode
+            </MudChip>
+        }
+    </MudAppBar>
+
+    <MudMainContent Style="@MainContentStyle">
+        <MudContainer MaxWidth="MaxWidth.Small" Gutters="false" Class="pa-3">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+
+    <BottomNavigation />
+</MudLayout>

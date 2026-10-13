@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <base href="/" />
+
+    <ResourcePreloader />
+
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png" />
+    <link rel="icon" type="image/svg+xml" href="@ImageUrls.Logo" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet" />
+
+    <link href="@Assets["_content/MudBlazor/MudBlazor.min.css"]" rel="stylesheet" />
+    <link href="@Assets["OrderPoint.Customer.styles.css"]" rel="stylesheet" />
+
+    <style>
+            [class*="mud-elevation-"]:not(.mud-elevation-0) {
+                border: 1px solid var(--mud-palette-lines-default);
+            }
+
+            .mud-button-filled {
+                box-shadow: none !important;
+            }
+
+            .mud-skeleton-wave::after {
+                background: linear-gradient(
+                    90deg, transparent, rgba(var(--mud-palette-text-primary-rgb), 0.06), transparent);
+            }
+    </style>
+
+    <ImportMap />
+
+    <HeadOutlet @rendermode="@PageRenderMode" />
+
+    <title>OrderPoint</title>
+</head>
+
+<body>
+    @* Not prerendered: the table and the cart live in browser storage, readable only once the circuit is connected *@
+    <Routes @rendermode="@PageRenderMode" />
+
+    @* Static, so it stays in the page while the circuit is gone *@
+    <ReconnectModal />
+
+    <script src="@Assets["_framework/blazor.web.js"]"></script>
+    <script src="@Assets["_content/MudBlazor/MudBlazor.min.js"]"></script>
+</body>
+
+</html>
