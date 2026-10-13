@@ -2,11 +2,63 @@
 
 <PageTitle>My shift</PageTitle>
 
-<MudText Typo="Typo.h5" HtmlTag="h1" Class="mb-2">
+<MudText Typo="Typo.h6" HtmlTag="h1">
     My shift
 </MudText>
 
-<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Style="color: var(--mud-palette-text-secondary);">
-    <MudIcon Icon="@Icons.Material.Filled.Schedule" Size="Size.Small" />
-    <MudText Typo="Typo.body2">Your shift so far.</MudText>
-</MudStack>
+<MudText Typo="Typo.body2" Class="mb-3" Style="color: var(--mud-palette-text-secondary)">
+    Today since midnight
+</MudText>
+
+<MudGrid Spacing="3">
+    @if (IsLoading)
+    {
+        for (int i = 0; i < TilesCount; i++)
+        {
+            <MudItem xs="6" sm="3">
+                <ShiftTileSkeleton/>
+            </MudItem>
+        }
+    }
+    else
+    {
+        <MudItem xs="6" sm="3">
+            <ShiftTile Label="Queue"
+                       Icon="@OrderStatus.Pending.GetIcon()"
+                       Color="@OrderStatus.Pending.GetColor()"
+                       Value="@(Shift?.PendingCount)"
+                       Text="@(Shift?.PendingCount.ToString() ?? "-")"
+                       Caption="Waiting to be accepted"
+                       OnClick="@(() => OpenOrders(OrdersTab.Queue))"/>
+        </MudItem>
+
+        <MudItem xs="6" sm="3">
+            <ShiftTile Label="Mine"
+                       Icon="@OrderStatus.Active.GetIcon()"
+                       Color="@OrderStatus.Active.GetColor()"
+                       Value="@(Shift?.MyOpenCount)"
+                       Text="@(Shift?.MyOpenCount.ToString() ?? "-")"
+                       Caption="Accepted or being made"
+                       OnClick="@(() => OpenOrders(OrdersTab.Mine))"/>
+        </MudItem>
+
+        <MudItem xs="6" sm="3">
+            <ShiftTile Label="Completed"
+                       Icon="@OrderStatus.Completed.GetIcon()"
+                       Color="@OrderStatus.Completed.GetColor()"
+                       Value="@(Shift?.CompletedCount)"
+                       Text="@(Shift?.CompletedCount.ToString() ?? "-")"
+                       Caption="Served today"
+                       OnClick="@(() => OpenOrders(OrdersTab.Done))"/>
+        </MudItem>
+
+        <MudItem xs="6" sm="3">
+            <ShiftTile Label="Service time"
+                       Icon="@Icons.Material.Filled.Timer"
+                       Color="Color.Secondary"
+                       Value="@Shift?.AverageServiceMinutes"
+                       Text="@ServiceTimeText"
+                       Caption="Average, placed to served"/>
+        </MudItem>
+    }
+</MudGrid>

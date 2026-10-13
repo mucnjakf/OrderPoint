@@ -1,0 +1,17 @@
+﻿<MudStack Spacing="3">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+        <MudIcon Icon="@Icon"/>
+
+        <MudStack Spacing="0">
+            <MudText Typo="Typo.subtitle1">
+                @Title
+            </MudText>
+
+            <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                @Description
+            </MudText>
+        </MudStack>
+    </MudStack>
+
+    @ChildContent
+</MudStack>

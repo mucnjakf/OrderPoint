@@ -2,11 +2,106 @@
 
 <PageTitle>Account</PageTitle>
 
-<MudText Typo="Typo.h5" HtmlTag="h1" Class="mb-2">
+<MudText Typo="Typo.h6" HtmlTag="h1" Class="mb-3">
     Account
 </MudText>
 
-<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Style="color: var(--mud-palette-text-secondary);">
-    <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Small" />
-    <MudText Typo="Typo.body2">Your profile, appearance, password and sessions.</MudText>
-</MudStack>
+<MudGrid Spacing="3">
+    <MudItem xs="12" sm="4">
+        <MudPaper Class="pa-5 d-flex flex-column align-center justify-center gap-3" Style="height: 100%">
+            <MudAvatar Color="Color.Primary" Style="width: 96px; height: 96px; font-size: 2rem;">
+                @if (AccountService.ImageUrl is not null)
+                {
+                    <MudImage Src="@AccountService.ImageUrl" Alt="Account image" ObjectFit="ObjectFit.Cover"/>
+                }
+                else
+                {
+                    @Initial
+                }
+            </MudAvatar>
+
+            <MudText Typo="Typo.h6" Align="Align.Center" Style="overflow-wrap: anywhere">
+                @AuthService.Email
+            </MudText>
+
+            <MudChip T="string" Variant="Variant.Text" Size="Size.Small" Color="Color.Primary" Class="ma-0">
+                Bartender
+            </MudChip>
+
+            <MudText Typo="Typo.caption" Align="Align.Center" Style="color: var(--mud-palette-text-secondary)">
+                Your photo is set by the admin.
+            </MudText>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12" sm="8">
+        <MudPaper Class="pa-5" Style="height: 100%">
+            <AccountSection Icon="@Icons.Material.Filled.Contrast"
+                            Title="Appearance"
+                            Description="Light or dark colours, remembered on this device.">
+                <MudToggleGroup T="bool"
+                                Value="@DarkModeService.IsDarkMode"
+                                ValueChanged="@OnDarkModeChangedAsync"
+                                Color="Color.Primary"
+                                Style="width: 100%;">
+                    <MudToggleItem Value="false" Class="px-4 py-2">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.Center" Spacing="1">
+                            <MudIcon Icon="@Icons.Material.Filled.LightMode" Size="Size.Small"/>
+                            <MudText Typo="Typo.body2">Light</MudText>
+                        </MudStack>
+                    </MudToggleItem>
+
+                    <MudToggleItem Value="true" Class="px-4 py-2">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.Center" Spacing="1">
+                            <MudIcon Icon="@Icons.Material.Filled.DarkMode" Size="Size.Small"/>
+                            <MudText Typo="Typo.body2">Dark</MudText>
+                        </MudStack>
+                    </MudToggleItem>
+                </MudToggleGroup>
+            </AccountSection>
+
+            <MudDivider Class="my-5"/>
+
+            <AccountSection Icon="@Icons.Material.Filled.Password"
+                            Title="Password"
+                            Description="Change the password you sign in with. Other devices are signed out.">
+                <MudButton Variant="Variant.Outlined"
+                           Size="Size.Large"
+                           FullWidth="true"
+                           StartIcon="@Icons.Material.Filled.Edit"
+                           OnClick="@ShowChangePasswordDialogAsync">
+                    Change password
+                </MudButton>
+            </AccountSection>
+
+            <MudDivider Class="my-5"/>
+
+            <AccountSection Icon="@Icons.Material.Filled.Devices"
+                            Title="Sessions"
+                            Description="Sign out of every device signed in with this account, including this one.">
+                <MudButton Variant="Variant.Outlined"
+                           Color="Color.Warning"
+                           Size="Size.Large"
+                           FullWidth="true"
+                           StartIcon="@Icons.Material.Filled.PhonelinkErase"
+                           OnClick="@ShowSignOutEverywhereDialogAsync">
+                    Sign out everywhere
+                </MudButton>
+            </AccountSection>
+
+            <MudDivider Class="my-5"/>
+
+            <AccountSection Icon="@Icons.Material.Filled.Logout"
+                            Title="Sign out"
+                            Description="Sign out of this device.">
+                <MudButton Variant="Variant.Outlined"
+                           Size="Size.Large"
+                           FullWidth="true"
+                           StartIcon="@Icons.Material.Filled.Logout"
+                           OnClick="@ShowSignOutDialogAsync">
+                    Sign out
+                </MudButton>
+            </AccountSection>
+        </MudPaper>
+    </MudItem>
+</MudGrid>

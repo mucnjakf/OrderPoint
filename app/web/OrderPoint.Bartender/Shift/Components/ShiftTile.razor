@@ -1,0 +1,21 @@
+﻿<MudPaper Class="@PaperClass" Style="height: 100%;" @onclick="@OnTileClickAsync">
+    <MudStack Spacing="2">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+            <MudText Typo="Typo.overline" Style="line-height: 1.4">
+                @Label
+            </MudText>
+
+            <MudAvatar Color="@Color" Size="Size.Small" Rounded="true">
+                <MudIcon Icon="@Icon" Size="Size.Small"/>
+            </MudAvatar>
+        </MudStack>
+
+        <MudText Typo="Typo.h4">
+            <RollingNumber Value="@Value" Text="@Text"/>
+        </MudText>
+
+        <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+            @Caption
+        </MudText>
+    </MudStack>
+</MudPaper>
