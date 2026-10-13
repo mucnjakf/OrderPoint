@@ -12,6 +12,8 @@ internal sealed class AuthService(ProtectedLocalStorage protectedLocalStorage, A
 {
     private const string StorageKey = "auth-tokens";
 
+    private const string PasswordChangeRequiredCode = "Auth.PasswordChangeRequired";
+
     // Refreshing a little early means a token never expires while a request is on its way
     private static readonly TimeSpan RefreshMargin = TimeSpan.FromMinutes(1);
 
@@ -48,14 +50,34 @@ internal sealed class AuthService(ProtectedLocalStorage protectedLocalStorage, A
         IsLoaded = true;
     }
 
-    internal async Task LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
+    // True when the account still has the temporary password the admin set and must choose its own first;
+    // any other failure throws, so ApiService's default (false) never asks for a new password
+    internal async Task<bool> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
     {
-        AuthTokensDto tokens = await authApiClient.LoginAsync(request, cancellationToken);
+        AuthTokensDto tokens;
 
-        await SetTokensAsync(tokens);
-        IsSessionExpired = false;
+        try
+        {
+            tokens = await authApiClient.LoginAsync(request, cancellationToken);
+        }
+        catch (ApiException exception) when (exception.HasErrorCode(PasswordChangeRequiredCode))
+        {
+            return true;
+        }
 
-        SessionChanged?.Invoke();
+        await StartSessionAsync(tokens);
+
+        return false;
+    }
+
+    // First sign-in of a bartender: replaces the temporary password and signs in
+    internal async Task ChangeInitialPasswordAsync(
+        ChangeInitialPasswordRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        AuthTokensDto tokens = await authApiClient.ChangeInitialPasswordAsync(request, cancellationToken);
+
+        await StartSessionAsync(tokens);
     }
 
     internal async Task LogoutAsync(CancellationToken cancellationToken = default)
@@ -136,6 +158,14 @@ internal sealed class AuthService(ProtectedLocalStorage protectedLocalStorage, A
         {
             _tokensLock.Release();
         }
+    }
+
+    private async Task StartSessionAsync(AuthTokensDto tokens)
+    {
+        await SetTokensAsync(tokens);
+        IsSessionExpired = false;
+
+        SessionChanged?.Invoke();
     }
 
     private async Task SetTokensAsync(AuthTokensDto tokens)

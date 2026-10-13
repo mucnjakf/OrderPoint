@@ -25,6 +25,9 @@ public sealed partial class LoginForm
 
     private LoginRequest Request { get; } = new();
 
+    // Set when the API asks for a new password: the form then shows the "choose your password" step
+    private ChangeInitialPasswordRequest? InitialPasswordRequest { get; set; }
+
     private bool IsSigningIn { get; set; }
 
     private bool IsPasswordVisible { get; set; }
@@ -45,13 +48,41 @@ public sealed partial class LoginForm
         IsPasswordVisible = !IsPasswordVisible;
     }
 
+    // On success the layout swaps this form for the requested page
     private async Task SignInAsync()
     {
         IsSigningIn = true;
 
-        // On success the layout swaps this form for the requested page
-        await ApiService.ExecuteAsync(() => AuthService.LoginAsync(Request), $"Signed in as {Request.Email}");
+        bool isPasswordChangeRequired = await ApiService.ExecuteAsync(() => AuthService.LoginAsync(Request));
+
+        if (isPasswordChangeRequired)
+        {
+            InitialPasswordRequest = new ChangeInitialPasswordRequest
+            {
+                Email = Request.Email,
+                CurrentPassword = Request.Password,
+                Role = Request.Role
+            };
+
+            IsPasswordVisible = false;
+        }
 
         IsSigningIn = false;
+    }
+
+    private async Task ChangeInitialPasswordAsync()
+    {
+        IsSigningIn = true;
+
+        await ApiService.ExecuteAsync(
+            () => AuthService.ChangeInitialPasswordAsync(InitialPasswordRequest!),
+            $"Password set. Signed in as {Request.Email}");
+
+        IsSigningIn = false;
+    }
+
+    private void BackToSignIn()
+    {
+        InitialPasswordRequest = null;
     }
 }

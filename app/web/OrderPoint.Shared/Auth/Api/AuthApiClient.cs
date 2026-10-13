@@ -25,6 +25,25 @@ internal sealed class AuthApiClient(HttpClient httpClient)
         return result.Data;
     }
 
+    internal async Task<AuthTokensDto> ChangeInitialPasswordAsync(
+        ChangeInitialPasswordRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await httpClient
+            .PostAsJsonAsync("api/auth/initial-password", request, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+
+        ChangeInitialPasswordResponse result =
+            await response.Content.ReadFromJsonAsync<ChangeInitialPasswordResponse>(cancellationToken)
+            ?? throw new InvalidOperationException($"Unable to parse {nameof(ChangeInitialPasswordResponse)}");
+
+        return result.Data;
+    }
+
     internal async Task<AuthTokensDto> RefreshTokensAsync(
         RefreshTokensRequest request,
         CancellationToken cancellationToken = default)
