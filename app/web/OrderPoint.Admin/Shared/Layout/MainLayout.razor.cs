@@ -10,6 +10,7 @@ using OrderPoint.Admin.Search.Services;
 using OrderPoint.Shared.Account.Services;
 using OrderPoint.Shared.Auth.Services;
 using OrderPoint.Shared.Layout;
+using OrderPoint.Shared.Orders.Services;
 using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Shared.Layout;
@@ -55,6 +56,9 @@ public sealed partial class MainLayout : IDisposable
     [Inject]
     private HealthService HealthService { get; set; } = null!;
 
+    [Inject]
+    private OrdersHubService OrdersHubService { get; set; } = null!;
+
     private DotNetObjectReference<MainLayout>? SelfReference { get; set; }
 
     private bool IsSearchOpen { get; set; }
@@ -81,6 +85,8 @@ public sealed partial class MainLayout : IDisposable
 
         if (AuthService.IsSignedIn)
         {
+            _ = OrdersHubService.StartAsync();
+
             await Task.WhenAll(AccountService.LoadAsync(), HealthService.CheckAsync());
         }
     }
@@ -150,11 +156,15 @@ public sealed partial class MainLayout : IDisposable
         {
             if (AuthService.IsSignedIn)
             {
+                _ = OrdersHubService.StartAsync();
+
                 await Task.WhenAll(AccountService.LoadAsync(), HealthService.CheckAsync());
             }
             else
             {
                 AccountService.Clear();
+
+                await OrdersHubService.StopAsync();
             }
 
             StateHasChanged();

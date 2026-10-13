@@ -17,6 +17,7 @@ using OrderPoint.Shared.Account.Services;
 using OrderPoint.Shared.Auth.Api;
 using OrderPoint.Shared.Auth.Services;
 using OrderPoint.Shared.Extensions;
+using OrderPoint.Shared.Orders.Services;
 using OrderPoint.Shared.Services;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -37,6 +38,7 @@ builder.Services.AddScoped<TimeZoneService>();
 builder.Services.AddScoped<SearchService>();
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<HealthService>();
+builder.Services.AddScoped<OrdersHubService>();
 
 // The auth endpoints are anonymous and called without AccessTokenHandler, which uses them to refresh tokens
 builder.Services.AddHttpClient<AuthApiClient>(ConfigureApiClient);
