@@ -6,7 +6,12 @@ namespace OrderPoint.Bartender.Menu.Components;
 
 public sealed partial class MenuCategoryCard
 {
-    private const string ImageBaseStyle = "display: block; width: 100%; height: 120px;";
+    private const string ImageBaseStyle = "border-radius: var(--mud-default-borderradius);";
+
+    // Three cards fit in a row on a phone, so a long name wraps onto a second line before it is cut off
+    private const string NameStyle =
+        "max-width: 100%; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; " +
+        "-webkit-box-orient: vertical; overflow: hidden;";
 
     [Parameter]
     [EditorRequired]

@@ -1,12 +1,13 @@
-﻿<MudPaper Class="cursor-pointer" Style="height: 100%; overflow: hidden;" @onclick="@OnCardClickAsync">
-    <MudImage Src="@(Category.ImageUrl ?? ImageUrls.Placeholder)"
-              Alt="Category image"
-              ObjectFit="ObjectFit.Cover"
-              Style="@ImageStyle"/>
+﻿<MudPaper Class="pa-3 cursor-pointer" Style="height: 100%;" @onclick="@OnCardClickAsync">
+    <MudStack AlignItems="AlignItems.Center" Spacing="2">
+        <MudImage Src="@(Category.ImageUrl ?? ImageUrls.Placeholder)"
+                  Alt="Category image"
+                  Width="56"
+                  Height="56"
+                  ObjectFit="ObjectFit.Cover"
+                  Style="@ImageStyle"/>
 
-    <MudStack Spacing="1" Class="pa-3" AlignItems="AlignItems.Start">
-        <MudText Typo="Typo.body1"
-                 Style="max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">
+        <MudText Typo="Typo.body2" Align="Align.Center" Style="@NameStyle">
             @Category.Name
         </MudText>
 

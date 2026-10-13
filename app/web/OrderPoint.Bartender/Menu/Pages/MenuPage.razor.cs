@@ -11,8 +11,8 @@ public sealed partial class MenuPage
 {
     private const int MaxCategoriesCount = 100;
 
-    // Three rows of two cards on a phone
-    private const int LoadingCardsCount = 6;
+    // Three rows of three cards on a phone
+    private const int LoadingCardsCount = 9;
 
     // The search stays right under the dense app bar while scrolling, like the order tabs
     private const string SearchWrapperStyle =

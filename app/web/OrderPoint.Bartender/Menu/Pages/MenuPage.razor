@@ -25,10 +25,10 @@
               EmptyStateText="No categories found"
               EmptyStateDetail="Try another search.">
     <LoadingContent>
-        <MudGrid Spacing="3">
+        <MudGrid Spacing="2">
             @for (int i = 0; i < LoadingCardsCount; i++)
             {
-                <MudItem xs="6" sm="4" md="3">
+                <MudItem xs="4" sm="3" md="2">
                     <MenuCategoryCardSkeleton/>
                 </MudItem>
             }
@@ -36,10 +36,10 @@
     </LoadingContent>
 
     <ChildContent>
-        <MudGrid Spacing="3">
+        <MudGrid Spacing="2">
             @foreach (CategoryDto category in Categories)
             {
-                <MudItem @key="@category.Id" xs="6" sm="4" md="3">
+                <MudItem @key="@category.Id" xs="4" sm="3" md="2">
                     <MenuCategoryCard Category="@category" OnClick="@OpenCategory"/>
                 </MudItem>
             }
