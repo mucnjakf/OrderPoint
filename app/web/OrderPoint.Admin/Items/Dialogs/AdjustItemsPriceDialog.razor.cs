@@ -24,8 +24,8 @@ public sealed partial class AdjustItemsPriceDialog
     private string ValueAdornmentText => Mode is PriceAdjustmentMode.ChangeByPercent ? "%" : "€";
 
     private string ValueHelperText => Mode is PriceAdjustmentMode.Set
-        ? "The new price of every selected item."
-        : "Use a negative value to lower the prices.";
+        ? "The new price of every item."
+        : "A negative value lowers the prices.";
 
     private string? ValueErrorText => Value switch
     {

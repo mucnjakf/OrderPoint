@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using OrderPoint.Admin.Categories.Api;
 using OrderPoint.Admin.Categories.Dtos;
@@ -6,6 +7,7 @@ using OrderPoint.Admin.Categories.Enumerations;
 using OrderPoint.Admin.Items.Api.Requests;
 using OrderPoint.Admin.Items.Dtos;
 using OrderPoint.Admin.Items.Enumerations;
+using OrderPoint.Admin.Shared.Extensions;
 using OrderPoint.Shared.Dtos;
 using OrderPoint.Shared.Extensions;
 using OrderPoint.Shared.Services;
@@ -15,6 +17,8 @@ namespace OrderPoint.Admin.Items.Dialogs;
 public sealed partial class UpdateItemDialog
 {
     private const string CurrentImageFileName = "Current image";
+
+    private const decimal MinPercent = -100;
 
     [Parameter]
     public ItemDto Item { get; set; } = null!;
@@ -39,6 +43,28 @@ public sealed partial class UpdateItemDialog
 
     private bool IsFormSubmitted { get; set; }
 
+    // Same modes and rules as the bulk "Adjust prices"; the request carries the resulting price
+    private PriceAdjustmentMode PriceMode { get; set; } = PriceAdjustmentMode.Set;
+
+    private decimal? PriceValue { get; set; }
+
+    private decimal NewPrice => PriceValue is null ? Item.Price : PriceMode.Apply(Item.Price, PriceValue.Value);
+
+    private string PriceAdornmentText => PriceMode is PriceAdjustmentMode.ChangeByPercent ? "%" : "€";
+
+    private string PriceHelperText => PriceMode is PriceAdjustmentMode.Set
+        ? "Price in euros."
+        : $"{FormatPrice(Item.Price)} → {FormatPrice(NewPrice)}";
+
+    private string? PriceErrorText => PriceValue switch
+    {
+        null when PriceMode is PriceAdjustmentMode.Set => "Price is required.",
+        null => null,
+        <= MinPercent when PriceMode is PriceAdjustmentMode.ChangeByPercent => "Value must be greater than -100.",
+        _ when NewPrice <= 0 => "Price must be positive.",
+        _ => null
+    };
+
     private string? PreviewImageUrl => Request.Image is not null
         ? Request.Image.ToDataUrl()
         : Request.RemoveImage ? null : Item.ImageUrl;
@@ -58,6 +84,8 @@ public sealed partial class UpdateItemDialog
             Status = Item.Status,
             CategoryId = Item.Category.Id
         };
+
+        PriceValue = Item.Price;
 
         ItemCategoryDto category = Item.Category;
 
@@ -94,6 +122,24 @@ public sealed partial class UpdateItemDialog
         Request.CategoryId = SelectedCategory?.Id ?? Guid.Empty;
     }
 
+    private static string FormatPrice(decimal price)
+    {
+        return price.ToString("C", CultureInfo.CurrentCulture);
+    }
+
+    // Set starts from the price so far, a change starts empty (no change yet)
+    private void OnPriceModeChanged()
+    {
+        PriceValue = PriceMode is PriceAdjustmentMode.Set ? Request.Price : null;
+
+        OnPriceValueChanged();
+    }
+
+    private void OnPriceValueChanged()
+    {
+        Request.Price = NewPrice;
+    }
+
     private void OnImageSelected(ImageFileDto image)
     {
         Request.Image = image;
@@ -113,6 +159,11 @@ public sealed partial class UpdateItemDialog
 
     private void OnValidSubmit()
     {
+        if (PriceErrorText is not null)
+        {
+            return;
+        }
+
         MudDialogInstance.Close(DialogResult.Ok(Request));
     }
 

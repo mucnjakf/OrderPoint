@@ -55,7 +55,7 @@
                                        @bind-Value="@Request.Status"
                                        For="@(() => Request.Status)"
                                        Class="mb-5"
-                                       HelperText="Inactive bartenders cannot log into the bartender app."
+                                       HelperText="Inactive bartenders can't sign in."
                                        Variant="Variant.Outlined">
                                 @foreach (BartenderStatus status in Enum.GetValues<BartenderStatus>())
                                 {

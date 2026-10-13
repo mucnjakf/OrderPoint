@@ -35,24 +35,18 @@
                                          For="@(() => Request.Portion)"
                                          HelperText="Serving size."
                                          Variant="Variant.Outlined"
-                                         Class="mb-5"
-                                         Immediate="true"/>
-
-                        <MudNumericField Label="Price"
-                                         @bind-Value="@Request.Price"
-                                         For="@(() => Request.Price)"
-                                         HelperText="Price in euros."
-                                         Variant="Variant.Outlined"
-                                         Class="mb-5"
+                                         Class="mb-5 flex-1"
+                                         Style="min-width: 0"
                                          Immediate="true"/>
 
                         <MudSelect Label="Status"
                                    T="ItemStatus"
                                    @bind-Value="@Request.Status"
                                    For="@(() => Request.Status)"
-                                   HelperText="Inactive items, or items in an inactive category, can't be ordered."
+                                   HelperText="Inactive items can't be ordered."
                                    Variant="Variant.Outlined"
-                                   Class="mb-5">
+                                   Class="mb-5 flex-1"
+                                   Style="min-width: 0">
                             @foreach (ItemStatus status in Enum.GetValues<ItemStatus>())
                             {
                                 <MudSelectItem Value="@status" T="ItemStatus">
@@ -63,6 +57,39 @@
                             }
                         </MudSelect>
                     </MudStack>
+
+                    <MudStack Row="true">
+                        <MudSelect @bind-Value="@PriceMode"
+                                   @bind-Value:after="@OnPriceModeChanged"
+                                   T="PriceAdjustmentMode"
+                                   Label="Price"
+                                   HelperText="Set it, or change it by % or €."
+                                   Variant="Variant.Outlined"
+                                   Class="mb-5 flex-1"
+                                   Style="min-width: 0">
+                            @foreach (PriceAdjustmentMode mode in Enum.GetValues<PriceAdjustmentMode>())
+                            {
+                                <MudSelectItem Value="@mode">
+                                    @mode.GetLabel()
+                                </MudSelectItem>
+                            }
+                        </MudSelect>
+
+                        <MudNumericField @bind-Value="@PriceValue"
+                                         @bind-Value:after="@OnPriceValueChanged"
+                                         T="decimal?"
+                                         Label="Value"
+                                         HelperText="@PriceHelperText"
+                                         Variant="Variant.Outlined"
+                                         Adornment="Adornment.End"
+                                         AdornmentText="@PriceAdornmentText"
+                                         Error="@(PriceErrorText is not null)"
+                                         ErrorText="@PriceErrorText"
+                                         Class="mb-5 flex-1"
+                                         Style="min-width: 0"
+                                         Immediate="true"/>
+                    </MudStack>
+
                     <MudGrid Spacing="3">
                         <MudItem xs="6">
                             <MudAutocomplete @ref="@CategoryAutocomplete"

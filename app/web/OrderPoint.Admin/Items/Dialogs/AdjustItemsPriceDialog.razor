@@ -12,7 +12,8 @@
                        T="PriceAdjustmentMode"
                        Variant="Variant.Outlined"
                        Label="Adjustment"
-                       Class="flex-1">
+                       Class="flex-1"
+                       Style="min-width: 0">
                 @foreach (PriceAdjustmentMode mode in Enum.GetValues<PriceAdjustmentMode>())
                 {
                     <MudSelectItem Value="@mode">
@@ -31,7 +32,8 @@
                              Error="@HasValueError"
                              ErrorText="@ValueErrorText"
                              Immediate="true"
-                             Class="flex-1"/>
+                             Class="flex-1"
+                             Style="min-width: 0"/>
         </MudStack>
 
         <MudAlert Severity="Severity.Info" Variant="Variant.Text" Dense="true" Class="mb-4">

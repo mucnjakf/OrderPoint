@@ -35,24 +35,18 @@
                                          For="@(() => Request.Portion)"
                                          HelperText="Serving size."
                                          Variant="Variant.Outlined"
-                                         Class="mb-5"
-                                         Immediate="true"/>
-
-                        <MudNumericField Label="Price"
-                                         @bind-Value="@Request.Price"
-                                         For="@(() => Request.Price)"
-                                         HelperText="Price in euros."
-                                         Variant="Variant.Outlined"
-                                         Class="mb-5"
+                                         Class="mb-5 flex-1"
+                                         Style="min-width: 0"
                                          Immediate="true"/>
 
                         <MudSelect Label="Status"
                                    T="ItemStatus"
                                    @bind-Value="@Request.Status"
                                    For="@(() => Request.Status)"
-                                   HelperText="Inactive items, or items in an inactive category, can't be ordered."
+                                   HelperText="Inactive items can't be ordered."
                                    Variant="Variant.Outlined"
-                                   Class="mb-5">
+                                   Class="mb-5 flex-1"
+                                   Style="min-width: 0">
                             @foreach (ItemStatus status in Enum.GetValues<ItemStatus>())
                             {
                                 <MudSelectItem Value="@status" T="ItemStatus">
@@ -63,7 +57,19 @@
                             }
                         </MudSelect>
                     </MudStack>
+
                     <MudGrid Spacing="3">
+                        <MudItem xs="6">
+                            <MudNumericField Label="Price"
+                                             @bind-Value="@Request.Price"
+                                             For="@(() => Request.Price)"
+                                             HelperText="Price in euros."
+                                             Variant="Variant.Outlined"
+                                             Adornment="Adornment.End"
+                                             AdornmentText="€"
+                                             Immediate="true"/>
+                        </MudItem>
+
                         <MudItem xs="6">
                             <MudAutocomplete @ref="@CategoryAutocomplete"
                                              @bind-Value="@SelectedCategory"

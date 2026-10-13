@@ -35,7 +35,7 @@
                                        T="CategoryStatus"
                                        @bind-Value="@Request.Status"
                                        For="@(() => Request.Status)"
-                                       HelperText="Controls whether this category is visible to customers."
+                                       HelperText="Hidden from customers when inactive."
                                        Variant="Variant.Outlined">
                                 @foreach (CategoryStatus status in Enum.GetValues<CategoryStatus>())
                                 {
