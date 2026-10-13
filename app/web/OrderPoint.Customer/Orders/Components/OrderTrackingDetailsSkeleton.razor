@@ -1,0 +1,53 @@
+﻿<MudStack Spacing="3">
+    <MudPaper Class="pa-5">
+        <MudStack AlignItems="AlignItems.Center" Spacing="1">
+            <MudSkeleton SkeletonType="SkeletonType.Circle" Width="48px" Height="48px"/>
+
+            <MudText Typo="Typo.h6">
+                <MudSkeleton Width="140px"/>
+            </MudText>
+
+            <MudText Typo="Typo.body2">
+                <MudSkeleton Width="220px"/>
+            </MudText>
+        </MudStack>
+    </MudPaper>
+
+    <MudPaper Class="pa-4">
+        <MudStack Spacing="2">
+            @for (int i = 0; i < StepsCount; i++)
+            {
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                    <MudSkeleton SkeletonType="SkeletonType.Circle" Width="20px" Height="20px"/>
+
+                    <MudText Typo="Typo.body2" Class="flex-1">
+                        <MudSkeleton Width="100px"/>
+                    </MudText>
+
+                    <MudText Typo="Typo.caption">
+                        <MudSkeleton Width="70px"/>
+                    </MudText>
+                </MudStack>
+            }
+        </MudStack>
+    </MudPaper>
+
+    <MudPaper Class="pa-4">
+        <MudStack Spacing="3">
+            @for (int i = 0; i < LinesCount; i++)
+            {
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="40px" Height="40px"/>
+
+                    <MudText Typo="Typo.body1" Class="flex-1">
+                        <MudSkeleton Width="140px"/>
+                    </MudText>
+
+                    <MudText Typo="Typo.body2">
+                        <MudSkeleton Width="50px"/>
+                    </MudText>
+                </MudStack>
+            }
+        </MudStack>
+    </MudPaper>
+</MudStack>

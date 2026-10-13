@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using OrderPoint.Customer.Cart.Services;
+using OrderPoint.Customer.Orders.Services;
 using OrderPoint.Customer.Settings.Enumerations;
 using OrderPoint.Customer.Settings.Services;
 using OrderPoint.Customer.Tables.Services;
@@ -27,6 +28,12 @@ public sealed partial class MainLayout : IDisposable
     [Inject]
     private CartService CartService { get; set; } = null!;
 
+    [Inject]
+    private MyOrdersService MyOrdersService { get; set; } = null!;
+
+    [Inject]
+    private OrderTrackingHubService OrderTrackingHubService { get; set; } = null!;
+
     private MudThemeProvider ThemeProvider { get; set; } = null!;
 
     private MudTheme Theme { get; } = AppTheme.Create();
@@ -49,7 +56,16 @@ public sealed partial class MainLayout : IDisposable
             TableService.LoadAsync(),
             TimeZoneService.LoadAsync(),
             AppearanceService.LoadAsync(),
-            CartService.LoadAsync());
+            CartService.LoadAsync(),
+            MyOrdersService.LoadAsync());
+
+        foreach (Guid orderId in MyOrdersService.OrderIds)
+        {
+            await OrderTrackingHubService.TrackAsync(orderId);
+        }
+
+        // Not awaited: the first connect retries in the background
+        _ = OrderTrackingHubService.StartAsync();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

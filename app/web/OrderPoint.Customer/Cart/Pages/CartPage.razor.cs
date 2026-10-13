@@ -5,8 +5,10 @@ using OrderPoint.Customer.Menu.Dtos;
 using OrderPoint.Customer.Menu.Services;
 using OrderPoint.Customer.Orders.Api;
 using OrderPoint.Customer.Orders.Api.Requests;
+using OrderPoint.Customer.Orders.Services;
 using OrderPoint.Customer.Tables.Services;
 using OrderPoint.Shared.Errors;
+using OrderPoint.Shared.Orders.Dtos;
 using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Customer.Cart.Pages;
@@ -40,6 +42,12 @@ public sealed partial class CartPage : IDisposable
 
     [Inject]
     private NavigationManager NavigationManager { get; set; } = null!;
+
+    [Inject]
+    private MyOrdersService MyOrdersService { get; set; } = null!;
+
+    [Inject]
+    private OrderTrackingHubService OrderTrackingHubService { get; set; } = null!;
 
     private Dictionary<Guid, MenuItemDto> MenuItems { get; set; } = [];
 
@@ -93,21 +101,24 @@ public sealed partial class CartPage : IDisposable
     {
         IsPlacingOrder = true;
 
-        bool isSuccess = await ApiService.ExecuteAsync(CreateOrderAsync, "Your order was sent to the bar");
+        OrderDto? order = await ApiService.ExecuteAsync(CreateOrderAsync);
 
         IsPlacingOrder = false;
 
-        if (!isSuccess)
+        if (order is null)
         {
             return;
         }
 
+        await MyOrdersService.AddAsync(order.Id, order.CreatedAtUtc);
+        await OrderTrackingHubService.TrackAsync(order.Id);
         await CartService.ClearAsync();
 
-        NavigationManager.NavigateTo("/orders");
+        // The status page says it was sent, so no snackbar
+        NavigationManager.NavigateTo($"/orders/{order.Id}");
     }
 
-    private async Task CreateOrderAsync()
+    private async Task<OrderDto> CreateOrderAsync()
     {
         CreateOrderRequest request = new(
             TableService.TableCode!,
@@ -116,7 +127,7 @@ public sealed partial class CartPage : IDisposable
 
         try
         {
-            await OrderApiClient.CreateOrderAsync(request);
+            return await OrderApiClient.CreateOrderAsync(request);
         }
         catch (ApiException exception)
             when (exception.HasErrorCode(ItemIsUnavailableCode) || exception.HasErrorCode(ItemNotFoundCode))

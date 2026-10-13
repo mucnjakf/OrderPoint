@@ -51,4 +51,19 @@
             </MudStack>
         </MudPaper>
     </SettingsSection>
+
+    <MudDivider Class="my-5"/>
+
+    <SettingsSection Icon="@Icons.Material.Filled.Receipt"
+                     Title="Your orders"
+                     Description="Orders placed on this phone stay in My orders for 12 hours.">
+        <MudButton Variant="Variant.Outlined"
+                   Size="Size.Large"
+                   FullWidth="true"
+                   StartIcon="@Icons.Material.Filled.DeleteOutline"
+                   Disabled="@(MyOrdersService.OrderIds.Count == 0)"
+                   OnClick="@ForgetOrdersAsync">
+            Forget this phone's orders
+        </MudButton>
+    </SettingsSection>
 </MudPaper>

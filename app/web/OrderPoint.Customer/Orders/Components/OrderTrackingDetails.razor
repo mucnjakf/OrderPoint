@@ -1,0 +1,93 @@
+﻿<MudStack Spacing="3">
+    <MudPaper Class="pa-5">
+        <MudStack AlignItems="AlignItems.Center" Spacing="1">
+            <MudIcon Icon="@Order.Status.GetIcon()" Color="@Order.Status.GetColor()" Style="font-size: 48px"/>
+
+            <MudText Typo="Typo.h6" Align="Align.Center">
+                @Order.Status.GetGuestTitle()
+            </MudText>
+
+            <MudText Typo="Typo.body2" Align="Align.Center" Style="color: var(--mud-palette-text-secondary)">
+                @Order.Status.GetGuestText()
+            </MudText>
+        </MudStack>
+    </MudPaper>
+
+    <MudPaper Class="pa-4">
+        <MudStack Spacing="2">
+            @foreach ((OrderStatus status, DateTimeOffset? reachedAtUtc) in StatusSteps)
+            {
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                    <MudIcon Icon="@status.GetIcon()"
+                             Size="Size.Small"
+                             Color="@(reachedAtUtc is null ? Color.Default : status.GetColor())"
+                             Style="@(reachedAtUtc is null ? NotReachedStyle : null)"/>
+
+                    <MudText Typo="Typo.body2" Class="flex-1" Style="@(reachedAtUtc is null ? NotReachedStyle : null)">
+                        @status.GetGuestTitle()
+                    </MudText>
+
+                    <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                        @(reachedAtUtc?.ToDisplayDateTime(TimeZoneService.TimeZone) ?? "Not yet")
+                    </MudText>
+                </MudStack>
+            }
+        </MudStack>
+    </MudPaper>
+
+    <MudPaper Class="pa-4">
+        <MudStack Spacing="3">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                <MudIcon Icon="@Icons.Material.Filled.TableRestaurant"
+                         Size="Size.Small"
+                         Style="color: var(--mud-palette-text-secondary)"/>
+
+                <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                    Table @Order.TableCode
+                </MudText>
+            </MudStack>
+
+            @foreach (OrderItemDto orderItem in Order.Items)
+            {
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                    <MudImage Src="@(orderItem.ImageUrl ?? ImageUrls.Placeholder)"
+                              Alt="Item image"
+                              Width="40"
+                              Height="40"
+                              ObjectFit="ObjectFit.Cover"
+                              Style="border-radius: var(--mud-default-borderradius);"/>
+
+                    <MudText Typo="Typo.body1" Class="flex-1">
+                        <strong>@orderItem.Quantity×</strong> @orderItem.Name
+                    </MudText>
+
+                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                        @GetLineTotalText(orderItem)
+                    </MudText>
+                </MudStack>
+            }
+
+            @if (Order.Note is not null)
+            {
+                <MudAlert Severity="Severity.Info"
+                          Variant="Variant.Text"
+                          Dense="true"
+                          Icon="@Icons.Material.Filled.Notes">
+                    <MudText Typo="Typo.body1">
+                        @Order.Note
+                    </MudText>
+                </MudAlert>
+            }
+
+            <MudDivider/>
+
+            <MudStack Row="true" Justify="Justify.SpaceBetween">
+                <MudText Typo="Typo.h6">Total</MudText>
+
+                <MudText Typo="Typo.h6">
+                    @Order.Total.ToString("C", CultureInfo.CurrentCulture)
+                </MudText>
+            </MudStack>
+        </MudStack>
+    </MudPaper>
+</MudStack>

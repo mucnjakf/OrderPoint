@@ -1,0 +1,34 @@
+﻿@page "/orders/{OrderId:guid}"
+
+<PageTitle>@(Order is null ? "Order" : $"Order #{Order.Number}")</PageTitle>
+
+<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mb-2">
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack"
+                   Href="/orders"
+                   aria-label="Back to my orders"/>
+
+    <MudText Typo="Typo.h6" HtmlTag="h1">
+        @if (IsLoading)
+        {
+            <MudSkeleton Width="110px"/>
+        }
+        else
+        {
+            @(Order is null ? "Order" : $"Order #{Order.Number}")
+        }
+    </MudText>
+</MudStack>
+
+<StatefulView IsLoading="@IsLoading"
+              ShowContent="@(Order is not null)"
+              EmptyStateIcon="@Icons.Material.Filled.SearchOff"
+              EmptyStateText="Order not found"
+              EmptyStateDetail="Please ask the staff about it.">
+    <LoadingContent>
+        <OrderTrackingDetailsSkeleton/>
+    </LoadingContent>
+
+    <ChildContent>
+        <OrderTrackingDetails Order="@(Order!)"/>
+    </ChildContent>
+</StatefulView>

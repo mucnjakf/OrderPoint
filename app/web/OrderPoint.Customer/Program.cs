@@ -6,6 +6,7 @@ using OrderPoint.Customer.Cart.Services;
 using OrderPoint.Customer.Menu.Api;
 using OrderPoint.Customer.Menu.Services;
 using OrderPoint.Customer.Orders.Api;
+using OrderPoint.Customer.Orders.Services;
 using OrderPoint.Customer.Settings.Services;
 using OrderPoint.Customer.Tables.Services;
 using OrderPoint.ServiceDefaults;
@@ -26,6 +27,8 @@ builder.Services.AddScoped<TableService>();
 builder.Services.AddScoped<AppearanceService>();
 builder.Services.AddScoped<MenuService>();
 builder.Services.AddScoped<CartService>();
+builder.Services.AddScoped<MyOrdersService>();
+builder.Services.AddScoped<OrderTrackingHubService>();
 
 // Guests are anonymous, so no client sends a token
 builder.Services.AddHttpClient<MenuApiClient>(ConfigureApiClient);
