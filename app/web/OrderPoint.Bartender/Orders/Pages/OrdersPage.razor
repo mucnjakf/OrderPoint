@@ -8,54 +8,107 @@
 
 <MudGrid Spacing="3">
     <MudItem xs="12" sm="@(IsSplitView ? 5 : 12)">
-        <div style="@TabBarWrapperStyle">
-            <MudPaper Class="d-flex" Style="@TabBarStyle">
-                @foreach (OrdersTab tab in Enum.GetValues<OrdersTab>())
-                {
-                    OrdersTab tabValue = tab;
+        <div style="@ListHeaderWrapperStyle">
+            <MudTextField @bind-Value="@SearchQuery"
+                          @bind-Value:after="@OnSearchChangedAsync"
+                          T="string"
+                          Placeholder="Order number or table"
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          Adornment="Adornment.Start"
+                          AdornmentIcon="@Icons.Material.Filled.Search"
+                          Clearable="true"
+                          DebounceInterval="500"
+                          Immediate="false"/>
 
-                    <MudButton Variant="Variant.Text"
-                               Class="flex-1"
-                               Style="@GetTabStyle(tabValue)"
-                               OnClick="@(() => SelectTab(tabValue))">
-                        @tabValue.ToString() <TabCount Count="@GetTabCount(tabValue)"/>
-                    </MudButton>
-                }
-            </MudPaper>
+            @if (!IsSearching)
+            {
+                <MudPaper Class="d-flex mt-3" Style="@TabBarStyle">
+                    @foreach (OrdersTab tab in Enum.GetValues<OrdersTab>())
+                    {
+                        OrdersTab tabValue = tab;
+
+                        <MudButton Variant="Variant.Text"
+                                   Class="flex-1"
+                                   Style="@GetTabStyle(tabValue)"
+                                   OnClick="@(() => SelectTab(tabValue))">
+                            @tabValue.ToString() <TabCount Count="@GetTabCount(tabValue)"/>
+                        </MudButton>
+                    }
+                </MudPaper>
+            }
         </div>
 
-        @switch (OrdersTabState.Tab)
+        @if (IsSearching)
         {
-            case OrdersTab.Queue:
-                <OrderTicketList Orders="@QueueOrders"
-                                 IsLoading="@IsLoadingQueue"
-                                 SelectedOrderId="@SelectedOrderId"
-                                 OnOrderClick="@SelectOrder"
-                                 IsOrderNew="@(order => NewQueueOrders.IsNew(order.Id))"
-                                 EmptyStateIcon="@Icons.Material.Filled.Inbox"
-                                 EmptyStateText="No orders waiting"
-                                 EmptyStateDetail="New orders show up here by themselves."/>
-                break;
+            @if (!IsLoadingSearchResults && SearchResults.Count != 0)
+            {
+                <MudText Typo="Typo.caption" Class="d-block mb-2" Style="color: var(--mud-palette-text-secondary)">
+                    @SearchResultsTotalCount.ToCountText("order found", "orders found")
+                </MudText>
+            }
 
-            case OrdersTab.Mine:
-                <OrderTicketList Orders="@MyOrders"
-                                 IsLoading="@IsLoadingMine"
-                                 SelectedOrderId="@SelectedOrderId"
-                                 OnOrderClick="@SelectOrder"
-                                 EmptyStateIcon="@Icons.Material.Filled.LocalBar"
-                                 EmptyStateText="Nothing in progress"
-                                 EmptyStateDetail="Accept an order from the queue."/>
-                break;
+            <OrderTicketList Orders="@SearchResults"
+                             IsLoading="@IsLoadingSearchResults"
+                             SelectedOrderId="@SelectedOrderId"
+                             ShowsBartender="true"
+                             OnOrderClick="@SelectOrder"
+                             EmptyStateIcon="@Icons.Material.Filled.SearchOff"
+                             EmptyStateText="No orders found"
+                             EmptyStateDetail="Try another number or table."/>
 
-            case OrdersTab.Done:
-                <OrderTicketList Orders="@DoneOrders"
-                                 IsLoading="@IsLoadingDone"
-                                 SelectedOrderId="@SelectedOrderId"
-                                 OnOrderClick="@SelectOrder"
-                                 EmptyStateIcon="@Icons.Material.Filled.TaskAlt"
-                                 EmptyStateText="Nothing finished today yet"
-                                 EmptyStateDetail="Completed and declined orders show up here."/>
-                break;
+            @if (!IsLoadingSearchResults && HasMoreSearchResults)
+            {
+                <MudButton Variant="Variant.Outlined"
+                           Size="Size.Large"
+                           FullWidth="true"
+                           Class="mt-3"
+                           Disabled="@IsLoadingMoreSearchResults"
+                           OnClick="@ShowMoreSearchResultsAsync">
+                    @if (IsLoadingMoreSearchResults)
+                    {
+                        <MudProgressCircular Indeterminate="true" Size="Size.Small" Class="mr-2"/>
+                    }
+
+                    Show more
+                </MudButton>
+            }
+        }
+        else
+        {
+            @switch (OrdersTabState.Tab)
+            {
+                case OrdersTab.Queue:
+                    <OrderTicketList Orders="@QueueOrders"
+                                     IsLoading="@IsLoadingQueue"
+                                     SelectedOrderId="@SelectedOrderId"
+                                     OnOrderClick="@SelectOrder"
+                                     IsOrderNew="@(order => NewQueueOrders.IsNew(order.Id))"
+                                     EmptyStateIcon="@Icons.Material.Filled.Inbox"
+                                     EmptyStateText="No orders waiting"
+                                     EmptyStateDetail="New orders show up here by themselves."/>
+                    break;
+
+                case OrdersTab.Mine:
+                    <OrderTicketList Orders="@MyOrders"
+                                     IsLoading="@IsLoadingMine"
+                                     SelectedOrderId="@SelectedOrderId"
+                                     OnOrderClick="@SelectOrder"
+                                     EmptyStateIcon="@Icons.Material.Filled.LocalBar"
+                                     EmptyStateText="Nothing in progress"
+                                     EmptyStateDetail="Accept an order from the queue."/>
+                    break;
+
+                case OrdersTab.Done:
+                    <OrderTicketList Orders="@DoneOrders"
+                                     IsLoading="@IsLoadingDone"
+                                     SelectedOrderId="@SelectedOrderId"
+                                     OnOrderClick="@SelectOrder"
+                                     EmptyStateIcon="@Icons.Material.Filled.TaskAlt"
+                                     EmptyStateText="Nothing finished today yet"
+                                     EmptyStateDetail="Completed and declined orders show up here."/>
+                    break;
+            }
         }
     </MudItem>
 

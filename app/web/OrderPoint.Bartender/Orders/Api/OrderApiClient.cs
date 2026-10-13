@@ -14,9 +14,15 @@ internal sealed class OrderApiClient(HttpClient httpClient)
         string sortBy,
         OrderStatus? status = null,
         Guid? bartenderId = null,
+        string? searchQuery = null,
         CancellationToken cancellationToken = default)
     {
         string requestUri = $"api/orders?pageNumber={pageNumber}&pageSize={pageSize}&sortBy={sortBy}";
+
+        if (!string.IsNullOrWhiteSpace(searchQuery))
+        {
+            requestUri += $"&searchQuery={Uri.EscapeDataString(searchQuery)}";
+        }
 
         if (status is not null)
         {

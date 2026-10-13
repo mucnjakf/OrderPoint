@@ -22,6 +22,7 @@
                              Order="@order"
                              IsNew="@(IsOrderNew?.Invoke(order) ?? false)"
                              IsSelected="@(order.Id == SelectedOrderId)"
+                             ShowsBartender="@ShowsBartender"
                              OnClick="@OnOrderClick"/>
             }
         </MudStack>

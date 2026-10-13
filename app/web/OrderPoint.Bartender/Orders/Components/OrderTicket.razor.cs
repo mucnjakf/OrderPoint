@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using OrderPoint.Shared.Auth.Services;
 using OrderPoint.Shared.Extensions;
 using OrderPoint.Shared.Orders.Dtos;
 using OrderPoint.Shared.Orders.Enumerations;
@@ -12,6 +13,9 @@ public sealed partial class OrderTicket
     [Inject]
     private TimeZoneService TimeZoneService { get; set; } = null!;
 
+    [Inject]
+    private AuthService AuthService { get; set; } = null!;
+
     [Parameter]
     [EditorRequired]
     public OrderDto Order { get; set; } = null!;
@@ -22,6 +26,10 @@ public sealed partial class OrderTicket
     // The order open in the tablet's details panel
     [Parameter]
     public bool IsSelected { get; set; }
+
+    // Search results can be anyone's orders, so they say who handles them
+    [Parameter]
+    public bool ShowsBartender { get; set; }
 
     [Parameter]
     [EditorRequired]
@@ -39,6 +47,14 @@ public sealed partial class OrderTicket
             $"Declined {Order.DeclinedAtUtc.Value.ToDisplayDateTime(TimeZoneService.TimeZone)}",
         _ => $"Placed {Order.CreatedAtUtc.ToRelativeTime()}"
     };
+
+    private string DetailsText => ShowsBartender && Order.Bartender is not null
+        ? $"{TimeText} · {BartenderText}"
+        : TimeText;
+
+    private string BartenderText => Order.Bartender!.Id == AuthService.UserId
+        ? "you"
+        : $"{Order.Bartender.FirstName} {Order.Bartender.LastName}";
 
     private async Task OnTicketClickAsync()
     {

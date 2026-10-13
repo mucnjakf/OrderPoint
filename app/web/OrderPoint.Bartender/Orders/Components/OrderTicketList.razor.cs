@@ -35,6 +35,9 @@ public sealed partial class OrderTicketList
     public Guid? SelectedOrderId { get; set; }
 
     [Parameter]
+    public bool ShowsBartender { get; set; }
+
+    [Parameter]
     [EditorRequired]
     public EventCallback<OrderDto> OnOrderClick { get; set; }
 }

@@ -15,11 +15,17 @@ using OrderPoint.Shared.Services;
 namespace OrderPoint.Bartender.Orders.Pages;
 
 // Queue: every pending order, oldest first. Mine: my active, then my accepted orders. Done: what I finished today.
-// From 600 px (tablets) the selected order shows next to the list; phones open it on its own page.
+// A search replaces the tabs with every order matching a number or table. From 600 px (tablets) the selected order
+// shows next to the list; phones open it on its own page.
 public sealed partial class OrdersPage : IAsyncDisposable
 {
     // Far more than one bartender handles at once or in a shift, so no paging
     private const int MaxOrdersPerStatus = 50;
+
+    private const int SearchPageSize = 20;
+
+    // The API's largest page, so a live reload can fetch everything shown in one call
+    private const int MaxSearchPageSize = 100;
 
     // "Placed 3 min ago" moves on even when nothing changes
     private const int TimeRefreshIntervalInSeconds = 30;
@@ -28,9 +34,9 @@ public sealed partial class OrdersPage : IAsyncDisposable
     // like the tickets (border, theme radius) and clips the square buttons to its rounded corners
     private const string TabBarStyle = "overflow: hidden;";
 
-    // The tabs stay right under the dense app bar while scrolling; the wrapper's background hides the tickets passing
-    // underneath, and its padding replaces the gap to the list
-    private const string TabBarWrapperStyle =
+    // The search and the tabs stay right under the dense app bar while scrolling; the wrapper's background hides the
+    // tickets passing underneath, and its padding replaces the gap to the list
+    private const string ListHeaderWrapperStyle =
         "position: sticky; top: 48px; z-index: 2; padding: 12px 0; margin-top: -12px; " +
         "background-color: var(--mud-palette-background);";
 
@@ -93,6 +99,20 @@ public sealed partial class OrdersPage : IAsyncDisposable
 
     private bool IsLoadingDone { get; set; } = true;
 
+    private string? SearchQuery { get; set; }
+
+    private List<OrderDto> SearchResults { get; set; } = [];
+
+    private int SearchResultsTotalCount { get; set; }
+
+    private bool IsLoadingSearchResults { get; set; }
+
+    private bool IsLoadingMoreSearchResults { get; set; }
+
+    private bool IsSearching => !string.IsNullOrWhiteSpace(SearchQuery);
+
+    private bool HasMoreSearchResults => SearchResults.Count < SearchResultsTotalCount;
+
     protected override async Task OnInitializedAsync()
     {
         OrdersHubService.OrdersChanged += OnOrdersChanged;
@@ -150,7 +170,7 @@ public sealed partial class OrdersPage : IAsyncDisposable
     // The loading flags start true and are never set again, so live updates swap the tickets in place
     private void OnOrdersChanged()
     {
-        _ = InvokeAsync(GetTabsAsync);
+        _ = InvokeAsync(() => Task.WhenAll(GetTabsAsync(), ReloadSearchResultsAsync()));
     }
 
     private async Task GetTabsAsync()
@@ -243,6 +263,86 @@ public sealed partial class OrdersPage : IAsyncDisposable
             sortBy.ToString(),
             status,
             bartenderId));
+    }
+
+    private async Task OnSearchChangedAsync()
+    {
+        SearchResults = [];
+        SearchResultsTotalCount = 0;
+
+        if (!IsSearching)
+        {
+            return;
+        }
+
+        IsLoadingSearchResults = true;
+
+        await GetSearchResultsAsync(SearchPageSize);
+    }
+
+    // Keeps as many results as were shown, rounded up to whole pages so "Show more" continues where it left off
+    private async Task ReloadSearchResultsAsync()
+    {
+        if (!IsSearching)
+        {
+            return;
+        }
+
+        int pagesCount = Math.Max(1, (int)Math.Ceiling(SearchResults.Count / (double)SearchPageSize));
+
+        await GetSearchResultsAsync(Math.Min(pagesCount * SearchPageSize, MaxSearchPageSize));
+    }
+
+    private async Task GetSearchResultsAsync(int pageSize)
+    {
+        string searchQuery = SearchQuery!;
+
+        PaginationDto<OrderDto>? pagination = await ApiService.ExecuteAsync(() => OrderApiClient.GetOrdersAsync(
+            pageNumber: 1,
+            pageSize,
+            nameof(OrderSortBy.CreatedAtUtcDesc),
+            searchQuery: searchQuery));
+
+        // A newer search started while this one was on its way
+        if (searchQuery != SearchQuery)
+        {
+            return;
+        }
+
+        if (pagination is not null)
+        {
+            SearchResults = [.. pagination.Items];
+            SearchResultsTotalCount = pagination.TotalCount;
+        }
+
+        IsLoadingSearchResults = false;
+
+        StateHasChanged();
+    }
+
+    private async Task ShowMoreSearchResultsAsync()
+    {
+        string searchQuery = SearchQuery!;
+
+        IsLoadingMoreSearchResults = true;
+
+        int nextPageNumber = SearchResults.Count / SearchPageSize + 1;
+
+        PaginationDto<OrderDto>? pagination = await ApiService.ExecuteAsync(() => OrderApiClient.GetOrdersAsync(
+            nextPageNumber,
+            SearchPageSize,
+            nameof(OrderSortBy.CreatedAtUtcDesc),
+            searchQuery: searchQuery));
+
+        IsLoadingMoreSearchResults = false;
+
+        if (searchQuery != SearchQuery || pagination is null)
+        {
+            return;
+        }
+
+        SearchResults.AddRange(pagination.Items);
+        SearchResultsTotalCount = pagination.TotalCount;
     }
 
     private static DateTimeOffset? GetFinishedAtUtc(OrderDto order)
