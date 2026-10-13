@@ -17,7 +17,7 @@ public sealed record CreateOrderCommand(
     string TableCode,
     string? Note,
     IReadOnlyList<CreateOrderItemCommand> Items)
-    : ICommand<OrderDto>, ICacheInvalidatingCommand
+    : ICommand<OrderDto>, ICacheInvalidatingCommand, IOrderNotifyingCommand
 {
     IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.OrderChanges;
 }

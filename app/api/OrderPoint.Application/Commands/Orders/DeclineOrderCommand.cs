@@ -8,7 +8,8 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Commands.Orders;
 
-public sealed record DeclineOrderCommand(Guid Id, Guid BartenderId) : ICommand, ICacheInvalidatingCommand
+public sealed record DeclineOrderCommand(Guid Id, Guid BartenderId)
+    : ICommand, ICacheInvalidatingCommand, IOrderNotifyingCommand
 {
     IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.OrderChanges;
 }

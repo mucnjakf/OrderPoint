@@ -109,7 +109,7 @@ dotnet ef migrations add <Name> \
 
 ### API (`OrderPoint.Api`)
 
-- `Program.cs` pipeline order: `ApplyMigrations` → `SeedAdminAsync` → `UseExceptionHandler` (first middleware) → `UseHttpsRedirection` → `UseCors` → `UseAuthentication` → `UseAuthorization` → endpoint and docs mapping. `launchSettings.json` URLs never contain a path (Kestrel refuses them); use `launchUrl` instead.
+- `Program.cs` pipeline order: `ApplyMigrations` → `SeedAdminAsync` → `UseExceptionHandler` (first middleware) → `UseHttpsRedirection` → `UseCors` → `UseAuthentication` → `UseAuthorization` → endpoint, hub and docs mapping. `launchSettings.json` URLs never contain a path (Kestrel refuses them); use `launchUrl` instead.
 - CORS: one policy that allows only the origins in `Cors:AllowedOrigins` (empty by default in `appsettings.json`), any header, and GET/POST/PUT/DELETE. Nothing needs CORS today (the Admin and the planned bartender app call the API from their servers, Scalar is same-origin); add an origin only for a client that calls the API from the browser (e.g. a WebAssembly/JS customer app). Never go back to `AllowAnyOrigin`.
 - One endpoint per file in `Endpoints/<Feature>/<Action><Entity>Endpoint.cs`: `internal sealed class XEndpoint : IEndpoint`, discovered automatically.
 - Request and response records (`internal sealed record`) are declared in the same file above the endpoint; the FluentValidation validator is a nested `internal sealed class XRequestValidator` inside the endpoint class (auto-registered). Every endpoint that takes a body or query string has a request record and a validator.
@@ -143,6 +143,13 @@ dotnet ef migrations add <Name> \
 - **Keys:** `Caching/CacheKeys.For(<query>)`, one overload per query, `<feature>:<id>`, `<feature>:page:<every parameter>` and `<feature>:search:<text>`, free text always last. Dashboard keys hold the period, the time zone id and the viewer's local date, so periods move on at local midnight.
 - **Writes:** a command whose change shows up in cached reads implements `Mediator/ICacheInvalidatingCommand` explicitly (`IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.<X>Changes;`), and `Mediator/CacheInvalidationBehavior` (after `TelemetryBehavior`) calls `RemoveByTagAsync` once the command succeeds, with `CancellationToken.None` so a caller who left can't keep stale data. The groups in `Caching/CacheTags` follow what each DTO shows: `CategoryChanges` (categories, items, dashboard), `ItemChanges` (items, categories, orders, dashboard), `BartenderChanges` (bartenders, orders, dashboard), `OrderChanges` (orders, items, bartenders, dashboard). Auth, account and `ResetBartenderPasswordCommand` change nothing cached.
 - **New use cases:** a new query gets a `CacheKeys.For` overload and the tag of its feature; a new command that changes something a cached DTO shows implements `ICacheInvalidatingCommand`, and a new DTO field that comes from another feature means adding that feature's changes to its group. The order status changes (bartender app) use `OrderChanges`.
+
+### Real time
+
+- One SignalR hub, `Api/Hubs/OrdersHub` (`builder.Services.AddSignalR()`, `app.MapHub<OrdersHub>("hubs/orders").RequireAuthorization(AuthorizationPolicies.AdminOrBartender)`). Clients only listen; the hub has no methods. Both apps are Blazor Server, so they connect with the .NET client from the server, which sends the bearer token as a header (no `access_token` query handling, no CORS).
+- The only message is `OrdersChanged` (`OrdersHub.OrdersChangedMethod`), without arguments: clients reload what they show.
+- **Sending:** the commands that place an order or change its status (`CreateOrderCommand`, `Accept/Decline/Activate/CompleteOrderCommand`) implement the marker `Mediator/IOrderNotifyingCommand`. `Mediator/OrderNotificationBehavior` (registered between `TelemetryBehavior` and `CacheInvalidationBehavior`, so it runs after the cache is cleared and a reload is never stale) calls `Notifications/IOrderNotifier` once such a command succeeds. `Api/Hubs/SignalROrderNotifier` (singleton) sends to all clients and logs a warning instead of failing when sending fails, because the change is already saved.
+- A new command that changes what the apps show about orders implements `IOrderNotifyingCommand` too.
 
 ### Images
 

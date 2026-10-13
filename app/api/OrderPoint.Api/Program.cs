@@ -7,8 +7,10 @@ using Microsoft.IdentityModel.Tokens;
 using OrderPoint.Api.Configuration;
 using OrderPoint.Api.Exceptions;
 using OrderPoint.Api.Extensions;
+using OrderPoint.Api.Hubs;
 using OrderPoint.Api.OpenApi;
 using OrderPoint.Application;
+using OrderPoint.Application.Notifications;
 using OrderPoint.Domain.Enumerations;
 using OrderPoint.Infrastructure;
 using OrderPoint.Infrastructure.EfCore;
@@ -83,6 +85,10 @@ builder.AddRedisDistributedCache(
     configureOptions: options => options.BacklogPolicy = BacklogPolicy.FailFast);
 builder.ReportHealthCheckFailureAsDegraded("StackExchange.Redis");
 
+// Real time
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<IOrderNotifier, SignalROrderNotifier>();
+
 // Modules
 builder.Services.AddApplicationModule(builder.Configuration);
 builder.Services.AddInfrastructureModule(builder.Configuration);
@@ -121,6 +127,11 @@ app.UseAuthorization();
 
 // Minimal API
 app.MapEndpoints();
+
+// Real time
+app
+    .MapHub<OrdersHub>("hubs/orders")
+    .RequireAuthorization(AuthorizationPolicies.AdminOrBartender);
 
 // API docs
 app.MapApiDocumentation();

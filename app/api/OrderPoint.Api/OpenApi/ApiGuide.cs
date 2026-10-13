@@ -24,9 +24,9 @@ internal static class ApiGuide
           `403 Auth.PasswordChangeRequired` until `POST /api/auth/initial-password` sets a new one.
         - Every endpoint requires the **Admin** role, except Auth, `POST /api/orders` (used by the customer app)
           and the health checks (anonymous), the order status changes (`PUT /api/orders/{id}/accept`, `decline`,
-          `activate`, `complete`) and `GET /api/shift` (**Bartender**), and reading orders, `GET /api/account`, changing the password
-          and signing out everywhere (**Admin** or **Bartender**). Each endpoint names its roles; those that need
-          a token show a lock and list `401` and `403`.
+          `activate`, `complete`) and `GET /api/shift` (**Bartender**), and reading orders, `GET /api/account`,
+          changing the password and signing out everywhere (**Admin** or **Bartender**). Each endpoint names its
+          roles; those that need a token show a lock and list `401` and `403`.
 
         ## Responses
 
@@ -84,6 +84,12 @@ internal static class ApiGuide
         | `404` | A referenced resource does not exist |
         | `409` | A conflict: duplicate email, deleting something still in use, or an unavailable item |
         | `500` | An unexpected error; details are logged, never returned |
+
+        ## Real time
+
+        The SignalR hub at `/hubs/orders` (role **Admin** or **Bartender**, bearer token as for the endpoints)
+        sends `OrdersChanged`, without arguments, after an order is placed or changes status. Clients then reload
+        what they show; the cache is already cleared when the signal arrives. The hub has no methods to call.
 
         ## Conventions
 
