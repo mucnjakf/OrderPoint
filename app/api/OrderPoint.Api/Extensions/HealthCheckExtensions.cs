@@ -8,7 +8,8 @@ internal static class HealthCheckExtensions
     // Service discovery picks the tool's https endpoint if it has one (RedisInsight), else http (pgweb)
     private const string ServiceDiscoveryScheme = "https+http";
 
-    // Aspire passes the tool's URL in Development only; a stopped tool degrades the report, the app keeps working
+    // Aspire passes the tool's (or app's) URL in Development only; a stopped one degrades the report, the API keeps
+    // working
     internal static void AddDevToolHealthCheck(this WebApplicationBuilder builder, string serviceName)
     {
         if (!builder.Configuration.GetSection($"services:{serviceName}").Exists())

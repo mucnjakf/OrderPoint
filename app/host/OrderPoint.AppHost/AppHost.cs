@@ -50,4 +50,14 @@ IResourceBuilder<ProjectResource> admin = builder
     .WithReference(api)
     .WaitFor(api);
 
+IResourceBuilder<ProjectResource> bartender = builder
+    .AddProject<Projects.OrderPoint_Bartender>("order-point-bartender")
+    .WithExternalHttpEndpoints()
+    .WithHttpHealthCheck("/health")
+    .WithReference(api)
+    .WaitFor(api);
+
+// The API checks the bartender app's health for the Admin, but does not wait for it
+api.WithReference(bartender);
+
 builder.Build().Run();

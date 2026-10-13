@@ -51,7 +51,8 @@ internal sealed class GetHealthEndpoint : IEndpoint
         ["StackExchange.Redis"] = "Cache",
         ["pgweb"] = "Database browser",
         ["storage-blobs-explorer"] = "Storage browser",
-        ["redisinsight"] = "Cache browser"
+        ["redisinsight"] = "Cache browser",
+        ["order-point-bartender"] = "Bartender app"
     };
 
     public void MapEndpoint(IEndpointRouteBuilder app)

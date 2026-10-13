@@ -1,0 +1,12 @@
+﻿@page "/Error"
+@layout ErrorLayout
+@attribute [ExcludeFromInteractiveRouting]
+
+<PageTitle>Error</PageTitle>
+
+<StatusMessage Icon="@Icons.Material.Filled.ErrorOutline"
+               Title="Something went wrong"
+               Text="An unexpected error occurred. Try again, or go back to the orders."
+               Caption="@($"Request ID: {RequestId}")"
+               ButtonText="Back to orders"
+               ButtonIcon="@Icons.Material.Filled.Receipt"/>

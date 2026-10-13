@@ -12,6 +12,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\api\OrderPoint.Api\OrderPoint.Api.csproj" />
       <ProjectReference Include="..\..\web\OrderPoint.Admin\OrderPoint.Admin.csproj" />
+      <ProjectReference Include="..\..\web\OrderPoint.Bartender\OrderPoint.Bartender.csproj" />
     </ItemGroup>
 
     <ItemGroup>

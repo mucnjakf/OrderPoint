@@ -16,6 +16,11 @@ public sealed partial class HealthPage : IDisposable
         ("Cache", "Redis", Icons.Material.Filled.Memory)
     ];
 
+    private static readonly (string Name, string Subtitle, string Icon)[] Apps =
+    [
+        ("Bartender app", "OrderPoint Bartender", Icons.Material.Filled.LocalBar)
+    ];
+
     private static readonly (string Name, string Subtitle, string Icon)[] DevTools =
     [
         ("Database browser", "pgweb", Icons.Material.Filled.TableView),

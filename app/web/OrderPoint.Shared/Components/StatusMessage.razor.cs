@@ -18,4 +18,13 @@ public sealed partial class StatusMessage
 
     [Parameter]
     public string? Caption { get; set; }
+
+    // The button goes back to the app's home page ("/")
+    [Parameter]
+    [EditorRequired]
+    public string ButtonText { get; set; } = null!;
+
+    [Parameter]
+    [EditorRequired]
+    public string ButtonIcon { get; set; } = null!;
 }

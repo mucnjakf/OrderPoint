@@ -15,6 +15,7 @@
 
     <ItemGroup>
         <InternalsVisibleTo Include="OrderPoint.Admin" />
+        <InternalsVisibleTo Include="OrderPoint.Bartender" />
     </ItemGroup>
 
 </Project>

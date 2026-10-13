@@ -1,4 +1,4 @@
-<Solution>
+﻿<Solution>
   <Folder Name="/host/">
     <Project Path="host/OrderPoint.AppHost/OrderPoint.AppHost.csproj" />
     <Project Path="host/OrderPoint.ServiceDefaults/OrderPoint.ServiceDefaults.csproj" />
@@ -11,6 +11,7 @@
   </Folder>
   <Folder Name="/web/">
     <Project Path="web/OrderPoint.Admin/OrderPoint.Admin.csproj" />
+    <Project Path="web/OrderPoint.Bartender/OrderPoint.Bartender.csproj" />
     <Project Path="web/OrderPoint.Shared/OrderPoint.Shared.csproj" />
   </Folder>
 </Solution>
