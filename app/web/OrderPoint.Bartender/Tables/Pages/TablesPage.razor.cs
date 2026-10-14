@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using MudBlazor;
 using OrderPoint.Bartender.Orders.Api;
 using OrderPoint.Bartender.Orders.Services;
@@ -83,6 +84,11 @@ public sealed partial class TablesPage : IAsyncDisposable
 
     private readonly PeriodicTimer _timeRefreshTimer = new(TimeSpan.FromSeconds(TimeRefreshIntervalInSeconds));
 
+    private IJSObjectReference? _module;
+
+    // Scrolled to after the next render, once the table (and on a phone the sheet) is on screen
+    private Guid? _tableToScrollTo;
+
     [Inject]
     private ApiService ApiService { get; set; } = null!;
 
@@ -104,6 +110,9 @@ public sealed partial class TablesPage : IAsyncDisposable
     [Inject]
     private NavigationManager NavigationManager { get; set; } = null!;
 
+    [Inject]
+    private IJSRuntime JsRuntime { get; set; } = null!;
+
     // "Show on map" from an order opens /tables?table=T7
     [SupplyParameterFromQuery(Name = "table")]
     public string? TableCode { get; set; }
@@ -124,10 +133,14 @@ public sealed partial class TablesPage : IAsyncDisposable
 
     private bool IsSplitView { get; set; }
 
+    private ElementReference MapScrollElement { get; set; }
+
     private AreaDto? SelectedArea =>
         Areas.FirstOrDefault(area => area.Id == SelectedAreaId) ?? Areas.FirstOrDefault();
 
     private TableDto? SelectedTable => SelectedArea?.Tables.FirstOrDefault(table => table.Id == SelectedTableId);
+
+    private const string ModulePath = "./Tables/Pages/TablesPage.razor.js";
 
     // A phone's open sheet takes the lower half, so the map shrinks to stay whole above it
     private string PageStyle => !IsSplitView && SelectedTable is not null
@@ -158,16 +171,25 @@ public sealed partial class TablesPage : IAsyncDisposable
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (!firstRender)
+        if (firstRender)
+        {
+            await BrowserViewportService.SubscribeAsync(
+                _viewportSubscriptionId,
+                OnViewportChangedAsync,
+                options: null,
+                fireImmediately: true);
+        }
+
+        if (_tableToScrollTo is not { } tableId)
         {
             return;
         }
 
-        await BrowserViewportService.SubscribeAsync(
-            _viewportSubscriptionId,
-            OnViewportChangedAsync,
-            options: null,
-            fireImmediately: true);
+        _tableToScrollTo = null;
+
+        _module ??= await JsRuntime.InvokeAsync<IJSObjectReference>("import", ModulePath);
+
+        await _module.InvokeVoidAsync("scrollToTable", MapScrollElement, tableId);
     }
 
     public async ValueTask DisposeAsync()
@@ -177,6 +199,20 @@ public sealed partial class TablesPage : IAsyncDisposable
         _timeRefreshTimer.Dispose();
 
         await BrowserViewportService.UnsubscribeAsync(_viewportSubscriptionId);
+
+        if (_module is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await _module.DisposeAsync();
+        }
+        catch (JSDisconnectedException)
+        {
+            // The browser is already gone, and the module with it
+        }
     }
 
     private async Task OnViewportChangedAsync(BrowserViewportEventArgs args)
@@ -282,6 +318,7 @@ public sealed partial class TablesPage : IAsyncDisposable
 
         SelectedAreaId = area.Id;
         SelectedTableId = area.Tables.First(table => table.Code == TableCode).Id;
+        _tableToScrollTo = SelectedTableId;
 
         await GetTableOrdersAsync();
     }
@@ -309,6 +346,7 @@ public sealed partial class TablesPage : IAsyncDisposable
         }
 
         SelectedTableId = pieceId;
+        _tableToScrollTo = pieceId;
         TableOrders = [];
 
         await GetTableOrdersAsync();

@@ -36,7 +36,7 @@
                 }
 
                 <div style="@MapFrameStyle">
-                    <div style="@MapScrollStyle">
+                    <div @ref="@MapScrollElement" style="@MapScrollStyle">
                         <div style="@MapStyle">
                             <FloorPlanMap Area="@(SelectedArea!)"
                                           SelectedId="@SelectedTableId"
