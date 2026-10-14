@@ -4,7 +4,6 @@
 internal enum OrderAction
 {
     Accept,
-    Decline,
     Start,
     Complete
 }

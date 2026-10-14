@@ -4,6 +4,7 @@ using OrderPoint.Customer.Cart.Services;
 using OrderPoint.Customer.Menu.Dtos;
 using OrderPoint.Customer.Menu.Services;
 using OrderPoint.Customer.Orders.Api;
+using OrderPoint.Customer.Orders.Dialogs;
 using OrderPoint.Customer.Orders.Dtos;
 using OrderPoint.Customer.Orders.Services;
 using OrderPoint.Shared.Orders.Dtos;
@@ -38,11 +39,16 @@ public sealed partial class OrdersPage : IDisposable
     private ISnackbar Snackbar { get; set; } = null!;
 
     [Inject]
+    private IDialogService DialogService { get; set; } = null!;
+
+    [Inject]
     private NavigationManager NavigationManager { get; set; } = null!;
 
     private IReadOnlyList<OrderTrackingDto> Orders { get; set; } = [];
 
     private bool IsLoading { get; set; } = true;
+
+    private Guid? CancellingOrderId { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -117,5 +123,40 @@ public sealed partial class OrdersPage : IDisposable
         }
 
         NavigationManager.NavigateTo("/cart");
+    }
+
+    // Refused when a bartender took the order first; the reload then shows what happened
+    private async Task ShowCancelOrderDialogAsync(OrderTrackingDto order)
+    {
+        var parameters = new DialogParameters<CancelOrderDialog>
+        {
+            { dialog => dialog.OrderNumber, order.Number }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.ExtraSmall,
+            FullWidth = true
+        };
+
+        IDialogReference dialogReference = await DialogService
+            .ShowAsync<CancelOrderDialog>(string.Empty, parameters, options);
+
+        DialogResult dialogResult = (await dialogReference.Result)!;
+
+        if (dialogResult.Canceled)
+        {
+            return;
+        }
+
+        CancellingOrderId = order.Id;
+
+        await ApiService.ExecuteAsync(
+            () => OrderApiClient.CancelOrderAsync(order.Id),
+            $"Order #{order.Number} cancelled");
+
+        CancellingOrderId = null;
+
+        await GetOrdersAsync();
     }
 }

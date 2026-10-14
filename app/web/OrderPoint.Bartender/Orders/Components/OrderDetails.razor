@@ -169,17 +169,9 @@
                                Color="Color.Error"
                                Size="Size.Large"
                                Class="flex-1"
-                               StartIcon="@GetStartIcon(OrderAction.Decline, Icons.Material.Filled.Block)"
+                               StartIcon="@Icons.Material.Filled.Block"
                                Disabled="@(WorkingAction is not null)"
-                               OnClick="@ShowDeclineDialogAsync">
-                        @if (WorkingAction is OrderAction.Decline)
-                        {
-                            <MudProgressCircular Indeterminate="true"
-                                                 Size="Size.Small"
-                                                 Class="mr-2"
-                                                 Style="@SpinnerStyle"/>
-                        }
-
+                               OnClick="@OpenDeclinePage">
                         Decline
                     </MudButton>
                 }

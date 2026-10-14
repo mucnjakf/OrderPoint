@@ -1,9 +1,6 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Components;
-using MudBlazor;
 using OrderPoint.Bartender.Orders.Api;
-using OrderPoint.Bartender.Orders.Api.Requests;
-using OrderPoint.Bartender.Orders.Dialogs;
 using OrderPoint.Bartender.Orders.Enumerations;
 using OrderPoint.Bartender.Shared.Layout;
 using OrderPoint.Shared.Auth.Services;
@@ -57,7 +54,7 @@ public sealed partial class OrderDetails : IDisposable
     private OrdersHubService OrdersHubService { get; set; } = null!;
 
     [Inject]
-    private IDialogService DialogService { get; set; } = null!;
+    private NavigationManager NavigationManager { get; set; } = null!;
 
     [Parameter]
     [EditorRequired]
@@ -66,7 +63,7 @@ public sealed partial class OrderDetails : IDisposable
     [Parameter]
     public bool IsInPanel { get; set; }
 
-    // Completed or declined: nothing left to do here
+    // Completed: nothing left to do here
     [Parameter]
     public EventCallback OnFinished { get; set; }
 
@@ -209,36 +206,10 @@ public sealed partial class OrderDetails : IDisposable
             isFinishing: true);
     }
 
-    private async Task ShowDeclineDialogAsync()
+    // Declining needs a reason, so it has its own page
+    private void OpenDeclinePage()
     {
-        var parameters = new DialogParameters<DeclineOrderDialog>
-        {
-            { dialog => dialog.OrderNumber, Order!.Number }
-        };
-
-        var options = new DialogOptions
-        {
-            MaxWidth = MaxWidth.ExtraSmall,
-            FullWidth = true
-        };
-
-        IDialogReference dialogReference = await DialogService
-            .ShowAsync<DeclineOrderDialog>(string.Empty, parameters, options);
-
-        DialogResult dialogResult = (await dialogReference.Result)!;
-
-        if (dialogResult.Canceled)
-        {
-            return;
-        }
-
-        var request = (dialogResult.Data as DeclineOrderRequest)!;
-
-        await ChangeStatusAsync(
-            OrderAction.Decline,
-            () => OrderApiClient.DeclineOrderAsync(OrderId, request),
-            $"Order #{Order!.Number} declined",
-            isFinishing: true);
+        NavigationManager.NavigateTo($"/orders/{OrderId}/decline");
     }
 
     // A refused change (e.g. another bartender accepted first) reloads, so the screen shows what really happened

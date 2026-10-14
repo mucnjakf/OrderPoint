@@ -84,7 +84,11 @@ public sealed partial class OrdersPage : IAsyncDisposable
 
     private bool IsSplitView { get; set; }
 
-    private Guid? SelectedOrderId { get; set; }
+    private Guid? SelectedOrderId
+    {
+        get => OrdersTabState.SelectedOrderId;
+        set => OrdersTabState.SelectedOrderId = value;
+    }
 
     private IReadOnlyList<OrderDto> QueueOrders { get; set; } = [];
 

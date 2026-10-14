@@ -32,14 +32,28 @@
             @LinesText
         </MudText>
 
-        @* Ordering again must not open the order as well *@
+        @* Cancelling or ordering again must not open the order as well *@
         <div @onclick:stopPropagation="true">
-            <MudButton Variant="Variant.Outlined"
-                       FullWidth="true"
-                       StartIcon="@Icons.Material.Filled.Replay"
-                       OnClick="@OnOrderAgainClickAsync">
-                Order again
-            </MudButton>
+            <MudStack Row="true" Spacing="2">
+                @if (CanCancel)
+                {
+                    <MudButton Variant="Variant.Outlined"
+                               Color="Color.Error"
+                               Class="flex-1"
+                               StartIcon="@Icons.Material.Filled.DoNotDisturbOn"
+                               Disabled="@IsCancelling"
+                               OnClick="@OnCancelClickAsync">
+                        Cancel
+                    </MudButton>
+                }
+
+                <MudButton Variant="Variant.Outlined"
+                           Class="flex-1"
+                           StartIcon="@Icons.Material.Filled.Replay"
+                           OnClick="@OnOrderAgainClickAsync">
+                    Order again
+                </MudButton>
+            </MudStack>
         </div>
     </MudStack>
 </MudPaper>

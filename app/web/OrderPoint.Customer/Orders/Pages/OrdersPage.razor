@@ -30,7 +30,12 @@
         <MudStack Spacing="3">
             @foreach (OrderTrackingDto order in Orders)
             {
-                <MyOrderCard @key="@order.Id" Order="@order" OnClick="@OpenOrder" OnOrderAgain="@OrderAgainAsync"/>
+                <MyOrderCard @key="@order.Id"
+                             Order="@order"
+                             OnClick="@OpenOrder"
+                             OnOrderAgain="@OrderAgainAsync"
+                             OnCancel="@ShowCancelOrderDialogAsync"
+                             IsCancelling="@(CancellingOrderId == order.Id)"/>
             }
         </MudStack>
     </ChildContent>

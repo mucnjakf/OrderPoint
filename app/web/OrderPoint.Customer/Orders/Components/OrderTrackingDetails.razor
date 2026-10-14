@@ -20,9 +20,9 @@
 
             @if (CanCancel)
             {
-                <MudButton Variant="Variant.Outlined"
+                <MudButton Variant="Variant.Text"
                            Color="Color.Error"
-                           StartIcon="@Icons.Material.Filled.DoNotDisturbOn"
+                           Size="Size.Small"
                            Disabled="@IsCancelling"
                            OnClick="@OnCancelClick"
                            Class="mt-3">
