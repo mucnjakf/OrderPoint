@@ -100,6 +100,17 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
             order => order.BartenderId != null && bartenderIds.Contains(order.BartenderId.Value),
             cancellationToken);
 
+    // Accepted or active, tracked, so a release can change them
+    public async Task<IReadOnlyList<Order>> GetOpenByBartendersAsync(
+        IReadOnlyList<Guid> bartenderIds,
+        CancellationToken cancellationToken = default)
+        => await dbContext.Orders
+            .Where(order =>
+                order.BartenderId != null &&
+                bartenderIds.Contains(order.BartenderId.Value) &&
+                (order.Status == OrderStatus.Accepted || order.Status == OrderStatus.Active))
+            .ToListAsync(cancellationToken);
+
     private static IQueryable<Order> SearchOrders(IQueryable<Order> query, string? searchQuery)
     {
         if (!string.IsNullOrWhiteSpace(searchQuery))

@@ -20,8 +20,6 @@ public sealed record CreateOrderCommand(
     : ICommand<OrderDto>, ICacheInvalidatingCommand, IOrderNotifyingCommand
 {
     IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.OrderChanges;
-
-    Guid? IOrderNotifyingCommand.TrackedOrderId => null;
 }
 
 internal sealed partial class CreateOrderCommandHandler(

@@ -22,6 +22,9 @@ public sealed partial class OrderDetailsDialog : IDisposable
     [Inject]
     private OrdersHubService OrdersHubService { get; set; } = null!;
 
+    [Inject]
+    private IDialogService DialogService { get; set; } = null!;
+
     [Parameter]
     public OrderDto Order { get; set; } = null!;
 
@@ -30,6 +33,11 @@ public sealed partial class OrderDetailsDialog : IDisposable
 
     // The parameter is reset whenever the dialog provider re-renders, so live updates go here
     private OrderDto CurrentOrder { get; set; } = null!;
+
+    private bool IsDeclining { get; set; }
+
+    // Pending, accepted or active: the admin can still decline it
+    private bool IsOpen => CurrentOrder.Status is OrderStatus.Pending or OrderStatus.Accepted or OrderStatus.Active;
 
     private IReadOnlyList<(OrderStatus Status, DateTimeOffset? ReachedAtUtc)> TimelineSteps =>
         CurrentOrder.Status is OrderStatus.Declined
@@ -75,6 +83,43 @@ public sealed partial class OrderDetailsDialog : IDisposable
         CurrentOrder = order;
 
         StateHasChanged();
+    }
+
+    private async Task ShowDeclineOrderDialogAsync()
+    {
+        var parameters = new DialogParameters<DeclineOrderDialog>
+        {
+            { dialog => dialog.Order, CurrentOrder }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Small,
+            FullWidth = true
+        };
+
+        IDialogReference dialogReference = await DialogService
+            .ShowAsync<DeclineOrderDialog>(string.Empty, parameters, options);
+
+        DialogResult dialogResult = (await dialogReference.Result)!;
+
+        if (dialogResult.Canceled)
+        {
+            return;
+        }
+
+        IsDeclining = true;
+
+        bool isSuccess = await ApiService.ExecuteAsync(
+            () => OrderApiClient.DeclineOrderAsync(CurrentOrder.Id),
+            $"Order #{CurrentOrder.Number} declined");
+
+        IsDeclining = false;
+
+        if (isSuccess)
+        {
+            await GetOrderAsync();
+        }
     }
 
     private static decimal GetSubtotal(OrderItemDto orderItem)

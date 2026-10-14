@@ -141,6 +141,18 @@
     </DialogContent>
 
     <DialogActions>
+        @if (IsOpen)
+        {
+            <MudButton Variant="Variant.Outlined"
+                       Color="Color.Error"
+                       Class="mr-auto"
+                       Disabled="@IsDeclining"
+                       StartIcon="@Icons.Material.Filled.Block"
+                       OnClick="@ShowDeclineOrderDialogAsync">
+                Decline order
+            </MudButton>
+        }
+
         <MudButton Variant="Variant.Filled"
                    OnClick="@Close"
                    Color="Color.Primary"

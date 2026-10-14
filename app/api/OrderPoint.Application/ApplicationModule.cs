@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OrderPoint.Application.Mediator;
+using OrderPoint.Application.Notifications;
 using OrderPoint.Application.Telemetry;
 
 namespace OrderPoint.Application;
@@ -21,6 +22,7 @@ public static class ApplicationModule
         });
 
         services.AddSingleton<ApplicationTelemetry>();
+        services.AddScoped<ChangedOrders>();
 
         return services;
     }

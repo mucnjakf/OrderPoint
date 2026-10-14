@@ -163,4 +163,40 @@ public sealed class Order : Entity
 
         return Result.Success();
     }
+
+    // Its bartender was deactivated: the order goes back to the queue, so another bartender can take it over
+    public Result Release()
+    {
+        if (Status is not (OrderStatus.Accepted or OrderStatus.Active))
+        {
+            return Result.Failure(OrderErrors.InvalidStatusTransition);
+        }
+
+        Status = OrderStatus.Pending;
+        BartenderId = null;
+        AcceptedAtUtc = null;
+        ActivatedAtUtc = null;
+
+        UpdatedAtUtc = DateTimeOffset.UtcNow;
+
+        return Result.Success();
+    }
+
+    // The admin closes any open order nobody will finish (e.g. at closing time); its bartender, if any, stays recorded
+    public Result DeclineByAdmin()
+    {
+        if (Status is not (OrderStatus.Pending or OrderStatus.Accepted or OrderStatus.Active))
+        {
+            return Result.Failure(OrderErrors.InvalidStatusTransition);
+        }
+
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+
+        Status = OrderStatus.Declined;
+        DeclinedAtUtc = now;
+
+        UpdatedAtUtc = now;
+
+        return Result.Success();
+    }
 }

@@ -25,7 +25,8 @@ internal sealed class ChangeBartendersStatusEndpoint : IEndpoint
             .WithTags("Bartenders")
             .WithSummary("Change the status of bartenders")
             .WithDescription("""
-                Activates or deactivates up to 100 bartenders at once. Deactivated bartenders are signed out.
+                Activates or deactivates up to 100 bartenders at once. Deactivated bartenders are signed out, and
+                their accepted and active orders go back in the queue (`Pending`, without bartender).
                 All-or-nothing: if any id does not exist (`404`), nothing changes.
                 """)
             .ProducesProblem(StatusCodes.Status404NotFound)

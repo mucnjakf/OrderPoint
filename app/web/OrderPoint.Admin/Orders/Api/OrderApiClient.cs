@@ -69,4 +69,16 @@ internal sealed class OrderApiClient(HttpClient httpClient)
 
         return result.Data;
     }
+
+    // No body; the API treats the admin's decline as closing an open order
+    internal async Task DeclineOrderAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await httpClient
+            .PutAsync($"api/orders/{id}/decline", content: null, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+    }
 }

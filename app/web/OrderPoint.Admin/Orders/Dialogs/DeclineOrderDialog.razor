@@ -1,0 +1,59 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.Block" Color="Color.Error"/>
+            <MudText Typo="Typo.h6">Decline order #@Order.Number</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudAlert Severity="Severity.Error" Variant="Variant.Text" Dense="true" Class="mb-4">
+            <MudText Typo="Typo.body2">
+                This action cannot be undone. The guest sees the order as declined.
+            </MudText>
+        </MudAlert>
+
+        <MudPaper Outlined="true" Class="pa-4">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <OrderAvatar Number="@Order.Number"/>
+
+                <MudStack Spacing="0" Class="flex-1">
+                    <MudText Typo="Typo.body1">
+                        Table @Order.TableCode
+                    </MudText>
+
+                    <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                        @HandlerText
+                    </MudText>
+                </MudStack>
+
+                <MudStack Spacing="1" AlignItems="AlignItems.End">
+                    <MudText Typo="Typo.h6">
+                        @Order.Total.ToString("C", CultureInfo.CurrentCulture)
+                    </MudText>
+
+                    <MudChip T="string"
+                             Variant="Variant.Text"
+                             Size="Size.Small"
+                             Color="@Order.Status.GetColor()"
+                             Class="ma-0">
+                        @Order.Status.ToString()
+                    </MudChip>
+                </MudStack>
+            </MudStack>
+        </MudPaper>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
+            Cancel
+        </MudButton>
+
+        <MudButton OnClick="@Confirm"
+                   Variant="Variant.Filled"
+                   Color="Color.Error"
+                   StartIcon="@Icons.Material.Filled.Block">
+            Decline order #@Order.Number
+        </MudButton>
+    </DialogActions>
+</MudDialog>

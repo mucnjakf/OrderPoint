@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using OrderPoint.Application.Caching;
 using OrderPoint.Application.Mediator;
+using OrderPoint.Application.Notifications;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Domain.Entities;
 using OrderPoint.Domain.Enumerations;
@@ -13,14 +14,13 @@ public sealed record DeclineOrderCommand(Guid Id, Guid BartenderId)
     : ICommand, ICacheInvalidatingCommand, IOrderNotifyingCommand
 {
     IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.OrderChanges;
-
-    Guid? IOrderNotifyingCommand.TrackedOrderId => Id;
 }
 
 internal sealed partial class DeclineOrderCommandHandler(
     IOrderRepository orderRepository,
     IBartenderRepository bartenderRepository,
     IUnitOfWork unitOfWork,
+    ChangedOrders changedOrders,
     ILogger<DeclineOrderCommandHandler> logger)
     : ICommandHandler<DeclineOrderCommand>
 {
@@ -54,6 +54,8 @@ internal sealed partial class DeclineOrderCommandHandler(
         }
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        changedOrders.Add(order.Id);
 
         LogOrderDeclined(order.Number, command.BartenderId);
 

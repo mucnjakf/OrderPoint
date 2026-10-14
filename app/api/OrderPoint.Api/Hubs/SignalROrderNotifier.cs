@@ -9,16 +9,18 @@ internal sealed partial class SignalROrderNotifier(
     ILogger<SignalROrderNotifier> logger)
     : IOrderNotifier
 {
-    public async Task NotifyOrdersChangedAsync(Guid? trackedOrderId, CancellationToken cancellationToken = default)
+    public async Task NotifyOrdersChangedAsync(
+        IReadOnlyList<Guid> changedOrderIds,
+        CancellationToken cancellationToken = default)
     {
         try
         {
             await ordersHubContext.Clients.All.SendAsync(OrdersHub.OrdersChangedMethod, cancellationToken);
 
-            if (trackedOrderId is not null)
+            if (changedOrderIds.Count != 0)
             {
                 await orderTrackingHubContext.Clients
-                    .Group(OrderTrackingHub.GetGroupName(trackedOrderId.Value))
+                    .Groups(changedOrderIds.Select(OrderTrackingHub.GetGroupName).ToList())
                     .SendAsync(OrderTrackingHub.OrderChangedMethod, cancellationToken);
             }
         }

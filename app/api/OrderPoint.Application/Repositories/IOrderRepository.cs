@@ -41,4 +41,8 @@ public interface IOrderRepository
     Task<bool> ExistsByBartendersAsync(
         IReadOnlyList<Guid> bartenderIds,
         CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<Order>> GetOpenByBartendersAsync(
+        IReadOnlyList<Guid> bartenderIds,
+        CancellationToken cancellationToken = default);
 }

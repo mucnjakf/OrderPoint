@@ -2,6 +2,7 @@
 using OrderPoint.Application.Caching;
 using OrderPoint.Application.Identity;
 using OrderPoint.Application.Mediator;
+using OrderPoint.Application.Notifications;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Domain.Entities;
 using OrderPoint.Domain.Enumerations;
@@ -11,15 +12,17 @@ using OrderPoint.Domain.Outcomes;
 namespace OrderPoint.Application.Commands.Bartenders;
 
 public sealed record ChangeBartendersStatusCommand(IReadOnlyList<Guid> Ids, BartenderStatus Status)
-    : ICommand, ICacheInvalidatingCommand
+    : ICommand, ICacheInvalidatingCommand, IOrderNotifyingCommand
 {
     IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.BartenderChanges;
 }
 
 internal sealed partial class ChangeBartendersStatusCommandHandler(
     IBartenderRepository bartenderRepository,
+    IOrderRepository orderRepository,
     ITokenService tokenService,
     IUnitOfWork unitOfWork,
+    ChangedOrders changedOrders,
     ILogger<ChangeBartendersStatusCommandHandler> logger)
     : ICommandHandler<ChangeBartendersStatusCommand>
 {
@@ -32,7 +35,7 @@ internal sealed partial class ChangeBartendersStatusCommandHandler(
             return Result.Failure(BartenderErrors.NotFound);
         }
 
-        int deactivatedCount = 0;
+        List<Guid> deactivatedIds = [];
 
         foreach (Bartender bartender in bartenders)
         {
@@ -44,19 +47,39 @@ internal sealed partial class ChangeBartendersStatusCommandHandler(
             if (isDeactivated)
             {
                 await tokenService.RevokeUserTokensAsync(bartender.Id, cancellationToken);
-                deactivatedCount++;
+                deactivatedIds.Add(bartender.Id);
             }
+        }
+
+        // Their accepted and active orders go back to the queue, so they aren't stuck with nobody to finish them
+        IReadOnlyList<Order> openOrders = deactivatedIds.Count == 0
+            ? []
+            : await orderRepository.GetOpenByBartendersAsync(deactivatedIds, cancellationToken);
+
+        foreach (Order order in openOrders)
+        {
+            order.Release();
         }
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        LogStatusChanged(bartenders.Count, command.Status, deactivatedCount);
+        foreach (Order order in openOrders)
+        {
+            changedOrders.Add(order.Id);
+        }
+
+        LogStatusChanged(bartenders.Count, command.Status, deactivatedIds.Count, openOrders.Count);
 
         return Result.Success();
     }
 
     [LoggerMessage(
         Level = LogLevel.Information,
-        Message = "{BartenderCount} bartenders set to {Status}; {SignedOutCount} deactivated and signed out")]
-    private partial void LogStatusChanged(int bartenderCount, BartenderStatus status, int signedOutCount);
+        Message = "{BartenderCount} bartenders set to {Status}; {SignedOutCount} deactivated and signed out, " +
+                  "{ReleasedOrderCount} of their open orders back in the queue")]
+    private partial void LogStatusChanged(
+        int bartenderCount,
+        BartenderStatus status,
+        int signedOutCount,
+        int releasedOrderCount);
 }

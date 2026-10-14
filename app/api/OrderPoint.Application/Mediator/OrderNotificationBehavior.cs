@@ -5,7 +5,9 @@ using OrderPoint.Domain.Outcomes;
 namespace OrderPoint.Application.Mediator;
 
 // Registered outside CacheInvalidationBehavior, so apps that reload on the signal never read stale cache entries
-internal sealed class OrderNotificationBehavior<TRequest, TResponse>(IOrderNotifier orderNotifier)
+internal sealed class OrderNotificationBehavior<TRequest, TResponse>(
+    IOrderNotifier orderNotifier,
+    ChangedOrders changedOrders)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : notnull
     where TResponse : Result
@@ -17,9 +19,9 @@ internal sealed class OrderNotificationBehavior<TRequest, TResponse>(IOrderNotif
     {
         TResponse response = await next(cancellationToken);
 
-        if (response.IsSuccess && request is IOrderNotifyingCommand orderNotifyingCommand)
+        if (response.IsSuccess && request is IOrderNotifyingCommand)
         {
-            await orderNotifier.NotifyOrdersChangedAsync(orderNotifyingCommand.TrackedOrderId, CancellationToken.None);
+            await orderNotifier.NotifyOrdersChangedAsync(changedOrders.OrderIds, CancellationToken.None);
         }
 
         return response;
