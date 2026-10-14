@@ -50,7 +50,9 @@ public sealed partial class OrdersPage : IAsyncDisposable
 
     // Below the dense app bar and as tall as the space above the bottom navigation, so the order's buttons sit at
     // the bottom of the screen
-    private const string DetailsPanelStyle = "position: sticky; top: 60px; height: calc(100vh - 60px - 76px);";
+    // At most as tall as the screen allows, so a short order's buttons sit right under its details
+    private const string DetailsPanelStyle =
+        "position: sticky; top: 60px; max-height: calc(100vh - 60px - 76px); display: flex; flex-direction: column;";
 
     private readonly Guid _viewportSubscriptionId = Guid.NewGuid();
 

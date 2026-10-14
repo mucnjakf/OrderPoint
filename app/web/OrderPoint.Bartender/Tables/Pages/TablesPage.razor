@@ -65,7 +65,7 @@
                             <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
                                 <span style="@GetLegendDotStyle(color)"></span>
 
-                                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                                <MudText Typo="Typo.caption" Style="@LegendTextStyle">
                                     @label
                                 </MudText>
                             </MudStack>
@@ -74,9 +74,9 @@
                         <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
                             <MudIcon Icon="@Icons.Material.Filled.RoomService"
                                      Color="Color.Primary"
-                                     Style="font-size: 12px"/>
+                                     Style="font-size: 10px"/>
 
-                            <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                            <MudText Typo="Typo.caption" Style="@LegendTextStyle">
                                 A guest is asking
                             </MudText>
                         </MudStack>

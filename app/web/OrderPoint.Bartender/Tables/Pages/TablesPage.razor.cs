@@ -59,7 +59,10 @@ public sealed partial class TablesPage : IAsyncDisposable
     // The frame's whole area scrolls both ways; the legend stays outside it, in the frame's corner
     private const string MapScrollStyle = "position: absolute; inset: 0; overflow: auto; container-type: size;";
 
-    private const string LegendStyle = "position: absolute; top: 8px; left: 8px; z-index: 1;";
+    private const string LegendStyle = "position: absolute; bottom: 8px; left: 8px; z-index: 1;";
+
+    private const string LegendTextStyle =
+        "color: var(--mud-palette-text-secondary); font-size: 11px; line-height: 16px;";
 
     // Opposite the order count, so a table can show both
     private const string RequestBadgeStyle =
@@ -467,7 +470,7 @@ public sealed partial class TablesPage : IAsyncDisposable
 
     private static string GetLegendDotStyle(string color)
     {
-        return "display: inline-block; width: 10px; height: 10px; border-radius: 50%; " +
+        return "display: inline-block; width: 8px; height: 8px; border-radius: 50%; " +
                $"background-color: var(--mud-palette-{color});";
     }
 

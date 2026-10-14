@@ -22,6 +22,9 @@ internal sealed class NewOrderToastService(
 
     private const string OrdersPageUri = "/orders";
 
+    // Longer than the other snackbars, so there is time to click View
+    private const int ToastVisibleMilliseconds = 5000;
+
     private int? _latestOrderNumber;
 
     internal async Task LoadAsync()
@@ -92,6 +95,8 @@ internal sealed class NewOrderToastService(
             {
                 options.Action = "View";
                 options.ActionVariant = Variant.Text;
+                options.RequireInteraction = false;
+                options.VisibleStateDuration = ToastVisibleMilliseconds;
                 options.OnClick = _ => ShowOrderDetailsDialogAsync(order);
             });
     }
@@ -105,6 +110,8 @@ internal sealed class NewOrderToastService(
             {
                 options.Action = "View";
                 options.ActionVariant = Variant.Text;
+                options.RequireInteraction = false;
+                options.VisibleStateDuration = ToastVisibleMilliseconds;
                 options.OnClick = _ => ShowOrdersPageAsync();
             });
     }

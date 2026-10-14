@@ -1,0 +1,29 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.DeleteOutline"/>
+            <MudText Typo="Typo.h6">Forget orders</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudText Typo="Typo.body1">
+            This removes @OrdersCount.ToCountText("order", "orders") from Orders on this phone. The bar keeps them,
+            so open ones still come to your table.
+        </MudText>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5" Style="white-space: nowrap">
+            Keep
+        </MudButton>
+
+        <MudButton OnClick="@Confirm"
+                   Variant="Variant.Filled"
+                   Color="Color.Error"
+                   StartIcon="@Icons.Material.Filled.DeleteOutline"
+                   Style="white-space: nowrap">
+            Forget orders
+        </MudButton>
+    </DialogActions>
+</MudDialog>

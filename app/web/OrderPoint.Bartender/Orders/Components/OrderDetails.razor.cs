@@ -31,10 +31,10 @@ public sealed partial class OrderDetails : IDisposable
 
     private const string PageContentStyle = "padding-bottom: 84px;";
 
-    // Tablet panel: the details scroll inside the panel and the buttons close it off at the bottom
-    private const string PanelRootStyle = "display: flex; flex-direction: column; height: 100%;";
+    // Tablet panel: the buttons follow the details, which scroll inside the panel once they don't fit
+    private const string PanelRootStyle = "display: flex; flex-direction: column; min-height: 0;";
 
-    private const string PanelContentStyle = "flex: 1; min-height: 0; overflow-y: auto;";
+    private const string PanelContentStyle = "min-height: 0; overflow-y: auto;";
 
     private const string PanelActionBarStyle = "margin-top: 12px;";
 

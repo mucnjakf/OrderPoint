@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
+using OrderPoint.Customer.Cart.Dialogs;
 using OrderPoint.Customer.Cart.Dtos;
 using OrderPoint.Customer.Cart.Services;
 using OrderPoint.Customer.Menu.Dtos;
@@ -52,6 +54,9 @@ public sealed partial class CartPage : IDisposable
 
     [Inject]
     private OrderTrackingHubService OrderTrackingHubService { get; set; } = null!;
+
+    [Inject]
+    private IDialogService DialogService { get; set; } = null!;
 
     private Dictionary<Guid, MenuItemDto> MenuItems { get; set; } = [];
 
@@ -123,6 +128,13 @@ public sealed partial class CartPage : IDisposable
 
     private async Task PlaceOrderAsync()
     {
+        bool isConfirmed = await ShowPlaceOrderDialogAsync();
+
+        if (!isConfirmed)
+        {
+            return;
+        }
+
         IsPlacingOrder = true;
 
         OrderDto? order = await ApiService.ExecuteAsync(CreateOrderAsync);
@@ -140,6 +152,29 @@ public sealed partial class CartPage : IDisposable
 
         // The status page says it was sent, so no snackbar
         NavigationManager.NavigateTo($"/orders/{order.Id}");
+    }
+
+    private async Task<bool> ShowPlaceOrderDialogAsync()
+    {
+        var parameters = new DialogParameters<PlaceOrderDialog>
+        {
+            { dialog => dialog.TableCode, TableService.TableCode! },
+            { dialog => dialog.ItemsCount, CartService.ItemsCount },
+            { dialog => dialog.Total, Total }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.ExtraSmall,
+            FullWidth = true
+        };
+
+        IDialogReference dialogReference = await DialogService
+            .ShowAsync<PlaceOrderDialog>(string.Empty, parameters, options);
+
+        DialogResult dialogResult = (await dialogReference.Result)!;
+
+        return !dialogResult.Canceled;
     }
 
     private async Task<OrderDto> CreateOrderAsync()
