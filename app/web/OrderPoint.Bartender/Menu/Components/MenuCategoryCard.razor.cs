@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Components;
 using OrderPoint.Bartender.Menu.Dtos;
 using OrderPoint.Bartender.Menu.Enumerations;
+using OrderPoint.Shared.Constants;
 
 namespace OrderPoint.Bartender.Menu.Components;
 
 public sealed partial class MenuCategoryCard
 {
-    private const string ImageBaseStyle = "border-radius: var(--mud-default-borderradius);";
+    private const string ImageBaseStyle = ImageStyles.Rounded;
 
     // Three cards fit in a row on a phone, so a long name wraps onto a second line before it is cut off
     private const string NameStyle =

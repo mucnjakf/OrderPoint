@@ -3,12 +3,13 @@ using Microsoft.AspNetCore.Components;
 using OrderPoint.Customer.Cart.Dtos;
 using OrderPoint.Customer.Cart.Services;
 using OrderPoint.Customer.Menu.Dtos;
+using OrderPoint.Shared.Constants;
 
 namespace OrderPoint.Customer.Cart.Components;
 
 public sealed partial class CartLineRow
 {
-    private const string ImageBaseStyle = "border-radius: var(--mud-default-borderradius); flex-shrink: 0;";
+    private const string ImageBaseStyle = $"{ImageStyles.Rounded} flex-shrink: 0;";
 
     [Parameter]
     [EditorRequired]

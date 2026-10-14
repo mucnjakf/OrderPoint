@@ -5,7 +5,7 @@
                   Alt="Item image"
                   Width="@PlaceholderSize"
                   Height="@PlaceholderSize"
-                  Style="@InactiveImageStyle"/>
+                  Style="@($"{ImageStyles.Rounded} {InactiveImageStyle}")"/>
     }
     else
     {
@@ -14,6 +14,6 @@
                   Alt="Item image"
                   Height="@ImageHeight"
                   ObjectFit="ObjectFit.Contain"
-                  Style="@($"position: relative; max-width: 100%; {InactiveImageStyle}")"/>
+                  Style="@($"position: relative; max-width: 100%; {ImageStyles.Rounded} {InactiveImageStyle}")"/>
     }
 </div>

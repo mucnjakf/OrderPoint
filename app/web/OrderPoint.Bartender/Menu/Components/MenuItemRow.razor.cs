@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Components;
 using OrderPoint.Bartender.Menu.Dtos;
+using OrderPoint.Shared.Constants;
 
 namespace OrderPoint.Bartender.Menu.Components;
 
@@ -10,7 +11,7 @@ public sealed partial class MenuItemRow
     private const string SingleLineStyle =
         "min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;";
 
-    private const string ImageRadiusStyle = "border-radius: var(--mud-default-borderradius); flex-shrink: 0;";
+    private const string ImageRadiusStyle = $"{ImageStyles.Rounded} flex-shrink: 0;";
 
     [Parameter]
     [EditorRequired]
