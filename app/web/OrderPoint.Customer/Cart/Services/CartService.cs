@@ -1,18 +1,17 @@
 ﻿using System.Security.Cryptography;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using OrderPoint.Customer.Cart.Dtos;
+using OrderPoint.Customer.Shared.Constants;
 
 namespace OrderPoint.Customer.Cart.Services;
 
-// One per circuit, remembered per browser so a reload keeps the cart
+// One per circuit, remembered per browser so a reload keeps the cart; it is forgotten one visit after its last change
 internal sealed class CartService(ProtectedLocalStorage protectedLocalStorage)
 {
     // Enough for a round; a bigger order is easier at the bar
     internal const int MaxQuantity = 20;
 
-    private const string LinesStorageKey = "cart-lines";
-
-    private const string NoteStorageKey = "cart-note";
+    private const string StorageKey = "cart";
 
     private List<CartLineDto> _lines = [];
 
@@ -28,18 +27,17 @@ internal sealed class CartService(ProtectedLocalStorage protectedLocalStorage)
     {
         try
         {
-            ProtectedBrowserStorageResult<List<CartLineDto>> lines =
-                await protectedLocalStorage.GetAsync<List<CartLineDto>>(LinesStorageKey);
+            ProtectedBrowserStorageResult<CartDto> result = await protectedLocalStorage.GetAsync<CartDto>(StorageKey);
 
-            ProtectedBrowserStorageResult<string> note = await protectedLocalStorage.GetAsync<string>(NoteStorageKey);
-
-            _lines = lines.Success ? lines.Value ?? [] : [];
-            Note = note.Success && !string.IsNullOrWhiteSpace(note.Value) ? note.Value : null;
+            if (result.Success && result.Value!.UpdatedAtUtc >= DateTimeOffset.UtcNow - Visit.Length)
+            {
+                _lines = result.Value.Lines.ToList();
+                Note = result.Value.Note;
+            }
         }
         catch (CryptographicException)
         {
-            await protectedLocalStorage.DeleteAsync(LinesStorageKey);
-            await protectedLocalStorage.DeleteAsync(NoteStorageKey);
+            await protectedLocalStorage.DeleteAsync(StorageKey);
         }
     }
 
@@ -99,7 +97,6 @@ internal sealed class CartService(ProtectedLocalStorage protectedLocalStorage)
     {
         Changed?.Invoke();
 
-        await protectedLocalStorage.SetAsync(LinesStorageKey, _lines);
-        await protectedLocalStorage.SetAsync(NoteStorageKey, Note ?? string.Empty);
+        await protectedLocalStorage.SetAsync(StorageKey, new CartDto(_lines, Note, DateTimeOffset.UtcNow));
     }
 }

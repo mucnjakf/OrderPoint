@@ -1,6 +1,7 @@
 ﻿using System.Security.Cryptography;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using OrderPoint.Customer.Orders.Dtos;
+using OrderPoint.Customer.Shared.Constants;
 
 namespace OrderPoint.Customer.Orders.Services;
 
@@ -8,8 +9,6 @@ namespace OrderPoint.Customer.Orders.Services;
 internal sealed class MyOrdersService(ProtectedLocalStorage protectedLocalStorage)
 {
     private const string StorageKey = "my-orders";
-
-    private static readonly TimeSpan VisitLength = TimeSpan.FromHours(12);
 
     private List<MyOrderDto> _orders = [];
 
@@ -28,7 +27,7 @@ internal sealed class MyOrdersService(ProtectedLocalStorage protectedLocalStorag
             ProtectedBrowserStorageResult<List<MyOrderDto>> result =
                 await protectedLocalStorage.GetAsync<List<MyOrderDto>>(StorageKey);
 
-            DateTimeOffset visitStartUtc = DateTimeOffset.UtcNow - VisitLength;
+            DateTimeOffset visitStartUtc = DateTimeOffset.UtcNow - Visit.Length;
 
             _orders = (result.Success ? result.Value ?? [] : [])
                 .Where(order => order.PlacedAtUtc >= visitStartUtc)

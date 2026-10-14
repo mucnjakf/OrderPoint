@@ -41,6 +41,9 @@ internal sealed class CreateOrderEndpoint : IEndpoint
                 Places an order from a table. Used by the customer app, so no token is needed. Every line copies the
                 item's current price into `unitPrice`; the order starts as `Pending` and gets the next order `number`.
 
+                Limits, so an anonymous caller can't place absurd orders: at most 50 lines, each item at most once and
+                at most 20 pieces, and a table code of up to 10 letters, digits or hyphens.
+
                 - `404 Item.NotFound`: an item does not exist.
                 - `409 Order.ItemIsUnavailable`: an item or its category is inactive.
                 """)
@@ -77,7 +80,8 @@ internal sealed class CreateOrderEndpoint : IEndpoint
         {
             RuleFor(request => request.TableCode)
                 .NotEmpty().WithMessage("TableCode is required")
-                .MaximumLength(10).WithMessage("TableCode must be at most 10 characters");
+                .MaximumLength(10).WithMessage("TableCode must be at most 10 characters")
+                .Matches("^[A-Za-z0-9-]+$").WithMessage("TableCode may only contain letters, digits and hyphens");
 
             RuleFor(request => request.Note)
                 .MaximumLength(200).WithMessage("Note must be at most 200 characters");
@@ -85,6 +89,7 @@ internal sealed class CreateOrderEndpoint : IEndpoint
             RuleFor(request => request.Items)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Items are required")
+                .Must(items => items.Count <= 50).WithMessage("Items must be at most 50")
                 .Must(items => items.DistinctBy(item => item.ItemId).Count() == items.Count)
                 .WithMessage("Items must be unique");
 
@@ -94,7 +99,7 @@ internal sealed class CreateOrderEndpoint : IEndpoint
                     .NotEmpty().WithMessage("ItemId is required");
 
                 item.RuleFor(orderItem => orderItem.Quantity)
-                    .GreaterThan(0).WithMessage("Quantity must be positive");
+                    .InclusiveBetween(1, 20).WithMessage("Quantity must be between 1 and 20");
             });
         }
     }

@@ -1,15 +1,18 @@
 ﻿using System.Security.Cryptography;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using OrderPoint.Customer.Shared.Constants;
+using OrderPoint.Customer.Tables.Dtos;
 
 namespace OrderPoint.Customer.Tables.Services;
 
-// One per circuit; the table comes from the QR code's URL and is remembered per browser, so a reload keeps it
+// One per circuit; the table comes from the QR code's URL and is remembered per browser for one visit, so a reload
+// keeps it but a guest coming back days later scans again instead of ordering to an old table
 internal sealed class TableService(ProtectedLocalStorage protectedLocalStorage)
 {
     // As long as the API accepts
     internal const int MaxTableCodeLength = 10;
 
-    private const string StorageKey = "table-code";
+    private const string StorageKey = "table";
 
     internal event Action? Changed;
 
@@ -21,9 +24,12 @@ internal sealed class TableService(ProtectedLocalStorage protectedLocalStorage)
     {
         try
         {
-            ProtectedBrowserStorageResult<string> result = await protectedLocalStorage.GetAsync<string>(StorageKey);
+            ProtectedBrowserStorageResult<TableVisitDto> result =
+                await protectedLocalStorage.GetAsync<TableVisitDto>(StorageKey);
 
-            TableCode = result.Success ? result.Value : null;
+            bool isThisVisit = result.Success && result.Value!.ScannedAtUtc >= DateTimeOffset.UtcNow - Visit.Length;
+
+            TableCode = isThisVisit ? result.Value!.TableCode : null;
         }
         catch (CryptographicException)
         {
@@ -40,6 +46,6 @@ internal sealed class TableService(ProtectedLocalStorage protectedLocalStorage)
 
         Changed?.Invoke();
 
-        await protectedLocalStorage.SetAsync(StorageKey, tableCode);
+        await protectedLocalStorage.SetAsync(StorageKey, new TableVisitDto(tableCode, DateTimeOffset.UtcNow));
     }
 }
