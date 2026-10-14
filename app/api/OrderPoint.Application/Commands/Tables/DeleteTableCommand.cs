@@ -15,6 +15,7 @@ public sealed record DeleteTableCommand(Guid Id) : ICommand, ICacheInvalidatingC
 
 internal sealed partial class DeleteTableCommandHandler(
     ITableRepository tableRepository,
+    ITableRequestRepository tableRequestRepository,
     IOrderRepository orderRepository,
     IUnitOfWork unitOfWork,
     ILogger<DeleteTableCommandHandler> logger)
@@ -34,6 +35,12 @@ internal sealed partial class DeleteTableCommandHandler(
         if (hasOrders)
         {
             return Result.Failure(TableErrors.CannotDeleteTableWithOrders);
+        }
+
+        // Requests only matter while guests sit at the table, so they go with it
+        foreach (TableRequest request in await tableRequestRepository.GetByTableAsync(table.Id, cancellationToken))
+        {
+            tableRequestRepository.Delete(request);
         }
 
         tableRepository.Delete(table);

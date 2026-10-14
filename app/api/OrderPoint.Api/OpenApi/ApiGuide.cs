@@ -23,10 +23,11 @@ internal static class ApiGuide
         - A bartender created by the admin starts with a temporary password: login returns
           `403 Auth.PasswordChangeRequired` until `POST /api/auth/initial-password` sets a new one.
         - Every endpoint requires the **Admin** role, except Auth, the customer app's `GET /api/menu`,
-          `POST /api/orders`, `GET /api/orders/{id}/tracking`, `PUT /api/orders/{id}/cancel` and
-          `GET /api/tables/by-code/{code}`, and the health checks (anonymous), the order status changes
-          (`PUT /api/orders/{id}/accept`, `activate`, `complete`), `GET /api/shift`, `GET /api/shift/day` and
-          `GET /api/tables/status` (**Bartender**), and declining and reading orders, the item and category lists,
+          `POST /api/orders`, `GET /api/orders/{id}/tracking`, `PUT /api/orders/{id}/cancel`,
+          `GET /api/tables/by-code/{code}` and its `requests`, and the health checks (anonymous), the order status
+          changes (`PUT /api/orders/{id}/accept`, `activate`, `complete`), `GET /api/shift`, `GET /api/shift/day`,
+          `GET /api/tables/status`, `GET /api/table-requests` and `PUT /api/table-requests/{id}/done`
+          (**Bartender**), and declining and reading orders, the item and category lists,
           one item or category, changing the status of items and categories, the floor plan and one area, table or
           fixture, `GET /api/account`, changing the password and signing out everywhere (**Admin** or
           **Bartender**). Each endpoint names its roles; those that need a token show a lock and list `401` and
@@ -102,7 +103,7 @@ internal static class ApiGuide
 
         Both hubs also send `MenuChanged`, without arguments, to every connection after an item or a category is
         created, changed or deleted, so apps reload the menu they show, and `TablesChanged` after an area, a table
-        or a fixture is.
+        or a fixture is, and after a guest's table request is created or done.
 
         ## Conventions
 

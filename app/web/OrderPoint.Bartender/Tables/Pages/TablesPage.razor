@@ -47,6 +47,13 @@
                                     {
                                         <span style="@GetBadgeStyle(status)">@status.OpenCount</span>
                                     }
+
+                                    @if (HasRequests(table))
+                                    {
+                                        <span style="@RequestBadgeStyle" title="A guest is asking">
+                                            <MudIcon Icon="@Icons.Material.Filled.RoomService" Style="font-size: 12px"/>
+                                        </span>
+                                    }
                                 </TableContent>
                             </FloorPlanMap>
                         </div>
@@ -63,6 +70,16 @@
                                 </MudText>
                             </MudStack>
                         }
+
+                        <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
+                            <MudIcon Icon="@Icons.Material.Filled.RoomService"
+                                     Color="Color.Primary"
+                                     Style="font-size: 12px"/>
+
+                            <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                                A guest is asking
+                            </MudText>
+                        </MudStack>
                     </MudPaper>
                 </div>
             </div>
@@ -74,6 +91,9 @@
                     {
                         <MudPaper Class="pa-4">
                             <TableOrdersPanel Table="@SelectedTable"
+                                              Requests="@SelectedTableRequests"
+                                              CompletingRequestId="@CompletingRequestId"
+                                              OnRequestDone="@CompleteRequestAsync"
                                               AreaName="@(SelectedArea!.Name)"
                                               Orders="@TableOrders"
                                               IsLoading="@IsLoadingTableOrders"
@@ -109,6 +129,9 @@
 {
     <MudPaper Class="pa-4" Elevation="0" Style="@BottomSheetStyle">
         <TableOrdersPanel Table="@SelectedTable"
+                          Requests="@SelectedTableRequests"
+                          CompletingRequestId="@CompletingRequestId"
+                          OnRequestDone="@CompleteRequestAsync"
                           AreaName="@(SelectedArea!.Name)"
                           Orders="@TableOrders"
                           IsLoading="@IsLoadingTableOrders"

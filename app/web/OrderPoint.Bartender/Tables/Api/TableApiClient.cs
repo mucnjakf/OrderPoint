@@ -5,7 +5,7 @@ using OrderPoint.Shared.Tables.Dtos;
 
 namespace OrderPoint.Bartender.Tables.Api;
 
-// The floor plan the admin set up, and which tables have open orders
+// The floor plan the admin set up, which tables have open orders, and what guests ask for
 internal sealed class TableApiClient(HttpClient httpClient)
 {
     internal async Task<IReadOnlyList<AreaDto>> GetFloorPlanAsync(CancellationToken cancellationToken = default)
@@ -39,5 +39,34 @@ internal sealed class TableApiClient(HttpClient httpClient)
             ?? throw new InvalidOperationException($"Unable to parse {nameof(GetTablesStatusResponse)}");
 
         return result.Data;
+    }
+
+    // Every open request of every table, oldest first
+    internal async Task<IReadOnlyList<TableRequestDto>> GetTableRequestsAsync(
+        CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await httpClient.GetAsync("api/table-requests", cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+
+        GetTableRequestsResponse result =
+            await response.Content.ReadFromJsonAsync<GetTableRequestsResponse>(cancellationToken)
+            ?? throw new InvalidOperationException($"Unable to parse {nameof(GetTableRequestsResponse)}");
+
+        return result.Data;
+    }
+
+    internal async Task CompleteTableRequestAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await httpClient
+            .PutAsync($"api/table-requests/{id}/done", content: null, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
     }
 }

@@ -384,6 +384,36 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                     b.ToTable("Tables", (string)null);
                 });
 
+            modelBuilder.Entity("OrderPoint.Domain.Entities.TableRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset?>("DoneAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("TableId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TableId");
+
+                    b.ToTable("TableRequests", (string)null);
+                });
+
             modelBuilder.Entity("OrderPoint.Infrastructure.Identity.ApplicationUser", b =>
                 {
                     b.Property<Guid>("Id")
@@ -543,6 +573,17 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                         .IsRequired();
 
                     b.Navigation("Area");
+                });
+
+            modelBuilder.Entity("OrderPoint.Domain.Entities.TableRequest", b =>
+                {
+                    b.HasOne("OrderPoint.Domain.Entities.Table", "Table")
+                        .WithMany()
+                        .HasForeignKey("TableId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Table");
                 });
 
             modelBuilder.Entity("OrderPoint.Infrastructure.Identity.RefreshToken", b =>

@@ -8,6 +8,7 @@ using OrderPoint.Bartender.Shared.Layout;
 using OrderPoint.Bartender.Tables.Api;
 using OrderPoint.Bartender.Tables.Dtos;
 using OrderPoint.Shared.Dtos;
+using OrderPoint.Shared.Extensions;
 using OrderPoint.Shared.Orders.Dtos;
 using OrderPoint.Shared.Orders.Enumerations;
 using OrderPoint.Shared.Orders.Services;
@@ -59,6 +60,12 @@ public sealed partial class TablesPage : IAsyncDisposable
     private const string MapScrollStyle = "position: absolute; inset: 0; overflow: auto; container-type: size;";
 
     private const string LegendStyle = "position: absolute; top: 8px; left: 8px; z-index: 1;";
+
+    // Opposite the order count, so a table can show both
+    private const string RequestBadgeStyle =
+        "position: absolute; top: 2px; left: 2px; writing-mode: horizontal-tb; width: 18px; height: 18px; " +
+        "border-radius: 50%; display: flex; align-items: center; justify-content: center; " +
+        "background-color: var(--mud-palette-primary); color: var(--mud-palette-primary-text);";
 
     private const string SidePanelStyle = "flex: 5 1 0; min-width: 0; overflow-y: auto;";
 
@@ -129,6 +136,10 @@ public sealed partial class TablesPage : IAsyncDisposable
 
     private IReadOnlyList<OrderDto> TableOrders { get; set; } = [];
 
+    private IReadOnlyList<TableRequestDto> Requests { get; set; } = [];
+
+    private Guid? CompletingRequestId { get; set; }
+
     private bool IsLoadingTableOrders { get; set; }
 
     private bool IsSplitView { get; set; }
@@ -139,6 +150,9 @@ public sealed partial class TablesPage : IAsyncDisposable
         Areas.FirstOrDefault(area => area.Id == SelectedAreaId) ?? Areas.FirstOrDefault();
 
     private TableDto? SelectedTable => SelectedArea?.Tables.FirstOrDefault(table => table.Id == SelectedTableId);
+
+    private IReadOnlyList<TableRequestDto> SelectedTableRequests =>
+        Requests.Where(request => request.TableId == SelectedTableId).ToList();
 
     private const string ModulePath = "./Tables/Pages/TablesPage.razor.js";
 
@@ -164,7 +178,7 @@ public sealed partial class TablesPage : IAsyncDisposable
 
         _ = RefreshTimesAsync();
 
-        await Task.WhenAll(GetFloorPlanAsync(), GetTablesStatusAsync());
+        await Task.WhenAll(GetFloorPlanAsync(), GetTablesStatusAsync(), GetRequestsAsync());
 
         await SelectTableFromQueryAsync();
     }
@@ -227,9 +241,10 @@ public sealed partial class TablesPage : IAsyncDisposable
         _ = InvokeAsync(() => Task.WhenAll(GetTablesStatusAsync(), GetTableOrdersAsync(isLiveUpdate: true)));
     }
 
+    // The floor plan or a guest's request changed
     private void OnTablesChanged()
     {
-        _ = InvokeAsync(() => GetFloorPlanAsync(isLiveUpdate: true));
+        _ = InvokeAsync(() => Task.WhenAll(GetFloorPlanAsync(isLiveUpdate: true), GetRequestsAsync()));
     }
 
     // A live update shows no skeleton, and a failed one keeps what is shown
@@ -245,6 +260,43 @@ public sealed partial class TablesPage : IAsyncDisposable
         IsLoadingFloorPlan = false;
 
         StateHasChanged();
+    }
+
+    // A failed reload keeps what is shown
+    private async Task GetRequestsAsync()
+    {
+        IReadOnlyList<TableRequestDto>? requests =
+            await ApiService.ExecuteAsync(() => TableApiClient.GetTableRequestsAsync());
+
+        if (requests is null)
+        {
+            return;
+        }
+
+        Requests = requests;
+
+        StateHasChanged();
+    }
+
+    private async Task CompleteRequestAsync(TableRequestDto request)
+    {
+        CompletingRequestId = request.Id;
+
+        bool isSuccess = await ApiService.ExecuteAsync(
+            () => TableApiClient.CompleteTableRequestAsync(request.Id),
+            $"{request.TableCode} · {request.Type.GetLabel()} done");
+
+        CompletingRequestId = null;
+
+        if (isSuccess)
+        {
+            await GetRequestsAsync();
+        }
+    }
+
+    private bool HasRequests(TableDto table)
+    {
+        return Requests.Any(request => request.TableId == table.Id);
     }
 
     private async Task GetTablesStatusAsync()

@@ -1,0 +1,26 @@
+﻿<MudPaper Class="@PaperClass" Style="@Style" @onclick="@OnPaperClickAsync">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+        <MudIcon Icon="@Request.Type.GetIcon()" Color="Color.Primary" Size="Size.Small"/>
+
+        <MudStack Spacing="0" Class="flex-1" Style="min-width: 0">
+            <MudText Typo="Typo.body2" Style="font-weight: 600; white-space: nowrap">
+                @Title
+            </MudText>
+
+            <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary); white-space: nowrap">
+                Asked @Request.CreatedAtUtc.ToRelativeTime()
+            </MudText>
+        </MudStack>
+
+        @* Done must not open the table as well *@
+        <div @onclick:stopPropagation="true">
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Size="Size.Small"
+                       Disabled="@IsCompleting"
+                       OnClick="@OnDoneClickAsync">
+                Done
+            </MudButton>
+        </div>
+    </MudStack>
+</MudPaper>

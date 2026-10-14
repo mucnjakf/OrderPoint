@@ -39,6 +39,7 @@ public static class InfrastructureModule
         services.AddScoped<IAreaRepository, AreaEfCoreRepository>();
         services.AddScoped<ITableRepository, TableEfCoreRepository>();
         services.AddScoped<IFixtureRepository, FixtureEfCoreRepository>();
+        services.AddScoped<ITableRequestRepository, TableRequestEfCoreRepository>();
         services.AddScoped<IDashboardRepository, DashboardEfCoreRepository>();
 
         services.AddScoped<IImageStorage, BlobImageStorage>();

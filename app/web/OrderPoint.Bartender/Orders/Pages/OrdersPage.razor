@@ -21,6 +21,21 @@
                           DebounceInterval="500"
                           Immediate="false"/>
 
+            @if (TableRequests.Count != 0)
+            {
+                <div style="@RequestStripStyle">
+                    @foreach (TableRequestDto request in TableRequests)
+                    {
+                        <TableRequestItem Request="@request"
+                                          ShowsTable="true"
+                                          IsCompleting="@(CompletingRequestId == request.Id)"
+                                          OnDone="@CompleteRequestAsync"
+                                          OnClick="@OpenRequestTable"
+                                          Style="flex: 0 0 auto;"/>
+                    }
+                </div>
+            }
+
             @if (!IsSearching)
             {
                 <MudPaper Class="d-flex mt-3" Style="@TabBarStyle">

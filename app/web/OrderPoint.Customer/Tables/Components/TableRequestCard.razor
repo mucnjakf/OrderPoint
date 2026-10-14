@@ -1,0 +1,32 @@
+﻿<MudPaper Class="pa-4">
+    @if (OpenRequest is null)
+    {
+        <MudButton Variant="Variant.Outlined"
+                   Size="Size.Large"
+                   FullWidth="true"
+                   StartIcon="@(IsSending ? null : Type.GetIcon())"
+                   Disabled="@IsSending"
+                   OnClick="@OnRequestClickAsync">
+            @if (IsSending)
+            {
+                <MudProgressCircular Indeterminate="true" Size="Size.Small" Class="mr-2"/>
+            }
+
+            @Type.GetLabel()
+        </MudButton>
+    }
+    else
+    {
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Type.GetIcon()" Color="Color.Success"/>
+
+            <MudStack Spacing="0" Class="flex-1">
+                <MudText Typo="Typo.body1">@WaitingText</MudText>
+
+                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                    Asked @OpenRequest.CreatedAtUtc.ToRelativeTime()
+                </MudText>
+            </MudStack>
+        </MudStack>
+    }
+</MudPaper>

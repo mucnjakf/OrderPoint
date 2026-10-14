@@ -23,6 +23,13 @@
         </MudAlert>
     }
 
+    @foreach (TableRequestDto request in Requests)
+    {
+        <TableRequestItem Request="@request"
+                          IsCompleting="@(CompletingRequestId == request.Id)"
+                          OnDone="@OnRequestDone"/>
+    }
+
     <OrderTicketList Orders="@Orders"
                      IsLoading="@IsLoading"
                      ShowsBartender="true"

@@ -5,12 +5,15 @@ using OrderPoint.Bartender.Orders.Enumerations;
 using OrderPoint.Bartender.Orders.Services;
 using OrderPoint.Bartender.Orders.Sorting;
 using OrderPoint.Bartender.Shared.Extensions;
+using OrderPoint.Bartender.Tables.Api;
 using OrderPoint.Shared.Auth.Services;
 using OrderPoint.Shared.Dtos;
+using OrderPoint.Shared.Extensions;
 using OrderPoint.Shared.Orders.Dtos;
 using OrderPoint.Shared.Orders.Enumerations;
 using OrderPoint.Shared.Orders.Services;
 using OrderPoint.Shared.Services;
+using OrderPoint.Shared.Tables.Dtos;
 
 namespace OrderPoint.Bartender.Orders.Pages;
 
@@ -33,6 +36,9 @@ public sealed partial class OrdersPage : IAsyncDisposable
     // A row of equal buttons rather than MudTabs, whose tab bar only grows as wide as its tabs; the bar is a paper
     // like the tickets (border, theme radius) and clips the square buttons to its rounded corners
     private const string TabBarStyle = "overflow: hidden;";
+
+    // Guests' requests side by side, scrolled sideways when there are many
+    private const string RequestStripStyle = "display: flex; gap: 8px; overflow-x: auto; margin-top: 12px;";
 
     // The search and the tabs stay right under the dense app bar while scrolling; the wrapper's background hides the
     // tickets passing underneath, and its padding replaces the gap to the list
@@ -61,6 +67,9 @@ public sealed partial class OrdersPage : IAsyncDisposable
 
     [Inject]
     private OrderApiClient OrderApiClient { get; set; } = null!;
+
+    [Inject]
+    private TableApiClient TableApiClient { get; set; } = null!;
 
     [Inject]
     private AuthService AuthService { get; set; } = null!;
@@ -118,15 +127,20 @@ public sealed partial class OrdersPage : IAsyncDisposable
 
     private bool IsSearching => !string.IsNullOrWhiteSpace(SearchQuery);
 
+    private IReadOnlyList<TableRequestDto> TableRequests { get; set; } = [];
+
+    private Guid? CompletingRequestId { get; set; }
+
     private bool HasMoreSearchResults => SearchResults.Count < SearchResultsTotalCount;
 
     protected override async Task OnInitializedAsync()
     {
         OrdersHubService.OrdersChanged += OnOrdersChanged;
+        OrdersHubService.TablesChanged += OnTablesChanged;
 
         _ = RefreshTimesAsync();
 
-        await GetTabsAsync();
+        await Task.WhenAll(GetTabsAsync(), GetTableRequestsAsync());
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -146,6 +160,7 @@ public sealed partial class OrdersPage : IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         OrdersHubService.OrdersChanged -= OnOrdersChanged;
+        OrdersHubService.TablesChanged -= OnTablesChanged;
         _timeRefreshTimer.Dispose();
 
         await BrowserViewportService.UnsubscribeAsync(_viewportSubscriptionId);
@@ -178,6 +193,49 @@ public sealed partial class OrdersPage : IAsyncDisposable
     private void OnOrdersChanged()
     {
         _ = InvokeAsync(() => Task.WhenAll(GetTabsAsync(), ReloadSearchResultsAsync()));
+    }
+
+    // A guest asked for something, or a bartender marked it done
+    private void OnTablesChanged()
+    {
+        _ = InvokeAsync(GetTableRequestsAsync);
+    }
+
+    // A failed reload keeps what is shown
+    private async Task GetTableRequestsAsync()
+    {
+        IReadOnlyList<TableRequestDto>? requests =
+            await ApiService.ExecuteAsync(() => TableApiClient.GetTableRequestsAsync());
+
+        if (requests is null)
+        {
+            return;
+        }
+
+        TableRequests = requests;
+
+        StateHasChanged();
+    }
+
+    private async Task CompleteRequestAsync(TableRequestDto request)
+    {
+        CompletingRequestId = request.Id;
+
+        bool isSuccess = await ApiService.ExecuteAsync(
+            () => TableApiClient.CompleteTableRequestAsync(request.Id),
+            $"{request.TableCode} · {request.Type.GetLabel()} done");
+
+        CompletingRequestId = null;
+
+        if (isSuccess)
+        {
+            await GetTableRequestsAsync();
+        }
+    }
+
+    private void OpenRequestTable(TableRequestDto request)
+    {
+        NavigationManager.NavigateTo($"/tables?table={Uri.EscapeDataString(request.TableCode)}");
     }
 
     private async Task GetTabsAsync()
