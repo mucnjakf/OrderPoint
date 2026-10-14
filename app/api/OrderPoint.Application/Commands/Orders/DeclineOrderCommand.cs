@@ -10,7 +10,7 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Commands.Orders;
 
-public sealed record DeclineOrderCommand(Guid Id, Guid BartenderId)
+public sealed record DeclineOrderCommand(Guid Id, Guid BartenderId, string Reason)
     : ICommand, ICacheInvalidatingCommand, IOrderNotifyingCommand
 {
     IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.OrderChanges;
@@ -35,9 +35,10 @@ internal sealed partial class DeclineOrderCommandHandler(
 
         Bartender? bartender = await bartenderRepository.GetAsync(command.BartenderId, cancellationToken);
 
+        // The access token outlives a deletion by up to 15 minutes
         if (bartender is null)
         {
-            return Result.Failure(BartenderErrors.NotFound);
+            return Result.Failure(AuthErrors.AccountDeleted);
         }
 
         // The access token outlives a deactivation by up to 15 minutes
@@ -46,7 +47,7 @@ internal sealed partial class DeclineOrderCommandHandler(
             return Result.Failure(AuthErrors.AccountInactive);
         }
 
-        Result result = order.Decline(command.BartenderId);
+        Result result = order.Decline(command.BartenderId, command.Reason);
 
         if (result.IsFailure)
         {

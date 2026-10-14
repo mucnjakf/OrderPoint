@@ -10,6 +10,25 @@
             <MudText Typo="Typo.body2" Align="Align.Center" Style="color: var(--mud-palette-text-secondary)">
                 @Order.Status.GetGuestText()
             </MudText>
+
+            @if (Order.DeclineReason is not null)
+            {
+                <MudText Typo="Typo.body1" Align="Align.Center" Class="mt-2">
+                    Reason: @Order.DeclineReason
+                </MudText>
+            }
+
+            @if (CanCancel)
+            {
+                <MudButton Variant="Variant.Outlined"
+                           Color="Color.Error"
+                           StartIcon="@Icons.Material.Filled.DoNotDisturbOn"
+                           Disabled="@IsCancelling"
+                           OnClick="@OnCancelClick"
+                           Class="mt-3">
+                    Cancel order
+                </MudButton>
+            }
         </MudStack>
     </MudPaper>
 

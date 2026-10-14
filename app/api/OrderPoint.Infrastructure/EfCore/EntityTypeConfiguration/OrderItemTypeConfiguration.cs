@@ -18,6 +18,16 @@ internal sealed class OrderItemTypeConfiguration : IEntityTypeConfiguration<Orde
             .IsRequired();
 
         builder
+            .Property(orderItem => orderItem.Name)
+            .HasMaxLength(30)
+            .IsRequired();
+
+        builder
+            .Property(orderItem => orderItem.ImageUrl)
+            .HasMaxLength(200)
+            .IsRequired(false);
+
+        builder
             .Property(orderItem => orderItem.Quantity)
             .IsRequired();
 

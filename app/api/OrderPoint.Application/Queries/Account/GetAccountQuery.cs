@@ -18,9 +18,10 @@ internal sealed class GetAccountQueryHandler(IIdentityService identityService, I
     {
         UserDto? user = await identityService.GetUserAsync(query.UserId, cancellationToken);
 
+        // A deleted bartender's access token stays valid for up to 15 minutes
         if (user is null)
         {
-            return Result.Failure<AccountDto>(AuthErrors.UserNotFound);
+            return Result.Failure<AccountDto>(AuthErrors.AccountDeleted);
         }
 
         if (user.Role != UserRole.Bartender)

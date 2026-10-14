@@ -1,4 +1,5 @@
-﻿using OrderPoint.Bartender.Orders.Api.Responses;
+﻿using OrderPoint.Bartender.Orders.Api.Requests;
+using OrderPoint.Bartender.Orders.Api.Responses;
 using OrderPoint.Shared.Dtos;
 using OrderPoint.Shared.Errors;
 using OrderPoint.Shared.Orders.Dtos;
@@ -69,9 +70,18 @@ internal sealed class OrderApiClient(HttpClient httpClient)
         await ChangeStatusAsync(id, "accept", cancellationToken);
     }
 
-    internal async Task DeclineOrderAsync(Guid id, CancellationToken cancellationToken = default)
+    internal async Task DeclineOrderAsync(
+        Guid id,
+        DeclineOrderRequest request,
+        CancellationToken cancellationToken = default)
     {
-        await ChangeStatusAsync(id, "decline", cancellationToken);
+        HttpResponseMessage response = await httpClient
+            .PutAsJsonAsync($"api/orders/{id}/decline", request, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
     }
 
     internal async Task ActivateOrderAsync(Guid id, CancellationToken cancellationToken = default)
@@ -84,7 +94,7 @@ internal sealed class OrderApiClient(HttpClient httpClient)
         await ChangeStatusAsync(id, "complete", cancellationToken);
     }
 
-    // The status endpoints take no body; the bartender comes from the access token
+    // These status endpoints take no body; the bartender comes from the access token
     private async Task ChangeStatusAsync(Guid id, string action, CancellationToken cancellationToken)
     {
         HttpResponseMessage response = await httpClient

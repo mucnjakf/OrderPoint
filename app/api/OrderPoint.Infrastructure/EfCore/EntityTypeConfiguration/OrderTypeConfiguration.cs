@@ -57,6 +57,15 @@ internal sealed class OrderTypeConfiguration : IEntityTypeConfiguration<Order>
             .IsRequired(false);
 
         builder
+            .Property(order => order.CancelledAtUtc)
+            .IsRequired(false);
+
+        builder
+            .Property(order => order.DeclineReason)
+            .HasMaxLength(200)
+            .IsRequired(false);
+
+        builder
             .Property(order => order.CreatedAtUtc)
             .IsRequired();
 

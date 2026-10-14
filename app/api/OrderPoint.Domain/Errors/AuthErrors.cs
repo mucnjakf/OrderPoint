@@ -24,6 +24,10 @@ public static class AuthErrors
         "Auth.AccountInactive",
         "Account is inactive");
 
+    public static readonly Error AccountDeleted = Error.Forbidden(
+        "Auth.AccountDeleted",
+        "Account no longer exists");
+
     public static readonly Error InvalidCurrentPassword = Error.Validation(
         "Auth.InvalidCurrentPassword",
         "Current password is incorrect");

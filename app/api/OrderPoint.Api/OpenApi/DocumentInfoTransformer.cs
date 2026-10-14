@@ -21,8 +21,8 @@ internal sealed class DocumentInfoTransformer : IOpenApiDocumentTransformer
                        "bulk actions."),
         ("Menu", "The menu as guests see it in the customer app: active categories with their active items. " +
                  "Anonymous."),
-        ("Orders", "Orders placed by customers. Placing and tracking an order are anonymous, admins and bartenders " +
-                   "read them, and bartenders accept, decline, start and complete them."),
+        ("Orders", "Orders placed by customers. Placing, tracking and cancelling an order are anonymous, admins and " +
+                   "bartenders read them, and bartenders accept, decline, start and complete them."),
         ("Shift", "The signed-in bartender's figures for today, for the bartender app."),
         ("Dashboard", "Aggregated numbers for the Admin dashboard, one endpoint per widget so they load in parallel."),
         ("Health", "The health of the API, the database and the blob storage, for the Admin's system health page.")

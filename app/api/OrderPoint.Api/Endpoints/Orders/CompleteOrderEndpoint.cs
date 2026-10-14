@@ -22,7 +22,8 @@ internal sealed class CompleteOrderEndpoint : IEndpoint
                 Moves an active order to Completed: the bartender who prepared it has served it.
 
                 - `403 Auth.AccountInactive`: the signed-in bartender was deactivated
-                - `404 Bartender.NotFound`: the signed-in bartender no longer exists
+                - `403 Auth.AccountDeleted`: the signed-in bartender no longer exists
+                - `404 Order.NotFound`: the order does not exist
                 - `409 Order.InvalidStatusTransition`: the order is not active
                 - `409 Order.AssignedToAnotherBartender`: the order was accepted by another bartender
                 """)

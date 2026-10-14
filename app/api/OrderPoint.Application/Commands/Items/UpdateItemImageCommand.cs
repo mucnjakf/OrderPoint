@@ -16,6 +16,7 @@ public sealed record UpdateItemImageCommand(Guid Id, Stream Content, string Cont
 
 internal sealed class UpdateItemImageCommandHandler(
     IItemRepository itemRepository,
+    IOrderRepository orderRepository,
     IImageStorage imageStorage,
     IUnitOfWork unitOfWork)
     : ICommandHandler<UpdateItemImageCommand>
@@ -48,7 +49,9 @@ internal sealed class UpdateItemImageCommandHandler(
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        if (previousImageUrl is not null)
+        // Past orders keep showing the picture they were placed with
+        if (previousImageUrl is not null
+            && !await orderRepository.ExistsByImageUrlAsync(previousImageUrl, cancellationToken))
         {
             await imageStorage.DeleteAsync(previousImageUrl, cancellationToken);
         }

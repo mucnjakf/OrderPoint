@@ -22,4 +22,10 @@
                      IsLoading="@IsLoading(OrderStatus.Declined)"
                      IsSelected="@IsSelected(OrderStatus.Declined)"
                      OnClick="@OnStatusClick"/>
+
+    <OrderStatusCard Status="OrderStatus.Cancelled"
+                     Count="@GetCount(OrderStatus.Cancelled)"
+                     IsLoading="@IsLoading(OrderStatus.Cancelled)"
+                     IsSelected="@IsSelected(OrderStatus.Cancelled)"
+                     OnClick="@OnStatusClick"/>
 </MudStack>

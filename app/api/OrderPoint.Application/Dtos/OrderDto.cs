@@ -7,14 +7,16 @@ namespace OrderPoint.Application.Dtos;
 /// <param name="Number">The human-readable order number, counting up from 1.</param>
 /// <param name="TableCode">The code of the table the order was placed from, e.g. `T11`.</param>
 /// <param name="Note">The customer's note for the bartender, or `null`.</param>
-/// <param name="Status">The status: `Pending`, `Accepted`, `Active`, `Completed`, or `Declined`.</param>
+/// <param name="Status">The status: `Pending`, `Accepted`, `Active`, `Completed`, `Declined`, or `Cancelled`.</param>
 /// <param name="Total">The sum of quantity times unit price of the lines, in euros.</param>
 /// <param name="Items">The order lines.</param>
 /// <param name="Bartender">The bartender handling the order, or `null` while nobody has taken it.</param>
+/// <param name="DeclineReason">Why the order was declined, shown to the guest, or `null`.</param>
 /// <param name="AcceptedAtUtc">When a bartender accepted the order (UTC), or `null`.</param>
-/// <param name="DeclinedAtUtc">When a bartender declined the order (UTC), or `null`.</param>
+/// <param name="DeclinedAtUtc">When a bartender or the admin declined the order (UTC), or `null`.</param>
 /// <param name="ActivatedAtUtc">When the preparation started (UTC), or `null`.</param>
 /// <param name="CompletedAtUtc">When the order was completed (UTC), or `null`.</param>
+/// <param name="CancelledAtUtc">When the guest cancelled the order (UTC), or `null`.</param>
 /// <param name="CreatedAtUtc">When the order was placed (UTC).</param>
 /// <param name="UpdatedAtUtc">When it was last updated (UTC), or `null` if it never was.</param>
 public sealed record OrderDto(
@@ -26,9 +28,11 @@ public sealed record OrderDto(
     decimal Total,
     IReadOnlyList<OrderItemDto> Items,
     OrderBartenderDto? Bartender,
+    string? DeclineReason,
     DateTimeOffset? AcceptedAtUtc,
     DateTimeOffset? DeclinedAtUtc,
     DateTimeOffset? ActivatedAtUtc,
     DateTimeOffset? CompletedAtUtc,
+    DateTimeOffset? CancelledAtUtc,
     DateTimeOffset CreatedAtUtc,
     DateTimeOffset? UpdatedAtUtc);

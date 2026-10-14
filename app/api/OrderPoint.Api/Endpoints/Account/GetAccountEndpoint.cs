@@ -27,8 +27,9 @@ internal sealed class GetAccountEndpoint : IEndpoint
                 Returns the signed-in user's email and profile image: the admin's own image, or for a bartender the
                 photo the admin set. For a bartender it also returns the name and phone number the admin set. The
                 user is taken from the access token.
+
+                - `403 Auth.AccountDeleted`: the signed-in bartender was deleted
                 """)
-            .ProducesProblem(StatusCodes.Status404NotFound)
             .RequireAuthorization(AuthorizationPolicies.AdminOrBartender);
     }
 

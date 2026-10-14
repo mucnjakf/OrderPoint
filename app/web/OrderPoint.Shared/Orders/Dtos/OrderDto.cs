@@ -11,9 +11,11 @@ public sealed record OrderDto(
     decimal Total,
     IReadOnlyList<OrderItemDto> Items,
     OrderBartenderDto? Bartender,
+    string? DeclineReason,
     DateTimeOffset? AcceptedAtUtc,
     DateTimeOffset? DeclinedAtUtc,
     DateTimeOffset? ActivatedAtUtc,
     DateTimeOffset? CompletedAtUtc,
+    DateTimeOffset? CancelledAtUtc,
     DateTimeOffset CreatedAtUtc,
     DateTimeOffset? UpdatedAtUtc);

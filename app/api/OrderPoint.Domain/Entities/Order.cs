@@ -23,6 +23,10 @@ public sealed class Order : Entity
 
     public DateTimeOffset? CompletedAtUtc { get; private set; }
 
+    public DateTimeOffset? CancelledAtUtc { get; private set; }
+
+    public string? DeclineReason { get; private set; }
+
     public Guid? BartenderId { get; private set; }
 
     public Bartender? Bartender { get; private set; }
@@ -97,8 +101,13 @@ public sealed class Order : Entity
     }
 
     // A pending order can be declined by any bartender, an accepted one only by the bartender who accepted it
-    public Result Decline(Guid bartenderId)
+    public Result Decline(Guid bartenderId, string reason)
     {
+        if (string.IsNullOrWhiteSpace(reason))
+        {
+            return Result.Failure(OrderErrors.DeclineReasonIsRequired);
+        }
+
         if (Status is not (OrderStatus.Pending or OrderStatus.Accepted))
         {
             return Result.Failure(OrderErrors.InvalidStatusTransition);
@@ -114,6 +123,7 @@ public sealed class Order : Entity
         Status = OrderStatus.Declined;
         BartenderId = bartenderId;
         DeclinedAtUtc = now;
+        DeclineReason = reason;
 
         UpdatedAtUtc = now;
 
@@ -183,8 +193,13 @@ public sealed class Order : Entity
     }
 
     // The admin closes any open order nobody will finish (e.g. at closing time); its bartender, if any, stays recorded
-    public Result DeclineByAdmin()
+    public Result DeclineByAdmin(string reason)
     {
+        if (string.IsNullOrWhiteSpace(reason))
+        {
+            return Result.Failure(OrderErrors.DeclineReasonIsRequired);
+        }
+
         if (Status is not (OrderStatus.Pending or OrderStatus.Accepted or OrderStatus.Active))
         {
             return Result.Failure(OrderErrors.InvalidStatusTransition);
@@ -194,6 +209,25 @@ public sealed class Order : Entity
 
         Status = OrderStatus.Declined;
         DeclinedAtUtc = now;
+        DeclineReason = reason;
+
+        UpdatedAtUtc = now;
+
+        return Result.Success();
+    }
+
+    // The guest changed their mind before any bartender took the order
+    public Result Cancel()
+    {
+        if (Status != OrderStatus.Pending)
+        {
+            return Result.Failure(OrderErrors.InvalidStatusTransition);
+        }
+
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+
+        Status = OrderStatus.Cancelled;
+        CancelledAtUtc = now;
 
         UpdatedAtUtc = now;
 

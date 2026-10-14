@@ -1,4 +1,5 @@
-﻿using OrderPoint.Admin.Orders.Api.Responses;
+﻿using OrderPoint.Admin.Orders.Api.Requests;
+using OrderPoint.Admin.Orders.Api.Responses;
 using OrderPoint.Shared.Dtos;
 using OrderPoint.Shared.Errors;
 using OrderPoint.Shared.Orders.Dtos;
@@ -71,10 +72,13 @@ internal sealed class OrderApiClient(HttpClient httpClient)
     }
 
     // No body; the API treats the admin's decline as closing an open order
-    internal async Task DeclineOrderAsync(Guid id, CancellationToken cancellationToken = default)
+    internal async Task DeclineOrderAsync(
+        Guid id,
+        DeclineOrderRequest request,
+        CancellationToken cancellationToken = default)
     {
         HttpResponseMessage response = await httpClient
-            .PutAsync($"api/orders/{id}/decline", content: null, cancellationToken);
+            .PutAsJsonAsync($"api/orders/{id}/decline", request, cancellationToken);
 
         if (!response.IsSuccessStatusCode)
         {

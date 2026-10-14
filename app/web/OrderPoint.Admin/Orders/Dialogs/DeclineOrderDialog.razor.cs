@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using OrderPoint.Admin.Orders.Api.Requests;
 using OrderPoint.Shared.Orders.Dtos;
 
 namespace OrderPoint.Admin.Orders.Dialogs;
@@ -14,13 +15,15 @@ public sealed partial class DeclineOrderDialog
     [CascadingParameter]
     private IMudDialogInstance MudDialogInstance { get; set; } = null!;
 
+    private DeclineOrderRequest Request { get; set; } = new();
+
     private string HandlerText => Order.Bartender is null
         ? "Not taken by a bartender yet"
         : $"Taken by {Order.Bartender.FirstName} {Order.Bartender.LastName}";
 
-    private void Confirm()
+    private void OnValidSubmit()
     {
-        MudDialogInstance.Close(DialogResult.Ok(true));
+        MudDialogInstance.Close(DialogResult.Ok(Request));
     }
 
     private void Cancel()

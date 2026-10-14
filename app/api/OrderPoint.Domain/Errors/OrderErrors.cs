@@ -28,6 +28,10 @@ public static class OrderErrors
         "Order.InvalidStatusTransition",
         "Order status does not allow this change");
 
+    internal static readonly Error DeclineReasonIsRequired = Error.Validation(
+        "Order.DeclineReasonIsRequired",
+        "Order decline reason is required");
+
     internal static readonly Error AssignedToAnotherBartender = Error.Conflict(
         "Order.AssignedToAnotherBartender",
         "Order is assigned to another bartender");

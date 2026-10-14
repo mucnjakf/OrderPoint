@@ -29,6 +29,8 @@
     </LoadingContent>
 
     <ChildContent>
-        <OrderTrackingDetails Order="@(Order!)"/>
+        <OrderTrackingDetails Order="@(Order!)"
+                              OnCancelClick="@ShowCancelOrderDialogAsync"
+                              IsCancelling="@IsCancelling"/>
     </ChildContent>
 </StatefulView>

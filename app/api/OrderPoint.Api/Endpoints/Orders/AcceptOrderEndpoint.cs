@@ -23,7 +23,8 @@ internal sealed class AcceptOrderEndpoint : IEndpoint
                 start, complete or decline it.
 
                 - `403 Auth.AccountInactive`: the signed-in bartender was deactivated
-                - `404 Bartender.NotFound`: the signed-in bartender no longer exists
+                - `403 Auth.AccountDeleted`: the signed-in bartender no longer exists
+                - `404 Order.NotFound`: the order does not exist
                 - `409 Order.InvalidStatusTransition`: the order is not pending (e.g. another bartender accepted it
                   first)
                 """)

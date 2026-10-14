@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using OrderPoint.Bartender.Orders.Api.Requests;
 
 namespace OrderPoint.Bartender.Orders.Dialogs;
 
@@ -11,9 +12,11 @@ public sealed partial class DeclineOrderDialog
     [CascadingParameter]
     private IMudDialogInstance MudDialogInstance { get; set; } = null!;
 
-    private void Confirm()
+    private DeclineOrderRequest Request { get; set; } = new();
+
+    private void OnValidSubmit()
     {
-        MudDialogInstance.Close(DialogResult.Ok(true));
+        MudDialogInstance.Close(DialogResult.Ok(Request));
     }
 
     private void Cancel()

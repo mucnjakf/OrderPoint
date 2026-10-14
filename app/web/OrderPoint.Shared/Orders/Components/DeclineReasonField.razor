@@ -1,0 +1,28 @@
+﻿<MudStack Spacing="3">
+    <MudStack Row="true" Wrap="Wrap.Wrap" Spacing="2">
+        @foreach (string quickPick in DeclineReasons.QuickPicks)
+        {
+            string reason = quickPick;
+
+            <MudChip T="string"
+                     Variant="@(Reason == reason ? Variant.Filled : Variant.Outlined)"
+                     Color="@(Reason == reason ? Color.Primary : Color.Default)"
+                     OnClick="@(() => SetReasonAsync(reason))"
+                     Class="ma-0">
+                @reason
+            </MudChip>
+        }
+    </MudStack>
+
+    <MudTextField T="string"
+                  Label="Reason for the guest"
+                  Value="@Reason"
+                  ValueChanged="@SetReasonAsync"
+                  For="@For"
+                  HelperText="The guest sees it on their order."
+                  Variant="Variant.Outlined"
+                  Counter="@DeclineReasons.MaxLength"
+                  MaxLength="@DeclineReasons.MaxLength"
+                  Lines="2"
+                  Immediate="true"/>
+</MudStack>

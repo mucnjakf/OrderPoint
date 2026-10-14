@@ -45,6 +45,8 @@ public sealed partial class OrderTicket
             $"Completed {Order.CompletedAtUtc.Value.ToDisplayDateTime(TimeZoneService.TimeZone)}",
         OrderStatus.Declined when Order.DeclinedAtUtc is not null =>
             $"Declined {Order.DeclinedAtUtc.Value.ToDisplayDateTime(TimeZoneService.TimeZone)}",
+        OrderStatus.Cancelled when Order.CancelledAtUtc is not null =>
+            $"Cancelled {Order.CancelledAtUtc.Value.ToDisplayDateTime(TimeZoneService.TimeZone)}",
         _ => $"Placed {Order.CreatedAtUtc.ToRelativeTime()}"
     };
 

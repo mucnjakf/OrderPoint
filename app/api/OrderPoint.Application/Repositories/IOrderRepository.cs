@@ -28,6 +28,9 @@ public interface IOrderRepository
 
     Task<bool> ExistsByItemAsync(Guid itemId, CancellationToken cancellationToken = default);
 
+    // Order lines keep the picture the item had when the order was placed
+    Task<bool> ExistsByImageUrlAsync(string imageUrl, CancellationToken cancellationToken = default);
+
     Task<bool> ExistsByItemsAsync(IReadOnlyList<Guid> itemIds, CancellationToken cancellationToken = default);
 
     Task<int> CountByBartenderAsync(Guid bartenderId, CancellationToken cancellationToken = default);

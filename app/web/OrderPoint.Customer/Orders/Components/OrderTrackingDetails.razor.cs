@@ -19,20 +19,36 @@ public sealed partial class OrderTrackingDetails
     [EditorRequired]
     public OrderTrackingDto Order { get; set; } = null!;
 
+    // Shows the cancel button while no bartender has taken the order
+    [Parameter]
+    public EventCallback OnCancelClick { get; set; }
+
+    [Parameter]
+    public bool IsCancelling { get; set; }
+
+    private bool CanCancel => Order.Status is OrderStatus.Pending && OnCancelClick.HasDelegate;
+
     private IReadOnlyList<(OrderStatus Status, DateTimeOffset? ReachedAtUtc)> StatusSteps =>
-        Order.Status is OrderStatus.Declined
-            ?
+        Order.Status switch
+        {
+            OrderStatus.Declined =>
             [
                 (OrderStatus.Pending, Order.CreatedAtUtc),
                 (OrderStatus.Declined, Order.DeclinedAtUtc)
-            ]
-            :
+            ],
+            OrderStatus.Cancelled =>
+            [
+                (OrderStatus.Pending, Order.CreatedAtUtc),
+                (OrderStatus.Cancelled, Order.CancelledAtUtc)
+            ],
+            _ =>
             [
                 (OrderStatus.Pending, Order.CreatedAtUtc),
                 (OrderStatus.Accepted, Order.AcceptedAtUtc),
                 (OrderStatus.Active, Order.ActivatedAtUtc),
                 (OrderStatus.Completed, Order.CompletedAtUtc)
-            ];
+            ]
+        };
 
     private static string GetLineTotalText(OrderItemDto orderItem)
     {

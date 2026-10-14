@@ -5,7 +5,6 @@
 
         <MudButton Href="@destinationHref"
                    Variant="Variant.Text"
-                   Ripple="false"
                    Color="@(IsActive(destinationHref) ? Color.Primary : Color.Default)"
                    Class="flex-1"
                    Style="@(IsActive(destinationHref) ? ActiveButtonStyle : InactiveButtonStyle)">
@@ -13,6 +12,7 @@
                 <MudBadge Content="@CartService.ItemsCount"
                           Visible="@(destinationHref == CartHref && CartService.ItemsCount > 0)"
                           Color="Color.Primary"
+                          Origin="Origin.CenterRight"
                           Overlap="true">
                     <MudIcon Icon="@icon" />
                 </MudBadge>

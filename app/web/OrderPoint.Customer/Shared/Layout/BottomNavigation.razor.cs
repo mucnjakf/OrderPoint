@@ -8,22 +8,18 @@ namespace OrderPoint.Customer.Shared.Layout;
 // Fixed to the bottom of the screen, within thumb reach on a phone
 public sealed partial class BottomNavigation : IDisposable
 {
-    internal const string Height = "72px";
+    internal const string Height = "64px";
 
-    // The extra room at the top holds the cart badge, which sits above the icon
     private const string NavigationStyle =
-        $"position: fixed; left: 0; right: 0; bottom: 0; display: flex; padding: 12px 8px 4px; " +
+        $"position: fixed; left: 0; right: 0; bottom: 0; display: flex; padding: 4px 8px; " +
         $"height: {Height}; z-index: var(--mud-zindex-appbar); " +
         "background-color: var(--mud-palette-surface); border-top: 1px solid var(--mud-palette-lines-default);";
 
     private const string CartHref = "/cart";
 
-    // Visible overflow, so the cart badge above the icon isn't cut off by the button (the buttons have no ripple,
-    // which would spill out too)
-    private const string ActiveButtonStyle = "text-transform: none; font-weight: 600; overflow: visible;";
+    private const string ActiveButtonStyle = "text-transform: none; font-weight: 600;";
 
-    private const string InactiveButtonStyle =
-        "text-transform: none; color: var(--mud-palette-text-secondary); overflow: visible;";
+    private const string InactiveButtonStyle = "text-transform: none; color: var(--mud-palette-text-secondary);";
 
     private static readonly (string Href, string Label, string Icon)[] Destinations =
     [

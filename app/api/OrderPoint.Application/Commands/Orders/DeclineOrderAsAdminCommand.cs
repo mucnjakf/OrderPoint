@@ -10,7 +10,7 @@ using OrderPoint.Domain.Outcomes;
 namespace OrderPoint.Application.Commands.Orders;
 
 // The admin closes an open order nobody will finish, e.g. at closing time
-public sealed record DeclineOrderAsAdminCommand(Guid Id)
+public sealed record DeclineOrderAsAdminCommand(Guid Id, string Reason)
     : ICommand, ICacheInvalidatingCommand, IOrderNotifyingCommand
 {
     IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.OrderChanges;
@@ -32,7 +32,7 @@ internal sealed partial class DeclineOrderAsAdminCommandHandler(
             return Result.Failure(OrderErrors.NotFound);
         }
 
-        Result result = order.DeclineByAdmin();
+        Result result = order.DeclineByAdmin(command.Reason);
 
         if (result.IsFailure)
         {

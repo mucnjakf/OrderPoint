@@ -116,6 +116,18 @@
                                     </MudStack>
                                 }
 
+                                @if (Order.DeclineReason is not null)
+                                {
+                                    <MudAlert Severity="Severity.Error"
+                                              Variant="Variant.Text"
+                                              Dense="true"
+                                              Icon="@Icons.Material.Filled.Block">
+                                        <MudText Typo="Typo.body2">
+                                            @Order.DeclineReason
+                                        </MudText>
+                                    </MudAlert>
+                                }
+
                                 @if (Order.Bartender is not null)
                                 {
                                     <MudDivider Class="my-1"/>

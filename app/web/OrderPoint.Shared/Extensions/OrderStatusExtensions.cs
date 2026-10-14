@@ -14,6 +14,7 @@ internal static class OrderStatusExtensions
             OrderStatus.Declined => Color.Error,
             OrderStatus.Active => Color.Primary,
             OrderStatus.Completed => Color.Success,
+            OrderStatus.Cancelled => Color.Default,
             _ => throw new ArgumentOutOfRangeException(nameof(status), status, null)
         };
     }
@@ -27,6 +28,7 @@ internal static class OrderStatusExtensions
             OrderStatus.Declined => Icons.Material.Filled.Cancel,
             OrderStatus.Active => Icons.Material.Filled.LocalBar,
             OrderStatus.Completed => Icons.Material.Filled.CheckCircle,
+            OrderStatus.Cancelled => Icons.Material.Filled.DoNotDisturbOn,
             _ => throw new ArgumentOutOfRangeException(nameof(status), status, null)
         };
     }

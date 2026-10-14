@@ -35,6 +35,7 @@ internal sealed class OrderApiClient(HttpClient httpClient)
 
         return result.Data;
     }
+
     internal async Task<OrderDto> CreateOrderAsync(
         CreateOrderRequest request,
         CancellationToken cancellationToken = default)
@@ -51,5 +52,17 @@ internal sealed class OrderApiClient(HttpClient httpClient)
             ?? throw new InvalidOperationException($"Unable to parse {nameof(CreateOrderResponse)}");
 
         return result.Data;
+    }
+
+    // No body and no token: the order id is the permission
+    internal async Task CancelOrderAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await httpClient
+            .PutAsync($"api/orders/{id}/cancel", content: null, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
     }
 }

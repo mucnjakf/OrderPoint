@@ -2,6 +2,7 @@
 using MudBlazor;
 using OrderPoint.Shared.Orders.Dtos;
 using OrderPoint.Admin.Orders.Api;
+using OrderPoint.Admin.Orders.Api.Requests;
 using OrderPoint.Shared.Orders.Enumerations;
 using OrderPoint.Shared.Orders.Services;
 using OrderPoint.Shared.Services;
@@ -40,19 +41,26 @@ public sealed partial class OrderDetailsDialog : IDisposable
     private bool IsOpen => CurrentOrder.Status is OrderStatus.Pending or OrderStatus.Accepted or OrderStatus.Active;
 
     private IReadOnlyList<(OrderStatus Status, DateTimeOffset? ReachedAtUtc)> TimelineSteps =>
-        CurrentOrder.Status is OrderStatus.Declined
-            ?
+        CurrentOrder.Status switch
+        {
+            OrderStatus.Declined =>
             [
                 (OrderStatus.Pending, CurrentOrder.CreatedAtUtc),
                 (OrderStatus.Declined, CurrentOrder.DeclinedAtUtc)
-            ]
-            :
+            ],
+            OrderStatus.Cancelled =>
+            [
+                (OrderStatus.Pending, CurrentOrder.CreatedAtUtc),
+                (OrderStatus.Cancelled, CurrentOrder.CancelledAtUtc)
+            ],
+            _ =>
             [
                 (OrderStatus.Pending, CurrentOrder.CreatedAtUtc),
                 (OrderStatus.Accepted, CurrentOrder.AcceptedAtUtc),
                 (OrderStatus.Active, CurrentOrder.ActivatedAtUtc),
                 (OrderStatus.Completed, CurrentOrder.CompletedAtUtc)
-            ];
+            ]
+        };
 
     protected override void OnInitialized()
     {
@@ -108,10 +116,12 @@ public sealed partial class OrderDetailsDialog : IDisposable
             return;
         }
 
+        var request = (dialogResult.Data as DeclineOrderRequest)!;
+
         IsDeclining = true;
 
         bool isSuccess = await ApiService.ExecuteAsync(
-            () => OrderApiClient.DeclineOrderAsync(CurrentOrder.Id),
+            () => OrderApiClient.DeclineOrderAsync(CurrentOrder.Id, request),
             $"Order #{CurrentOrder.Number} declined");
 
         IsDeclining = false;

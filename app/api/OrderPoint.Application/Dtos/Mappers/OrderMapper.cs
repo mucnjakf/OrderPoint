@@ -13,10 +13,12 @@ internal static class OrderMapper
         order.Items.Sum(orderItem => orderItem.Quantity * orderItem.UnitPrice),
         order.Items.Select(orderItem => orderItem.ToOrderItemDto()).ToList(),
         order.Bartender?.ToOrderBartenderDto(),
+        order.DeclineReason,
         order.AcceptedAtUtc,
         order.DeclinedAtUtc,
         order.ActivatedAtUtc,
         order.CompletedAtUtc,
+        order.CancelledAtUtc,
         order.CreatedAtUtc,
         order.UpdatedAtUtc);
 
@@ -28,17 +30,19 @@ internal static class OrderMapper
         order.Status,
         order.Items.Sum(orderItem => orderItem.Quantity * orderItem.UnitPrice),
         order.Items.Select(orderItem => orderItem.ToOrderItemDto()).ToList(),
+        order.DeclineReason,
         order.AcceptedAtUtc,
         order.DeclinedAtUtc,
         order.ActivatedAtUtc,
         order.CompletedAtUtc,
+        order.CancelledAtUtc,
         order.CreatedAtUtc);
 
     internal static OrderItemDto ToOrderItemDto(this OrderItem orderItem) => new(
         orderItem.Id,
         orderItem.ItemId,
-        orderItem.Item.Name,
-        orderItem.Item.ImageUrl,
+        orderItem.Name,
+        orderItem.ImageUrl,
         orderItem.Quantity,
         orderItem.UnitPrice);
 

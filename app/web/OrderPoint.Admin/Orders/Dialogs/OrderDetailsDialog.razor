@@ -70,6 +70,14 @@
                                     Text="@(CurrentOrder.Note ?? "-")"
                                     ShowDivider="true"/>
 
+                    @if (CurrentOrder.DeclineReason is not null)
+                    {
+                        <TextDisplayRow Icon="@Icons.Material.Filled.Block"
+                                        Label="Decline reason"
+                                        Text="@CurrentOrder.DeclineReason"
+                                        ShowDivider="true"/>
+                    }
+
                     <TextDisplayRow Icon="@Icons.Material.Filled.Person"
                                     Label="Bartender">
                         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">

@@ -15,6 +15,7 @@ public sealed record DeleteItemImageCommand(Guid Id) : ICommand, ICacheInvalidat
 
 internal sealed class DeleteItemImageCommandHandler(
     IItemRepository itemRepository,
+    IOrderRepository orderRepository,
     IImageStorage imageStorage,
     IUnitOfWork unitOfWork)
     : ICommandHandler<DeleteItemImageCommand>
@@ -38,7 +39,11 @@ internal sealed class DeleteItemImageCommandHandler(
         item.RemoveImage();
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        await imageStorage.DeleteAsync(imageUrl, cancellationToken);
+        // Past orders keep showing the picture they were placed with
+        if (!await orderRepository.ExistsByImageUrlAsync(imageUrl, cancellationToken))
+        {
+            await imageStorage.DeleteAsync(imageUrl, cancellationToken);
+        }
 
         return Result.Success();
     }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using OrderPoint.Bartender.Orders.Api;
+using OrderPoint.Bartender.Orders.Api.Requests;
 using OrderPoint.Bartender.Orders.Dialogs;
 using OrderPoint.Bartender.Orders.Enumerations;
 using OrderPoint.Bartender.Shared.Layout;
@@ -18,6 +19,8 @@ namespace OrderPoint.Bartender.Orders.Components;
 public sealed partial class OrderDetails : IDisposable
 {
     private const string AccountInactiveCode = "Auth.AccountInactive";
+
+    private const string AccountDeletedCode = "Auth.AccountDeleted";
 
     private const string NotReachedStyle = "color: var(--mud-palette-text-disabled)";
 
@@ -110,19 +113,26 @@ public sealed partial class OrderDetails : IDisposable
         : $"Handled by {Order!.Bartender!.FirstName} {Order.Bartender.LastName}";
 
     private IReadOnlyList<(OrderStatus Status, DateTimeOffset? ReachedAtUtc)> StatusSteps =>
-        Order!.Status is OrderStatus.Declined
-            ?
+        Order!.Status switch
+        {
+            OrderStatus.Declined =>
             [
                 (OrderStatus.Pending, Order.CreatedAtUtc),
                 (OrderStatus.Declined, Order.DeclinedAtUtc)
-            ]
-            :
+            ],
+            OrderStatus.Cancelled =>
+            [
+                (OrderStatus.Pending, Order.CreatedAtUtc),
+                (OrderStatus.Cancelled, Order.CancelledAtUtc)
+            ],
+            _ =>
             [
                 (OrderStatus.Pending, Order.CreatedAtUtc),
                 (OrderStatus.Accepted, Order.AcceptedAtUtc),
                 (OrderStatus.Active, Order.ActivatedAtUtc),
                 (OrderStatus.Completed, Order.CompletedAtUtc)
-            ];
+            ]
+        };
 
     protected override async Task OnInitializedAsync()
     {
@@ -222,9 +232,11 @@ public sealed partial class OrderDetails : IDisposable
             return;
         }
 
+        var request = (dialogResult.Data as DeclineOrderRequest)!;
+
         await ChangeStatusAsync(
             OrderAction.Decline,
-            () => OrderApiClient.DeclineOrderAsync(OrderId),
+            () => OrderApiClient.DeclineOrderAsync(OrderId, request),
             $"Order #{Order!.Number} declined",
             isFinishing: true);
     }
@@ -238,7 +250,9 @@ public sealed partial class OrderDetails : IDisposable
     {
         WorkingAction = action;
 
-        bool isSuccess = await ApiService.ExecuteAsync(() => EndSessionIfInactiveAsync(changeStatus), successMessage);
+        bool isSuccess = await ApiService.ExecuteAsync(
+            () => EndSessionIfAccountClosedAsync(changeStatus),
+            successMessage);
 
         WorkingAction = null;
 
@@ -257,15 +271,16 @@ public sealed partial class OrderDetails : IDisposable
         await GetOrderAsync();
     }
 
-    // A bartender deactivated while signed in is refused by the API; the snackbar says why and the layout shows the
-    // login form
-    private async Task EndSessionIfInactiveAsync(Func<Task> changeStatus)
+    // A bartender deactivated or deleted while signed in is refused by the API; the snackbar says why and the layout
+    // shows the login form
+    private async Task EndSessionIfAccountClosedAsync(Func<Task> changeStatus)
     {
         try
         {
             await changeStatus();
         }
-        catch (ApiException exception) when (exception.HasErrorCode(AccountInactiveCode))
+        catch (ApiException exception)
+            when (exception.HasErrorCode(AccountInactiveCode) || exception.HasErrorCode(AccountDeletedCode))
         {
             await AuthService.EndSessionAsync();
 

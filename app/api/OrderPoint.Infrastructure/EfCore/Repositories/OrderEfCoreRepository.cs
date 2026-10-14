@@ -21,8 +21,7 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
         IQueryable<Order> query = dbContext.Orders
             .AsNoTracking()
             .Include(order => order.Bartender)
-            .Include(order => order.Items)
-            .ThenInclude(orderItem => orderItem.Item);
+            .Include(order => order.Items);
 
         query = SearchOrders(query, searchQuery);
         query = FilterOrders(query, status, itemId, bartenderId);
@@ -42,7 +41,6 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
         => await dbContext.Orders
             .Include(order => order.Bartender)
             .Include(order => order.Items)
-            .ThenInclude(orderItem => orderItem.Item)
             .SingleOrDefaultAsync(order => order.Id == id, cancellationToken);
 
     public async Task CreateAsync(Order order, CancellationToken cancellationToken = default)
@@ -66,6 +64,11 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
     public async Task<bool> ExistsByItemAsync(Guid itemId, CancellationToken cancellationToken = default)
         => await dbContext.Orders.AnyAsync(
             order => order.Items.Any(orderItem => orderItem.ItemId == itemId),
+            cancellationToken);
+
+    public async Task<bool> ExistsByImageUrlAsync(string imageUrl, CancellationToken cancellationToken = default)
+        => await dbContext.Orders.AnyAsync(
+            order => order.Items.Any(orderItem => orderItem.ImageUrl == imageUrl),
             cancellationToken);
 
     public async Task<bool> ExistsByItemsAsync(

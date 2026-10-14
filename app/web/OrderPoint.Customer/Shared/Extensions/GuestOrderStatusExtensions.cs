@@ -14,6 +14,7 @@ internal static class GuestOrderStatusExtensions
             OrderStatus.Active => "Being prepared",
             OrderStatus.Completed => "Served",
             OrderStatus.Declined => "Declined",
+            OrderStatus.Cancelled => "Cancelled",
             _ => throw new ArgumentOutOfRangeException(nameof(status), status, null)
         };
     }
@@ -27,6 +28,7 @@ internal static class GuestOrderStatusExtensions
             OrderStatus.Active => "Your order is being made right now.",
             OrderStatus.Completed => "Enjoy! You can order again from the menu any time.",
             OrderStatus.Declined => "Sorry, the bar couldn't take this order. Please ask the staff.",
+            OrderStatus.Cancelled => "You cancelled this order.",
             _ => throw new ArgumentOutOfRangeException(nameof(status), status, null)
         };
     }
