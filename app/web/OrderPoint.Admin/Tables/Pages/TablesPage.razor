@@ -3,11 +3,14 @@
 <PageTitle>Tables</PageTitle>
 
 <PageHeader Text="Tables">
-    <MudButton Variant="Variant.Outlined"
-               StartIcon="@Icons.Material.Filled.Add"
-               OnClick="@ShowCreateAreaDialogAsync">
-        Add area
-    </MudButton>
+    @if (HasNoAreas)
+    {
+        <MudButton Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Filled.Add"
+                   OnClick="@ShowCreateAreaDialogAsync">
+            Add area
+        </MudButton>
+    }
 </PageHeader>
 
 <StatefulView IsLoading="@IsLoading"
@@ -20,72 +23,80 @@
     </LoadingContent>
 
     <ChildContent>
-        <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Start">
-            <MudStack Spacing="3" Class="flex-1" Style="min-width: 0">
+        <div style="@FloorPlanEditorLayout.GridStyle">
+            <MudStack Row="true"
+                      Justify="Justify.SpaceBetween"
+                      AlignItems="AlignItems.Center"
+                      Style="@FloorPlanEditorLayout.ToolbarStyle">
+                <MudButton Variant="Variant.Outlined"
+                           StartIcon="@Icons.Material.Filled.Add"
+                           OnClick="@ShowCreateAreaDialogAsync">
+                    Add area
+                </MudButton>
+
                 <MudToggleGroup T="Guid"
                                 Value="@SelectedArea!.Id"
                                 ValueChanged="@SelectArea"
                                 Color="Color.Primary"
-                                Size="Size.Small"
-                                Class="align-self-start">
+                                Size="Size.Small">
                     @foreach (AreaDto area in Areas)
                     {
                         <MudToggleItem Value="@area.Id" Text="@area.Name" Class="px-5 py-2"/>
                     }
                 </MudToggleGroup>
+            </MudStack>
 
-                <MudPaper Class="pa-3">
-                    <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center" Wrap="Wrap.Wrap" Class="mb-3">
-                        <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
-                            <MudText Typo="Typo.caption"
-                                     Class="mr-1"
-                                     Style="color: var(--mud-palette-text-secondary)">
-                                Tables
-                            </MudText>
+            <MudPaper Class="pa-3" Style="@FloorPlanEditorLayout.MapStyle">
+                <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center" Wrap="Wrap.Wrap" Class="mb-3">
+                    <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
+                        <MudText Typo="Typo.caption"
+                                 Class="mr-1"
+                                 Style="color: var(--mud-palette-text-secondary)">
+                            Tables
+                        </MudText>
 
-                            @foreach (LibraryTable piece in TableLibrary)
-                            {
-                                LibraryTable libraryTable = piece;
+                        @foreach (LibraryTable piece in TableLibrary)
+                        {
+                            LibraryTable libraryTable = piece;
 
-                                <MudButton Variant="Variant.Outlined"
-                                           Size="Size.Small"
-                                           StartIcon="@libraryTable.Icon"
-                                           OnClick="@(() => ShowCreateTableDialogAsync(libraryTable))">
-                                    @libraryTable.Label
-                                </MudButton>
-                            }
-                        </MudStack>
-
-                        <MudDivider Vertical="true" FlexItem="true"/>
-
-                        <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
-                            <MudText Typo="Typo.caption"
-                                     Class="mr-1"
-                                     Style="color: var(--mud-palette-text-secondary)">
-                                Fixtures
-                            </MudText>
-
-                            @foreach (LibraryFixture piece in FixtureLibrary)
-                            {
-                                LibraryFixture libraryFixture = piece;
-
-                                <MudButton Variant="Variant.Outlined"
-                                           Size="Size.Small"
-                                           StartIcon="@libraryFixture.Icon"
-                                           OnClick="@(() => CreateFixtureAsync(libraryFixture))">
-                                    @libraryFixture.Type.GetLabel()
-                                </MudButton>
-                            }
-                        </MudStack>
+                            <MudButton Variant="Variant.Outlined"
+                                       Size="Size.Small"
+                                       StartIcon="@libraryTable.Icon"
+                                       OnClick="@(() => ShowCreateTableDialogAsync(libraryTable))">
+                                @libraryTable.Label
+                            </MudButton>
+                        }
                     </MudStack>
 
-                    <FloorPlanMap Area="@SelectedArea"
-                                  SelectedId="@SelectedPieceId"
-                                  IsEditable="true"
-                                  OnSelect="@SelectPiece"
-                                  OnMoveAsync="@MovePieceAsync"/>
-                </MudPaper>
-            </MudStack>
+                    <MudDivider Vertical="true" FlexItem="true"/>
+
+                    <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
+                        <MudText Typo="Typo.caption"
+                                 Class="mr-1"
+                                 Style="color: var(--mud-palette-text-secondary)">
+                            Fixtures
+                        </MudText>
+
+                        @foreach (LibraryFixture piece in FixtureLibrary)
+                        {
+                            LibraryFixture libraryFixture = piece;
+
+                            <MudButton Variant="Variant.Outlined"
+                                       Size="Size.Small"
+                                       StartIcon="@libraryFixture.Icon"
+                                       OnClick="@(() => CreateFixtureAsync(libraryFixture))">
+                                @libraryFixture.Type.GetLabel()
+                            </MudButton>
+                        }
+                    </MudStack>
+                </MudStack>
+
+                <FloorPlanMap Area="@SelectedArea"
+                              SelectedId="@SelectedPieceId"
+                              IsEditable="true"
+                              OnSelect="@SelectPiece"
+                              OnMoveAsync="@MovePieceAsync"/>
+            </MudPaper>
 
             <MudPaper Class="pa-5" Style="@FloorPlanEditorLayout.PanelStyle">
                 @if (SelectedTable is not null)
@@ -112,6 +123,6 @@
                                OnDelete="@ShowDeleteAreaDialogAsync"/>
                 }
             </MudPaper>
-        </MudStack>
+        </div>
     </ChildContent>
 </StatefulView>

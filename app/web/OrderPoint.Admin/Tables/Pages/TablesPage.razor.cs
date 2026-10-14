@@ -69,6 +69,9 @@ public sealed partial class TablesPage : IDisposable
 
     private Guid? SelectedPieceId { get; set; }
 
+    // Until the first area exists, the empty state has no toolbar, so the header offers it
+    private bool HasNoAreas => !IsLoading && Areas.Count == 0;
+
     private AreaDto? SelectedArea =>
         Areas.FirstOrDefault(area => area.Id == SelectedAreaId) ?? Areas.FirstOrDefault();
 
