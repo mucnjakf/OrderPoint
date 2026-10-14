@@ -193,4 +193,15 @@ public sealed partial class OrdersPage : IDisposable
         await DialogService
             .ShowAsync<OrderDetailsDialog>(string.Empty, parameters, options);
     }
+
+    // Why a declined or cancelled order ended, so the ticket says it without opening the details
+    private static string? GetEndReason(OrderDto order)
+    {
+        return order.Status switch
+        {
+            OrderStatus.Declined when order.DeclineReason is not null => $"Declined: {order.DeclineReason}",
+            OrderStatus.Cancelled => "Cancelled by the guest",
+            _ => null
+        };
+    }
 }

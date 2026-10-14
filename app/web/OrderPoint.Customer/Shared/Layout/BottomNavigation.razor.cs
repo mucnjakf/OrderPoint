@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components.Routing;
 using MudBlazor;
 using OrderPoint.Customer.Cart.Services;
+using OrderPoint.Customer.Orders.Services;
 
 namespace OrderPoint.Customer.Shared.Layout;
 
@@ -17,6 +18,8 @@ public sealed partial class BottomNavigation : IDisposable
 
     private const string CartHref = "/cart";
 
+    private const string OrdersHref = "/orders";
+
     private const string ActiveButtonStyle = "text-transform: none; font-weight: 600;";
 
     private const string InactiveButtonStyle = "text-transform: none; color: var(--mud-palette-text-secondary);";
@@ -25,7 +28,7 @@ public sealed partial class BottomNavigation : IDisposable
     [
         ("/", "Menu", Icons.Material.Filled.MenuBook),
         (CartHref, "Cart", Icons.Material.Filled.ShoppingCart),
-        ("/orders", "My orders", Icons.Material.Filled.Receipt),
+        (OrdersHref, "My orders", Icons.Material.Filled.Receipt),
         ("/settings", "Settings", Icons.Material.Filled.Settings)
     ];
 
@@ -35,21 +38,37 @@ public sealed partial class BottomNavigation : IDisposable
     [Inject]
     private CartService CartService { get; set; } = null!;
 
+    [Inject]
+    private MyOrdersStatusService MyOrdersStatusService { get; set; } = null!;
+
     protected override void OnInitialized()
     {
         NavigationManager.LocationChanged += OnLocationChanged;
-        CartService.Changed += OnCartChanged;
+        CartService.Changed += OnBadgeChanged;
+        MyOrdersStatusService.Changed += OnBadgeChanged;
     }
 
     public void Dispose()
     {
         NavigationManager.LocationChanged -= OnLocationChanged;
-        CartService.Changed -= OnCartChanged;
+        CartService.Changed -= OnBadgeChanged;
+        MyOrdersStatusService.Changed -= OnBadgeChanged;
     }
 
-    private void OnCartChanged()
+    private void OnBadgeChanged()
     {
         _ = InvokeAsync(StateHasChanged);
+    }
+
+    // Pieces in the cart, and orders still on their way
+    private int GetBadgeCount(string href)
+    {
+        return href switch
+        {
+            CartHref => CartService.ItemsCount,
+            OrdersHref => MyOrdersStatusService.OpenCount,
+            _ => 0
+        };
     }
 
     // The menu lives at "/" and its categories and items below "/menu", so it matches both

@@ -2,6 +2,7 @@
     @foreach ((string href, string label, string icon) in Destinations)
     {
         string destinationHref = href;
+        int badgeCount = GetBadgeCount(destinationHref);
 
         <MudButton Href="@destinationHref"
                    Variant="Variant.Text"
@@ -9,8 +10,8 @@
                    Class="flex-1"
                    Style="@(IsActive(destinationHref) ? ActiveButtonStyle : InactiveButtonStyle)">
             <MudStack AlignItems="AlignItems.Center" Spacing="0">
-                <MudBadge Content="@CartService.ItemsCount"
-                          Visible="@(destinationHref == CartHref && CartService.ItemsCount > 0)"
+                <MudBadge Content="@badgeCount"
+                          Visible="@(badgeCount > 0)"
                           Color="Color.Primary"
                           Origin="Origin.CenterRight"
                           Overlap="true">

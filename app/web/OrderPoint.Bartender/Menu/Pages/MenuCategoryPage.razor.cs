@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using OrderPoint.Bartender.Menu.Api;
+using OrderPoint.Bartender.Menu.Api.Requests;
 using OrderPoint.Bartender.Menu.Dtos;
+using OrderPoint.Bartender.Menu.Enumerations;
 using OrderPoint.Shared.Dtos;
 using OrderPoint.Shared.Services;
 
@@ -34,6 +36,8 @@ public sealed partial class MenuCategoryPage
 
     private bool IsLoadingCategory { get; set; } = true;
 
+    private bool IsChangingStatus { get; set; }
+
     private List<ItemDto> Items { get; set; } = [];
 
     private PaginationDto<ItemDto>? LastItemsPage { get; set; }
@@ -55,9 +59,15 @@ public sealed partial class MenuCategoryPage
         await Task.WhenAll(GetCategoryAsync(), GetItemsAsync());
     }
 
+    // A failed reload keeps what is shown
     private async Task GetCategoryAsync()
     {
-        Category = await ApiService.ExecuteAsync(() => MenuApiClient.GetCategoryAsync(CategoryId));
+        CategoryDto? category = await ApiService.ExecuteAsync(() => MenuApiClient.GetCategoryAsync(CategoryId));
+
+        if (category is not null || IsLoadingCategory)
+        {
+            Category = category;
+        }
 
         IsLoadingCategory = false;
 
@@ -102,6 +112,34 @@ public sealed partial class MenuCategoryPage
     private async Task OnSearchChangedAsync()
     {
         await GetItemsAsync();
+    }
+
+    // Takes the whole category off the menu (and back on); its items keep their own status
+    private async Task ChangeStatusAsync(bool isActive)
+    {
+        CategoryStatus status = isActive ? CategoryStatus.Active : CategoryStatus.Inactive;
+
+        var request = new ChangeCategoriesStatusRequest
+        {
+            Ids = [CategoryId],
+            Status = status
+        };
+
+        IsChangingStatus = true;
+
+        bool isSuccess = await ApiService.ExecuteAsync(
+            () => MenuApiClient.ChangeCategoriesStatusAsync(request),
+            $"{Category!.Name} {(isActive ? "activated" : "deactivated")}");
+
+        if (isSuccess)
+        {
+            await GetCategoryAsync();
+
+            // The loaded items show the new category status too, without reloading and losing "Show more"
+            Items = Items.Select(item => item with { Category = item.Category with { Status = status } }).ToList();
+        }
+
+        IsChangingStatus = false;
     }
 
     private void OpenItem(ItemDto item)

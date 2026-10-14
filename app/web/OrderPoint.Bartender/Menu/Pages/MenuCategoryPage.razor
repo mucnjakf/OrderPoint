@@ -30,13 +30,14 @@
 
         @if (Category is not null)
         {
-            <MudChip T="string"
-                     Variant="Variant.Text"
-                     Size="Size.Small"
-                     Color="@(Category.Status is CategoryStatus.Active ? Color.Success : Color.Error)"
-                     Class="ma-0">
-                @Category.Status.ToString()
-            </MudChip>
+            <MudSwitch T="bool"
+                       Value="@(Category.Status is CategoryStatus.Active)"
+                       ValueChanged="@ChangeStatusAsync"
+                       Label="@Category.Status.ToString()"
+                       LabelPlacement="Placement.Start"
+                       Color="Color.Success"
+                       Disabled="@IsChangingStatus"
+                       Class="ma-0"/>
         }
     }
 </MudStack>

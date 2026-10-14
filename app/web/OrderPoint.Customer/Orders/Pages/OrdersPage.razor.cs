@@ -24,10 +24,7 @@ public sealed partial class OrdersPage : IDisposable
     private OrderApiClient OrderApiClient { get; set; } = null!;
 
     [Inject]
-    private MyOrdersService MyOrdersService { get; set; } = null!;
-
-    [Inject]
-    private OrderTrackingHubService OrderTrackingHubService { get; set; } = null!;
+    private MyOrdersStatusService MyOrdersStatusService { get; set; } = null!;
 
     [Inject]
     private MenuService MenuService { get; set; } = null!;
@@ -44,42 +41,26 @@ public sealed partial class OrdersPage : IDisposable
     [Inject]
     private NavigationManager NavigationManager { get; set; } = null!;
 
-    private IReadOnlyList<OrderTrackingDto> Orders { get; set; } = [];
+    // Loaded and kept live by the layout's service, which the badge and the status bar share
+    private IReadOnlyList<OrderTrackingDto> Orders => MyOrdersStatusService.Orders;
 
-    private bool IsLoading { get; set; } = true;
+    private bool IsLoading => !MyOrdersStatusService.IsLoaded;
 
     private Guid? CancellingOrderId { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        OrderTrackingHubService.OrdersChanged += OnOrdersChanged;
-        MyOrdersService.Changed += OnOrdersChanged;
-
-        await GetOrdersAsync();
+        MyOrdersStatusService.Changed += OnOrdersChanged;
     }
 
     public void Dispose()
     {
-        OrderTrackingHubService.OrdersChanged -= OnOrdersChanged;
-        MyOrdersService.Changed -= OnOrdersChanged;
+        MyOrdersStatusService.Changed -= OnOrdersChanged;
     }
 
     private void OnOrdersChanged()
     {
-        _ = InvokeAsync(GetOrdersAsync);
-    }
-
-    // One call per order, in parallel; an order that no longer exists is left out
-    private async Task GetOrdersAsync()
-    {
-        OrderTrackingDto?[] orders = await Task.WhenAll(MyOrdersService.OrderIds.Select(orderId =>
-            ApiService.ExecuteAsync(() => OrderApiClient.GetOrderTrackingAsync(orderId))));
-
-        Orders = orders.OfType<OrderTrackingDto>().ToList();
-
-        IsLoading = false;
-
-        StateHasChanged();
+        _ = InvokeAsync(StateHasChanged);
     }
 
     private void OpenOrder(OrderTrackingDto order)
@@ -157,6 +138,6 @@ public sealed partial class OrdersPage : IDisposable
 
         CancellingOrderId = null;
 
-        await GetOrdersAsync();
+        await MyOrdersStatusService.ReloadAsync();
     }
 }

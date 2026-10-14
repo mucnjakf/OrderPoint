@@ -110,6 +110,19 @@
                     </MudText>
                 }
 
+                @if (GetEndReason(context) is { } endReason)
+                {
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                        <MudIcon Icon="@context.Status.GetIcon()"
+                                 Size="Size.Small"
+                                 Style="color: var(--mud-palette-text-secondary)"/>
+
+                        <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                            @endReason
+                        </MudText>
+                    </MudStack>
+                }
+
                 <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mt-auto">
                     <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
                         <BartenderAvatar FirstName="@context.Bartender?.FirstName"

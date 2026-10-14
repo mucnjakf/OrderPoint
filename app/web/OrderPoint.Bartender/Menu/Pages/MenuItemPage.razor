@@ -29,6 +29,27 @@
     </LoadingContent>
 
     <ChildContent>
-        <MenuItemDetails Item="@(Item!)"/>
+        <MudStack Spacing="3">
+            <MudPaper Class="pa-4">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                    <MudStack Spacing="0" Class="flex-1">
+                        <MudText Typo="Typo.body1">Available to guests</MudText>
+
+                        <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                            Turn off when it runs out.
+                        </MudText>
+                    </MudStack>
+
+                    <MudSwitch T="bool"
+                               Value="@(Item!.Status is ItemStatus.Active)"
+                               ValueChanged="@ChangeStatusAsync"
+                               Color="Color.Success"
+                               Disabled="@IsChangingStatus"
+                               aria-label="Available to guests"/>
+                </MudStack>
+            </MudPaper>
+
+            <MenuItemDetails Item="@(Item!)"/>
+        </MudStack>
     </ChildContent>
 </StatefulView>

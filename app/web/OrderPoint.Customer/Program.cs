@@ -29,6 +29,7 @@ builder.Services.AddScoped<MenuService>();
 builder.Services.AddScoped<CartService>();
 builder.Services.AddScoped<MyOrdersService>();
 builder.Services.AddScoped<OrderTrackingHubService>();
+builder.Services.AddScoped<MyOrdersStatusService>();
 
 // Guests are anonymous, so no client sends a token
 builder.Services.AddHttpClient<MenuApiClient>(ConfigureApiClient);

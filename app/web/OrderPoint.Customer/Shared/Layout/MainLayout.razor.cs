@@ -13,8 +13,13 @@ namespace OrderPoint.Customer.Shared.Layout;
 // No sign-in: guests are anonymous, and the table they sit at comes from the QR code
 public sealed partial class MainLayout : IDisposable
 {
-    // Room for the fixed bottom navigation, so the last row can scroll above it
+    // Room for the fixed bottom navigation (and the status bar above it), so the last row can scroll above them
     private const string MainContentStyle = $"padding-bottom: {BottomNavigation.Height};";
+
+    private const string MainContentWithStatusBarStyle =
+        $"padding-bottom: calc({BottomNavigation.Height} + {OrderStatusBar.Height});";
+
+    private const string OrdersPath = "orders";
 
     [Inject]
     private TableService TableService { get; set; } = null!;
@@ -34,6 +39,12 @@ public sealed partial class MainLayout : IDisposable
     [Inject]
     private OrderTrackingHubService OrderTrackingHubService { get; set; } = null!;
 
+    [Inject]
+    private MyOrdersStatusService MyOrdersStatusService { get; set; } = null!;
+
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = null!;
+
     private MudThemeProvider ThemeProvider { get; set; } = null!;
 
     private MudTheme Theme { get; } = AppTheme.Create();
@@ -47,10 +58,19 @@ public sealed partial class MainLayout : IDisposable
         _ => IsSystemDarkMode
     };
 
+    // My orders and the order pages show the same thing in full
+    private bool IsStatusBarVisible =>
+        MyOrdersStatusService.LatestOrder is not null
+        && !NavigationManager.ToBaseRelativePath(NavigationManager.Uri)
+            .StartsWith(OrdersPath, StringComparison.Ordinal);
+
+    private string ContentStyle => IsStatusBarVisible ? MainContentWithStatusBarStyle : MainContentStyle;
+
     protected override async Task OnInitializedAsync()
     {
         TableService.Changed += OnStateChanged;
         AppearanceService.Changed += OnStateChanged;
+        MyOrdersStatusService.Changed += OnStateChanged;
 
         await Task.WhenAll(
             TableService.LoadAsync(),
@@ -66,6 +86,9 @@ public sealed partial class MainLayout : IDisposable
 
         // Not awaited: the first connect retries in the background
         _ = OrderTrackingHubService.StartAsync();
+
+        // Not awaited either, so the page shows while the orders load
+        _ = MyOrdersStatusService.LoadAsync();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -86,6 +109,7 @@ public sealed partial class MainLayout : IDisposable
     {
         TableService.Changed -= OnStateChanged;
         AppearanceService.Changed -= OnStateChanged;
+        MyOrdersStatusService.Changed -= OnStateChanged;
     }
 
     private Task OnSystemDarkModeChangedAsync(bool isDarkMode)

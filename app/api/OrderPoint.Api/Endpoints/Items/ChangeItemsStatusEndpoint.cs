@@ -26,10 +26,11 @@ internal sealed class ChangeItemsStatusEndpoint : IEndpoint
             .WithSummary("Change the status of items")
             .WithDescription("""
                 Activates or deactivates up to 100 items at once. An active item in an inactive category still cannot
-                be ordered. All-or-nothing: if any id does not exist (`404`), nothing changes.
+                be ordered. All-or-nothing: if any id does not exist (`404`), nothing changes. Bartenders use it to
+                take an item off the menu when it runs out.
                 """)
             .ProducesProblem(StatusCodes.Status404NotFound)
-            .RequireAuthorization(AuthorizationPolicies.Admin);
+            .RequireAuthorization(AuthorizationPolicies.AdminOrBartender);
     }
 
     private static async Task<Results<NoContent, ProblemHttpResult>> HandleAsync(

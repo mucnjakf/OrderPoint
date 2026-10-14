@@ -10,6 +10,14 @@ namespace OrderPoint.Bartender.Orders.Components;
 // Made for a phone: who (table), when, what (one line per item, so nothing is missed) and the total
 public sealed partial class OrderTicket
 {
+    private const string WaitingStyle = "color: var(--mud-palette-warning); font-weight: 600;";
+
+    private const string LongWaitStyle = "color: var(--mud-palette-error); font-weight: 600;";
+
+    private static readonly TimeSpan NoticeableWait = TimeSpan.FromMinutes(5);
+
+    private static readonly TimeSpan LongWait = TimeSpan.FromMinutes(10);
+
     [Inject]
     private TimeZoneService TimeZoneService { get; set; } = null!;
 
@@ -50,9 +58,30 @@ public sealed partial class OrderTicket
         _ => $"Placed {Order.CreatedAtUtc.ToRelativeTime()}"
     };
 
-    private string DetailsText => ShowsBartender && Order.Bartender is not null
-        ? $"{TimeText} · {BartenderText}"
-        : TimeText;
+    private string? BartenderSuffix => ShowsBartender && Order.Bartender is not null
+        ? $" · {BartenderText}"
+        : null;
+
+    // An open order turns amber, then red, the longer the guest waits, so the oldest ones stand out
+    private string? WaitStyle
+    {
+        get
+        {
+            if (Order.Status is not (OrderStatus.Pending or OrderStatus.Accepted or OrderStatus.Active))
+            {
+                return null;
+            }
+
+            TimeSpan waited = DateTimeOffset.UtcNow - Order.CreatedAtUtc;
+
+            if (waited >= LongWait)
+            {
+                return LongWaitStyle;
+            }
+
+            return waited >= NoticeableWait ? WaitingStyle : null;
+        }
+    }
 
     private string BartenderText => Order.Bartender!.Id == AuthService.UserId
         ? "you"

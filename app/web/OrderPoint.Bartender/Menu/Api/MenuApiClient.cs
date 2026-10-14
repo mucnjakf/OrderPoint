@@ -1,4 +1,5 @@
-﻿using OrderPoint.Bartender.Menu.Api.Responses;
+﻿using OrderPoint.Bartender.Menu.Api.Requests;
+using OrderPoint.Bartender.Menu.Api.Responses;
 using OrderPoint.Bartender.Menu.Dtos;
 using OrderPoint.Bartender.Menu.Sorting;
 using OrderPoint.Shared.Dtos;
@@ -6,7 +7,7 @@ using OrderPoint.Shared.Errors;
 
 namespace OrderPoint.Bartender.Menu.Api;
 
-// Reads the Admin's item and category endpoints, which bartenders may read too
+// The Admin's item and category endpoints bartenders may use too: reading, and the status when something runs out
 internal sealed class MenuApiClient(HttpClient httpClient)
 {
     internal async Task<PaginationDto<CategoryDto>> GetCategoriesAsync(
@@ -96,5 +97,31 @@ internal sealed class MenuApiClient(HttpClient httpClient)
             ?? throw new InvalidOperationException($"Unable to parse {nameof(GetItemsResponse)}");
 
         return result.Data;
+    }
+
+    internal async Task ChangeCategoriesStatusAsync(
+        ChangeCategoriesStatusRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await httpClient
+            .PutAsJsonAsync("api/categories/status", request, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+    }
+
+    internal async Task ChangeItemsStatusAsync(
+        ChangeItemsStatusRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await httpClient
+            .PutAsJsonAsync("api/items/status", request, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
     }
 }

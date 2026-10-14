@@ -1,0 +1,18 @@
+﻿<a href="@Href" style="@BarStyle" aria-label="@($"Order #{Order.Number}: {StatusText}")">
+    <MudIcon Icon="@Order.Status.GetIcon()" Color="@Order.Status.GetColor()" Size="Size.Small"/>
+
+    <MudText Typo="Typo.body2" Class="flex-1" Style="@TextStyle">
+        <strong>Order #@Order.Number</strong> · @StatusText
+    </MudText>
+
+    @if (OtherOpenCount > 0)
+    {
+        <MudChip T="string" Variant="Variant.Outlined" Size="Size.Small" Class="ma-0">
+            +@OtherOpenCount
+        </MudChip>
+    }
+
+    <MudIcon Icon="@Icons.Material.Filled.ChevronRight"
+             Size="Size.Small"
+             Style="color: var(--mud-palette-text-secondary)"/>
+</a>

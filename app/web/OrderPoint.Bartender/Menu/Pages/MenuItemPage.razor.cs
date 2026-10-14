@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using OrderPoint.Bartender.Menu.Api;
+using OrderPoint.Bartender.Menu.Api.Requests;
 using OrderPoint.Bartender.Menu.Dtos;
+using OrderPoint.Bartender.Menu.Enumerations;
 using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Bartender.Menu.Pages;
@@ -24,10 +26,46 @@ public sealed partial class MenuItemPage
 
     private bool IsLoading { get; set; } = true;
 
+    private bool IsChangingStatus { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        Item = await ApiService.ExecuteAsync(() => MenuApiClient.GetItemAsync(ItemId));
+        await GetItemAsync();
 
         IsLoading = false;
+    }
+
+    // A failed reload keeps what is shown
+    private async Task GetItemAsync()
+    {
+        ItemDto? item = await ApiService.ExecuteAsync(() => MenuApiClient.GetItemAsync(ItemId));
+
+        if (item is not null || IsLoading)
+        {
+            Item = item;
+        }
+    }
+
+    // Takes the item off the menu when it runs out (and back on); easy to undo, so no confirmation
+    private async Task ChangeStatusAsync(bool isActive)
+    {
+        var request = new ChangeItemsStatusRequest
+        {
+            Ids = [ItemId],
+            Status = isActive ? ItemStatus.Active : ItemStatus.Inactive
+        };
+
+        IsChangingStatus = true;
+
+        bool isSuccess = await ApiService.ExecuteAsync(
+            () => MenuApiClient.ChangeItemsStatusAsync(request),
+            $"{Item!.Name} {(isActive ? "activated" : "deactivated")}");
+
+        if (isSuccess)
+        {
+            await GetItemAsync();
+        }
+
+        IsChangingStatus = false;
     }
 }

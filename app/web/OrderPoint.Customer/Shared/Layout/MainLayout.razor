@@ -31,11 +31,17 @@
         }
     </MudAppBar>
 
-    <MudMainContent Style="@MainContentStyle">
+    <MudMainContent Style="@ContentStyle">
         <MudContainer MaxWidth="MaxWidth.Small" Gutters="false" Class="pa-3">
             @Body
         </MudContainer>
     </MudMainContent>
+
+    @if (IsStatusBarVisible)
+    {
+        <OrderStatusBar Order="@(MyOrdersStatusService.LatestOrder!)"
+                        OtherOpenCount="@MyOrdersStatusService.OtherOpenCount"/>
+    }
 
     <BottomNavigation />
 </MudLayout>

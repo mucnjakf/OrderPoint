@@ -26,9 +26,9 @@ internal static class ApiGuide
           `POST /api/orders`, `GET /api/orders/{id}/tracking` and `PUT /api/orders/{id}/cancel`, and the health
           checks (anonymous), the order status changes (`PUT /api/orders/{id}/accept`, `activate`, `complete`),
           `GET /api/shift` and `GET /api/shift/day` (**Bartender**), and declining and reading orders, the item
-          and category lists, one item or category, `GET /api/account`, changing the password and signing out
-          everywhere (**Admin** or **Bartender**). Each endpoint names its roles; those that need a token show a
-          lock and list `401` and `403`.
+          and category lists, one item or category, changing the status of items and categories,
+          `GET /api/account`, changing the password and signing out everywhere (**Admin** or **Bartender**). Each
+          endpoint names its roles; those that need a token show a lock and list `401` and `403`.
 
         ## Responses
 

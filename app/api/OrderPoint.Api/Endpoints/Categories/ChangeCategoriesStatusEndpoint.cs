@@ -26,10 +26,11 @@ internal sealed class ChangeCategoriesStatusEndpoint : IEndpoint
             .WithSummary("Change the status of categories")
             .WithDescription("""
                 Activates or deactivates up to 100 categories at once. Their items keep their own status.
-                All-or-nothing: if any id does not exist (`404`), nothing changes.
+                All-or-nothing: if any id does not exist (`404`), nothing changes. Bartenders use it to take a whole
+                category off the menu.
                 """)
             .ProducesProblem(StatusCodes.Status404NotFound)
-            .RequireAuthorization(AuthorizationPolicies.Admin);
+            .RequireAuthorization(AuthorizationPolicies.AdminOrBartender);
     }
 
     private static async Task<Results<NoContent, ProblemHttpResult>> HandleAsync(
