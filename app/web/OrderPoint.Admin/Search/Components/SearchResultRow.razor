@@ -5,7 +5,7 @@
      @onmouseenter="@OnMouseEnterAsync">
     @switch (Result.Kind)
     {
-        case SearchResultKind.Page:
+        case SearchResultKind.Page or SearchResultKind.Table:
             <MudAvatar Rounded="true" Variant="Variant.Outlined">
                 <MudIcon Icon="@Result.Icon"/>
             </MudAvatar>

@@ -6,5 +6,6 @@ public enum SearchResultKind
     Order,
     Item,
     Category,
-    Bartender
+    Bartender,
+    Table
 }

@@ -54,6 +54,13 @@ public sealed partial class TablesPage : IDisposable
     [Inject]
     private ISnackbar Snackbar { get; set; } = null!;
 
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = null!;
+
+    // A table opened from the search: /tables?table=T7
+    [SupplyParameterFromQuery(Name = "table")]
+    public string? TableCode { get; set; }
+
     private IReadOnlyList<AreaDto> Areas { get; set; } = [];
 
     private bool IsLoading { get; set; } = true;
@@ -81,6 +88,14 @@ public sealed partial class TablesPage : IDisposable
         OrdersHubService.TablesChanged += OnTablesChanged;
 
         await GetFloorPlanAsync();
+
+        SelectTableFromQuery();
+    }
+
+    // Also when the search opens a table while this page is already shown
+    protected override void OnParametersSet()
+    {
+        SelectTableFromQuery();
     }
 
     public void Dispose()
@@ -111,6 +126,25 @@ public sealed partial class TablesPage : IDisposable
         IsLoading = false;
 
         StateHasChanged();
+    }
+
+    // The link is dropped once applied, so opening the same table again from the search selects it again
+    private void SelectTableFromQuery()
+    {
+        if (string.IsNullOrWhiteSpace(TableCode) || IsLoading)
+        {
+            return;
+        }
+
+        AreaDto? area = Areas.FirstOrDefault(area => area.Tables.Any(table => table.Code == TableCode));
+
+        if (area is not null)
+        {
+            SelectedAreaId = area.Id;
+            SelectedPieceId = area.Tables.First(table => table.Code == TableCode).Id;
+        }
+
+        NavigationManager.NavigateTo("/tables", replace: true);
     }
 
     private void SelectArea(Guid areaId)

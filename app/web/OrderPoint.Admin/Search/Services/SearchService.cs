@@ -83,6 +83,9 @@ internal sealed class SearchService(
             case SearchResultKind.Bartender:
                 await ShowBartenderAsync(id);
                 break;
+            case SearchResultKind.Table:
+                navigationManager.NavigateTo(result.Href!);
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(result), result.Kind, null);
         }

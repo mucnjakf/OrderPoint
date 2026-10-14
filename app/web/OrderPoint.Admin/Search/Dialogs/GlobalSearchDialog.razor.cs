@@ -14,10 +14,13 @@ using OrderPoint.Admin.Orders.Sorting;
 using OrderPoint.Admin.Search.Dtos;
 using OrderPoint.Admin.Search.Enumerations;
 using OrderPoint.Admin.Search.Services;
+using OrderPoint.Admin.Tables.Api;
 using OrderPoint.Shared.Dtos;
 using OrderPoint.Shared.Extensions;
 using OrderPoint.Shared.Orders.Dtos;
 using OrderPoint.Shared.Services;
+using OrderPoint.Shared.Tables.Dtos;
+using OrderPoint.Shared.Tables.Enumerations;
 
 namespace OrderPoint.Admin.Search.Dialogs;
 
@@ -32,6 +35,7 @@ public sealed partial class GlobalSearchDialog : IDisposable
         new(SearchResultKind.Page, "Bartenders", Href: "/bartenders", Icon: Icons.Material.Filled.People),
         new(SearchResultKind.Page, "Items", Href: "/items", Icon: Icons.Material.Filled.MenuBook),
         new(SearchResultKind.Page, "Categories", Href: "/categories", Icon: Icons.Material.Filled.Category),
+        new(SearchResultKind.Page, "Tables", Href: "/tables", Icon: Icons.Material.Filled.TableRestaurant),
         new(SearchResultKind.Page, "Health", Href: "/system", Icon: Icons.Material.Filled.MonitorHeart),
         new(SearchResultKind.Page, "Account", Href: "/account", Icon: Icons.Material.Filled.Person)
     ];
@@ -60,6 +64,9 @@ public sealed partial class GlobalSearchDialog : IDisposable
     [Inject]
     private BartenderApiClient BartenderApiClient { get; set; } = null!;
 
+    [Inject]
+    private TableApiClient TableApiClient { get; set; } = null!;
+
     private string? SearchQuery { get; set; }
 
     private CancellationTokenSource? SearchCancellation { get; set; }
@@ -76,6 +83,8 @@ public sealed partial class GlobalSearchDialog : IDisposable
 
     private IReadOnlyList<SearchResultDto> BartenderResults { get; set; } = [];
 
+    private IReadOnlyList<SearchResultDto> TableResults { get; set; } = [];
+
     private bool IsLoadingOrders { get; set; }
 
     private bool IsLoadingItems { get; set; }
@@ -84,16 +93,27 @@ public sealed partial class GlobalSearchDialog : IDisposable
 
     private bool IsLoadingBartenders { get; set; }
 
+    private bool IsLoadingTables { get; set; }
+
     private SearchResultDto? ActiveResult { get; set; }
 
     private bool HasQuery => !string.IsNullOrWhiteSpace(SearchQuery);
 
-    private bool IsSearching => IsLoadingOrders || IsLoadingItems || IsLoadingCategories || IsLoadingBartenders;
+    private bool IsSearching =>
+        IsLoadingOrders || IsLoadingItems || IsLoadingCategories || IsLoadingBartenders || IsLoadingTables;
 
     private bool HasNoResults => !IsSearching && VisibleResults.Count == 0;
 
     private IReadOnlyList<SearchResultDto> VisibleResults => HasQuery
-        ? [.. MatchingPageResults, .. OrderResults, .. ItemResults, .. CategoryResults, .. BartenderResults]
+        ?
+        [
+            .. MatchingPageResults,
+            .. OrderResults,
+            .. ItemResults,
+            .. CategoryResults,
+            .. BartenderResults,
+            .. TableResults
+        ]
         : [.. RecentResults, .. PageResults];
 
     protected override async Task OnInitializedAsync()
@@ -120,6 +140,7 @@ public sealed partial class GlobalSearchDialog : IDisposable
         ItemResults = [];
         CategoryResults = [];
         BartenderResults = [];
+        TableResults = [];
         ActiveResult = null;
 
         if (!HasQuery)
@@ -141,7 +162,8 @@ public sealed partial class GlobalSearchDialog : IDisposable
             SearchOrdersAsync(searchQuery, cancellationToken),
             SearchItemsAsync(searchQuery, cancellationToken),
             SearchCategoriesAsync(searchQuery, cancellationToken),
-            SearchBartendersAsync(searchQuery, cancellationToken));
+            SearchBartendersAsync(searchQuery, cancellationToken),
+            SearchTablesAsync(searchQuery, cancellationToken));
     }
 
     private async Task SearchOrdersAsync(string searchQuery, CancellationToken cancellationToken)
@@ -230,6 +252,37 @@ public sealed partial class GlobalSearchDialog : IDisposable
         OnResultsLoaded();
     }
 
+    // No search endpoint: the floor plan (cached) is small, so its tables are matched here by code or area
+    private async Task SearchTablesAsync(string searchQuery, CancellationToken cancellationToken)
+    {
+        IsLoadingTables = true;
+
+        IReadOnlyList<AreaDto>? areas = await ApiService.ExecuteAsync(
+            () => TableApiClient.GetFloorPlanAsync(cancellationToken),
+            cancellationToken);
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+
+        string trimmedQuery = searchQuery.Trim();
+
+        TableResults =
+        [
+            .. (areas ?? [])
+                .SelectMany(area => area.Tables.Select(table => (Area: area, Table: table)))
+                .Where(match =>
+                    match.Table.Code.Contains(trimmedQuery, StringComparison.OrdinalIgnoreCase)
+                    || match.Area.Name.Contains(trimmedQuery, StringComparison.OrdinalIgnoreCase))
+                .Take(ResultsPerGroupCount)
+                .Select(match => ToSearchResult(match.Area, match.Table))
+        ];
+        IsLoadingTables = false;
+
+        OnResultsLoaded();
+    }
+
     private void OnResultsLoaded()
     {
         ActiveResult ??= VisibleResults.FirstOrDefault();
@@ -314,5 +367,20 @@ public sealed partial class GlobalSearchDialog : IDisposable
             bartender.Email,
             Id: bartender.Id,
             ImageUrl: bartender.ImageUrl);
+    }
+
+    private static SearchResultDto ToSearchResult(AreaDto area, TableDto table)
+    {
+        string seatsText = table.Seats.ToCountText("seat", "seats");
+
+        return new SearchResultDto(
+            SearchResultKind.Table,
+            $"Table {table.Code}",
+            table.Status is TableStatus.Inactive
+                ? $"{area.Name} · {seatsText} · Inactive"
+                : $"{area.Name} · {seatsText}",
+            Id: table.Id,
+            Href: $"/tables?table={table.Code}",
+            Icon: Icons.Material.Filled.TableRestaurant);
     }
 }
