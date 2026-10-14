@@ -12,6 +12,7 @@ using OrderPoint.Customer.Tables.Api;
 using OrderPoint.Customer.Tables.Services;
 using OrderPoint.ServiceDefaults;
 using OrderPoint.Shared.Extensions;
+using OrderPoint.Shared.Images;
 using OrderPoint.Shared.Services;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,7 @@ builder.Services
     .AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddImageProxy();
 builder.Services.AddScoped<ApiService>();
 builder.Services.AddScoped<TimeZoneService>();
 builder.Services.AddScoped<TableService>();
@@ -79,6 +81,7 @@ app.Use(async (context, next) =>
 app.UseAntiforgery();
 
 app.MapStaticAssets();
+app.MapImageProxy();
 
 app
     .MapRazorComponents<App>()

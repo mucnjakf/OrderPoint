@@ -5,6 +5,12 @@ IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(ar
 // The hour the bar's day starts (local time), so a night past midnight is one day; the API and the bartender app use it
 const string BusinessDayStartHour = "6";
 
+// Fixed, because image URLs are stored with it
+const int BlobPort = 59287;
+
+// Every stored image URL starts with it; the bartender and customer apps serve images from it, so phones see them
+string imagesStorageUrl = $"http://127.0.0.1:{BlobPort}/devstoreaccount1/images";
+
 IResourceBuilder<PostgresServerResource> postgres = builder
     .AddPostgres("postgres")
     .WithDataVolume()
@@ -19,7 +25,7 @@ IResourceBuilder<AzureStorageResource> storage = builder
     .RunAsEmulator(emulator => emulator
         .WithDataVolume()
         .WithLifetime(ContainerLifetime.Persistent)
-        .WithBlobPort(59287));
+        .WithBlobPort(BlobPort));
 
 IResourceBuilder<AzureBlobStorageContainerResource> images = storage
     .AddBlobContainer("images");
@@ -59,6 +65,7 @@ IResourceBuilder<ProjectResource> bartender = builder
     .WithExternalHttpEndpoints()
     .WithHttpHealthCheck("/health")
     .WithEnvironment("BusinessDay__StartHour", BusinessDayStartHour)
+    .WithEnvironment("Images__StorageUrl", imagesStorageUrl)
     .WithReference(api)
     .WaitFor(api);
 
@@ -66,6 +73,7 @@ IResourceBuilder<ProjectResource> customer = builder
     .AddProject<Projects.OrderPoint_Customer>("order-point-customer")
     .WithExternalHttpEndpoints()
     .WithHttpHealthCheck("/health")
+    .WithEnvironment("Images__StorageUrl", imagesStorageUrl)
     .WithReference(api)
     .WaitFor(api);
 
