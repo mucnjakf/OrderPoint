@@ -53,6 +53,7 @@ public sealed partial class MenuCategoryPage : IDisposable
     protected override async Task OnInitializedAsync()
     {
         CartService.Changed += OnCartChanged;
+        MenuService.Changed += OnMenuChanged;
 
         IReadOnlyList<MenuCategoryDto> menu = await MenuService.GetMenuAsync() ?? [];
 
@@ -64,6 +65,25 @@ public sealed partial class MenuCategoryPage : IDisposable
     public void Dispose()
     {
         CartService.Changed -= OnCartChanged;
+        MenuService.Changed -= OnMenuChanged;
+    }
+
+    // A failed reload keeps what is shown
+    private void OnMenuChanged()
+    {
+        _ = InvokeAsync(async () =>
+        {
+            IReadOnlyList<MenuCategoryDto>? menu = await MenuService.GetMenuAsync();
+
+            if (menu is null)
+            {
+                return;
+            }
+
+            Category = menu.FirstOrDefault(category => category.Id == CategoryId);
+
+            StateHasChanged();
+        });
     }
 
     private void OpenItem(MenuItemDto item)

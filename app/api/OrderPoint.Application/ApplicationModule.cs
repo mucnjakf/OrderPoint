@@ -22,6 +22,7 @@ public static class ApplicationModule
             configure.RegisterServicesFromAssembly(typeof(ApplicationModule).Assembly);
             configure.AddOpenBehavior(typeof(TelemetryBehavior<,>));
             configure.AddOpenBehavior(typeof(OrderNotificationBehavior<,>));
+            configure.AddOpenBehavior(typeof(MenuNotificationBehavior<,>));
             configure.AddOpenBehavior(typeof(CacheInvalidationBehavior<,>));
         });
 

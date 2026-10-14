@@ -37,10 +37,11 @@ public sealed partial class MenuItemPage : IDisposable
     protected override async Task OnInitializedAsync()
     {
         CartService.Changed += OnCartChanged;
+        MenuService.Changed += OnMenuChanged;
+
         IReadOnlyList<MenuCategoryDto> menu = await MenuService.GetMenuAsync() ?? [];
 
-        Category = menu.FirstOrDefault(category => category.Id == CategoryId);
-        Item = Category?.Items.FirstOrDefault(item => item.Id == ItemId);
+        ShowItemFrom(menu);
 
         IsLoading = false;
     }
@@ -48,6 +49,31 @@ public sealed partial class MenuItemPage : IDisposable
     public void Dispose()
     {
         CartService.Changed -= OnCartChanged;
+        MenuService.Changed -= OnMenuChanged;
+    }
+
+    private void ShowItemFrom(IReadOnlyList<MenuCategoryDto> menu)
+    {
+        Category = menu.FirstOrDefault(category => category.Id == CategoryId);
+        Item = Category?.Items.FirstOrDefault(item => item.Id == ItemId);
+    }
+
+    // A failed reload keeps what is shown
+    private void OnMenuChanged()
+    {
+        _ = InvokeAsync(async () =>
+        {
+            IReadOnlyList<MenuCategoryDto>? menu = await MenuService.GetMenuAsync();
+
+            if (menu is null)
+            {
+                return;
+            }
+
+            ShowItemFrom(menu);
+
+            StateHasChanged();
+        });
     }
 
     private async Task AddToCartAsync()

@@ -72,6 +72,7 @@ public sealed partial class CartPage : IDisposable
     protected override async Task OnInitializedAsync()
     {
         CartService.Changed += OnCartChanged;
+        MenuService.Changed += OnMenuChanged;
 
         Note = CartService.Note;
 
@@ -83,6 +84,7 @@ public sealed partial class CartPage : IDisposable
     public void Dispose()
     {
         CartService.Changed -= OnCartChanged;
+        MenuService.Changed -= OnMenuChanged;
     }
 
     private async Task GetMenuItemsAsync()
@@ -90,6 +92,24 @@ public sealed partial class CartPage : IDisposable
         IReadOnlyList<MenuCategoryDto> menu = await MenuService.GetMenuAsync() ?? [];
 
         MenuItems = menu.SelectMany(category => category.Items).ToDictionary(item => item.Id);
+    }
+
+    // New prices and pictures, and lines whose item just left the menu; a failed reload keeps what is shown
+    private void OnMenuChanged()
+    {
+        _ = InvokeAsync(async () =>
+        {
+            IReadOnlyList<MenuCategoryDto>? menu = await MenuService.GetMenuAsync();
+
+            if (menu is null)
+            {
+                return;
+            }
+
+            MenuItems = menu.SelectMany(category => category.Items).ToDictionary(item => item.Id);
+
+            StateHasChanged();
+        });
     }
 
     private async Task OnNoteChangedAsync()

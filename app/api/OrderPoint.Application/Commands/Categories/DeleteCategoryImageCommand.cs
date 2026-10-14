@@ -8,7 +8,7 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Commands.Categories;
 
-public sealed record DeleteCategoryImageCommand(Guid Id) : ICommand, ICacheInvalidatingCommand
+public sealed record DeleteCategoryImageCommand(Guid Id) : ICommand, ICacheInvalidatingCommand, IMenuNotifyingCommand
 {
     IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.CategoryChanges;
 }

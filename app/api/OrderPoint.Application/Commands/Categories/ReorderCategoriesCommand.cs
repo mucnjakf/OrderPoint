@@ -7,7 +7,8 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Commands.Categories;
 
-public sealed record ReorderCategoriesCommand(IReadOnlyList<Guid> Ids) : ICommand, ICacheInvalidatingCommand
+public sealed record ReorderCategoriesCommand(IReadOnlyList<Guid> Ids)
+    : ICommand, ICacheInvalidatingCommand, IMenuNotifyingCommand
 {
     IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.CategoryChanges;
 }

@@ -37,13 +37,16 @@ public sealed partial class ItemDetailsDialog : IDisposable
     [Inject]
     private OrdersHubService OrdersHubService { get; set; } = null!;
 
+    // The parameter is reset whenever the dialog provider re-renders, so live updates go here
+    private ItemDto CurrentItem { get; set; } = null!;
+
     private int OrdersCount { get; set; }
 
     private PaginationDto<OrderDto>? Pagination { get; set; }
 
     private IReadOnlyList<OrderDto> Orders { get; set; } = [];
 
-    private string UpdatedAtText => Item.UpdatedAtUtc?.ToDisplayDateTime(TimeZoneService.TimeZone) ?? "-";
+    private string UpdatedAtText => CurrentItem.UpdatedAtUtc?.ToDisplayDateTime(TimeZoneService.TimeZone) ?? "-";
 
     private string SelectedSortBy { get; set; } = nameof(OrderSortBy.CreatedAtUtcDesc);
 
@@ -53,9 +56,11 @@ public sealed partial class ItemDetailsDialog : IDisposable
 
     protected override async Task OnInitializedAsync()
     {
+        CurrentItem = Item;
         OrdersCount = Item.OrdersCount;
 
         OrdersHubService.OrdersChanged += OnOrdersChanged;
+        OrdersHubService.MenuChanged += OnMenuChanged;
 
         await GetOrdersAsync(pageNumber: 1);
     }
@@ -63,20 +68,31 @@ public sealed partial class ItemDetailsDialog : IDisposable
     public void Dispose()
     {
         OrdersHubService.OrdersChanged -= OnOrdersChanged;
+        OrdersHubService.MenuChanged -= OnMenuChanged;
     }
 
     private void OnOrdersChanged()
     {
         _ = InvokeAsync(() => Task.WhenAll(
-            GetOrdersCountAsync(),
+            GetItemAsync(),
             GetOrdersAsync(Pagination?.PageNumber ?? 1, isLiveUpdate: true)));
     }
 
-    private async Task GetOrdersCountAsync()
+    private void OnMenuChanged()
+    {
+        _ = InvokeAsync(GetItemAsync);
+    }
+
+    // Its orders count and, after a menu change, everything else; a failed reload keeps what is shown
+    private async Task GetItemAsync()
     {
         ItemDto? item = await ApiService.ExecuteAsync(() => ItemApiClient.GetItemAsync(Item.Id));
 
-        OrdersCount = item?.OrdersCount ?? OrdersCount;
+        if (item is not null)
+        {
+            CurrentItem = item;
+            OrdersCount = item.OrdersCount;
+        }
 
         StateHasChanged();
     }

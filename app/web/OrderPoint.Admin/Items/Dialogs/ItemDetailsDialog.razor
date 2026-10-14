@@ -9,26 +9,26 @@
     <DialogContent>
         <MudGrid Spacing="3" Class="mb-5">
             <MudItem xs="12" md="4">
-                <ItemPreviewPaper ImageUrl="@Item.ImageUrl"
-                                  Name="@Item.Name"
-                                  Description="@Item.Description"
-                                  Portion="@Item.Portion"
-                                  Price="@Item.Price"
-                                  IsActive="@Item.IsActive"/>
+                <ItemPreviewPaper ImageUrl="@CurrentItem.ImageUrl"
+                                  Name="@CurrentItem.Name"
+                                  Description="@CurrentItem.Description"
+                                  Portion="@CurrentItem.Portion"
+                                  Price="@CurrentItem.Price"
+                                  IsActive="@CurrentItem.IsActive"/>
             </MudItem>
 
             <MudItem xs="12" md="8">
                 <MudPaper Class="pa-5" Style="height: 100%">
                     <TextDisplayRow Icon="@Icons.Material.Filled.Numbers"
                                     Label="ID"
-                                    Text="@Item.Id.ToString()"
+                                    Text="@CurrentItem.Id.ToString()"
                                     ShowDivider="true"/>
 
                     <TextDisplayRow Icon="@Icons.Material.Filled.Category"
                                     Label="Category"
                                     ShowDivider="true">
                         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                            <MudImage Src="@(Item.Category.ImageUrl ?? ImageUrls.Placeholder)"
+                            <MudImage Src="@(CurrentItem.Category.ImageUrl ?? ImageUrls.Placeholder)"
                                       Alt="Category image"
                                       Width="24"
                                       Height="24"
@@ -36,10 +36,10 @@
                                       Style="@ImageStyles.RoundedSmall"/>
 
                             <MudText Typo="Typo.body1">
-                                @Item.Category.Name
+                                @CurrentItem.Category.Name
                             </MudText>
 
-                            @if (Item.Category.Status is CategoryStatus.Inactive)
+                            @if (CurrentItem.Category.Status is CategoryStatus.Inactive)
                             {
                                 <MudChip T="string" Variant="Variant.Text" Size="Size.Small" Color="Color.Error">
                                     Inactive
@@ -59,7 +59,7 @@
 
                     <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"
                                     Label="Created"
-                                    Text="@Item.CreatedAtUtc.ToDisplayDateTime(TimeZoneService.TimeZone)"
+                                    Text="@CurrentItem.CreatedAtUtc.ToDisplayDateTime(TimeZoneService.TimeZone)"
                                     ShowDivider="true"/>
 
                     <TextDisplayRow Icon="@Icons.Material.Filled.CalendarMonth"

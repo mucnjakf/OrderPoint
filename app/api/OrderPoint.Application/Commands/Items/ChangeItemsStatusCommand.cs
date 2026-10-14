@@ -10,7 +10,7 @@ using OrderPoint.Domain.Outcomes;
 namespace OrderPoint.Application.Commands.Items;
 
 public sealed record ChangeItemsStatusCommand(IReadOnlyList<Guid> Ids, ItemStatus Status)
-    : ICommand, ICacheInvalidatingCommand
+    : ICommand, ICacheInvalidatingCommand, IMenuNotifyingCommand
 {
     IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.ItemChanges;
 }

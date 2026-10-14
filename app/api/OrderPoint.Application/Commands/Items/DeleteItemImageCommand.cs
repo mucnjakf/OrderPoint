@@ -8,7 +8,7 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Commands.Items;
 
-public sealed record DeleteItemImageCommand(Guid Id) : ICommand, ICacheInvalidatingCommand
+public sealed record DeleteItemImageCommand(Guid Id) : ICommand, ICacheInvalidatingCommand, IMenuNotifyingCommand
 {
     IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.ItemChanges;
 }

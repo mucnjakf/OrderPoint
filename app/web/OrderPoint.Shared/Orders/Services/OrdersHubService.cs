@@ -18,6 +18,8 @@ internal sealed partial class OrdersHubService(
 
     private const string OrdersChangedMethod = "OrdersChanged";
 
+    private const string MenuChangedMethod = "MenuChanged";
+
     // Keeps retrying every 30 s, so a long API restart doesn't leave the app without updates
     private static readonly TimeSpan[] RetryDelays =
     [
@@ -32,6 +34,8 @@ internal sealed partial class OrdersHubService(
     private CancellationTokenSource? _stopping;
 
     internal event Action? OrdersChanged;
+
+    internal event Action? MenuChanged;
 
     internal event Action? StateChanged;
 
@@ -61,6 +65,7 @@ internal sealed partial class OrdersHubService(
             .Build();
 
         _connection.On(OrdersChangedMethod, () => OrdersChanged?.Invoke());
+        _connection.On(MenuChangedMethod, () => MenuChanged?.Invoke());
         _connection.Reconnecting += OnReconnectingAsync;
         _connection.Reconnected += OnReconnectedAsync;
         _connection.Closed += OnClosedAsync;
@@ -142,6 +147,7 @@ internal sealed partial class OrdersHubService(
     {
         StateChanged?.Invoke();
         OrdersChanged?.Invoke();
+        MenuChanged?.Invoke();
 
         return Task.CompletedTask;
     }

@@ -13,7 +13,7 @@ public sealed record CreateCategoryCommand(
     string Name,
     string Description,
     CategoryStatus Status)
-    : ICommand<CategoryDto>, ICacheInvalidatingCommand
+    : ICommand<CategoryDto>, ICacheInvalidatingCommand, IMenuNotifyingCommand
 {
     IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.CategoryChanges;
 }

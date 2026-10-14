@@ -9,7 +9,7 @@ using OrderPoint.Domain.Outcomes;
 namespace OrderPoint.Application.Commands.Categories;
 
 public sealed record UpdateCategoryImageCommand(Guid Id, Stream Content, string ContentType)
-    : ICommand, ICacheInvalidatingCommand
+    : ICommand, ICacheInvalidatingCommand, IMenuNotifyingCommand
 {
     IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.CategoryChanges;
 }

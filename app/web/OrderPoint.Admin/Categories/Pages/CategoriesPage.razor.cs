@@ -8,11 +8,12 @@ using OrderPoint.Admin.Categories.Enumerations;
 using OrderPoint.Admin.Categories.Sorting;
 using OrderPoint.Shared.Dtos;
 using OrderPoint.Shared.Extensions;
+using OrderPoint.Shared.Orders.Services;
 using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Categories.Pages;
 
-public sealed partial class CategoriesPage
+public sealed partial class CategoriesPage : IDisposable
 {
     private const int PageSize = 10;
 
@@ -29,6 +30,9 @@ public sealed partial class CategoriesPage
 
     [Inject]
     private CategoryApiClient CategoryApiClient { get; set; } = null!;
+
+    [Inject]
+    private OrdersHubService OrdersHubService { get; set; } = null!;
 
     private IReadOnlyList<CategoryDto> TopCategories { get; set; } = [];
 
@@ -62,14 +66,32 @@ public sealed partial class CategoriesPage
 
     protected override async Task OnInitializedAsync()
     {
+        OrdersHubService.MenuChanged += OnMenuChanged;
+
         await Task.WhenAll(
             GetTopCategoriesAsync(),
             GetCategoriesAsync(pageNumber: 1));
     }
 
-    private async Task GetTopCategoriesAsync()
+    public void Dispose()
     {
-        IsLoadingTop = true;
+        OrdersHubService.MenuChanged -= OnMenuChanged;
+    }
+
+    // A category or an item changed, here or in the bartender app
+    private void OnMenuChanged()
+    {
+        _ = InvokeAsync(() => Task.WhenAll(
+            GetTopCategoriesAsync(isLiveUpdate: true),
+            GetCategoriesAsync(Pagination?.PageNumber ?? 1, isLiveUpdate: true)));
+    }
+
+    private async Task GetTopCategoriesAsync(bool isLiveUpdate = false)
+    {
+        if (!isLiveUpdate)
+        {
+            IsLoadingTop = true;
+        }
 
         PaginationDto<CategoryDto>? pagination = await ApiService.ExecuteAsync(
             () => CategoryApiClient.GetCategoriesAsync(
@@ -84,11 +106,13 @@ public sealed partial class CategoriesPage
         StateHasChanged();
     }
 
-    private async Task GetCategoriesAsync(int pageNumber)
+    private async Task GetCategoriesAsync(int pageNumber, bool isLiveUpdate = false)
     {
-        SelectedCategories = [];
-
-        IsLoading = true;
+        if (!isLiveUpdate)
+        {
+            SelectedCategories = [];
+            IsLoading = true;
+        }
 
         Pagination = await ApiService.ExecuteAsync(() => CategoryApiClient.GetCategoriesAsync(
             pageNumber,
@@ -98,6 +122,13 @@ public sealed partial class CategoriesPage
             SelectedStatus));
 
         Categories = Pagination?.Items ?? [];
+
+        if (isLiveUpdate)
+        {
+            // The reloaded categories are new instances, so the selection moves over to them
+            HashSet<Guid> selectedIds = [.. SelectedCategories.Select(category => category.Id)];
+            SelectedCategories = [.. Categories.Where(category => selectedIds.Contains(category.Id))];
+        }
 
         IsLoading = false;
 

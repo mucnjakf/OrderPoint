@@ -4,12 +4,13 @@ using OrderPoint.Bartender.Menu.Api.Requests;
 using OrderPoint.Bartender.Menu.Dtos;
 using OrderPoint.Bartender.Menu.Enumerations;
 using OrderPoint.Shared.Dtos;
+using OrderPoint.Shared.Orders.Services;
 using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Bartender.Menu.Pages;
 
 // One category's items, opened from the menu's category grid
-public sealed partial class MenuCategoryPage
+public sealed partial class MenuCategoryPage : IDisposable
 {
     private const int PageSize = 20;
 
@@ -28,6 +29,9 @@ public sealed partial class MenuCategoryPage
 
     [Inject]
     private NavigationManager NavigationManager { get; set; } = null!;
+
+    [Inject]
+    private OrdersHubService OrdersHubService { get; set; } = null!;
 
     [Parameter]
     public Guid CategoryId { get; set; }
@@ -56,7 +60,19 @@ public sealed partial class MenuCategoryPage
 
     protected override async Task OnInitializedAsync()
     {
+        OrdersHubService.MenuChanged += OnMenuChanged;
+
         await Task.WhenAll(GetCategoryAsync(), GetItemsAsync());
+    }
+
+    public void Dispose()
+    {
+        OrdersHubService.MenuChanged -= OnMenuChanged;
+    }
+
+    private void OnMenuChanged()
+    {
+        _ = InvokeAsync(() => Task.WhenAll(GetCategoryAsync(), ReloadItemsAsync()));
     }
 
     // A failed reload keeps what is shown
@@ -86,6 +102,26 @@ public sealed partial class MenuCategoryPage
         LastItemsPage = items;
 
         IsLoadingItems = false;
+
+        StateHasChanged();
+    }
+
+    // Reloads every page shown so far without a skeleton, so "Show more" isn't lost; a failed reload keeps them
+    private async Task ReloadItemsAsync()
+    {
+        int pagesCount = LastItemsPage?.PageNumber ?? 1;
+
+        PaginationDto<ItemDto>?[] pages = await Task.WhenAll(Enumerable.Range(1, pagesCount).Select(pageNumber =>
+            ApiService.ExecuteAsync(() => MenuApiClient.GetItemsAsync(pageNumber, PageSize, SearchQuery, CategoryId))));
+
+        if (pages.Any(page => page is null))
+        {
+            return;
+        }
+
+        Items = pages.SelectMany(page => page!.Items).ToList();
+
+        LastItemsPage = pages[^1];
 
         StateHasChanged();
     }

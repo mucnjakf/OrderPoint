@@ -3,18 +3,22 @@ using OrderPoint.Bartender.Menu.Api;
 using OrderPoint.Bartender.Menu.Api.Requests;
 using OrderPoint.Bartender.Menu.Dtos;
 using OrderPoint.Bartender.Menu.Enumerations;
+using OrderPoint.Shared.Orders.Services;
 using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Bartender.Menu.Pages;
 
 // Under its category's route, so the back arrow returns to that category
-public sealed partial class MenuItemPage
+public sealed partial class MenuItemPage : IDisposable
 {
     [Inject]
     private ApiService ApiService { get; set; } = null!;
 
     [Inject]
     private MenuApiClient MenuApiClient { get; set; } = null!;
+
+    [Inject]
+    private OrdersHubService OrdersHubService { get; set; } = null!;
 
     [Parameter]
     public Guid CategoryId { get; set; }
@@ -30,9 +34,26 @@ public sealed partial class MenuItemPage
 
     protected override async Task OnInitializedAsync()
     {
+        OrdersHubService.MenuChanged += OnMenuChanged;
+
         await GetItemAsync();
 
         IsLoading = false;
+    }
+
+    public void Dispose()
+    {
+        OrdersHubService.MenuChanged -= OnMenuChanged;
+    }
+
+    private void OnMenuChanged()
+    {
+        _ = InvokeAsync(async () =>
+        {
+            await GetItemAsync();
+
+            StateHasChanged();
+        });
     }
 
     // A failed reload keeps what is shown

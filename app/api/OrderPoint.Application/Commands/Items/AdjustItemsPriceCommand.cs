@@ -12,7 +12,7 @@ namespace OrderPoint.Application.Commands.Items;
 public sealed record AdjustItemsPriceCommand(
     IReadOnlyList<Guid> Ids,
     PriceAdjustmentMode Mode,
-    decimal Value) : ICommand, ICacheInvalidatingCommand
+    decimal Value) : ICommand, ICacheInvalidatingCommand, IMenuNotifyingCommand
 {
     IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.ItemChanges;
 }

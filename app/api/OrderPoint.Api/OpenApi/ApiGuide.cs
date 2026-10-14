@@ -98,6 +98,9 @@ internal static class ApiGuide
         without arguments, whenever one of them changes status; it reloads them with
         `GET /api/orders/{id}/tracking`.
 
+        Both hubs also send `MenuChanged`, without arguments, to every connection after an item or a category is
+        created, changed or deleted, so apps reload the menu they show.
+
         ## Conventions
 
         - **Ids** are UUID v7 strings. Order **numbers** are the human-readable, auto-incremented counterpart.

@@ -16,6 +16,8 @@ internal sealed partial class OrderTrackingHubService(
 
     private const string OrderChangedMethod = "OrderChanged";
 
+    private const string MenuChangedMethod = "MenuChanged";
+
     // Keeps retrying every 30 s, so a long API restart doesn't leave the guest without updates
     private static readonly TimeSpan[] RetryDelays =
     [
@@ -33,6 +35,8 @@ internal sealed partial class OrderTrackingHubService(
 
     // One of the tracked orders changed (or the connection came back, and something may have); listeners reload
     internal event Action? OrdersChanged;
+
+    internal event Action? MenuChanged;
 
     internal async Task StartAsync()
     {
@@ -58,6 +62,7 @@ internal sealed partial class OrderTrackingHubService(
             .Build();
 
         _connection.On(OrderChangedMethod, () => OrdersChanged?.Invoke());
+        _connection.On(MenuChangedMethod, () => MenuChanged?.Invoke());
         _connection.Reconnecting += OnReconnectingAsync;
         _connection.Reconnected += OnReconnectedAsync;
 
@@ -148,6 +153,7 @@ internal sealed partial class OrderTrackingHubService(
         await TrackAllAsync(_connection!);
 
         OrdersChanged?.Invoke();
+        MenuChanged?.Invoke();
     }
 
     private static TimeSpan GetRetryDelay(long attempt)

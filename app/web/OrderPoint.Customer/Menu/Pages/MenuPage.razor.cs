@@ -7,7 +7,7 @@ using OrderPoint.Customer.Tables.Services;
 namespace OrderPoint.Customer.Menu.Pages;
 
 // The categories in menu order; a category opens its items
-public sealed partial class MenuPage
+public sealed partial class MenuPage : IDisposable
 {
     // Three rows of two cards on a phone
     private const int LoadingCardsCount = 6;
@@ -54,9 +54,34 @@ public sealed partial class MenuPage
 
     protected override async Task OnInitializedAsync()
     {
+        MenuService.Changed += OnMenuChanged;
+
         Categories = await MenuService.GetMenuAsync() ?? [];
 
         IsLoading = false;
+    }
+
+    public void Dispose()
+    {
+        MenuService.Changed -= OnMenuChanged;
+    }
+
+    // A failed reload keeps what is shown
+    private void OnMenuChanged()
+    {
+        _ = InvokeAsync(async () =>
+        {
+            IReadOnlyList<MenuCategoryDto>? menu = await MenuService.GetMenuAsync();
+
+            if (menu is null)
+            {
+                return;
+            }
+
+            Categories = menu;
+
+            StateHasChanged();
+        });
     }
 
     private void OpenCategory(MenuCategoryDto category)

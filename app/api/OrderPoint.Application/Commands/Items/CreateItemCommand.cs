@@ -17,7 +17,7 @@ public sealed record CreateItemCommand(
     decimal Price,
     ItemStatus Status,
     Guid CategoryId)
-    : ICommand<ItemDto>, ICacheInvalidatingCommand
+    : ICommand<ItemDto>, ICacheInvalidatingCommand, IMenuNotifyingCommand
 {
     IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.ItemChanges;
 }

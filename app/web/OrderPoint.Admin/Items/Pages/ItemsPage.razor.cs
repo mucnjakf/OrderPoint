@@ -91,6 +91,7 @@ public sealed partial class ItemsPage : IDisposable
     protected override async Task OnInitializedAsync()
     {
         OrdersHubService.OrdersChanged += OnOrdersChanged;
+        OrdersHubService.MenuChanged += OnMenuChanged;
 
         await Task.WhenAll(
             GetSpotlightAsync(),
@@ -100,6 +101,7 @@ public sealed partial class ItemsPage : IDisposable
     public void Dispose()
     {
         OrdersHubService.OrdersChanged -= OnOrdersChanged;
+        OrdersHubService.MenuChanged -= OnMenuChanged;
     }
 
     // Orders only change the items' order counts; the spotlight doesn't show them
@@ -108,18 +110,29 @@ public sealed partial class ItemsPage : IDisposable
         _ = InvokeAsync(() => GetItemsAsync(Pagination?.PageNumber ?? 1, isLiveUpdate: true));
     }
 
-    private async Task GetSpotlightAsync()
+    // An item or a category changed, here or in the bartender app
+    private void OnMenuChanged()
     {
-        await Task.WhenAll(
-            GetNewestItemAsync(),
-            GetLastEditedItemAsync(),
-            GetHighestPriceItemAsync(),
-            GetLowestPriceItemAsync());
+        _ = InvokeAsync(() => Task.WhenAll(
+            GetSpotlightAsync(isLiveUpdate: true),
+            GetItemsAsync(Pagination?.PageNumber ?? 1, isLiveUpdate: true)));
     }
 
-    private async Task GetNewestItemAsync()
+    private async Task GetSpotlightAsync(bool isLiveUpdate = false)
     {
-        IsLoadingNewestItem = true;
+        await Task.WhenAll(
+            GetNewestItemAsync(isLiveUpdate),
+            GetLastEditedItemAsync(isLiveUpdate),
+            GetHighestPriceItemAsync(isLiveUpdate),
+            GetLowestPriceItemAsync(isLiveUpdate));
+    }
+
+    private async Task GetNewestItemAsync(bool isLiveUpdate)
+    {
+        if (!isLiveUpdate)
+        {
+            IsLoadingNewestItem = true;
+        }
 
         NewestItem = await GetSpotlightItemAsync(ItemSortBy.CreatedAtUtcDesc);
 
@@ -128,9 +141,12 @@ public sealed partial class ItemsPage : IDisposable
         StateHasChanged();
     }
 
-    private async Task GetLastEditedItemAsync()
+    private async Task GetLastEditedItemAsync(bool isLiveUpdate)
     {
-        IsLoadingLastEditedItem = true;
+        if (!isLiveUpdate)
+        {
+            IsLoadingLastEditedItem = true;
+        }
 
         ItemDto? item = await GetSpotlightItemAsync(ItemSortBy.UpdatedAtUtcDesc);
 
@@ -141,9 +157,12 @@ public sealed partial class ItemsPage : IDisposable
         StateHasChanged();
     }
 
-    private async Task GetHighestPriceItemAsync()
+    private async Task GetHighestPriceItemAsync(bool isLiveUpdate)
     {
-        IsLoadingHighestPriceItem = true;
+        if (!isLiveUpdate)
+        {
+            IsLoadingHighestPriceItem = true;
+        }
 
         HighestPriceItem = await GetSpotlightItemAsync(ItemSortBy.PriceDesc);
 
@@ -152,9 +171,12 @@ public sealed partial class ItemsPage : IDisposable
         StateHasChanged();
     }
 
-    private async Task GetLowestPriceItemAsync()
+    private async Task GetLowestPriceItemAsync(bool isLiveUpdate)
     {
-        IsLoadingLowestPriceItem = true;
+        if (!isLiveUpdate)
+        {
+            IsLoadingLowestPriceItem = true;
+        }
 
         LowestPriceItem = await GetSpotlightItemAsync(ItemSortBy.PriceAsc);
 

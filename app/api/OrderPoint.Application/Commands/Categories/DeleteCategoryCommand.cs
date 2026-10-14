@@ -9,7 +9,7 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Commands.Categories;
 
-public sealed record DeleteCategoryCommand(Guid Id) : ICommand, ICacheInvalidatingCommand
+public sealed record DeleteCategoryCommand(Guid Id) : ICommand, ICacheInvalidatingCommand, IMenuNotifyingCommand
 {
     IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.CategoryChanges;
 }

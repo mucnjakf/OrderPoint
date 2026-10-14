@@ -9,7 +9,7 @@ using OrderPoint.Domain.Outcomes;
 namespace OrderPoint.Application.Commands.Items;
 
 public sealed record ChangeItemsCategoryCommand(IReadOnlyList<Guid> Ids, Guid CategoryId)
-    : ICommand, ICacheInvalidatingCommand
+    : ICommand, ICacheInvalidatingCommand, IMenuNotifyingCommand
 {
     IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.ItemChanges;
 }

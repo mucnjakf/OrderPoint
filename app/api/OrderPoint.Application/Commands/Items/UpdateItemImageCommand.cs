@@ -9,7 +9,7 @@ using OrderPoint.Domain.Outcomes;
 namespace OrderPoint.Application.Commands.Items;
 
 public sealed record UpdateItemImageCommand(Guid Id, Stream Content, string ContentType)
-    : ICommand, ICacheInvalidatingCommand
+    : ICommand, ICacheInvalidatingCommand, IMenuNotifyingCommand
 {
     IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.ItemChanges;
 }

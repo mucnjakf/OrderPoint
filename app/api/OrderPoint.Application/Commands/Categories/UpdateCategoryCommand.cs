@@ -12,7 +12,7 @@ public sealed record UpdateCategoryCommand(
     Guid Id,
     string Name,
     string Description,
-    CategoryStatus Status) : ICommand, ICacheInvalidatingCommand
+    CategoryStatus Status) : ICommand, ICacheInvalidatingCommand, IMenuNotifyingCommand
 {
     IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.CategoryChanges;
 }

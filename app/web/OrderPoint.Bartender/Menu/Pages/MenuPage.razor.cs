@@ -2,12 +2,13 @@
 using OrderPoint.Bartender.Menu.Api;
 using OrderPoint.Bartender.Menu.Dtos;
 using OrderPoint.Shared.Dtos;
+using OrderPoint.Shared.Orders.Services;
 using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Bartender.Menu.Pages;
 
-// The menu as the admin set it up, to answer guests; it changes only in the Admin, so it is not live
-public sealed partial class MenuPage
+// The menu as the admin set it up, to answer guests; it follows changes live
+public sealed partial class MenuPage : IDisposable
 {
     private const int MaxCategoriesCount = 100;
 
@@ -28,6 +29,9 @@ public sealed partial class MenuPage
     [Inject]
     private NavigationManager NavigationManager { get; set; } = null!;
 
+    [Inject]
+    private OrdersHubService OrdersHubService { get; set; } = null!;
+
     private IReadOnlyList<CategoryDto> Categories { get; set; } = [];
 
     private bool IsLoading { get; set; } = true;
@@ -36,17 +40,36 @@ public sealed partial class MenuPage
 
     protected override async Task OnInitializedAsync()
     {
+        OrdersHubService.MenuChanged += OnMenuChanged;
+
         await GetCategoriesAsync();
     }
 
-    private async Task GetCategoriesAsync()
+    public void Dispose()
     {
-        IsLoading = true;
+        OrdersHubService.MenuChanged -= OnMenuChanged;
+    }
+
+    private void OnMenuChanged()
+    {
+        _ = InvokeAsync(() => GetCategoriesAsync(isLiveUpdate: true));
+    }
+
+    // A live update shows no skeleton, and a failed one keeps what is shown
+    private async Task GetCategoriesAsync(bool isLiveUpdate = false)
+    {
+        if (!isLiveUpdate)
+        {
+            IsLoading = true;
+        }
 
         PaginationDto<CategoryDto>? categories =
             await ApiService.ExecuteAsync(() => MenuApiClient.GetCategoriesAsync(MaxCategoriesCount, SearchQuery));
 
-        Categories = categories?.Items ?? [];
+        if (categories is not null || !isLiveUpdate)
+        {
+            Categories = categories?.Items ?? [];
+        }
 
         IsLoading = false;
 

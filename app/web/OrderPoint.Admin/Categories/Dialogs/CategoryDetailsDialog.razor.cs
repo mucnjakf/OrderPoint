@@ -8,11 +8,12 @@ using OrderPoint.Admin.Items.Dtos;
 using OrderPoint.Admin.Items.Sorting;
 using OrderPoint.Shared.Dtos;
 using OrderPoint.Shared.Extensions;
+using OrderPoint.Shared.Orders.Services;
 using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Categories.Dialogs;
 
-public sealed partial class CategoryDetailsDialog
+public sealed partial class CategoryDetailsDialog : IDisposable
 {
     private const int PageSize = 5;
 
@@ -37,6 +38,9 @@ public sealed partial class CategoryDetailsDialog
     [Inject]
     private ItemApiClient ItemApiClient { get; set; } = null!;
 
+    [Inject]
+    private OrdersHubService OrdersHubService { get; set; } = null!;
+
     private PaginationDto<ItemDto>? Pagination { get; set; }
 
     private IReadOnlyList<ItemDto> Items { get; set; } = [];
@@ -55,12 +59,27 @@ public sealed partial class CategoryDetailsDialog
     {
         ItemsCount = Category.ItemsCount;
 
+        OrdersHubService.MenuChanged += OnMenuChanged;
+
         await GetItemsAsync(pageNumber: 1);
     }
 
-    private async Task GetItemsAsync(int pageNumber)
+    public void Dispose()
     {
-        IsLoading = true;
+        OrdersHubService.MenuChanged -= OnMenuChanged;
+    }
+
+    private void OnMenuChanged()
+    {
+        _ = InvokeAsync(() => GetItemsAsync(Pagination?.PageNumber ?? 1, isLiveUpdate: true));
+    }
+
+    private async Task GetItemsAsync(int pageNumber, bool isLiveUpdate = false)
+    {
+        if (!isLiveUpdate)
+        {
+            IsLoading = true;
+        }
 
         Pagination = await ApiService.ExecuteAsync(() => ItemApiClient.GetItemsAsync(
             pageNumber,
