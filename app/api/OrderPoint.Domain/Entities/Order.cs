@@ -9,6 +9,9 @@ public sealed class Order : Entity
 {
     public int Number { get; private set; }
 
+    public Guid TableId { get; private set; }
+
+    // Copied from the table, so renaming a table does not rewrite past orders
     public string TableCode { get; private set; }
 
     public string? Note { get; private set; }
@@ -37,24 +40,26 @@ public sealed class Order : Entity
 
     private Order(
         Guid id,
+        Guid tableId,
         string tableCode,
         string? note,
         OrderStatus status,
         DateTimeOffset createdAtUtc) : base(id, createdAtUtc)
     {
+        TableId = tableId;
         TableCode = tableCode;
         Note = note;
         Status = status;
     }
 
     public static Result<Order> Create(
-        string tableCode,
+        Table table,
         string? note,
         IReadOnlyList<(Item Item, int Quantity)> items)
     {
-        if (string.IsNullOrWhiteSpace(tableCode))
+        if (table.Status == TableStatus.Inactive)
         {
-            return Result.Failure<Order>(OrderErrors.TableCodeIsRequired);
+            return Result.Failure<Order>(TableErrors.IsInactive);
         }
 
         if (items.Count == 0)
@@ -72,7 +77,13 @@ public sealed class Order : Entity
             return Result.Failure<Order>(OrderErrors.ItemIsUnavailable);
         }
 
-        Order order = new(Guid.CreateVersion7(), tableCode, note, OrderStatus.Pending, DateTimeOffset.UtcNow);
+        Order order = new(
+            Guid.CreateVersion7(),
+            table.Id,
+            table.Code,
+            note,
+            OrderStatus.Pending,
+            DateTimeOffset.UtcNow);
 
         foreach ((Item item, int quantity) in items)
         {

@@ -8,6 +8,7 @@ internal static class CacheTags
     internal const string Orders = "orders";
     internal const string Dashboard = "dashboard";
     internal const string Menu = "menu";
+    internal const string Tables = "tables";
 
     internal static readonly IReadOnlyList<string> CategoryChanges = [Categories, Items, Dashboard, Menu];
 
@@ -16,4 +17,6 @@ internal static class CacheTags
     internal static readonly IReadOnlyList<string> BartenderChanges = [Bartenders, Orders, Dashboard];
 
     internal static readonly IReadOnlyList<string> OrderChanges = [Orders, Items, Bartenders, Dashboard];
+
+    internal static readonly IReadOnlyList<string> TableChanges = [Tables];
 }

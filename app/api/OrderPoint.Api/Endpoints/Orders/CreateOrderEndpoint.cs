@@ -44,7 +44,9 @@ internal sealed class CreateOrderEndpoint : IEndpoint
                 Limits, so an anonymous caller can't place absurd orders: at most 50 lines, each item at most once and
                 at most 20 pieces, and a table code of up to 10 letters, digits or hyphens.
 
+                - `404 Table.NotFound`: no table has this code.
                 - `404 Item.NotFound`: an item does not exist.
+                - `409 Table.IsInactive`: the table is not taking orders.
                 - `409 Order.ItemIsUnavailable`: an item or its category is inactive.
                 """)
             .ProducesProblem(StatusCodes.Status404NotFound)

@@ -24,6 +24,10 @@ internal sealed class DocumentInfoTransformer : IOpenApiDocumentTransformer
         ("Orders", "Orders placed by customers. Placing, tracking and cancelling an order are anonymous, admins and " +
                    "bartenders read them, and bartenders accept, decline, start and complete them."),
         ("Shift", "The signed-in bartender's figures for today, for the bartender app."),
+        ("Areas", "Parts of the bar (Inside, Terrace), each with its floor plan grid, and the whole floor plan."),
+        ("Tables", "The tables guests order from: code (in the QR code), seats, status and place on the floor plan. " +
+                   "Looking a table up by its code is anonymous."),
+        ("Fixtures", "Fixed pieces of a floor plan (bar counter, entrance, wall) that help staff find the tables."),
         ("Dashboard", "Aggregated numbers for the Admin dashboard, one endpoint per widget so they load in parallel."),
         ("Health", "The health of the API, the database and the blob storage, for the Admin's system health page.")
     ];
@@ -34,6 +38,7 @@ internal sealed class DocumentInfoTransformer : IOpenApiDocumentTransformer
         ("Menu", ["Categories", "Items", "Menu"]),
         ("Staff", ["Bartenders"]),
         ("Orders", ["Orders", "Shift"]),
+        ("Floor plan", ["Areas", "Tables", "Fixtures"]),
         ("Insights", ["Dashboard"]),
         ("System", ["Health"])
     ];

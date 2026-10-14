@@ -41,6 +41,8 @@ public interface IOrderRepository
 
     Task<bool> ExistsByBartenderAsync(Guid bartenderId, CancellationToken cancellationToken = default);
 
+    Task<bool> ExistsByTableAsync(Guid tableId, CancellationToken cancellationToken = default);
+
     Task<bool> ExistsByBartendersAsync(
         IReadOnlyList<Guid> bartenderIds,
         CancellationToken cancellationToken = default);

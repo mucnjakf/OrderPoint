@@ -8,6 +8,7 @@ using OrderPoint.Customer.Menu.Services;
 using OrderPoint.Customer.Orders.Api;
 using OrderPoint.Customer.Orders.Services;
 using OrderPoint.Customer.Settings.Services;
+using OrderPoint.Customer.Tables.Api;
 using OrderPoint.Customer.Tables.Services;
 using OrderPoint.ServiceDefaults;
 using OrderPoint.Shared.Extensions;
@@ -34,6 +35,7 @@ builder.Services.AddScoped<MyOrdersStatusService>();
 // Guests are anonymous, so no client sends a token
 builder.Services.AddHttpClient<MenuApiClient>(ConfigureApiClient);
 builder.Services.AddHttpClient<OrderApiClient>(ConfigureApiClient);
+builder.Services.AddHttpClient<TableApiClient>(ConfigureApiClient);
 
 // MudBlazor's default is 5000
 const int SnackbarVisibleMilliseconds = 2000;

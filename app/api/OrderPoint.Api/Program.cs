@@ -89,6 +89,7 @@ builder.ReportHealthCheckFailureAsDegraded("StackExchange.Redis");
 builder.Services.AddSignalR();
 builder.Services.AddSingleton<IOrderNotifier, SignalROrderNotifier>();
 builder.Services.AddSingleton<IMenuNotifier, SignalRMenuNotifier>();
+builder.Services.AddSingleton<ITablesNotifier, SignalRTablesNotifier>();
 
 // Modules
 builder.Services.AddApplicationModule(builder.Configuration);

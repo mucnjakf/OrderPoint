@@ -13,6 +13,9 @@ internal sealed class OrderTrackingHub : Hub
     // Sent to every connection after an item or a category changes, so the menu a guest sees stays current
     internal const string MenuChangedMethod = "MenuChanged";
 
+    // Sent to every connection after an area, a table or a fixture changes
+    internal const string TablesChangedMethod = "TablesChanged";
+
     // Groups don't survive a reconnect, so clients call this again after one
     [HubMethodName(TrackOrderMethod)]
     public async Task TrackOrderAsync(Guid orderId)

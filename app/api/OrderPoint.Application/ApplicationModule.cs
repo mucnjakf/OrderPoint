@@ -23,6 +23,7 @@ public static class ApplicationModule
             configure.AddOpenBehavior(typeof(TelemetryBehavior<,>));
             configure.AddOpenBehavior(typeof(OrderNotificationBehavior<,>));
             configure.AddOpenBehavior(typeof(MenuNotificationBehavior<,>));
+            configure.AddOpenBehavior(typeof(TablesNotificationBehavior<,>));
             configure.AddOpenBehavior(typeof(CacheInvalidationBehavior<,>));
         });
 

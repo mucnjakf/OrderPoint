@@ -96,6 +96,9 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
     public async Task<bool> ExistsByBartenderAsync(Guid bartenderId, CancellationToken cancellationToken = default)
         => await dbContext.Orders.AnyAsync(order => order.BartenderId == bartenderId, cancellationToken);
 
+    public async Task<bool> ExistsByTableAsync(Guid tableId, CancellationToken cancellationToken = default)
+        => await dbContext.Orders.AnyAsync(order => order.TableId == tableId, cancellationToken);
+
     public async Task<bool> ExistsByBartendersAsync(
         IReadOnlyList<Guid> bartenderIds,
         CancellationToken cancellationToken = default)

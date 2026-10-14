@@ -1,10 +1,13 @@
 ﻿using System.Globalization;
+using OrderPoint.Application.Queries.Areas;
 using OrderPoint.Application.Queries.Bartenders;
 using OrderPoint.Application.Queries.Categories;
 using OrderPoint.Application.Queries.Dashboard;
+using OrderPoint.Application.Queries.Fixtures;
 using OrderPoint.Application.Queries.Items;
 using OrderPoint.Application.Queries.Menu;
 using OrderPoint.Application.Queries.Orders;
+using OrderPoint.Application.Queries.Tables;
 using OrderPoint.Domain.Enumerations;
 
 namespace OrderPoint.Application.Caching;
@@ -38,6 +41,16 @@ internal static class CacheKeys
     internal static string For(GetOrderTrackingQuery query) => $"orders:{query.Id}:tracking";
 
     internal static string For(GetMenuQuery query) => "menu";
+
+    internal static string For(GetFloorPlanQuery query) => "tables:floor-plan";
+
+    internal static string For(GetAreaQuery query) => $"tables:areas:{query.Id}";
+
+    internal static string For(GetTableQuery query) => $"tables:{query.Id}";
+
+    internal static string For(GetTableByCodeQuery query) => $"tables:code:{query.Code}";
+
+    internal static string For(GetFixtureQuery query) => $"tables:fixtures:{query.Id}";
 
     internal static string For(GetOrdersQuery query)
         => $"orders:page:{query.PageNumber}:{query.PageSize}:{query.Status}:{query.ItemId}:{query.BartenderId}:" +

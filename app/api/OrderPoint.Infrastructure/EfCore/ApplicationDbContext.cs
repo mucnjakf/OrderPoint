@@ -16,6 +16,12 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
 
     internal DbSet<Order> Orders { get; init; } = null!;
 
+    internal DbSet<Area> Areas { get; init; } = null!;
+
+    internal DbSet<Table> Tables { get; init; } = null!;
+
+    internal DbSet<Fixture> Fixtures { get; init; } = null!;
+
     internal DbSet<ApplicationUser> Users { get; init; } = null!;
 
     internal DbSet<RefreshToken> RefreshTokens { get; init; } = null!;

@@ -64,6 +64,10 @@ public sealed partial class MainLayout : IDisposable
         && !NavigationManager.ToBaseRelativePath(NavigationManager.Uri)
             .StartsWith(OrdersPath, StringComparison.Ordinal);
 
+    private string TableChipText => TableService.AreaName is null
+        ? $"Table {TableService.TableCode}"
+        : $"{TableService.AreaName} · {TableService.TableCode}";
+
     private string ContentStyle => IsStatusBarVisible ? MainContentWithStatusBarStyle : MainContentStyle;
 
     protected override async Task OnInitializedAsync()

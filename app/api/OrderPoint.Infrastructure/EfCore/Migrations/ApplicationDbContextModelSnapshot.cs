@@ -22,6 +22,39 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("OrderPoint.Domain.Entities.Area", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Columns")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<int>("Rows")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Areas", (string)null);
+                });
+
             modelBuilder.Entity("OrderPoint.Domain.Entities.Bartender", b =>
                 {
                     b.Property<Guid>("Id")
@@ -105,6 +138,46 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories", (string)null);
+                });
+
+            modelBuilder.Entity("OrderPoint.Domain.Entities.Fixture", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AreaId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Label")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("X")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Y")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AreaId");
+
+                    b.ToTable("Fixtures", (string)null);
                 });
 
             modelBuilder.Entity("OrderPoint.Domain.Entities.Item", b =>
@@ -200,6 +273,9 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("character varying(10)");
 
+                    b.Property<Guid>("TableId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTimeOffset?>("UpdatedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
@@ -209,6 +285,8 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
 
                     b.HasIndex("Number")
                         .IsUnique();
+
+                    b.HasIndex("TableId");
 
                     b.ToTable("Orders", (string)null);
                 });
@@ -254,6 +332,56 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                         .IsUnique();
 
                     b.ToTable("OrderItems", (string)null);
+                });
+
+            modelBuilder.Entity("OrderPoint.Domain.Entities.Table", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AreaId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Height")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Seats")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Shape")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("X")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Y")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AreaId");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("Tables", (string)null);
                 });
 
             modelBuilder.Entity("OrderPoint.Infrastructure.Identity.ApplicationUser", b =>
@@ -353,6 +481,15 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                     b.ToTable("RefreshTokens", (string)null);
                 });
 
+            modelBuilder.Entity("OrderPoint.Domain.Entities.Fixture", b =>
+                {
+                    b.HasOne("OrderPoint.Domain.Entities.Area", null)
+                        .WithMany("Fixtures")
+                        .HasForeignKey("AreaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("OrderPoint.Domain.Entities.Item", b =>
                 {
                     b.HasOne("OrderPoint.Domain.Entities.Category", "Category")
@@ -370,6 +507,12 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                         .WithMany("Orders")
                         .HasForeignKey("BartenderId")
                         .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("OrderPoint.Domain.Entities.Table", null)
+                        .WithMany()
+                        .HasForeignKey("TableId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Bartender");
                 });
@@ -391,6 +534,17 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                     b.Navigation("Item");
                 });
 
+            modelBuilder.Entity("OrderPoint.Domain.Entities.Table", b =>
+                {
+                    b.HasOne("OrderPoint.Domain.Entities.Area", "Area")
+                        .WithMany("Tables")
+                        .HasForeignKey("AreaId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Area");
+                });
+
             modelBuilder.Entity("OrderPoint.Infrastructure.Identity.RefreshToken", b =>
                 {
                     b.HasOne("OrderPoint.Infrastructure.Identity.ApplicationUser", null)
@@ -398,6 +552,13 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("OrderPoint.Domain.Entities.Area", b =>
+                {
+                    b.Navigation("Fixtures");
+
+                    b.Navigation("Tables");
                 });
 
             modelBuilder.Entity("OrderPoint.Domain.Entities.Bartender", b =>

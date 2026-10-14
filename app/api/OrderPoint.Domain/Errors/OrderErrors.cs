@@ -8,10 +8,6 @@ public static class OrderErrors
         "Order.NotFound",
         "Order not found");
 
-    internal static readonly Error TableCodeIsRequired = Error.Validation(
-        "Order.TableCodeIsRequired",
-        "Order table code is required");
-
     internal static readonly Error ItemsAreRequired = Error.Validation(
         "Order.ItemsAreRequired",
         "Order items are required");

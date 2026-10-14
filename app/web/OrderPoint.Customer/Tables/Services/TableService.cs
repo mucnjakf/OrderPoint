@@ -20,6 +20,8 @@ internal sealed class TableService(ProtectedLocalStorage protectedLocalStorage)
 
     internal string? TableCode { get; private set; }
 
+    internal string? AreaName { get; private set; }
+
     internal async Task LoadAsync()
     {
         try
@@ -30,6 +32,7 @@ internal sealed class TableService(ProtectedLocalStorage protectedLocalStorage)
             bool isThisVisit = result.Success && result.Value!.ScannedAtUtc >= DateTimeOffset.UtcNow - Visit.Length;
 
             TableCode = isThisVisit ? result.Value!.TableCode : null;
+            AreaName = isThisVisit ? result.Value!.AreaName : null;
         }
         catch (CryptographicException)
         {
@@ -40,12 +43,26 @@ internal sealed class TableService(ProtectedLocalStorage protectedLocalStorage)
         IsLoaded = true;
     }
 
-    internal async Task SetAsync(string tableCode)
+    internal async Task SetAsync(string tableCode, string areaName)
     {
         TableCode = tableCode;
+        AreaName = areaName;
 
         Changed?.Invoke();
 
-        await protectedLocalStorage.SetAsync(StorageKey, new TableVisitDto(tableCode, DateTimeOffset.UtcNow));
+        await protectedLocalStorage.SetAsync(
+            StorageKey,
+            new TableVisitDto(tableCode, areaName, DateTimeOffset.UtcNow));
+    }
+
+    // The table was removed or closed since it was scanned, so the guest scans again
+    internal async Task ClearAsync()
+    {
+        TableCode = null;
+        AreaName = null;
+
+        Changed?.Invoke();
+
+        await protectedLocalStorage.DeleteAsync(StorageKey);
     }
 }

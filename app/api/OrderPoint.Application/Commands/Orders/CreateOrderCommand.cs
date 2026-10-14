@@ -25,6 +25,7 @@ public sealed record CreateOrderCommand(
 internal sealed partial class CreateOrderCommandHandler(
     IOrderRepository orderRepository,
     IItemRepository itemRepository,
+    ITableRepository tableRepository,
     IUnitOfWork unitOfWork,
     ApplicationTelemetry telemetry,
     ILogger<CreateOrderCommandHandler> logger)
@@ -32,6 +33,13 @@ internal sealed partial class CreateOrderCommandHandler(
 {
     public async Task<Result<OrderDto>> Handle(CreateOrderCommand command, CancellationToken cancellationToken)
     {
+        Table? table = await tableRepository.GetByCodeAsync(command.TableCode, cancellationToken);
+
+        if (table is null)
+        {
+            return Result.Failure<OrderDto>(TableErrors.NotFound);
+        }
+
         List<Guid> itemIds = command.Items.Select(commandItem => commandItem.ItemId).ToList();
 
         IReadOnlyList<Item> items = await itemRepository.GetAsync(itemIds, cancellationToken);
@@ -47,7 +55,7 @@ internal sealed partial class CreateOrderCommandHandler(
             .Select(commandItem => (itemsById[commandItem.ItemId], commandItem.Quantity))
             .ToList();
 
-        Result<Order> result = Order.Create(command.TableCode, command.Note, orderItems);
+        Result<Order> result = Order.Create(table, command.Note, orderItems);
 
         if (result.IsFailure)
         {

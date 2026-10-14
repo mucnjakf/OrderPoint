@@ -74,6 +74,13 @@ internal sealed class OrderTypeConfiguration : IEntityTypeConfiguration<Order>
             .IsRequired(false);
 
         builder
+            .HasOne<Table>()
+            .WithMany()
+            .HasForeignKey(order => order.TableId)
+            .OnDelete(DeleteBehavior.Restrict)
+            .IsRequired();
+
+        builder
             .HasOne(order => order.Bartender)
             .WithMany(bartender => bartender.Orders)
             .HasForeignKey(order => order.BartenderId)

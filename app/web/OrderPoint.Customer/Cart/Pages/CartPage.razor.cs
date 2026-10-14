@@ -25,6 +25,10 @@ public sealed partial class CartPage : IDisposable
 
     private const string ItemNotFoundCode = "Item.NotFound";
 
+    private const string TableNotFoundCode = "Table.NotFound";
+
+    private const string TableIsInactiveCode = "Table.IsInactive";
+
     [Inject]
     private CartService CartService { get; set; } = null!;
 
@@ -156,6 +160,14 @@ public sealed partial class CartPage : IDisposable
             MenuService.Reset();
 
             await GetMenuItemsAsync();
+
+            throw;
+        }
+        catch (ApiException exception)
+            when (exception.HasErrorCode(TableNotFoundCode) || exception.HasErrorCode(TableIsInactiveCode))
+        {
+            // The table was removed or closed since it was scanned: the cart asks for a scan again
+            await TableService.ClearAsync();
 
             throw;
         }
