@@ -5,7 +5,7 @@ using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Bartender.Shift.Api;
 
-// Today starts at the bartender's local midnight, so the API needs their time zone
+// Today starts at the business day's start hour in the bartender's time zone, so the API needs it
 internal sealed class ShiftApiClient(HttpClient httpClient, TimeZoneService timeZoneService)
 {
     internal async Task<ShiftDto> GetShiftAsync(CancellationToken cancellationToken = default)

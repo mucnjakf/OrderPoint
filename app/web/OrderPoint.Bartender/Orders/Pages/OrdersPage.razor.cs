@@ -77,6 +77,9 @@ public sealed partial class OrdersPage : IAsyncDisposable
     [Inject]
     private NavigationManager NavigationManager { get; set; } = null!;
 
+    [Inject]
+    private IConfiguration Configuration { get; set; } = null!;
+
     private NewOrdersTracker NewQueueOrders { get; } = new();
 
     private bool IsSplitView { get; set; }
@@ -237,7 +240,7 @@ public sealed partial class OrdersPage : IAsyncDisposable
 
         PaginationDto<OrderDto>?[] results = await Task.WhenAll(completedTask, declinedTask);
 
-        DateTimeOffset todayStartUtc = TimeZoneService.TimeZone.GetTodayStartUtc();
+        DateTimeOffset todayStartUtc = TimeZoneService.TimeZone.GetTodayStartUtc(Configuration.GetBusinessDayStart());
 
         DoneOrders =
         [

@@ -214,7 +214,7 @@ internal sealed class DashboardEfCoreRepository(ApplicationDbContext dbContext) 
             .Where(order => order.Status == OrderStatus.Completed)
             .SelectMany(order => order.Items);
 
-    // By completion time, wherever the order was placed, so an order taken before midnight still counts today
+    // By completion time, wherever the order was placed, so an order taken before the day started still counts today
     private IQueryable<Order> GetCompletedByBartenderInRange(
         Guid bartenderId,
         DateTimeOffset fromUtc,

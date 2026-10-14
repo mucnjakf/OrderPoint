@@ -2,11 +2,12 @@
 
 internal static class TimeZoneInfoExtensions
 {
-    // Local midnight of the viewer's today, in UTC
-    internal static DateTimeOffset GetTodayStartUtc(this TimeZoneInfo timeZone)
+    // The start of the viewer's business day, in UTC: before the day start it is still yesterday's
+    internal static DateTimeOffset GetTodayStartUtc(this TimeZoneInfo timeZone, TimeSpan dayStart)
     {
-        DateTime localToday = TimeZoneInfo.ConvertTime(DateTime.UtcNow, timeZone).Date;
+        DateTime localNow = TimeZoneInfo.ConvertTime(DateTime.UtcNow, timeZone);
+        DateTime localDayStart = (localNow - dayStart).Date + dayStart;
 
-        return TimeZoneInfo.ConvertTimeToUtc(DateTime.SpecifyKind(localToday, DateTimeKind.Unspecified), timeZone);
+        return TimeZoneInfo.ConvertTimeToUtc(DateTime.SpecifyKind(localDayStart, DateTimeKind.Unspecified), timeZone);
     }
 }

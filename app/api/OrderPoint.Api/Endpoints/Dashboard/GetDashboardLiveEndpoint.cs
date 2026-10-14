@@ -29,9 +29,9 @@ internal sealed class GetDashboardLiveEndpoint : IEndpoint
             .WithTags("Dashboard")
             .WithSummary("Get the live figures")
             .WithDescription("""
-                Open orders by status, the oldest open order, and today's figures since local midnight (orders,
-                completed orders, revenue, average order value). Meant to be polled; the Admin refreshes every 30
-                seconds.
+                Open orders by status, the oldest open order, and today's figures since the business day started
+                (orders, completed orders, revenue, average order value). Meant to be polled; the Admin refreshes every
+                30 seconds.
                 """)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }

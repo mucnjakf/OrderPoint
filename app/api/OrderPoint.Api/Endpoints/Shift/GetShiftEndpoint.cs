@@ -12,8 +12,8 @@ using OrderPoint.Domain.Outcomes;
 namespace OrderPoint.Api.Endpoints.Shift;
 
 /// <summary>The bartender's time zone.</summary>
-/// <param name="TimeZone">The IANA time zone of the bartender, e.g. `Europe/Zagreb`. Today starts at its local
-/// midnight.</param>
+/// <param name="TimeZone">The IANA time zone of the bartender, e.g. `Europe/Zagreb`. Today starts at the business day's
+/// start hour in it (e.g. 06:00).</param>
 internal sealed record GetShiftRequest([FromQuery] string TimeZone);
 
 /// <summary>The bartender's shift so far.</summary>
@@ -31,8 +31,8 @@ internal sealed class GetShiftEndpoint : IEndpoint
             .WithSummary("Get my shift")
             .WithDescription("""
                 The signed-in bartender's figures for today: orders waiting for any bartender, the bartender's own
-                accepted and active orders, and the orders they completed since local midnight with the average
-                minutes from placing to completing them. Not cached; reload it after a status change.
+                accepted and active orders, and the orders they completed since the business day started with the
+                average minutes from placing to completing them. Not cached; reload it after a status change.
                 """)
             .RequireAuthorization(AuthorizationPolicies.Bartender);
     }

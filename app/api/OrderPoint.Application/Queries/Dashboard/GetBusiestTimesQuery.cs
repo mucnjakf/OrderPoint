@@ -35,7 +35,10 @@ internal sealed class GetBusiestTimesQueryHandler(IDashboardRepository dashboard
         CancellationToken cancellationToken)
     {
         DateTimeOffset nowUtc = DateTimeOffset.UtcNow;
-        DateTime fromLocal = DashboardPeriodRange.GetLocalToday(nowUtc, query.TimeZone).AddDays(1 - DaysCount);
+        // Calendar days: the heat map's axes are weekdays and clock hours, not business days
+        DateTime fromLocal = DashboardPeriodRange
+            .GetLocalToday(nowUtc, query.TimeZone, TimeSpan.Zero)
+            .AddDays(1 - DaysCount);
 
         IReadOnlyList<DashboardOrderDto> orders = await dashboardRepository.GetOrdersAsync(
             DashboardPeriodRange.LocalToUtc(fromLocal, query.TimeZone),

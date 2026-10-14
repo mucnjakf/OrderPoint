@@ -102,7 +102,8 @@ internal static class ApiGuide
 
         - **Ids** are UUID v7 strings. Order **numbers** are the human-readable, auto-incremented counterpart.
         - **Times** are UTC (`...AtUtc`, ISO 8601). Dashboard endpoints take an IANA `TimeZone` (e.g.
-          `Europe/Zagreb`) and build periods and buckets from the viewer's local calendar.
+          `Europe/Zagreb`) and build periods and buckets from the viewer's local calendar; a day starts at the
+          business day's start hour (e.g. 06:00, set in the AppHost), so a night past midnight is one day.
         - **Enums** are integers in JSON; query strings also accept the name (e.g. `SortBy=NameAsc`). Every enum
           schema lists its values.
         - **Money** is in euros with 2 decimals. Order lines keep the `unitPrice` from the moment of ordering, so

@@ -8,12 +8,18 @@ namespace OrderPoint.Application.Queries.Dashboard;
 
 public sealed record GetDashboardLiveQuery(TimeZoneInfo TimeZone) : IQuery<DashboardLiveDto>;
 
-internal sealed class GetDashboardLiveQueryHandler(IDashboardRepository dashboardRepository)
+internal sealed class GetDashboardLiveQueryHandler(
+    IDashboardRepository dashboardRepository,
+    BusinessDay businessDay)
     : IQueryHandler<GetDashboardLiveQuery, DashboardLiveDto>
 {
     public async Task<Result<DashboardLiveDto>> Handle(GetDashboardLiveQuery query, CancellationToken cancellationToken)
     {
-        var today = DashboardPeriodRange.For(DashboardPeriod.Today, DateTimeOffset.UtcNow, query.TimeZone);
+        var today = DashboardPeriodRange.For(
+            DashboardPeriod.Today,
+            DateTimeOffset.UtcNow,
+            query.TimeZone,
+            businessDay.StartTime);
 
         DashboardLiveDto live = await dashboardRepository.GetLiveAsync(today.FromUtc, today.ToUtc, cancellationToken);
 

@@ -11,7 +11,10 @@ namespace OrderPoint.Application.Queries.Dashboard;
 public sealed record GetTopItemsQuery(DashboardPeriod Period, TimeZoneInfo TimeZone)
     : IQuery<IReadOnlyList<TopItemDto>>;
 
-internal sealed class GetTopItemsQueryHandler(IDashboardRepository dashboardRepository, HybridCache cache)
+internal sealed class GetTopItemsQueryHandler(
+    IDashboardRepository dashboardRepository,
+    BusinessDay businessDay,
+    HybridCache cache)
     : IQueryHandler<GetTopItemsQuery, IReadOnlyList<TopItemDto>>
 {
     private const int TopItemsCount = 5;
@@ -21,7 +24,7 @@ internal sealed class GetTopItemsQueryHandler(IDashboardRepository dashboardRepo
         CancellationToken cancellationToken)
     {
         IReadOnlyList<TopItemDto> topItems = await cache.GetOrCreateAsync(
-            CacheKeys.For(query),
+            CacheKeys.For(query, businessDay.StartTime),
             query,
             GetTopItemsAsync,
             tags: [CacheTags.Dashboard],
@@ -34,7 +37,11 @@ internal sealed class GetTopItemsQueryHandler(IDashboardRepository dashboardRepo
         GetTopItemsQuery query,
         CancellationToken cancellationToken)
     {
-        var range = DashboardPeriodRange.For(query.Period, DateTimeOffset.UtcNow, query.TimeZone);
+        var range = DashboardPeriodRange.For(
+            query.Period,
+            DateTimeOffset.UtcNow,
+            query.TimeZone,
+            businessDay.StartTime);
 
         IReadOnlyList<TopItemDto> topItems = await dashboardRepository.GetTopItemsAsync(
             range.FromUtc,

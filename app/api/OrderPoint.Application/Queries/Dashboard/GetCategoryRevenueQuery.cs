@@ -11,7 +11,10 @@ namespace OrderPoint.Application.Queries.Dashboard;
 public sealed record GetCategoryRevenueQuery(DashboardPeriod Period, TimeZoneInfo TimeZone)
     : IQuery<IReadOnlyList<CategoryRevenueDto>>;
 
-internal sealed class GetCategoryRevenueQueryHandler(IDashboardRepository dashboardRepository, HybridCache cache)
+internal sealed class GetCategoryRevenueQueryHandler(
+    IDashboardRepository dashboardRepository,
+    BusinessDay businessDay,
+    HybridCache cache)
     : IQueryHandler<GetCategoryRevenueQuery, IReadOnlyList<CategoryRevenueDto>>
 {
     private const int TopCategoriesCount = 5;
@@ -21,7 +24,7 @@ internal sealed class GetCategoryRevenueQueryHandler(IDashboardRepository dashbo
         CancellationToken cancellationToken)
     {
         IReadOnlyList<CategoryRevenueDto> categoryRevenue = await cache.GetOrCreateAsync(
-            CacheKeys.For(query),
+            CacheKeys.For(query, businessDay.StartTime),
             query,
             GetCategoryRevenueAsync,
             tags: [CacheTags.Dashboard],
@@ -34,7 +37,11 @@ internal sealed class GetCategoryRevenueQueryHandler(IDashboardRepository dashbo
         GetCategoryRevenueQuery query,
         CancellationToken cancellationToken)
     {
-        var range = DashboardPeriodRange.For(query.Period, DateTimeOffset.UtcNow, query.TimeZone);
+        var range = DashboardPeriodRange.For(
+            query.Period,
+            DateTimeOffset.UtcNow,
+            query.TimeZone,
+            businessDay.StartTime);
 
         IReadOnlyList<CategoryRevenueDto> categoryRevenue = await dashboardRepository.GetCategoryRevenueAsync(
             range.FromUtc,

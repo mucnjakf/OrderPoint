@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Components;
 using OrderPoint.Bartender.Orders.Enumerations;
 using OrderPoint.Bartender.Orders.Services;
 using OrderPoint.Bartender.Shift.Api;
+using OrderPoint.Bartender.Shared.Extensions;
 using OrderPoint.Bartender.Shift.Dtos;
 using OrderPoint.Shared.Orders.Services;
 using OrderPoint.Shared.Services;
@@ -26,11 +28,20 @@ public sealed partial class ShiftPage : IDisposable
     private OrdersTabState OrdersTabState { get; set; } = null!;
 
     [Inject]
+    private IConfiguration Configuration { get; set; } = null!;
+
+    [Inject]
     private NavigationManager NavigationManager { get; set; } = null!;
 
     private ShiftDto? Shift { get; set; }
 
     private bool IsLoading { get; set; } = true;
+
+    // "Your day since 06:00", in the locale's time format
+    private string DayStartText => $"Your day since {DayStartTimeText}";
+
+    private string DayStartTimeText =>
+        DateTime.Today.Add(Configuration.GetBusinessDayStart()).ToString("t", CultureInfo.CurrentCulture);
 
     private ShiftDayDto? Day { get; set; }
 

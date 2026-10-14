@@ -12,8 +12,9 @@ using OrderPoint.Domain.Outcomes;
 namespace OrderPoint.Api.Endpoints.Dashboard;
 
 /// <summary>The period and the viewer's time zone.</summary>
-/// <param name="Period">The period: `Today` (since local midnight), `Last7Days` or `Last30Days` (both including
-/// today). Previous-period comparisons use the window of the same length right before it.</param>
+/// <param name="Period">The period: `Today` (since the business day started, e.g. 06:00 local time), `Last7Days` or
+/// `Last30Days` (both including today; every day starts at that hour). Previous-period comparisons use the window of
+/// the same length right before it.</param>
 /// <param name="TimeZone">The IANA time zone of the viewer, e.g. `Europe/Zagreb`. Periods, buckets and weekdays
 /// follow its local calendar.</param>
 internal sealed record GetCategoryRevenueRequest(

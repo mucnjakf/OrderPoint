@@ -43,29 +43,34 @@ internal static class CacheKeys
         => $"orders:page:{query.PageNumber}:{query.PageSize}:{query.Status}:{query.ItemId}:{query.BartenderId}:" +
            $"{query.SortBy}:{query.SearchQuery}";
 
-    internal static string For(GetDashboardSummaryQuery query)
-        => ForDashboard("summary", query.Period, query.TimeZone);
+    internal static string For(GetDashboardSummaryQuery query, TimeSpan dayStart)
+        => ForDashboard("summary", query.Period, query.TimeZone, dayStart);
 
-    internal static string For(GetRevenueTrendQuery query)
-        => ForDashboard("revenue-trend", query.Period, query.TimeZone);
+    internal static string For(GetRevenueTrendQuery query, TimeSpan dayStart)
+        => ForDashboard("revenue-trend", query.Period, query.TimeZone, dayStart);
 
-    internal static string For(GetCategoryRevenueQuery query)
-        => ForDashboard("category-revenue", query.Period, query.TimeZone);
+    internal static string For(GetCategoryRevenueQuery query, TimeSpan dayStart)
+        => ForDashboard("category-revenue", query.Period, query.TimeZone, dayStart);
 
-    internal static string For(GetTopItemsQuery query)
-        => ForDashboard("top-items", query.Period, query.TimeZone);
+    internal static string For(GetTopItemsQuery query, TimeSpan dayStart)
+        => ForDashboard("top-items", query.Period, query.TimeZone, dayStart);
 
-    internal static string For(GetBartenderLeaderboardQuery query)
-        => ForDashboard("bartender-leaderboard", query.Period, query.TimeZone);
+    internal static string For(GetBartenderLeaderboardQuery query, TimeSpan dayStart)
+        => ForDashboard("bartender-leaderboard", query.Period, query.TimeZone, dayStart);
 
+    // Calendar days, like the heat map itself
     internal static string For(GetBusiestTimesQuery query)
-        => ForDashboard("busiest-times", period: null, query.TimeZone);
+        => ForDashboard("busiest-times", period: null, query.TimeZone, TimeSpan.Zero);
 
 
-    private static string ForDashboard(string widget, DashboardPeriod? period, TimeZoneInfo timeZone)
+    private static string ForDashboard(
+        string widget,
+        DashboardPeriod? period,
+        TimeZoneInfo timeZone,
+        TimeSpan dayStart)
     {
         string localToday = DashboardPeriodRange
-            .GetLocalToday(DateTimeOffset.UtcNow, timeZone)
+            .GetLocalToday(DateTimeOffset.UtcNow, timeZone, dayStart)
             .ToString(DateFormat, CultureInfo.InvariantCulture);
 
         return $"dashboard:{widget}:{period}:{timeZone.Id}:{localToday}";

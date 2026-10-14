@@ -10,7 +10,12 @@ internal sealed record DashboardPeriodRange(
     DateTime FromLocal,
     int DaysCount)
 {
-    internal static DashboardPeriodRange For(DashboardPeriod period, DateTimeOffset nowUtc, TimeZoneInfo timeZone)
+    // Days start at the business day's start time in the viewer's time zone, e.g. 06:00, so a night belongs to one day
+    internal static DashboardPeriodRange For(
+        DashboardPeriod period,
+        DateTimeOffset nowUtc,
+        TimeZoneInfo timeZone,
+        TimeSpan dayStart)
     {
         int daysCount = period switch
         {
@@ -20,7 +25,7 @@ internal sealed record DashboardPeriodRange(
             _ => throw new ArgumentOutOfRangeException(nameof(period), period, null)
         };
 
-        DateTime fromLocal = GetLocalToday(nowUtc, timeZone).AddDays(1 - daysCount);
+        DateTime fromLocal = GetLocalToday(nowUtc, timeZone, dayStart).AddDays(1 - daysCount) + dayStart;
         DateTimeOffset fromUtc = LocalToUtc(fromLocal, timeZone);
         DateTimeOffset previousFromUtc = LocalToUtc(fromLocal.AddDays(-daysCount), timeZone);
         TimeSpan length = nowUtc - fromUtc;
@@ -34,8 +39,9 @@ internal sealed record DashboardPeriodRange(
             daysCount);
     }
 
-    internal static DateTime GetLocalToday(DateTimeOffset nowUtc, TimeZoneInfo timeZone)
-        => TimeZoneInfo.ConvertTime(nowUtc, timeZone).Date;
+    // The date of the business day now: before the day start it is still yesterday
+    internal static DateTime GetLocalToday(DateTimeOffset nowUtc, TimeZoneInfo timeZone, TimeSpan dayStart)
+        => (TimeZoneInfo.ConvertTime(nowUtc, timeZone).DateTime - dayStart).Date;
 
     internal static DateTime UtcToLocal(DateTimeOffset dateTimeUtc, TimeZoneInfo timeZone)
         => TimeZoneInfo.ConvertTime(dateTimeUtc, timeZone).DateTime;

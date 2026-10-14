@@ -9,12 +9,18 @@ namespace OrderPoint.Application.Queries.Shift;
 
 public sealed record GetShiftQuery(Guid BartenderId, TimeZoneInfo TimeZone) : IQuery<ShiftDto>;
 
-internal sealed class GetShiftQueryHandler(IDashboardRepository dashboardRepository)
+internal sealed class GetShiftQueryHandler(
+    IDashboardRepository dashboardRepository,
+    BusinessDay businessDay)
     : IQueryHandler<GetShiftQuery, ShiftDto>
 {
     public async Task<Result<ShiftDto>> Handle(GetShiftQuery query, CancellationToken cancellationToken)
     {
-        var today = DashboardPeriodRange.For(DashboardPeriod.Today, DateTimeOffset.UtcNow, query.TimeZone);
+        var today = DashboardPeriodRange.For(
+            DashboardPeriod.Today,
+            DateTimeOffset.UtcNow,
+            query.TimeZone,
+            businessDay.StartTime);
 
         ShiftDto shift = await dashboardRepository.GetShiftAsync(
             query.BartenderId,

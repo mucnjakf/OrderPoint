@@ -1,6 +1,6 @@
 ﻿namespace OrderPoint.Application.Dtos;
 
-/// <summary>What the signed-in bartender served since local midnight.</summary>
+/// <summary>What the signed-in bartender served since the business day started.</summary>
 /// <param name="Revenue">The total of the orders the bartender completed, in euros.</param>
 /// <param name="ItemsCount">The number of pieces in those orders.</param>
 /// <param name="Hours">Completed orders per local hour, from the first hour with a completed order up to the current

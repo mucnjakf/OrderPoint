@@ -2,6 +2,9 @@
 
 IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
 
+// The hour the bar's day starts (local time), so a night past midnight is one day; the API and the bartender app use it
+const string BusinessDayStartHour = "6";
+
 IResourceBuilder<PostgresServerResource> postgres = builder
     .AddPostgres("postgres")
     .WithDataVolume()
@@ -27,6 +30,7 @@ IResourceBuilder<RedisResource> cache = builder
 IResourceBuilder<ProjectResource> api = builder
     .AddProject<Projects.OrderPoint_Api>("order-point-api")
     .WithHttpHealthCheck("/health")
+    .WithEnvironment("BusinessDay__StartHour", BusinessDayStartHour)
     .WithReference(database)
     .WithReference(images)
     .WithReference(cache)
@@ -54,6 +58,7 @@ IResourceBuilder<ProjectResource> bartender = builder
     .AddProject<Projects.OrderPoint_Bartender>("order-point-bartender")
     .WithExternalHttpEndpoints()
     .WithHttpHealthCheck("/health")
+    .WithEnvironment("BusinessDay__StartHour", BusinessDayStartHour)
     .WithReference(api)
     .WaitFor(api);
 

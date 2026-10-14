@@ -11,7 +11,10 @@ namespace OrderPoint.Application.Queries.Dashboard;
 public sealed record GetDashboardSummaryQuery(DashboardPeriod Period, TimeZoneInfo TimeZone)
     : IQuery<DashboardSummaryDto>;
 
-internal sealed class GetDashboardSummaryQueryHandler(IDashboardRepository dashboardRepository, HybridCache cache)
+internal sealed class GetDashboardSummaryQueryHandler(
+    IDashboardRepository dashboardRepository,
+    BusinessDay businessDay,
+    HybridCache cache)
     : IQueryHandler<GetDashboardSummaryQuery, DashboardSummaryDto>
 {
     public async Task<Result<DashboardSummaryDto>> Handle(
@@ -19,7 +22,7 @@ internal sealed class GetDashboardSummaryQueryHandler(IDashboardRepository dashb
         CancellationToken cancellationToken)
     {
         DashboardSummaryDto summary = await cache.GetOrCreateAsync(
-            CacheKeys.For(query),
+            CacheKeys.For(query, businessDay.StartTime),
             query,
             GetDashboardSummaryAsync,
             tags: [CacheTags.Dashboard],
@@ -32,7 +35,11 @@ internal sealed class GetDashboardSummaryQueryHandler(IDashboardRepository dashb
         GetDashboardSummaryQuery query,
         CancellationToken cancellationToken)
     {
-        var range = DashboardPeriodRange.For(query.Period, DateTimeOffset.UtcNow, query.TimeZone);
+        var range = DashboardPeriodRange.For(
+            query.Period,
+            DateTimeOffset.UtcNow,
+            query.TimeZone,
+            businessDay.StartTime);
 
         IReadOnlyList<DashboardOrderDto> orders = await dashboardRepository.GetOrdersAsync(
             range.PreviousFromUtc,
