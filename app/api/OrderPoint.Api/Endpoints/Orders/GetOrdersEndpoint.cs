@@ -19,6 +19,7 @@ namespace OrderPoint.Api.Endpoints.Orders;
 /// <param name="Status">Only orders with this status.</param>
 /// <param name="ItemId">Only orders that contain this item.</param>
 /// <param name="BartenderId">Only orders handled by this bartender.</param>
+/// <param name="TableId">Only orders placed from this table.</param>
 /// <param name="SortBy">The sort order. Default: `CreatedAtUtcDesc` (newest first).</param>
 internal sealed record GetOrdersRequest(
     [FromQuery] int PageNumber,
@@ -27,6 +28,7 @@ internal sealed record GetOrdersRequest(
     [FromQuery] OrderStatus? Status,
     [FromQuery] Guid? ItemId,
     [FromQuery] Guid? BartenderId,
+    [FromQuery] Guid? TableId,
     [FromQuery] OrderSortBy? SortBy);
 
 /// <summary>A page of orders.</summary>
@@ -43,7 +45,7 @@ internal sealed class GetOrdersEndpoint : IEndpoint
             .WithTags("Orders")
             .WithSummary("List orders")
             .WithDescription("""
-                A page of orders with search (order number or table code), filters (status, item, bartender) and
+                A page of orders with search (order number or table code), filters (status, item, bartender, table) and
                 sorting (default: newest first). `total` is calculated from the order lines.
                 """)
             .RequireAuthorization(AuthorizationPolicies.AdminOrBartender);
@@ -64,6 +66,7 @@ internal sealed class GetOrdersEndpoint : IEndpoint
             request.Status,
             request.ItemId,
             request.BartenderId,
+            request.TableId,
             request.SortBy);
 
         Result<PaginationDto<OrderDto>> result = await sender.Send(query, cancellationToken);

@@ -13,7 +13,12 @@ public interface IOrderRepository
         OrderStatus? status = null,
         Guid? itemId = null,
         Guid? bartenderId = null,
+        Guid? tableId = null,
         OrderSortBy? sortBy = null,
+        CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<Order>> GetByStatusesAsync(
+        IReadOnlyList<OrderStatus> statuses,
         CancellationToken cancellationToken = default);
 
     Task<Order?> GetAsync(Guid id, CancellationToken cancellationToken = default);

@@ -51,6 +51,8 @@
             <MudText Typo="Typo.caption" Style="@($"{PieceTextStyle} color: var(--mud-palette-text-secondary);")">
                 @currentTable.Seats.ToCountText("seat", "seats")
             </MudText>
+
+            @TableContent?.Invoke(currentTable)
         </div>
     }
 </div>

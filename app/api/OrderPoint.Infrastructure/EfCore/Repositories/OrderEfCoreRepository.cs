@@ -15,6 +15,7 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
         OrderStatus? status = null,
         Guid? itemId = null,
         Guid? bartenderId = null,
+        Guid? tableId = null,
         OrderSortBy? sortBy = null,
         CancellationToken cancellationToken = default)
     {
@@ -24,7 +25,7 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
             .Include(order => order.Items);
 
         query = SearchOrders(query, searchQuery);
-        query = FilterOrders(query, status, itemId, bartenderId);
+        query = FilterOrders(query, status, itemId, bartenderId, tableId);
         query = SortOrders(query, sortBy);
 
         int totalCount = await query.CountAsync(cancellationToken);
@@ -36,6 +37,15 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
 
         return (orders.AsReadOnly(), totalCount);
     }
+
+    // Read only and without lines, for counting open orders per table
+    public async Task<IReadOnlyList<Order>> GetByStatusesAsync(
+        IReadOnlyList<OrderStatus> statuses,
+        CancellationToken cancellationToken = default)
+        => await dbContext.Orders
+            .AsNoTracking()
+            .Where(order => statuses.Contains(order.Status))
+            .ToListAsync(cancellationToken);
 
     public async Task<Order?> GetAsync(Guid id, CancellationToken cancellationToken = default)
         => await dbContext.Orders
@@ -135,7 +145,8 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
         IQueryable<Order> query,
         OrderStatus? status,
         Guid? itemId,
-        Guid? bartenderId)
+        Guid? bartenderId,
+        Guid? tableId)
     {
         if (status.HasValue)
         {
@@ -150,6 +161,11 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
         if (bartenderId.HasValue)
         {
             query = query.Where(order => order.BartenderId == bartenderId.Value);
+        }
+
+        if (tableId.HasValue)
+        {
+            query = query.Where(order => order.TableId == tableId.Value);
         }
 
         return query;

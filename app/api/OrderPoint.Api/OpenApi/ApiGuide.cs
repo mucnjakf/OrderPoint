@@ -25,11 +25,12 @@ internal static class ApiGuide
         - Every endpoint requires the **Admin** role, except Auth, the customer app's `GET /api/menu`,
           `POST /api/orders`, `GET /api/orders/{id}/tracking`, `PUT /api/orders/{id}/cancel` and
           `GET /api/tables/by-code/{code}`, and the health checks (anonymous), the order status changes
-          (`PUT /api/orders/{id}/accept`, `activate`, `complete`), `GET /api/shift` and `GET /api/shift/day`
-          (**Bartender**), and declining and reading orders, the item and category lists, one item or category,
-          changing the status of items and categories, the floor plan and one area, table or fixture,
-          `GET /api/account`, changing the password and signing out everywhere (**Admin** or **Bartender**). Each
-          endpoint names its roles; those that need a token show a lock and list `401` and `403`.
+          (`PUT /api/orders/{id}/accept`, `activate`, `complete`), `GET /api/shift`, `GET /api/shift/day` and
+          `GET /api/tables/status` (**Bartender**), and declining and reading orders, the item and category lists,
+          one item or category, changing the status of items and categories, the floor plan and one area, table or
+          fixture, `GET /api/account`, changing the password and signing out everywhere (**Admin** or
+          **Bartender**). Each endpoint names its roles; those that need a token show a lock and list `401` and
+          `403`.
 
         ## Responses
 

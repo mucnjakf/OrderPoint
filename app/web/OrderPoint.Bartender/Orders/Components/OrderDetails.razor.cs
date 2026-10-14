@@ -101,6 +101,8 @@ public sealed partial class OrderDetails : IDisposable
 
     private bool HasActions => CanAccept || CanDecline || CanStart || CanComplete;
 
+    private string TableMapHref => $"/tables?table={Uri.EscapeDataString(Order!.TableCode)}";
+
     private string BartenderInitials => Order?.Bartender is null
         ? string.Empty
         : $"{Order.Bartender.FirstName[0]}{Order.Bartender.LastName[0]}";

@@ -7,6 +7,7 @@ using OrderPoint.Bartender.Menu.Api;
 using OrderPoint.Bartender.Orders.Api;
 using OrderPoint.Bartender.Orders.Services;
 using OrderPoint.Bartender.Shift.Api;
+using OrderPoint.Bartender.Tables.Api;
 using OrderPoint.ServiceDefaults;
 using OrderPoint.Shared.Account.Api;
 using OrderPoint.Shared.Account.Services;
@@ -42,6 +43,7 @@ builder.Services.AddHttpClient<AccountApiClient>(ConfigureApiClient).AddHttpMess
 builder.Services.AddHttpClient<OrderApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 builder.Services.AddHttpClient<ShiftApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 builder.Services.AddHttpClient<MenuApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
+builder.Services.AddHttpClient<TableApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 
 // MudBlazor's default is 5000
 const int SnackbarVisibleMilliseconds = 2000;

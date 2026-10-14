@@ -1,0 +1,33 @@
+﻿<MudStack Spacing="3">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+        <MudStack Spacing="0" Class="flex-1" Style="min-width: 0">
+            <MudText Typo="Typo.h6">Table @Table.Code</MudText>
+
+            <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                @AreaName · @Table.Seats.ToCountText("seat", "seats")
+            </MudText>
+        </MudStack>
+
+        <MudTooltip Text="Close">
+            <MudIconButton Icon="@Icons.Material.Filled.Close"
+                           Size="Size.Small"
+                           aria-label="Close table"
+                           OnClick="@OnClose"/>
+        </MudTooltip>
+    </MudStack>
+
+    @if (Table.Status is TableStatus.Inactive)
+    {
+        <MudAlert Severity="Severity.Warning" Variant="Variant.Text" Dense="true">
+            This table is closed, so guests can't order from it.
+        </MudAlert>
+    }
+
+    <OrderTicketList Orders="@Orders"
+                     IsLoading="@IsLoading"
+                     ShowsBartender="true"
+                     OnOrderClick="@OnOrderClick"
+                     EmptyStateIcon="@Icons.Material.Filled.TaskAlt"
+                     EmptyStateText="No open orders"
+                     EmptyStateDetail="Nothing is waiting or in progress here."/>
+</MudStack>

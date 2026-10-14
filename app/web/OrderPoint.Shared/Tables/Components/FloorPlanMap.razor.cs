@@ -23,7 +23,7 @@ public sealed partial class FloorPlanMap : IAsyncDisposable
 
     private const string PieceStyle =
         "display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; " +
-        "min-width: 0; min-height: 0;";
+        "min-width: 0; min-height: 0; position: relative;";
 
     private const string SelectedStyle = "outline: 3px solid var(--mud-palette-primary); outline-offset: 2px;";
 
@@ -53,6 +53,14 @@ public sealed partial class FloorPlanMap : IAsyncDisposable
 
     [Parameter]
     public Func<FloorPlanMoveDto, Task<bool>>? OnMoveAsync { get; set; }
+
+    // Styles added after a table's own, e.g. the bartender app's colours for open orders
+    [Parameter]
+    public Func<TableDto, string?>? TableStyle { get; set; }
+
+    // Shown under a table's code and seats, e.g. a count of open orders
+    [Parameter]
+    public RenderFragment<TableDto>? TableContent { get; set; }
 
     private ElementReference MapElement { get; set; }
 
@@ -130,7 +138,8 @@ public sealed partial class FloorPlanMap : IAsyncDisposable
 
         return $"{GetPlacementStyle(table.Id, table.X, table.Y, table.Width, table.Height)} {PieceStyle} " +
                $"margin: 6px; border: 2px {borderStyle} var(--mud-palette-text-primary); " +
-               $"border-radius: {borderRadius}; background-color: var(--mud-palette-surface); opacity: {opacity};";
+               $"border-radius: {borderRadius}; background-color: var(--mud-palette-surface); opacity: {opacity}; " +
+               TableStyle?.Invoke(table);
     }
 
     private string GetFixtureStyle(FixtureDto fixture)

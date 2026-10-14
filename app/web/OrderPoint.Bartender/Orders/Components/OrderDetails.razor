@@ -30,6 +30,13 @@
                                         </MudText>
                                     </MudStack>
 
+                                    <MudTooltip Text="Show on map">
+                                        <MudIconButton Icon="@Icons.Material.Filled.Map"
+                                                       Size="Size.Small"
+                                                       Href="@TableMapHref"
+                                                       aria-label="Show the table on the map"/>
+                                    </MudTooltip>
+
                                     <MudChip T="string"
                                              Variant="Variant.Text"
                                              Color="@Order.Status.GetColor()"

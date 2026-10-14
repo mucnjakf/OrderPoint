@@ -18,6 +18,7 @@ public sealed record GetOrdersQuery(
     OrderStatus? Status,
     Guid? ItemId,
     Guid? BartenderId,
+    Guid? TableId,
     OrderSortBy? SortBy)
     : IQuery<PaginationDto<OrderDto>>;
 
@@ -48,6 +49,7 @@ internal sealed class GetOrdersQueryHandler(IOrderRepository orderRepository, Hy
                 query.Status,
                 query.ItemId,
                 query.BartenderId,
+                query.TableId,
                 query.SortBy,
                 cancellationToken);
 

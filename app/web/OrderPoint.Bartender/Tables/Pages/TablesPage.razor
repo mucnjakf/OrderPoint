@@ -1,0 +1,118 @@
+﻿@page "/tables"
+
+<PageTitle>Tables</PageTitle>
+
+<MudText Typo="Typo.h6" HtmlTag="h1" Style="@VisuallyHiddenStyle">
+    Tables
+</MudText>
+
+<StatefulView IsLoading="@IsLoadingFloorPlan"
+              ShowContent="@(SelectedArea is not null)"
+              EmptyStateIcon="@Icons.Material.Filled.TableRestaurant"
+              EmptyStateText="No floor plan yet"
+              EmptyStateDetail="The admin sets up the areas and their tables.">
+    <LoadingContent>
+        <TablesMapSkeleton/>
+    </LoadingContent>
+
+    <ChildContent>
+        <div style="@PageStyle">
+            <div style="@MapColumnStyle">
+                @if (Areas.Count > 1)
+                {
+                    <MudPaper Class="d-flex" Style="@AreaBarStyle">
+                        @foreach (AreaDto area in Areas)
+                        {
+                            Guid areaId = area.Id;
+
+                            <MudButton Variant="Variant.Text"
+                                       Class="flex-1"
+                                       Style="@GetAreaButtonStyle(areaId)"
+                                       OnClick="@(() => SelectArea(areaId))">
+                                @area.Name
+                            </MudButton>
+                        }
+                    </MudPaper>
+                }
+
+                <div style="@MapFrameStyle">
+                    <div style="@MapScrollStyle">
+                        <div style="@MapStyle">
+                            <FloorPlanMap Area="@(SelectedArea!)"
+                                          SelectedId="@SelectedTableId"
+                                          OnSelect="@SelectTableAsync"
+                                          TableStyle="@GetTableStyle">
+                                <TableContent Context="table">
+                                    @if (GetStatus(table) is { } status)
+                                    {
+                                        <span style="@GetBadgeStyle(status)">@status.OpenCount</span>
+                                    }
+                                </TableContent>
+                            </FloorPlanMap>
+                        </div>
+                    </div>
+
+                    <MudPaper Class="px-2 py-1" Style="@LegendStyle">
+                        @foreach ((string label, string color) in Legend)
+                        {
+                            <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
+                                <span style="@GetLegendDotStyle(color)"></span>
+
+                                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                                    @label
+                                </MudText>
+                            </MudStack>
+                        }
+                    </MudPaper>
+                </div>
+            </div>
+
+            @if (IsSplitView)
+            {
+                <div style="@SidePanelStyle">
+                    @if (SelectedTable is not null)
+                    {
+                        <MudPaper Class="pa-4">
+                            <TableOrdersPanel Table="@SelectedTable"
+                                              AreaName="@(SelectedArea!.Name)"
+                                              Orders="@TableOrders"
+                                              IsLoading="@IsLoadingTableOrders"
+                                              OnOrderClick="@OpenOrder"
+                                              OnClose="@ClearSelection"/>
+                        </MudPaper>
+                    }
+                    else
+                    {
+                        <MudPaper Class="pa-10">
+                            <MudStack AlignItems="AlignItems.Center" Spacing="1">
+                                <MudIcon Icon="@Icons.Material.Filled.TouchApp" Size="Size.Large" Class="mb-2"/>
+
+                                <MudText Typo="Typo.body1" Align="Align.Center">
+                                    Select a table
+                                </MudText>
+
+                                <MudText Typo="Typo.body2"
+                                         Align="Align.Center"
+                                         Style="color: var(--mud-palette-text-secondary)">
+                                    Its open orders show up here.
+                                </MudText>
+                            </MudStack>
+                        </MudPaper>
+                    }
+                </div>
+            }
+        </div>
+    </ChildContent>
+</StatefulView>
+
+@if (!IsSplitView && SelectedTable is not null)
+{
+    <MudPaper Class="pa-4" Elevation="0" Style="@BottomSheetStyle">
+        <TableOrdersPanel Table="@SelectedTable"
+                          AreaName="@(SelectedArea!.Name)"
+                          Orders="@TableOrders"
+                          IsLoading="@IsLoadingTableOrders"
+                          OnOrderClick="@OpenOrder"
+                          OnClose="@ClearSelection"/>
+    </MudPaper>
+}
