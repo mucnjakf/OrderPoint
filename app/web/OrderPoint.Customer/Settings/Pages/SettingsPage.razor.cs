@@ -3,11 +3,10 @@ using MudBlazor;
 using OrderPoint.Customer.Orders.Services;
 using OrderPoint.Customer.Settings.Enumerations;
 using OrderPoint.Customer.Settings.Services;
-using OrderPoint.Customer.Tables.Services;
 
 namespace OrderPoint.Customer.Settings.Pages;
 
-public sealed partial class SettingsPage : IDisposable
+public sealed partial class SettingsPage
 {
     private static readonly (AppearanceMode Mode, string Icon)[] AppearanceModes =
     [
@@ -20,20 +19,7 @@ public sealed partial class SettingsPage : IDisposable
     private AppearanceService AppearanceService { get; set; } = null!;
 
     [Inject]
-    private TableService TableService { get; set; } = null!;
-
-    [Inject]
     private MyOrdersService MyOrdersService { get; set; } = null!;
-
-    protected override void OnInitialized()
-    {
-        TableService.Changed += OnTableChanged;
-    }
-
-    public void Dispose()
-    {
-        TableService.Changed -= OnTableChanged;
-    }
 
     private async Task OnAppearanceModeChangedAsync(AppearanceMode mode)
     {
@@ -44,10 +30,5 @@ public sealed partial class SettingsPage : IDisposable
     private async Task ForgetOrdersAsync()
     {
         await MyOrdersService.ClearAsync();
-    }
-
-    private void OnTableChanged()
-    {
-        _ = InvokeAsync(StateHasChanged);
     }
 }

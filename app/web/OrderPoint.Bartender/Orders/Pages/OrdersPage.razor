@@ -23,17 +23,16 @@
 
             @if (TableRequests.Count != 0)
             {
-                <div style="@RequestStripStyle">
+                <MudStack Spacing="2" Class="mt-3">
                     @foreach (TableRequestDto request in TableRequests)
                     {
                         <TableRequestItem Request="@request"
                                           ShowsTable="true"
                                           IsCompleting="@(CompletingRequestId == request.Id)"
                                           OnDone="@CompleteRequestAsync"
-                                          OnClick="@OpenRequestTable"
-                                          Style="flex: 0 0 auto;"/>
+                                          OnClick="@OpenRequestTable"/>
                     }
-                </div>
+                </MudStack>
             }
 
             @if (!IsSearching)

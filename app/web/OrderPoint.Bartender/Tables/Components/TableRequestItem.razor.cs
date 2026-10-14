@@ -26,9 +26,6 @@ public sealed partial class TableRequestItem
     [Parameter]
     public EventCallback<TableRequestDto> OnClick { get; set; }
 
-    [Parameter]
-    public string? Style { get; set; }
-
     private string Title => ShowsTable ? $"{Request.TableCode} · {Request.Type.GetLabel()}" : Request.Type.GetLabel();
 
     private string PaperClass => OnClick.HasDelegate ? "pa-2 pl-3 cursor-pointer" : "pa-2 pl-3";

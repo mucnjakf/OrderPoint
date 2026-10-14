@@ -37,9 +37,6 @@ public sealed partial class OrdersPage : IAsyncDisposable
     // like the tickets (border, theme radius) and clips the square buttons to its rounded corners
     private const string TabBarStyle = "overflow: hidden;";
 
-    // Guests' requests side by side, scrolled sideways when there are many
-    private const string RequestStripStyle = "display: flex; gap: 8px; overflow-x: auto; margin-top: 12px;";
-
     // The search and the tabs stay right under the dense app bar while scrolling; the wrapper's background hides the
     // tickets passing underneath, and its padding replaces the gap to the list
     private const string ListHeaderWrapperStyle =

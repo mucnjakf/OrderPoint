@@ -29,31 +29,6 @@
 
     <MudDivider Class="my-5"/>
 
-    <SettingsSection Icon="@Icons.Material.Filled.TableRestaurant"
-                     Title="Your table"
-                     Description="Orders go to this table for 12 hours after scanning its QR code. Scan another one to change it.">
-        <MudPaper Outlined="true" Class="pa-3">
-            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                <MudIcon Icon="@Icons.Material.Filled.QrCodeScanner" Style="color: var(--mud-palette-text-secondary)"/>
-
-                @if (TableService.TableCode is not null)
-                {
-                    <MudText Typo="Typo.h6">
-                        Table @TableService.TableCode
-                    </MudText>
-                }
-                else
-                {
-                    <MudText Typo="Typo.body1" Style="color: var(--mud-palette-text-secondary)">
-                        No table yet: scan the QR code on your table.
-                    </MudText>
-                }
-            </MudStack>
-        </MudPaper>
-    </SettingsSection>
-
-    <MudDivider Class="my-5"/>
-
     <SettingsSection Icon="@Icons.Material.Filled.Receipt"
                      Title="Your orders"
                      Description="Orders placed on this phone stay in My orders for 12 hours.">

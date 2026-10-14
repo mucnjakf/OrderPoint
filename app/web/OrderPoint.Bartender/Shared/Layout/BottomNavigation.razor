@@ -8,7 +8,7 @@
                    Color="@(IsActive(destinationHref) ? Color.Primary : Color.Default)"
                    Class="flex-1"
                    Style="@(IsActive(destinationHref) ? ActiveButtonStyle : InactiveButtonStyle)">
-            <MudStack AlignItems="AlignItems.Center" Spacing="0">
+            <MudStack AlignItems="AlignItems.Center" Spacing="1">
                 <MudIcon Icon="@icon" />
                 <MudText Typo="Typo.caption">@label</MudText>
             </MudStack>
