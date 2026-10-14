@@ -12,6 +12,8 @@ using OrderPoint.Admin.Items.Api;
 using OrderPoint.Admin.Orders.Api;
 using OrderPoint.Admin.Orders.Services;
 using OrderPoint.Admin.Search.Services;
+using OrderPoint.Admin.Tables.Api;
+using OrderPoint.Admin.Tables.Services;
 using OrderPoint.ServiceDefaults;
 using OrderPoint.Shared.Account.Api;
 using OrderPoint.Shared.Account.Services;
@@ -42,6 +44,7 @@ builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<HealthService>();
 builder.Services.AddScoped<OrdersHubService>();
 builder.Services.AddScoped<NewOrderToastService>();
+builder.Services.AddSingleton<TableQrCodeService>();
 
 // The auth endpoints are anonymous and called without AccessTokenHandler, which uses them to refresh tokens
 builder.Services.AddHttpClient<AuthApiClient>(ConfigureApiClient);
@@ -52,6 +55,7 @@ builder.Services.AddHttpClient<OrderApiClient>(ConfigureApiClient).AddHttpMessag
 builder.Services.AddHttpClient<DashboardApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 builder.Services.AddHttpClient<AccountApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 builder.Services.AddHttpClient<HealthApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
+builder.Services.AddHttpClient<TableApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 
 // MudBlazor's default is 5000
 const int SnackbarVisibleMilliseconds = 2000;

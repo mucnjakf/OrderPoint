@@ -1,0 +1,79 @@
+﻿<EditForm Model="@Request" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator/>
+
+    <MudDialog ActionsClass="pa-6" Class="mud-background">
+        <TitleContent>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudIcon Icon="@Icons.Material.Filled.Chair"/>
+                <MudText Typo="Typo.h6">Edit @Fixture.Type.GetLabel().ToLowerInvariant()</MudText>
+            </MudStack>
+        </TitleContent>
+
+        <DialogContent>
+            <MudStack Spacing="0">
+                <MudTextField Label="Label"
+                              @bind-Value="@Request.Label"
+                              For="@(() => Request.Label)"
+                              HelperText="Optional, e.g. Main bar."
+                              Variant="Variant.Outlined"
+                              MaxLength="30"
+                              Immediate="true"/>
+
+                <MudStack Row="true" Spacing="3" Class="mt-5">
+                    <MudSelect T="FixtureType"
+                               Label="Type"
+                               @bind-Value="@Request.Type"
+                               For="@(() => Request.Type)"
+                               HelperText="What it is."
+                               Variant="Variant.Outlined"
+                               Class="flex-1"
+                               Style="min-width: 0">
+                        @foreach (FixtureType value in Enum.GetValues<FixtureType>())
+                        {
+                            <MudSelectItem T="FixtureType" Value="@value">@value.GetLabel()</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudStack>
+
+                <MudStack Row="true" Spacing="3" Class="mt-5">
+                    <MudNumericField T="int"
+                                     Label="Width"
+                                     @bind-Value="@Request.Width"
+                                     For="@(() => Request.Width)"
+                                     HelperText="In cells, 1 to 48."
+                                     Min="1"
+                                     Max="48"
+                                     Variant="Variant.Outlined"
+                                     Class="flex-1"
+                                     Style="min-width: 0"
+                                     Immediate="true"/>
+
+                    <MudNumericField T="int"
+                                     Label="Height"
+                                     @bind-Value="@Request.Height"
+                                     For="@(() => Request.Height)"
+                                     HelperText="In cells, 1 to 48."
+                                     Min="1"
+                                     Max="48"
+                                     Variant="Variant.Outlined"
+                                     Class="flex-1"
+                                     Style="min-width: 0"
+                                     Immediate="true"/>
+                </MudStack>
+            </MudStack>
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
+                Cancel
+            </MudButton>
+
+            <MudButton ButtonType="ButtonType.Submit"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Save">
+                Save
+            </MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>

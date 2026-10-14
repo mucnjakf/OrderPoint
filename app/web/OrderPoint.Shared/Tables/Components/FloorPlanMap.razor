@@ -1,0 +1,56 @@
+﻿<div @ref="@MapElement"
+     style="@MapStyle"
+     data-columns="@Area.Columns"
+     data-rows="@Area.Rows"
+     role="group"
+     aria-label="@($"Floor plan of {Area.Name}")"
+     @onclick="@ClearSelectionAsync">
+    @foreach (FixtureDto fixture in Area.Fixtures)
+    {
+        FixtureDto currentFixture = fixture;
+
+        <div @key="@currentFixture.Id"
+             style="@GetFixtureStyle(currentFixture)"
+             data-piece-id="@currentFixture.Id"
+             data-x="@currentFixture.X"
+             data-y="@currentFixture.Y"
+             data-width="@currentFixture.Width"
+             data-height="@currentFixture.Height"
+             title="@GetFixtureLabel(currentFixture)"
+             @onclick="@(() => SelectAsync(currentFixture.Id))"
+             @onclick:stopPropagation="true">
+            @if (GetFixtureIcon(currentFixture) is { } icon)
+            {
+                <MudIcon Icon="@icon" Size="Size.Small" Style="@GetFixtureIconStyle(currentFixture)"/>
+            }
+
+            <MudText Typo="Typo.caption" Style="@PieceTextStyle">
+                @GetFixtureLabel(currentFixture)
+            </MudText>
+        </div>
+    }
+
+    @foreach (TableDto table in Area.Tables)
+    {
+        TableDto currentTable = table;
+
+        <div @key="@currentTable.Id"
+             style="@GetTableStyle(currentTable)"
+             data-piece-id="@currentTable.Id"
+             data-x="@currentTable.X"
+             data-y="@currentTable.Y"
+             data-width="@currentTable.Width"
+             data-height="@currentTable.Height"
+             title="@($"Table {currentTable.Code}")"
+             @onclick="@(() => SelectAsync(currentTable.Id))"
+             @onclick:stopPropagation="true">
+            <MudText Typo="Typo.body2" Style="@($"{PieceTextStyle} font-weight: 600;")">
+                @currentTable.Code
+            </MudText>
+
+            <MudText Typo="Typo.caption" Style="@($"{PieceTextStyle} color: var(--mud-palette-text-secondary);")">
+                @currentTable.Seats.ToCountText("seat", "seats")
+            </MudText>
+        </div>
+    }
+</div>

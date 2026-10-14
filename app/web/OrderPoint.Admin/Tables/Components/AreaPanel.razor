@@ -1,0 +1,74 @@
+﻿<MudStack Spacing="3">
+    <MudText Typo="Typo.h6">@Area.Name</MudText>
+
+    <div>
+        <TextDisplayRow Icon="@Icons.Material.Filled.GridOn"
+                        Label="Grid"
+                        Text="@($"{Area.Columns} × {Area.Rows} cells")"
+                        ShowDivider="true"/>
+
+        <TextDisplayRow Icon="@Icons.Material.Filled.TableRestaurant"
+                        Label="Tables"
+                        Text="@AreaSummaryText"/>
+    </div>
+
+    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+        Select a table or a fixture on the floor plan to edit it, or drag it to move it.
+    </MudText>
+
+    @if (Area.Tables.Count != 0)
+    {
+        <MudPaper Outlined="true">
+            @foreach (TableDto table in Area.Tables)
+            {
+                TableDto currentTable = table;
+
+                <div class="cursor-pointer px-3 py-2"
+                     style="@(currentTable.Id == HoveredTableId ? HoveredRowStyle : null)"
+                     @onmouseenter="@(() => HoveredTableId = currentTable.Id)"
+                     @onmouseleave="@(() => HoveredTableId = null)"
+                     @onclick="@(() => OnTableClick.InvokeAsync(currentTable))">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                        <MudText Typo="Typo.body2" Style="font-weight: 600" Class="flex-1">
+                            @currentTable.Code
+                        </MudText>
+
+                        <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                            @currentTable.Seats.ToCountText("seat", "seats")
+                        </MudText>
+
+                        @if (currentTable.Status is TableStatus.Inactive)
+                        {
+                            <MudChip T="string"
+                                     Variant="Variant.Text"
+                                     Size="Size.Small"
+                                     Color="Color.Error"
+                                     Class="ma-0">
+                                Inactive
+                            </MudChip>
+                        }
+                    </MudStack>
+                </div>
+            }
+        </MudPaper>
+    }
+
+    <MudDivider/>
+
+    <MudStack Row="true" Spacing="2">
+        <MudButton Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Filled.Edit"
+                   OnClick="@OnEdit"
+                   Class="flex-1">
+            Edit area
+        </MudButton>
+
+        <MudButton Variant="Variant.Outlined"
+                   Color="Color.Error"
+                   StartIcon="@Icons.Material.Filled.Delete"
+                   OnClick="@OnDelete"
+                   Class="flex-1">
+            Delete area
+        </MudButton>
+    </MudStack>
+</MudStack>

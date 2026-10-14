@@ -1,0 +1,94 @@
+﻿<MudStack Spacing="3">
+    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+        <MudText Typo="Typo.h6">Table @Table.Code</MudText>
+
+        <MudChip T="string"
+                 Variant="Variant.Text"
+                 Size="Size.Small"
+                 Color="@(Table.Status is TableStatus.Active ? Color.Success : Color.Error)"
+                 Class="ma-0">
+            @Table.Status.ToString()
+        </MudChip>
+    </MudStack>
+
+    <div>
+        <TextDisplayRow Icon="@Icons.Material.Filled.Chair"
+                        Label="Seats"
+                        Text="@Table.Seats.ToString()"
+                        ShowDivider="true"/>
+
+        <TextDisplayRow Icon="@Icons.Material.Filled.Crop"
+                        Label="Shape"
+                        Text="@($"{Table.Shape} · {Table.Width} × {Table.Height} cells")"/>
+    </div>
+
+    <MudDivider/>
+
+    <MudText Typo="Typo.subtitle2">QR code</MudText>
+
+    @if (QrCodeUrl is null || QrCodeSvg is null)
+    {
+        <MudAlert Severity="Severity.Warning" Variant="Variant.Text" Dense="true">
+            <MudText Typo="Typo.body2">
+                The customer app's address is unknown, so there is no QR code. Set CustomerApp:PublicUrl.
+            </MudText>
+        </MudAlert>
+    }
+    else
+    {
+        <div style="@QrCodeStyle">
+            @((MarkupString)QrCodeSvg)
+        </div>
+
+        <MudText Typo="Typo.caption" Align="Align.Center" Style="word-break: break-all">
+            @QrCodeUrl
+        </MudText>
+
+        <MudStack Row="true" Spacing="2" Wrap="Wrap.NoWrap">
+            <MudButton Href="@QrCodeUrl"
+                       Target="_blank"
+                       Variant="Variant.Outlined"
+                       Size="Size.Small"
+                       StartIcon="@Icons.Material.Filled.OpenInNew"
+                       Class="flex-1">
+                Open
+            </MudButton>
+
+            <MudButton Href="@QrCodeDataUrl"
+                       download="@($"table-{Table.Code}.svg")"
+                       Variant="Variant.Outlined"
+                       Size="Size.Small"
+                       StartIcon="@Icons.Material.Filled.Download"
+                       Class="flex-1"
+                       Style="white-space: nowrap">
+                Download SVG
+            </MudButton>
+        </MudStack>
+    }
+
+    <MudDivider/>
+
+    <MudStack Row="true" Spacing="2">
+        <MudButton Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Filled.Edit"
+                   OnClick="@OnEdit"
+                   Class="flex-1">
+            Edit
+        </MudButton>
+
+        <MudButton Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Filled.RotateRight"
+                   OnClick="@OnRotate"
+                   Class="flex-1">
+            Rotate
+        </MudButton>
+
+        <MudButton Variant="Variant.Outlined"
+                   Color="Color.Error"
+                   StartIcon="@Icons.Material.Filled.Delete"
+                   OnClick="@OnDelete"
+                   Class="flex-1">
+            Delete
+        </MudButton>
+    </MudStack>
+</MudStack>

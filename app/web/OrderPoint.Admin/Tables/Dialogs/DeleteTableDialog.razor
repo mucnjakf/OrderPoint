@@ -1,0 +1,64 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Error"/>
+            <MudText Typo="Typo.h6">Delete table</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudAlert Severity="Severity.Error" Variant="Variant.Text" Dense="true" Class="mb-4">
+            <MudText Typo="Typo.body2">
+                This action cannot be undone.
+            </MudText>
+        </MudAlert>
+
+        <MudPaper Outlined="true" Class="pa-4">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="4">
+                <MudAvatar Size="Size.Large" Variant="Variant.Outlined" Rounded="true">
+                    <MudIcon Icon="@Icons.Material.Filled.TableRestaurant"/>
+                </MudAvatar>
+
+                <MudStack Spacing="1" Class="flex-1">
+                    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                        <MudText Typo="Typo.h6">
+                            Table @Table.Code
+                        </MudText>
+
+                        <MudChip T="string"
+                                 Variant="Variant.Text"
+                                 Size="Size.Small"
+                                 Color="@(Table.Status is TableStatus.Active ? Color.Success : Color.Error)">
+                            @Table.Status.ToString()
+                        </MudChip>
+                    </MudStack>
+                    <MudText Typo="Typo.body2">
+                        @Table.Seats.ToCountText("seat", "seats") · @Table.Shape.ToString()
+                    </MudText>
+
+                    <MudText Typo="Typo.caption">
+                        Created @Table.CreatedAtUtc.ToRelativeTime()
+                    </MudText>
+                </MudStack>
+            </MudStack>
+        </MudPaper>
+
+        <MudText Typo="Typo.body2" Class="mt-4">
+            A table that orders were placed from can't be deleted; deactivate it instead. Its printed QR code stops
+            working.
+        </MudText>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
+            Cancel
+        </MudButton>
+
+        <MudButton OnClick="@Confirm"
+                   Variant="Variant.Filled"
+                   Color="Color.Error"
+                   StartIcon="@Icons.Material.Filled.Delete">
+            Delete @Table.Code
+        </MudButton>
+    </DialogActions>
+</MudDialog>

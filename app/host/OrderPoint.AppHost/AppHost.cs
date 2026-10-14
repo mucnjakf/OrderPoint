@@ -69,6 +69,9 @@ IResourceBuilder<ProjectResource> customer = builder
     .WithReference(api)
     .WaitFor(api);
 
+// The Admin's table QR codes point to the customer app
+admin.WithReference(customer);
+
 // The API checks the apps' health for the Admin, but does not wait for them
 api
     .WithReference(bartender)

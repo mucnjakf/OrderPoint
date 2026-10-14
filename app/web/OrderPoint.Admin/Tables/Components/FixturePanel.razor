@@ -1,0 +1,40 @@
+﻿<MudStack Spacing="3">
+    <MudText Typo="Typo.h6">@Fixture.Type.GetLabel()</MudText>
+
+    <div>
+        <TextDisplayRow Icon="@Icons.Material.Filled.Label"
+                        Label="Label"
+                        Text="@(Fixture.Label ?? "-")"
+                        ShowDivider="true"/>
+
+        <TextDisplayRow Icon="@Icons.Material.Filled.Crop"
+                        Label="Size"
+                        Text="@($"{Fixture.Width} × {Fixture.Height} cells")"/>
+    </div>
+
+    <MudDivider/>
+
+    <MudStack Row="true" Spacing="2">
+        <MudButton Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Filled.Edit"
+                   OnClick="@OnEdit"
+                   Class="flex-1">
+            Edit
+        </MudButton>
+
+        <MudButton Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Filled.RotateRight"
+                   OnClick="@OnRotate"
+                   Class="flex-1">
+            Rotate
+        </MudButton>
+
+        <MudButton Variant="Variant.Outlined"
+                   Color="Color.Error"
+                   StartIcon="@Icons.Material.Filled.Delete"
+                   OnClick="@OnDelete"
+                   Class="flex-1">
+            Delete
+        </MudButton>
+    </MudStack>
+</MudStack>

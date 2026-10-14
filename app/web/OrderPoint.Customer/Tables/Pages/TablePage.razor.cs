@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Components;
 using OrderPoint.Customer.Tables.Api;
 using OrderPoint.Customer.Tables.Dtos;
-using OrderPoint.Customer.Tables.Enumerations;
 using OrderPoint.Customer.Tables.Services;
 using OrderPoint.Shared.Services;
+using OrderPoint.Shared.Tables.Enumerations;
 
 namespace OrderPoint.Customer.Tables.Pages;
 

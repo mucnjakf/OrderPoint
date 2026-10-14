@@ -1,0 +1,75 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Error"/>
+            <MudText Typo="Typo.h6">Delete area</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudAlert Severity="Severity.Error" Variant="Variant.Text" Dense="true" Class="mb-4">
+            <MudText Typo="Typo.body2">
+                This action cannot be undone.
+            </MudText>
+        </MudAlert>
+
+        <MudPaper Outlined="true" Class="pa-4">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="4">
+                <MudAvatar Size="Size.Large" Variant="Variant.Outlined" Rounded="true">
+                    <MudIcon Icon="@Icons.Material.Filled.Map"/>
+                </MudAvatar>
+
+                <MudStack Spacing="1" Class="flex-1">
+                    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                        <MudText Typo="Typo.h6">
+                            @Area.Name
+                        </MudText>
+                    </MudStack>
+                    <MudText Typo="Typo.body2">
+                        @Area.Columns × @Area.Rows cells · @Area.Tables.Count.ToCountText("table", "tables")
+                    </MudText>
+
+                    <MudText Typo="Typo.caption">
+                        Created @Area.CreatedAtUtc.ToRelativeTime()
+                    </MudText>
+                </MudStack>
+            </MudStack>
+        </MudPaper>
+
+        @if (Area.Tables.Count != 0)
+        {
+            <MudAlert Severity="Severity.Warning" Variant="Variant.Text" Dense="true" Class="mt-4">
+                <MudText Typo="Typo.body2">
+                    Move or delete its @Area.Tables.Count.ToCountText("table", "tables") first.
+                </MudText>
+            </MudAlert>
+        }
+        else if (Area.Fixtures.Count != 0)
+        {
+            <MudText Typo="Typo.body2" Class="mt-4 mb-2">
+                This also deletes:
+            </MudText>
+
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                <MudIcon Icon="@Icons.Material.Filled.Chair" Size="Size.Small"/>
+                <MudText Typo="Typo.body2">
+                    @Area.Fixtures.Count.ToCountText("fixture", "fixtures") on its floor plan
+                </MudText>
+            </MudStack>
+        }
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
+            Cancel
+        </MudButton>
+
+        <MudButton OnClick="@Confirm"
+                   Variant="Variant.Filled"
+                   Color="Color.Error"
+                   Disabled="@(Area.Tables.Count != 0)"
+                   StartIcon="@Icons.Material.Filled.Delete">
+            Delete @Area.Name
+        </MudButton>
+    </DialogActions>
+</MudDialog>

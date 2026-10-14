@@ -1,4 +1,4 @@
-﻿using OrderPoint.Customer.Tables.Enumerations;
+﻿using OrderPoint.Shared.Tables.Enumerations;
 
 namespace OrderPoint.Customer.Tables.Dtos;
 

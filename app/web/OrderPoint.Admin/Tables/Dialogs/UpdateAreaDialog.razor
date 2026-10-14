@@ -1,0 +1,62 @@
+﻿<EditForm Model="@Request" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator/>
+
+    <MudDialog ActionsClass="pa-6" Class="mud-background">
+        <TitleContent>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudIcon Icon="@Icons.Material.Filled.Map"/>
+                <MudText Typo="Typo.h6">Edit area</MudText>
+            </MudStack>
+        </TitleContent>
+
+        <DialogContent>
+            <MudStack Spacing="0">
+                <MudTextField Label="Name"
+                              @bind-Value="@Request.Name"
+                              For="@(() => Request.Name)"
+                              HelperText="Shown as a tab, e.g. Terrace."
+                              Variant="Variant.Outlined"
+                              Immediate="true"/>
+
+                <MudStack Row="true" Spacing="3" Class="mt-5">
+                    <MudNumericField T="int"
+                                     Label="Columns"
+                                     @bind-Value="@Request.Columns"
+                                     For="@(() => Request.Columns)"
+                                     HelperText="Grid width in cells, 4 to 48."
+                                     Min="4"
+                                     Max="48"
+                                     Variant="Variant.Outlined"
+                                     Class="flex-1"
+                                     Style="min-width: 0"
+                                     Immediate="true"/>
+
+                    <MudNumericField T="int"
+                                     Label="Rows"
+                                     @bind-Value="@Request.Rows"
+                                     For="@(() => Request.Rows)"
+                                     HelperText="Grid height in cells, 4 to 48."
+                                     Min="4"
+                                     Max="48"
+                                     Variant="Variant.Outlined"
+                                     Class="flex-1"
+                                     Style="min-width: 0"
+                                     Immediate="true"/>
+                </MudStack>
+            </MudStack>
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
+                Cancel
+            </MudButton>
+
+            <MudButton ButtonType="ButtonType.Submit"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Save">
+                Save
+            </MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
