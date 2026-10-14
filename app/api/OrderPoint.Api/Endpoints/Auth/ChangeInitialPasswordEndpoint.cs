@@ -16,7 +16,7 @@ namespace OrderPoint.Api.Endpoints.Auth;
 /// <param name="CurrentPassword">The temporary password set by the admin.</param>
 /// <param name="NewPassword">The new password. At least 8 characters with an uppercase letter, a lowercase letter and
 /// a digit. It must differ from the temporary one.</param>
-/// <param name="Role">The role of the app: the bartender app sends `1` (Bartender).</param>
+/// <param name="Role">The role of the app: the bar app sends `1` (Bartender).</param>
 internal sealed record ChangeInitialPasswordRequest(
     string Email,
     string CurrentPassword,

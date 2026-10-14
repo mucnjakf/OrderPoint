@@ -20,7 +20,7 @@ internal sealed class CompleteTableRequestEndpoint : IEndpoint
             .WithSummary("Mark a request done")
             .WithDescription("""
                 The signed-in bartender went to the table or brought the bill; the request disappears from the
-                bartender app and from the guest's page.
+                bar app and from the guest's page.
 
                 - `403 Auth.AccountInactive`: the signed-in bartender was deactivated
                 - `403 Auth.AccountDeleted`: the signed-in bartender no longer exists

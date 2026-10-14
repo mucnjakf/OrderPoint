@@ -1,0 +1,43 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="@Theme" IsDarkMode="@DarkModeService.IsDarkMode" />
+<MudPopoverProvider />
+<MudDialogProvider CloseButton="true" BackdropClick="false" Position="DialogPosition.Center" CloseOnEscapeKey="true" />
+<MudSnackbarProvider />
+
+@if (!AuthService.IsLoaded)
+{
+    return;
+}
+
+@if (!AuthService.IsSignedIn)
+{
+    <LoginForm Role="UserRole.Bartender" AppName="Bar web" />
+
+    return;
+}
+
+<MudLayout>
+    <MudAppBar Elevation="0" Dense="true" Style="border-bottom: 1px solid var(--mud-palette-lines-default)">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudImage Src="@ImageUrls.Logo" Alt="OrderPoint logo" Width="32" Height="32" />
+
+            <MudStack Spacing="0">
+                <MudText Typo="Typo.subtitle1" Style="line-height: 1.2">OrderPoint</MudText>
+                <MudText Typo="Typo.caption" Style="line-height: 1.2">Bar web</MudText>
+            </MudStack>
+        </MudStack>
+
+        <MudSpacer />
+
+        <LiveIndicator />
+    </MudAppBar>
+
+    <MudMainContent Style="@MainContentStyle">
+        <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="pa-3">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+
+    <BottomNavigation />
+</MudLayout>

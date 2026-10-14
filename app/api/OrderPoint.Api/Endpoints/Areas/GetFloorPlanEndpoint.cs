@@ -24,7 +24,7 @@ internal sealed class GetFloorPlanEndpoint : IEndpoint
             .WithSummary("Get the floor plan")
             .WithDescription("""
                 Returns every area in tab order (`displayOrder`) with its tables (by code) and fixtures. A bar has
-                few, so it is one response, for the Admin's floor plan editor and the bartender app's tables map.
+                few, so it is one response, for the Admin's floor plan editor and the bar app's tables map.
                 `TablesChanged` on the staff hub says when to reload it.
                 """)
             .RequireAuthorization(AuthorizationPolicies.AdminOrBartender);

@@ -23,7 +23,7 @@ internal sealed class GetTablesStatusEndpoint : IEndpoint
             .WithTags("Tables")
             .WithSummary("Get the open orders per table")
             .WithDescription("""
-                For the bartender app's tables map: every table with open orders, with how many are pending and in
+                For the bar app's tables map: every table with open orders, with how many are pending and in
                 progress (accepted or active) and when the longest waiting one was placed. Tables without open orders
                 are left out. Not cached; `OrdersChanged` on the staff hub says when to reload it.
                 """)

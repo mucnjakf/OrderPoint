@@ -11,7 +11,7 @@
   </Folder>
   <Folder Name="/web/">
     <Project Path="web/OrderPoint.Admin/OrderPoint.Admin.csproj" />
-    <Project Path="web/OrderPoint.Bartender/OrderPoint.Bartender.csproj" />
+    <Project Path="web/OrderPoint.Bar/OrderPoint.Bar.csproj" />
     <Project Path="web/OrderPoint.Customer/OrderPoint.Customer.csproj" />
     <Project Path="web/OrderPoint.Shared/OrderPoint.Shared.csproj" />
   </Folder>

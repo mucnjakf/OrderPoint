@@ -12,7 +12,7 @@ internal sealed class DocumentInfoTransformer : IOpenApiDocumentTransformer
     private static readonly (string Name, string Description)[] Tags =
     [
         ("Auth", "Sign in, refresh and sign out. Anonymous; each app sends its own role, so an admin cannot sign in " +
-                 "to the bartender app and the other way round."),
+                 "to the bar app and the other way round."),
         ("Account", "The signed-in user's own account: profile, profile image (admin only), password and sessions."),
         ("Categories", "Menu categories: create, read, update and delete, image, menu order and bulk actions."),
         ("Items", "Menu items: create, read, update and delete, image and bulk actions (status, category, price, " +
@@ -23,7 +23,7 @@ internal sealed class DocumentInfoTransformer : IOpenApiDocumentTransformer
                  "Anonymous."),
         ("Orders", "Orders placed by customers. Placing, tracking and cancelling an order are anonymous, admins and " +
                    "bartenders read them, and bartenders accept, decline, start and complete them."),
-        ("Shift", "The signed-in bartender's figures for today, for the bartender app."),
+        ("Shift", "The signed-in bartender's figures for today, for the bar app."),
         ("Areas", "Parts of the bar (Inside, Terrace), each with its floor plan grid, and the whole floor plan."),
         ("Tables", "The tables guests order from: code (in the QR code), seats, status and place on the floor plan. " +
                    "Looking a table up by its code is anonymous."),

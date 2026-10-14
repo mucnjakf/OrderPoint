@@ -14,7 +14,7 @@ namespace OrderPoint.Api.Endpoints.Auth;
 /// <summary>The credentials and the role of the app signing in.</summary>
 /// <param name="Email">The email the user signs in with.</param>
 /// <param name="Password">The password.</param>
-/// <param name="Role">The role of the app: `0` = Admin (Admin web), `1` = Bartender (bartender app). A user of the
+/// <param name="Role">The role of the app: `0` = Admin (Admin web), `1` = Bartender (bar app). A user of the
 /// other role gets `401 Auth.InvalidCredentials`.</param>
 internal sealed record LoginRequest(string Email, string Password, UserRole Role);
 

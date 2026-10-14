@@ -4,7 +4,7 @@ using OrderPoint.Shared.Extensions;
 
 namespace OrderPoint.Shared.Items.Components;
 
-// The item card's picture and text, read like a menu; the Admin's item grid and the bartender app's item page
+// The item card's picture and text, read like a menu; the Admin's item grid and the bar app's item page
 // put it in their own MudCard
 public sealed partial class ItemCardContent
 {

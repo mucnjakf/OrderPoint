@@ -1,6 +1,6 @@
 ﻿namespace OrderPoint.Application.Dtos;
 
-/// <summary>A table's open orders, for the bartender app's tables map.</summary>
+/// <summary>A table's open orders, for the bar app's tables map.</summary>
 /// <param name="TableId">The id of the table.</param>
 /// <param name="PendingCount">Its orders no bartender has taken yet.</param>
 /// <param name="InProgressCount">Its accepted and active orders.</param>

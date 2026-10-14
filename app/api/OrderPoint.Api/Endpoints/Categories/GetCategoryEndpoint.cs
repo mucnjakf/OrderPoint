@@ -23,7 +23,7 @@ internal sealed class GetCategoryEndpoint : IEndpoint
             .WithTags("Categories")
             .WithSummary("Get a category")
             .WithDescription("""
-                Returns one category, including its number of items. The bartender app reads it for its menu.
+                Returns one category, including its number of items. The bar app reads it for its menu.
                 """)
             .ProducesProblem(StatusCodes.Status404NotFound)
             .RequireAuthorization(AuthorizationPolicies.AdminOrBartender);

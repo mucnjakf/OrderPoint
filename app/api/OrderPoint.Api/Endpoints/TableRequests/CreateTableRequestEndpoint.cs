@@ -29,7 +29,7 @@ internal sealed class CreateTableRequestEndpoint : IEndpoint
             .WithTags("Table requests")
             .WithSummary("Call a bartender or ask for the bill")
             .WithDescription("""
-                A guest at the table asks for a bartender or the bill; the bartender app shows it until a bartender
+                A guest at the table asks for a bartender or the bill; the bar app shows it until a bartender
                 marks it done. No token is needed. A table has at most one open request of each type: asking again
                 returns the open one, so this is `200`, not `201`.
 

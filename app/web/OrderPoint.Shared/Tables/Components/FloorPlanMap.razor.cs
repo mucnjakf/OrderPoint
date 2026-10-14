@@ -54,7 +54,7 @@ public sealed partial class FloorPlanMap : IAsyncDisposable
     [Parameter]
     public Func<FloorPlanMoveDto, Task<bool>>? OnMoveAsync { get; set; }
 
-    // Styles added after a table's own, e.g. the bartender app's colours for open orders
+    // Styles added after a table's own, e.g. the bar app's colours for open orders
     [Parameter]
     public Func<TableDto, string?>? TableStyle { get; set; }
 

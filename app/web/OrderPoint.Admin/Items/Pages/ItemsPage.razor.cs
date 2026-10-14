@@ -110,7 +110,7 @@ public sealed partial class ItemsPage : IDisposable
         _ = InvokeAsync(() => GetItemsAsync(Pagination?.PageNumber ?? 1, isLiveUpdate: true));
     }
 
-    // An item or a category changed, here or in the bartender app
+    // An item or a category changed, here or in the bar app
     private void OnMenuChanged()
     {
         _ = InvokeAsync(() => Task.WhenAll(

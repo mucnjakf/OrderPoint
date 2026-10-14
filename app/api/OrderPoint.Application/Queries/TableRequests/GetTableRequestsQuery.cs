@@ -8,7 +8,7 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Queries.TableRequests;
 
-// Every open request, oldest first, for the bartender app; not cached, TablesChanged says when to reload
+// Every open request, oldest first, for the bar app; not cached, TablesChanged says when to reload
 public sealed record GetTableRequestsQuery : IQuery<IReadOnlyList<TableRequestDto>>;
 
 internal sealed class GetTableRequestsQueryHandler(ITableRequestRepository tableRequestRepository)

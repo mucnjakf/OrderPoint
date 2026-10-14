@@ -23,7 +23,7 @@ internal sealed class GetTableRequestsEndpoint : IEndpoint
             .WithTags("Table requests")
             .WithSummary("Get the open requests")
             .WithDescription("""
-                For the bartender app: every guest request no bartender has done yet, oldest first. Not cached;
+                For the bar app: every guest request no bartender has done yet, oldest first. Not cached;
                 `TablesChanged` on the staff hub says when to reload it.
                 """)
             .RequireAuthorization(AuthorizationPolicies.Bartender);

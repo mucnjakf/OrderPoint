@@ -7,7 +7,7 @@ using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Application.Queries.Tables;
 
-// Not cached: it changes with every order, and the bartender app reloads it on each OrdersChanged
+// Not cached: it changes with every order, and the bar app reloads it on each OrdersChanged
 public sealed record GetTablesStatusQuery : IQuery<IReadOnlyList<TableStatusDto>>;
 
 internal sealed class GetTablesStatusQueryHandler(IOrderRepository orderRepository)

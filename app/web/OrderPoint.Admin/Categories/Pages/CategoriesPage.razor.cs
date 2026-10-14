@@ -78,7 +78,7 @@ public sealed partial class CategoriesPage : IDisposable
         OrdersHubService.MenuChanged -= OnMenuChanged;
     }
 
-    // A category or an item changed, here or in the bartender app
+    // A category or an item changed, here or in the bar app
     private void OnMenuChanged()
     {
         _ = InvokeAsync(() => Task.WhenAll(

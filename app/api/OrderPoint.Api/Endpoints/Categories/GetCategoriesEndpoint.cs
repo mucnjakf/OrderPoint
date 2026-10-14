@@ -42,7 +42,7 @@ internal sealed class GetCategoriesEndpoint : IEndpoint
             .WithDescription("""
                 A page of categories with search (name), a status filter and sorting (default: newest first;
                 `DisplayOrderAsc` gives the menu order). `itemsCount` is the number of items in the category. The
-                bartender app reads it for its menu.
+                bar app reads it for its menu.
                 """)
             .RequireAuthorization(AuthorizationPolicies.AdminOrBartender);
     }

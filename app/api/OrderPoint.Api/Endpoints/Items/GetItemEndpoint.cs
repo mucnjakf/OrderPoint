@@ -23,7 +23,7 @@ internal sealed class GetItemEndpoint : IEndpoint
             .WithTags("Items")
             .WithSummary("Get an item")
             .WithDescription("""
-                Returns one item with its category and the number of orders that contain it. The bartender app reads
+                Returns one item with its category and the number of orders that contain it. The bar app reads
                 it for its menu.
                 """)
             .ProducesProblem(StatusCodes.Status404NotFound)
