@@ -1,16 +1,30 @@
-﻿<ItemCardImage ImageUrl="@ImageUrl" IsActive="@IsActive" ShowsStatus="@ShowsStatus"/>
+﻿<ItemCardImage ImageUrl="@ImageUrl" IsActive="@IsActive"/>
 
 <MudCardContent Class="d-flex flex-column">
-    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mb-1">
-        <MudImage Src="@(CategoryImageUrl ?? ImageUrls.Placeholder)"
-                  Alt="Category image"
-                  Width="16"
-                  Height="16"
-                  ObjectFit="ObjectFit.Cover"/>
+    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Spacing="2" Class="mb-1">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Style="min-width: 0">
+            <MudImage Src="@(CategoryImageUrl ?? ImageUrls.Placeholder)"
+                      Alt="Category image"
+                      Width="16"
+                      Height="16"
+                      ObjectFit="ObjectFit.Cover"/>
 
-        <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
-            @CategoryName
-        </MudText>
+            <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                @CategoryName
+            </MudText>
+        </MudStack>
+
+        @if (ShowsStatus)
+        {
+            <MudChip T="string"
+                     Variant="Variant.Text"
+                     Size="Size.Small"
+                     Color="@(IsActive ? Color.Success : Color.Error)"
+                     Class="ma-0"
+                     Style="@StatusChipStyle">
+                @StatusText
+            </MudChip>
+        }
     </MudStack>
 
     <MudText Typo="Typo.h6">

@@ -12,6 +12,13 @@ public sealed partial class ItemCardContent
 
     private const string Separator = " · ";
 
+    private const string ActiveText = "Active";
+
+    private const string InactiveText = "Inactive";
+
+    // As tall as the category line next to it
+    private const string StatusChipStyle = "height: 20px; font-size: 0.75rem;";
+
     private const string ClampedDescriptionStyle =
         $"{SecondaryTextStyle} display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; " +
         "overflow: hidden;";
@@ -52,6 +59,7 @@ public sealed partial class ItemCardContent
     [Parameter]
     public int? OrdersCount { get; set; }
 
+    // Guests only ever see available items, so the customer app leaves the chip out
     [Parameter]
     public bool ShowsStatus { get; set; } = true;
 
@@ -60,6 +68,8 @@ public sealed partial class ItemCardContent
     public bool IsDescriptionClamped { get; set; } = true;
 
     private string DescriptionStyle => IsDescriptionClamped ? ClampedDescriptionStyle : SecondaryTextStyle;
+
+    private string StatusText => IsActive ? ActiveText : InactiveText;
 
     private string PriceText => Price.ToString("C", CultureInfo.CurrentCulture);
 

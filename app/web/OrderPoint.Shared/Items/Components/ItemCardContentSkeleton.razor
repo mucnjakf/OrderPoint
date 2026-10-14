@@ -1,12 +1,16 @@
 ﻿<MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="160px"/>
 
 <MudCardContent Class="d-flex flex-column">
-    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mb-1">
-        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="16px" Height="16px"/>
+    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Spacing="2" Class="mb-1">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="16px" Height="16px"/>
 
-        <MudText Typo="Typo.caption">
-            <MudSkeleton Width="80px"/>
-        </MudText>
+            <MudText Typo="Typo.caption">
+                <MudSkeleton Width="80px"/>
+            </MudText>
+        </MudStack>
+
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="52px" Height="20px" Style="border-radius: 10px;"/>
     </MudStack>
 
     <MudText Typo="Typo.h6">

@@ -10,25 +10,18 @@ public sealed partial class ItemCardImage
 
     private const int PlaceholderSize = 100;
 
-    private const string ActiveText = "Active";
-
-    private const string InactiveText = "Inactive";
-
     [Parameter]
     [EditorRequired]
     public string? ImageUrl { get; set; }
 
+    // Inactive items are shown in greyscale
     [Parameter]
     [EditorRequired]
     public bool IsActive { get; set; }
 
-    // Guests only ever see available items, so the customer app leaves the chip out
-    [Parameter]
-    public bool ShowsStatus { get; set; } = true;
-
     private static string ContainerStyle => $"position: relative; overflow: hidden; height: {AreaHeight}px;";
 
-    private string StatusText => IsActive ? ActiveText : InactiveText;
+
 
     private string InactiveImageStyle => IsActive ? string.Empty : "filter: grayscale(1); opacity: 0.6;";
 
