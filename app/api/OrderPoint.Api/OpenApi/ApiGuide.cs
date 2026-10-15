@@ -22,16 +22,20 @@ internal static class ApiGuide
           account is locked for 5 minutes (`401 Auth.LockedOut`).
         - A bartender created by the admin starts with a temporary password: login returns
           `403 Auth.PasswordChangeRequired` until `POST /api/auth/initial-password` sets a new one.
-        - Every endpoint requires the **Admin** role, except Auth, the customer app's `GET /api/menu`,
-          `POST /api/orders`, `GET /api/orders/{id}/tracking`, `PUT /api/orders/{id}/cancel`,
-          `GET /api/tables/by-code/{code}` and its `requests`, and the health checks (anonymous), the order status
-          changes (`PUT /api/orders/{id}/accept`, `activate`, `complete`), `GET /api/shift`, `GET /api/shift/day`,
-          `GET /api/tables/status`, `GET /api/table-requests` and `PUT /api/table-requests/{id}/done`
-          (**Bartender**), and declining and reading orders, the item and category lists,
-          one item or category, changing the status of items and categories, the floor plan and one area, table or
-          fixture, `GET /api/account`, changing the password and signing out everywhere (**Admin** or
-          **Bartender**). Each endpoint names its roles; those that need a token show a lock and list `401` and
-          `403`.
+        - Every endpoint requires the **Admin** role, except:
+          - **Anonymous:** Auth, the customer app's `GET /api/menu`, `POST /api/orders`,
+            `GET /api/orders/{id}/tracking`, `PUT /api/orders/{id}/cancel`, `GET /api/tables/by-code/{code}` and its
+            `requests` (`GET`, `POST`), and the health checks.
+          - **Bartender:** the order status changes (`PUT /api/orders/{id}/accept`, `activate`, `complete`), taking
+            orders (`POST /api/orders/bartender`) and withdrawing them (`PUT /api/orders/{id}/withdraw`), the
+            register (`POST /api/orders/register`, `PUT /api/orders/{id}/pay`, `PUT /api/orders/{id}/refund`,
+            `GET /api/register/day`), `GET /api/shift`, `GET /api/shift/day`, `GET /api/tables/status`,
+            `GET /api/table-requests` and `PUT /api/table-requests/{id}/done`.
+          - **Admin or Bartender:** reading orders and payments, declining orders, the item and category lists, one
+            item or category, changing the status of items and categories, the floor plan and one area, table or
+            fixture, `GET /api/account`, changing the password and signing out everywhere.
+
+          Each endpoint names its roles; those that need a token show a lock and list `401` and `403`.
 
         ## Responses
 
@@ -93,17 +97,18 @@ internal static class ApiGuide
         ## Real time
 
         The SignalR hub at `/hubs/orders` (role **Admin** or **Bartender**, bearer token as for the endpoints)
-        sends `OrdersChanged`, without arguments, after an order is placed or changes status. Clients then reload
-        what they show; the cache is already cleared when the signal arrives. The hub has no methods to call.
+        sends `OrdersChanged`, without arguments, after an order is placed, changes status, is paid or refunded, and
+        after a bartender is deactivated (their open orders go back to the queue). Clients then reload what they
+        show; the cache is already cleared when the signal arrives. The hub has no methods to call.
 
         The anonymous hub at `/hubs/order-tracking` is for the customer app. A connection calls
         `TrackOrder(orderId)` for each order it follows (again after a reconnect) and then receives `OrderChanged`,
-        without arguments, whenever one of them changes status; it reloads them with
-        `GET /api/orders/{id}/tracking`.
+        without arguments, whenever one of them changes; it reloads them with `GET /api/orders/{id}/tracking`.
 
         Both hubs also send `MenuChanged`, without arguments, to every connection after an item or a category is
-        created, changed or deleted, so apps reload the menu they show, and `TablesChanged` after an area, a table
-        or a fixture is, and after a guest's table request is created or done.
+        created, changed or deleted, and when stock makes an item sell out or come back, so apps reload the menu
+        they show, and `TablesChanged` after an area, a table or a fixture is, and after a guest's table request is
+        created or done.
 
         ## Conventions
 
@@ -119,7 +124,8 @@ internal static class ApiGuide
           at most 2 MB. Image URLs are public and change on every upload.
         - **Bulk operations** (`.../status`, `.../delete`, and `items/category` and `items/price`) take 1 to 100
           unique ids and are all-or-nothing: if any id is missing or blocked, nothing changes.
-        - **Availability**: an item can be ordered only while both the item and its category are Active.
+        - **Availability**: an item can be ordered only while both the item and its category are Active and it is
+          not sold out (an ingredient of its recipe has less than one serving left).
         - **Caching**: gets, lists, searches and dashboard widgets (except `dashboard/live`) are cached in memory
           and in Redis. Every successful change removes the reads it affects, so a read after a write is current.
         """;

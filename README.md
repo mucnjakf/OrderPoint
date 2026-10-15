@@ -27,34 +27,11 @@ Order Management Web Application - 2026.
 
 #
 
-### **📱 Testing on a phone**
-<p align="justify">
-    Aspire serves the apps on <code>localhost</code> only, so a phone can't reach them directly. A Microsoft dev tunnel gives every app (Admin, Register, bar app, Bartender app, customer app) a public HTTPS address that forwards to your machine. The AppHost declares it as the <code>tunnel</code> resource (Aspire's Dev Tunnels integration). Only the apps' pages go through it: they call the API from the server, so nothing else needs to be exposed.
-</p>
+### **📖 Documentation**
+Everything about OrderPoint is in the [wiki](https://github.com/mucnjakf/OrderPoint/wiki): the features of every app, the architecture, the data model, the API, and how to run it.
 
-**One-time setup**
-```bash
-winget install Microsoft.devtunnel           # open a new terminal afterwards, so devtunnel is on the PATH
-devtunnel user login -g                      # GitHub account; drop -g for a Microsoft account
-```
+- [Getting started](https://github.com/mucnjakf/OrderPoint/wiki/Getting-Started): from installing the tools to a first order
+- [Testing on a phone](https://github.com/mucnjakf/OrderPoint/wiki/Testing-on-a-Phone): the dev tunnel
+- [System architecture](https://github.com/mucnjakf/OrderPoint/wiki/System-Architecture)
 
-To make the Admin's table QR codes open the customer app through the tunnel, store its address in the Admin's user secrets (the Admin reads it at startup):
-```bash
-dotnet user-secrets set "CustomerApp:PublicUrl" "https://orderpoint-7038.euw.devtunnels.ms" --project app/web/OrderPoint.Admin
-```
-
-**Every time**
-1. Start the app: `aspire run --project app/host/OrderPoint.AppHost`.
-2. The `tunnel` resource does not start with the rest: start it in the Aspire dashboard (▶ on its row). It creates the tunnel `orderpoint` the first time and keeps the same addresses every time:
-   - Admin: `https://orderpoint-7025.euw.devtunnels.ms`
-   - Register: `https://orderpoint-7032.euw.devtunnels.ms`
-   - Bar app: `https://orderpoint-7034.euw.devtunnels.ms`
-   - Bartender app: `https://orderpoint-7036.euw.devtunnels.ms`
-   - Customer app: `https://orderpoint-7038.euw.devtunnels.ms`
-3. On the phone, open an address and tap Continue on the dev tunnels warning page (shown once). For the customer app, scan a table's QR code in the Admin (Tables, select a table), or open `/t/<table code>`, e.g. `https://orderpoint-7038.euw.devtunnels.ms/t/T7`.
-4. Stop the `tunnel` resource in the dashboard when you're done (stopping Aspire stops it too): while it runs, anyone with the address can open the apps.
-
-**Good to know**
-- Images work on the phone too: their stored addresses point at the storage emulator on your machine, which a phone can't reach, so every app serves them itself under `/images` (the AppHost passes them the storage address as `Images__StorageUrl`).
-- While `CustomerApp:PublicUrl` is set, the QR codes and the Admin's "Open" button go through the tunnel, so they only work while it runs. To go back to the local address: `dotnet user-secrets remove "CustomerApp:PublicUrl" --project app/web/OrderPoint.Admin`, then restart.
-- If the tunnel resource reports a sign-in error, run `devtunnel user login -g` again.
+The wiki is written in [`docs/wiki`](docs/wiki) and published to GitHub by hand.
