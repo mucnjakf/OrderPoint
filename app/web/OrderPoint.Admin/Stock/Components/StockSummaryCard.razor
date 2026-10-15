@@ -1,0 +1,22 @@
+﻿<HighlightCard Label="@Label"
+               Icon="@Icon"
+               Color="@Color"
+               IsLoading="@IsLoading"
+               ShowContent="true"
+               Height="@CardHeight"
+               IsSelected="@IsSelected"
+               OnClick="@OnClick">
+    <LoadingContent>
+        <StockSummaryCardSkeleton/>
+    </LoadingContent>
+
+    <ChildContent>
+        <MudText Typo="Typo.h4">
+            <RollingNumber Value="@Value" Text="@Text"/>
+        </MudText>
+
+        <MudText Typo="Typo.caption">
+            @Caption
+        </MudText>
+    </ChildContent>
+</HighlightCard>

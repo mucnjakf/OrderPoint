@@ -1,0 +1,143 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.Inventory2"/>
+            <MudText Typo="Typo.h6">Stock item</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudStack Spacing="3">
+            <MudPaper Class="pa-5">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3" Class="mb-4">
+                    <MudAvatar Rounded="true" Variant="Variant.Outlined">
+                        <MudIcon Icon="@CurrentStockItem.Group.GetIcon()"/>
+                    </MudAvatar>
+
+                    <MudStack Spacing="0" Class="flex-1" Style="min-width: 0">
+                        <MudText Typo="Typo.h6">@CurrentStockItem.Name</MudText>
+
+                        <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                            @SubtitleText
+                        </MudText>
+                    </MudStack>
+
+                    @if (CurrentStockItem.Status is StockItemStatus.Inactive)
+                    {
+                        <MudChip T="string" Variant="Variant.Text" Size="Size.Small" Color="Color.Error" Class="ma-0">
+                            Inactive
+                        </MudChip>
+                    }
+
+                    <MudChip T="string"
+                             Variant="Variant.Outlined"
+                             Size="Size.Small"
+                             Color="@CurrentStockItem.Level.GetColor()"
+                             Class="ma-0">
+                        @CurrentStockItem.Level.GetLabel()
+                    </MudChip>
+                </MudStack>
+
+                <div style="@FactsStyle">
+                    @foreach ((string icon, string label, string value) in Facts)
+                    {
+                        <MudPaper Outlined="true" Elevation="0" Class="pa-3">
+                            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mb-1">
+                                <MudIcon Icon="@icon" Size="Size.Small" Color="Color.Surface"/>
+
+                                <MudText Typo="Typo.caption" Color="Color.Surface">
+                                    @label
+                                </MudText>
+                            </MudStack>
+
+                            <MudText Typo="Typo.body1" Style="font-weight: 600">
+                                @value
+                            </MudText>
+                        </MudPaper>
+                    }
+                </div>
+            </MudPaper>
+
+            <MudPaper Class="pa-5">
+                <MudText Typo="Typo.subtitle1" Class="mb-2">
+                    History
+                </MudText>
+
+                <StableHeight IsLoading="@IsLoadingMovements" KeepHeight="@(Pagination?.PageNumber > 1)">
+                    <StatefulView IsLoading="@IsLoadingMovements"
+                                  ShowContent="@(Movements.Count != 0)"
+                                  Compact="true"
+                                  EmptyStateIcon="@Icons.Material.Filled.History"
+                                  EmptyStateText="Nothing recorded yet">
+                        <MudSimpleTable Elevation="0" Hover="true">
+                            <thead>
+                                <tr>
+                                    <th>When</th>
+                                    <th>What</th>
+                                    <th>Change</th>
+                                    <th>After</th>
+                                    <th style="text-align: right">Value</th>
+                                    <th>Note</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach (StockMovementDto movement in Movements)
+                                {
+                                    <tr @key="@movement.Id">
+                                        <td>@movement.CreatedAtUtc.ToDisplayDateTime(TimeZoneService.TimeZone)</td>
+                                        <td>
+                                            <MudChip T="string"
+                                                     Variant="Variant.Text"
+                                                     Size="Size.Small"
+                                                     Color="@movement.Type.GetColor()"
+                                                     Icon="@movement.Type.GetIcon()"
+                                                     Class="ma-0">
+                                                @movement.Type.GetLabel()
+                                            </MudChip>
+                                        </td>
+                                        <td style="font-weight: 600">@GetChangeText(movement)</td>
+                                        <td>@CurrentStockItem.GetQuantityText(movement.QuantityAfter)</td>
+                                        <td style="text-align: right">
+                                            @movement.ValueChange.ToString("C", CultureInfo.CurrentCulture)
+                                        </td>
+                                        <td style="color: var(--mud-palette-text-secondary)">@(movement.Note ?? "-")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </MudSimpleTable>
+                    </StatefulView>
+                </StableHeight>
+
+                <ListPager TItem="StockMovementDto"
+                           Pagination="@Pagination"
+                           IsLoading="@IsLoadingMovements"
+                           OnPageChanged="@GetMovementsAsync"/>
+            </MudPaper>
+        </MudStack>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Variant="Variant.Outlined"
+                   Color="Color.Error"
+                   StartIcon="@Icons.Material.Filled.DeleteSweep"
+                   Class="mr-2"
+                   OnClick="@RecordWasteAsync">
+            Record waste
+        </MudButton>
+
+        <MudButton Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Filled.Tune"
+                   Class="mr-auto"
+                   OnClick="@CorrectAsync">
+            Correct quantity
+        </MudButton>
+
+        <MudButton Variant="Variant.Filled"
+                   OnClick="@Close"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Close">
+            Close
+        </MudButton>
+    </DialogActions>
+</MudDialog>

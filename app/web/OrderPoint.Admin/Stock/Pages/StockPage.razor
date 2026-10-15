@@ -1,0 +1,145 @@
+﻿@page "/stock"
+
+<PageTitle>Stock</PageTitle>
+
+<PageHeader Text="Stock"/>
+
+<MudStack Row="true" Spacing="3" Class="mb-5">
+    <StockSummaryCard Label="Stock value"
+                      Icon="@Icons.Material.Filled.Inventory2"
+                      Color="Color.Info"
+                      Value="@(Summary?.TotalValue ?? 0)"
+                      Text="@((Summary?.TotalValue ?? 0).ToString("C", CultureInfo.CurrentCulture))"
+                      Caption="On the shelves, at cost"
+                      IsLoading="@IsLoadingSummary"/>
+
+    <StockSummaryCard Label="Low stock"
+                      Icon="@Icons.Material.Filled.TrendingDown"
+                      Color="Color.Warning"
+                      Value="@(Summary?.LowCount ?? 0)"
+                      Text="@((Summary?.LowCount ?? 0).ToString())"
+                      Caption="At or below their par level"
+                      IsLoading="@IsLoadingSummary"
+                      IsSelected="@(SelectedLevel is StockLevel.Low)"
+                      OnClick="@(() => OnLevelCardClickAsync(StockLevel.Low))"/>
+
+    <StockSummaryCard Label="Out of stock"
+                      Icon="@Icons.Material.Filled.RemoveShoppingCart"
+                      Color="Color.Error"
+                      Value="@(Summary?.OutCount ?? 0)"
+                      Text="@((Summary?.OutCount ?? 0).ToString())"
+                      Caption="Nothing left"
+                      IsLoading="@IsLoadingSummary"
+                      IsSelected="@(SelectedLevel is StockLevel.Out)"
+                      OnClick="@(() => OnLevelCardClickAsync(StockLevel.Out))"/>
+</MudStack>
+
+<DataSheet TItem="StockItemDto"
+           Items="@StockItems"
+           Pagination="@Pagination"
+           IsLoading="@IsLoading"
+           SearchLabel="Search by name"
+           SearchQuery="@SearchQuery"
+           SearchQueryChanged="@(value => SearchQuery = value)"
+           SelectedSortBy="@SelectedSortBy"
+           SelectedSortByChanged="@(value => SelectedSortBy = value)"
+           OnSearchChanged="@OnFiltersChangedAsync"
+           OnSortChanged="@OnFiltersChangedAsync"
+           OnPageChanged="@OnPageChangedAsync"
+           SortByOptions="@StockSorting.SortByOptions"
+           GetSortByLabel="@StockSorting.GetSortByLabel"
+           GetSortByIcon="@StockSorting.GetSortByIcon"
+           CreateButtonText="New stock item"
+           OnCreateClick="@ShowCreateStockItemDialogAsync"
+           GetGroupKey="@(stockItem => stockItem.Group)"
+           OnRowClick="@ShowStockItemDetailsDialogAsync"
+           EmptyStateIcon="@Icons.Material.Filled.Inventory2"
+           EmptyStateText="No stock items found">
+
+    <LoadingTemplate>
+        <StockItemRowSkeleton/>
+    </LoadingTemplate>
+
+    <FilterContent>
+        <MudSelect @bind-Value="@SelectedGroup"
+                   @bind-Value:after="@OnFiltersChangedAsync"
+                   T="StockGroup?"
+                   Variant="Variant.Outlined"
+                   Label="Group"
+                   Clearable="true"
+                   FitContent="true">
+            @foreach (StockGroup group in Enum.GetValues<StockGroup>())
+            {
+                <MudSelectItem Value="@group" T="StockGroup?">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                        <MudIcon Icon="@group.GetIcon()" Size="Size.Small"/>
+                        <MudText>@group.ToString()</MudText>
+                    </MudStack>
+                </MudSelectItem>
+            }
+        </MudSelect>
+
+        <MudSelect @bind-Value="@SelectedLevel"
+                   @bind-Value:after="@OnFiltersChangedAsync"
+                   T="StockLevel?"
+                   Variant="Variant.Outlined"
+                   Label="Level"
+                   Clearable="true"
+                   FitContent="true">
+            @foreach (StockLevel level in Enum.GetValues<StockLevel>())
+            {
+                <MudSelectItem Value="@level" T="StockLevel?">
+                    <MudText>@level.GetLabel()</MudText>
+                </MudSelectItem>
+            }
+        </MudSelect>
+
+        <MudSelect @bind-Value="@SelectedStatus"
+                   @bind-Value:after="@OnFiltersChangedAsync"
+                   T="StockItemStatus?"
+                   Variant="Variant.Outlined"
+                   Label="Status"
+                   Clearable="true"
+                   FitContent="true">
+            @foreach (StockItemStatus status in Enum.GetValues<StockItemStatus>())
+            {
+                <MudSelectItem Value="@status" T="StockItemStatus?">
+                    <MudText>@status.ToString()</MudText>
+                </MudSelectItem>
+            }
+        </MudSelect>
+    </FilterContent>
+
+    <HeaderContent>
+        <div style="@StockRowLayout.GridStyle">
+            <MudText Typo="Typo.caption" Style="@ColumnTitleStyle">Name</MudText>
+            <MudText Typo="Typo.caption" Style="@ColumnTitleStyle">Level</MudText>
+            <MudText Typo="Typo.caption" Style="@ColumnTitleStyle">On the shelf</MudText>
+            <MudText Typo="Typo.caption" Style="@ColumnTitleStyle">Par level</MudText>
+            <MudText Typo="Typo.caption" Align="Align.Right" Style="@ColumnTitleStyle">Value</MudText>
+            <span></span>
+        </div>
+    </HeaderContent>
+
+    <GroupHeaderTemplate>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@context[0].Group.GetIcon()" Size="Size.Small"/>
+
+            <MudText Typo="Typo.subtitle2">
+                @context[0].Group
+            </MudText>
+
+            <MudText Typo="Typo.caption" Style="@ColumnTitleStyle">
+                · @context.Count.ToCountText("item", "items") · @GetGroupValueText(context)
+            </MudText>
+        </MudStack>
+    </GroupHeaderTemplate>
+
+    <RowTemplate>
+        <StockItemRow StockItem="@context"
+                      OnWasteClick="@RecordWasteAsync"
+                      OnCorrectClick="@CorrectAsync"
+                      OnEditClick="@ShowUpdateStockItemDialogAsync"
+                      OnDeleteClick="@ShowDeleteStockItemDialogAsync"/>
+    </RowTemplate>
+</DataSheet>

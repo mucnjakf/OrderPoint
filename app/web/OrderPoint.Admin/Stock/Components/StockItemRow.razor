@@ -1,0 +1,61 @@
+﻿<div style="@StockRowLayout.GridStyle">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Style="min-width: 0">
+        <MudText Typo="Typo.body1" Class="text-truncate">
+            @StockItem.Name
+        </MudText>
+
+        @if (StockItem.Status is StockItemStatus.Inactive)
+        {
+            <MudChip T="string" Variant="Variant.Text" Size="Size.Small" Color="Color.Error" Class="ma-0">
+                Inactive
+            </MudChip>
+        }
+    </MudStack>
+
+    <StockLevelBar StockItem="@StockItem"/>
+
+    <MudText Typo="Typo.body2" Style="@QuantityStyle">
+        @StockItem.GetQuantityText(StockItem.Quantity)
+    </MudText>
+
+    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+        @(StockItem.ParLevel > 0 ? StockItem.GetPacksText(StockItem.ParLevel) : "-")
+    </MudText>
+
+    <MudText Typo="Typo.body2" Align="Align.Right">
+        @StockItem.Value.ToString("C", CultureInfo.CurrentCulture)
+    </MudText>
+
+    @* The buttons must not open the details as well *@
+    <div class="d-flex justify-end" @onclick:stopPropagation="true">
+        <MudTooltip Text="Record waste">
+            <MudIconButton Icon="@Icons.Material.Filled.DeleteSweep"
+                           Size="Size.Small"
+                           aria-label="Record waste"
+                           OnClick="@(() => OnWasteClick.InvokeAsync(StockItem))"/>
+        </MudTooltip>
+
+        <MudTooltip Text="Correct quantity">
+            <MudIconButton Icon="@Icons.Material.Filled.Tune"
+                           Size="Size.Small"
+                           aria-label="Correct quantity"
+                           OnClick="@(() => OnCorrectClick.InvokeAsync(StockItem))"/>
+        </MudTooltip>
+
+        <MudTooltip Text="Edit">
+            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                           Color="Color.Secondary"
+                           Size="Size.Small"
+                           aria-label="Edit"
+                           OnClick="@(() => OnEditClick.InvokeAsync(StockItem))"/>
+        </MudTooltip>
+
+        <MudTooltip Text="Delete">
+            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                           Color="Color.Error"
+                           Size="Size.Small"
+                           aria-label="Delete"
+                           OnClick="@(() => OnDeleteClick.InvokeAsync(StockItem))"/>
+        </MudTooltip>
+    </div>
+</div>

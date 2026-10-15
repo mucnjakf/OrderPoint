@@ -1,0 +1,78 @@
+﻿<EditForm Model="@Request" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator/>
+
+    <MudDialog ActionsClass="pa-6" Class="mud-background">
+        <TitleContent>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudIcon Icon="@Icons.Material.Filled.DeleteSweep"/>
+                <MudText Typo="Typo.h6">Record waste</MudText>
+            </MudStack>
+        </TitleContent>
+
+        <DialogContent>
+            <MudStack Spacing="4">
+                <StockItemSummaryCard StockItem="@StockItem"/>
+
+                <MudStack Row="true" AlignItems="AlignItems.Start" Spacing="3">
+                    <MudNumericField Label="Amount lost"
+                                     @bind-Value="@Request.EnteredAmount"
+                                     For="@(() => Request.EnteredAmount)"
+                                     HelperText="Spilled, broken, expired or given away."
+                                     Variant="Variant.Outlined"
+                                     Immediate="true"
+                                     Class="flex-1"
+                                     Style="min-width: 0"/>
+                    <MudToggleGroup T="bool"
+                                    @bind-Value="@Request.IsInPacks"
+                                    Color="Color.Primary"
+                                    Size="Size.Small"
+                                    Class="mt-2">
+                        <MudToggleItem Value="false" Text="@StockItem.Unit.GetSymbol()" Class="px-4"/>
+                        <MudToggleItem Value="true" Text="@StockItem.PackName" Class="px-4"/>
+                    </MudToggleGroup>
+                </MudStack>
+
+                <MudStack Row="true" Spacing="2" Wrap="Wrap.Wrap">
+                    @foreach (string reason in Reasons)
+                    {
+                        string chipReason = reason;
+
+                        <MudChip T="string"
+                                 Variant="@(Request.Note == chipReason ? Variant.Filled : Variant.Outlined)"
+                                 Class="ma-0"
+                                 OnClick="@(() => Request.Note = chipReason)">
+                            @chipReason
+                        </MudChip>
+                    }
+                </MudStack>
+
+                <MudTextField Label="Note"
+                              @bind-Value="@Request.Note"
+                              For="@(() => Request.Note)"
+                              HelperText="Why it was lost, if it helps later."
+                              Variant="Variant.Outlined"
+                              MaxLength="200"
+                              Counter="200"
+                              Clearable="true"
+                              Immediate="true"/>
+
+                <MudText Typo="Typo.body2">
+                    @StockItem.GetQuantityText(StockItem.Quantity) → <strong>@AfterText</strong>
+                </MudText>
+            </MudStack>
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
+                Cancel
+            </MudButton>
+
+            <MudButton ButtonType="ButtonType.Submit"
+                       Variant="Variant.Filled"
+                       Color="Color.Error"
+                       StartIcon="@Icons.Material.Filled.DeleteSweep">
+                Record waste
+            </MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>

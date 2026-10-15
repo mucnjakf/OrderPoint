@@ -1,0 +1,125 @@
+﻿<EditForm Model="@Request" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator/>
+
+    <MudDialog ActionsClass="pa-6" Class="mud-background">
+        <TitleContent>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudIcon Icon="@Icons.Material.Filled.Edit"/>
+                <MudText Typo="Typo.h6">Edit stock item</MudText>
+            </MudStack>
+        </TitleContent>
+
+        <DialogContent>
+            <MudStack Spacing="4">
+                <MudStack Row="true" Spacing="3">
+                    <MudTextField Label="Name"
+                                  @bind-Value="@Request.Name"
+                                  For="@(() => Request.Name)"
+                                  HelperText="As on the bottle or the invoice."
+                                  Variant="Variant.Outlined"
+                                  Immediate="true"
+                                  Class="flex-1"
+                                  Style="min-width: 0"/>
+
+                    <MudSelect Label="Group"
+                               T="StockGroup"
+                               @bind-Value="@Request.Group"
+                               For="@(() => Request.Group)"
+                               HelperText="Where it is listed and counted."
+                               Variant="Variant.Outlined"
+                               Class="flex-1"
+                               Style="min-width: 0">
+                        @foreach (StockGroup group in Enum.GetValues<StockGroup>())
+                        {
+                            <MudSelectItem Value="@group" T="StockGroup">
+                                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                    <MudIcon Icon="@group.GetIcon()" Size="Size.Small"/>
+                                    <MudText>@group.ToString()</MudText>
+                                </MudStack>
+                            </MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudStack>
+
+                <MudStack Row="true" Spacing="3">
+                    <MudTextField Label="Pack"
+                                  @bind-Value="@Request.PackName"
+                                  For="@(() => Request.PackName)"
+                                  HelperText="What it comes in: bottle, keg, case."
+                                  Variant="Variant.Outlined"
+                                  Immediate="true"
+                                  Class="flex-1"
+                                  Style="min-width: 0"/>
+
+                    <MudNumericField Label="Pack size"
+                                     @bind-Value="@Request.PackSize"
+                                     For="@(() => Request.PackSize)"
+                                     HelperText="How much one pack holds."
+                                     Variant="Variant.Outlined"
+                                     Adornment="Adornment.End"
+                                     AdornmentText="@StockItem.Unit.GetSymbol()"
+                                     Immediate="true"
+                                     Class="flex-1"
+                                     Style="min-width: 0"/>
+
+                    <MudNumericField Label="Cost per pack"
+                                     @bind-Value="@Request.PackCost"
+                                     For="@(() => Request.PackCost)"
+                                     HelperText="What one pack costs you."
+                                     Variant="Variant.Outlined"
+                                     Adornment="Adornment.End"
+                                     AdornmentText="€"
+                                     Immediate="true"
+                                     Class="flex-1"
+                                     Style="min-width: 0"/>
+                </MudStack>
+
+                <MudStack Row="true" Spacing="3">
+                    <MudNumericField Label="Par level"
+                                     @bind-Value="@Request.ParLevelInPacks"
+                                     For="@(() => Request.ParLevelInPacks)"
+                                     HelperText="Low at or below this, in packs."
+                                     Variant="Variant.Outlined"
+                                     Adornment="Adornment.End"
+                                     AdornmentText="@Request.PackName"
+                                     Immediate="true"
+                                     Class="flex-1"
+                                     Style="min-width: 0"/>
+
+                    <MudSelect Label="Status"
+                               T="StockItemStatus"
+                               @bind-Value="@Request.Status"
+                               For="@(() => Request.Status)"
+                               HelperText="Inactive when no longer bought."
+                               Variant="Variant.Outlined"
+                               Class="flex-1"
+                               Style="min-width: 0">
+                        @foreach (StockItemStatus status in Enum.GetValues<StockItemStatus>())
+                        {
+                            <MudSelectItem Value="@status" T="StockItemStatus">
+                                <MudText>@status.ToString()</MudText>
+                            </MudSelectItem>
+                        }
+                    </MudSelect>
+
+                    <MudText Typo="Typo.body2" Class="flex-1" Style="color: var(--mud-palette-text-secondary)">
+                        @PreviewText
+                    </MudText>
+                </MudStack>
+            </MudStack>
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
+                Cancel
+            </MudButton>
+
+            <MudButton ButtonType="ButtonType.Submit"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Save">
+                Save
+            </MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>

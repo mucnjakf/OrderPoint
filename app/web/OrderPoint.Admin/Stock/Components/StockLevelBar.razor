@@ -1,0 +1,8 @@
+﻿<div style="position: relative">
+    <MudProgressLinear Value="@Percent" Color="@StockItem.Level.GetColor()" Rounded="true" Size="Size.Medium"/>
+
+    @if (StockItem.ParLevel > 0)
+    {
+        <div style="@ParMarkerStyle"></div>
+    }
+</div>

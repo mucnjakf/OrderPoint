@@ -24,6 +24,10 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
 
     internal DbSet<TableRequest> TableRequests { get; init; } = null!;
 
+    internal DbSet<StockItem> StockItems { get; init; } = null!;
+
+    internal DbSet<StockMovement> StockMovements { get; init; } = null!;
+
     internal DbSet<ApplicationUser> Users { get; init; } = null!;
 
     internal DbSet<RefreshToken> RefreshTokens { get; init; } = null!;

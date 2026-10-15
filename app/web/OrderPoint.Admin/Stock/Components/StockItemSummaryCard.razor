@@ -1,0 +1,31 @@
+﻿<MudPaper Outlined="true" Class="pa-4">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="4">
+        <MudAvatar Rounded="true" Variant="Variant.Outlined" Size="Size.Large">
+            <MudIcon Icon="@StockItem.Group.GetIcon()"/>
+        </MudAvatar>
+
+        <MudStack Spacing="1" Class="flex-1" Style="min-width: 0">
+            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                <MudText Typo="Typo.h6">
+                    @StockItem.Name
+                </MudText>
+
+                <MudChip T="string"
+                         Variant="Variant.Text"
+                         Size="Size.Small"
+                         Color="@StockItem.Level.GetColor()"
+                         Class="ma-0">
+                    @StockItem.Level.GetLabel()
+                </MudChip>
+            </MudStack>
+
+            <MudText Typo="Typo.body2">
+                @QuantityText
+            </MudText>
+
+            <MudText Typo="Typo.caption">
+                @StockItem.Group · @StockItem.GetPackText() · Created @StockItem.CreatedAtUtc.ToRelativeTime()
+            </MudText>
+        </MudStack>
+    </MudStack>
+</MudPaper>

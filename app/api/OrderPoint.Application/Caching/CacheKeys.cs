@@ -8,6 +8,7 @@ using OrderPoint.Application.Queries.Items;
 using OrderPoint.Application.Queries.Menu;
 using OrderPoint.Application.Queries.Orders;
 using OrderPoint.Application.Queries.Payments;
+using OrderPoint.Application.Queries.Stock;
 using OrderPoint.Application.Queries.Tables;
 using OrderPoint.Domain.Enumerations;
 
@@ -52,6 +53,17 @@ internal static class CacheKeys
     internal static string For(GetTableByCodeQuery query) => $"tables:code:{query.Code}";
 
     internal static string For(GetFixtureQuery query) => $"tables:fixtures:{query.Id}";
+
+    internal static string For(GetStockItemQuery query) => $"stock:{query.Id}";
+
+    internal static string For(GetStockItemsQuery query)
+        => $"stock:page:{query.PageNumber}:{query.PageSize}:{query.Group}:{query.Level}:{query.Status}:" +
+           $"{query.SortBy}:{query.SearchQuery}";
+
+    internal static string For(GetStockMovementsQuery query)
+        => $"stock:{query.StockItemId}:movements:{query.PageNumber}:{query.PageSize}";
+
+    internal static string For(GetStockSummaryQuery query) => "stock:summary";
 
     internal static string For(GetOrdersQuery query)
         => $"orders:page:{query.PageNumber}:{query.PageSize}:{query.Status}:{query.ItemId}:{query.BartenderId}:" +

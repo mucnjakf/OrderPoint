@@ -34,6 +34,8 @@ internal sealed class DocumentInfoTransformer : IOpenApiDocumentTransformer
         ("Fixtures", "Fixed pieces of a floor plan (bar counter, entrance, wall) that help staff find the tables."),
         ("Table requests", "Guests call a bartender from their table (anonymous); bartenders see the open calls " +
                            "and mark them done."),
+        ("Stock", "What the bar buys and counts: stock items in a base unit (ml, g or pieces) with their pack, cost " +
+                  "and par level, and every change to their quantity (opening, waste, correction) as movements."),
         ("Dashboard", "Aggregated numbers for the Admin dashboard, one endpoint per widget so they load in parallel."),
         ("Health", "The health of the API, the database and the blob storage, for the Admin's system health page.")
     ];
@@ -45,6 +47,7 @@ internal sealed class DocumentInfoTransformer : IOpenApiDocumentTransformer
         ("Staff", ["Bartenders"]),
         ("Orders", ["Orders", "Payments", "Shift", "Register"]),
         ("Floor plan", ["Areas", "Tables", "Fixtures", "Table requests"]),
+        ("Inventory", ["Stock"]),
         ("Insights", ["Dashboard"]),
         ("System", ["Health"])
     ];

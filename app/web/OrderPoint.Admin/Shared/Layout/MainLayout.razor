@@ -87,6 +87,19 @@
             @if (DrawerOpen)
             {
                 <MudText Typo="Typo.button" HtmlTag="p" Class="px-3 pt-1 pb-1" Style="font-size: 12px">
+                    Inventory
+                </MudText>
+            }
+
+            <MudNavLink Href="/stock" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Inventory2">
+                <MudText Typo="Typo.body1">Stock</MudText>
+            </MudNavLink>
+
+            <MudDivider Class="my-3" />
+
+            @if (DrawerOpen)
+            {
+                <MudText Typo="Typo.button" HtmlTag="p" Class="px-3 pt-1 pb-1" Style="font-size: 12px">
                     System
                 </MudText>
             }

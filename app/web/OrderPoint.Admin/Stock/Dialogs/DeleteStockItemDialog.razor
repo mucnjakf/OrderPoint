@@ -1,0 +1,44 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Error"/>
+            <MudText Typo="Typo.h6">Delete stock item</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudAlert Severity="Severity.Error" Variant="Variant.Text" Dense="true" Class="mb-4">
+            <MudText Typo="Typo.body2">
+                This action cannot be undone.
+            </MudText>
+        </MudAlert>
+
+        <StockItemSummaryCard StockItem="@StockItem"/>
+
+        <MudText Typo="Typo.body2" Class="mt-4 mb-2">
+            This also deletes:
+        </MudText>
+
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.Inventory" Size="Size.Small"/>
+            <MudText Typo="Typo.body2">Its opening stock entry</MudText>
+        </MudStack>
+
+        <MudText Typo="Typo.caption" Class="mt-3" Style="color: var(--mud-palette-text-secondary)">
+            Once waste or a correction was recorded, its history stays: deactivate it instead.
+        </MudText>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
+            Cancel
+        </MudButton>
+
+        <MudButton OnClick="@Confirm"
+                   Variant="Variant.Filled"
+                   Color="Color.Error"
+                   StartIcon="@Icons.Material.Filled.Delete">
+            Delete @StockItem.Name
+        </MudButton>
+    </DialogActions>
+</MudDialog>

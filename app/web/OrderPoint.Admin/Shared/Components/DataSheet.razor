@@ -1,0 +1,88 @@
+﻿@typeparam TItem
+
+<MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.End" Class="mb-3">
+    <MudStack Row="true">
+        <MudTextField @bind-Value="@SearchQuery"
+                      @bind-Value:after="@OnSearchChangedAsync"
+                      T="string"
+                      Label="@SearchLabel"
+                      Variant="Variant.Outlined"
+                      Clearable="true"
+                      DebounceInterval="500"
+                      Immediate="false"/>
+
+        <MudSelect @bind-Value="@SelectedSortBy"
+                   @bind-Value:after="@OnSortChangedAsync"
+                   T="string"
+                   Variant="Variant.Outlined"
+                   Label="Sort by"
+                   FitContent="true">
+            @foreach (string sortBy in SortByOptions)
+            {
+                <MudSelectItem Value="@sortBy">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                        <MudText Typo="Typo.body1">@GetSortByLabel(sortBy)</MudText>
+                        <MudIcon Icon="@GetSortByIcon(sortBy)" Size="Size.Small"/>
+                    </MudStack>
+                </MudSelectItem>
+            }
+        </MudSelect>
+
+        @if (FilterContent is not null)
+        {
+            @FilterContent
+        }
+    </MudStack>
+
+    <MudButton Variant="Variant.Filled"
+               StartIcon="@Icons.Material.Filled.Add"
+               Color="Color.Primary"
+               OnClick="@OnCreateClickAsync">
+        @CreateButtonText
+    </MudButton>
+</MudStack>
+
+<StableHeight IsLoading="@IsLoading" KeepHeight="@(Pagination?.PageNumber > 1)" IsFramed="true">
+    <div style="@HeaderRowStyle">
+        @HeaderContent
+    </div>
+
+    @if (IsLoading && LoadingTemplate is not null)
+    {
+        @for (int i = 0; i < LoadingRowsCount; i++)
+        {
+            <div style="@RowStyle">
+                @LoadingTemplate
+            </div>
+        }
+    }
+    else
+    {
+        <StatefulView IsLoading="@IsLoading"
+                      ShowContent="@Items.Any()"
+                      Flat="true"
+                      EmptyStateIcon="@EmptyStateIcon"
+                      EmptyStateText="@EmptyStateText">
+            @foreach (IReadOnlyList<TItem> group in Groups)
+            {
+                <div @key="@GetGroupKey(group[0])" style="@GroupHeaderStyle">
+                    @GroupHeaderTemplate(group)
+                </div>
+
+                @foreach (TItem item in group)
+                {
+                    <div @key="@item"
+                         class="cursor-pointer"
+                         style="@GetRowStyle(item)"
+                         @onclick="@(() => OnRowClickAsync(item))"
+                         @onmouseenter="@(() => HoveredItem = item)"
+                         @onmouseleave="@(() => HoveredItem = default)">
+                        @RowTemplate(item)
+                    </div>
+                }
+            }
+        </StatefulView>
+    }
+</StableHeight>
+
+<ListPager TItem="TItem" Pagination="@Pagination" IsLoading="@IsLoading" OnPageChanged="@OnPageChanged"/>
