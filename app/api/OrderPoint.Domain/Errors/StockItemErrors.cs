@@ -48,6 +48,10 @@ public static class StockItemErrors
         "StockItem.UsedInRecipes",
         "Cannot delete a stock item that recipes use");
 
+    public static readonly Error UsedInCounts = Error.Conflict(
+        "StockItem.UsedInCounts",
+        "Cannot delete a stock item that is on a stock count");
+
     public static readonly Error CannotDeleteWithMovements = Error.Conflict(
         "StockItem.CannotDeleteWithMovements",
         "Cannot delete a stock item with stock movements");

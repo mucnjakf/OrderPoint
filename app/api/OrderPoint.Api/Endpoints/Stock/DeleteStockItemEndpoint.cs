@@ -21,6 +21,7 @@ internal sealed class DeleteStockItemEndpoint : IEndpoint
                 Deletes the stock item and its opening movement.
 
                 - `409 StockItem.UsedInRecipes`: a menu item's recipe uses it; take it out of the recipe first
+                - `409 StockItem.UsedInCounts`: it is on a stock count; deactivate it instead
                 - `409 StockItem.CannotDeleteWithMovements`: it has movements besides its opening; deactivate it
                   instead, so its history stays.
                 """)

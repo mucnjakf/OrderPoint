@@ -47,6 +47,7 @@ public static class InfrastructureModule
         services.AddScoped<IRecipeLineRepository, RecipeLineEfCoreRepository>();
         services.AddScoped<ISupplierRepository, SupplierEfCoreRepository>();
         services.AddScoped<IDeliveryRepository, DeliveryEfCoreRepository>();
+        services.AddScoped<IStockCountRepository, StockCountEfCoreRepository>();
         services.AddScoped<IDashboardRepository, DashboardEfCoreRepository>();
 
         services.AddScoped<IImageStorage, BlobImageStorage>();

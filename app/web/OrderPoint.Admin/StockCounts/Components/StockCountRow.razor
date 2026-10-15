@@ -1,0 +1,27 @@
+﻿<div style="@StockCountRowLayout.GridStyle">
+    <MudAvatar Rounded="true" Variant="Variant.Outlined">
+        <MudIcon Icon="@Icons.Material.Filled.FactCheck"/>
+    </MudAvatar>
+
+    <MudStack Spacing="0" Style="min-width: 0">
+        <MudText Typo="Typo.body1">
+            @StockCount.ClosedAtUtc?.ToDisplayDateTime(TimeZoneService.TimeZone)
+        </MudText>
+
+        <MudText Typo="Typo.caption" Class="text-truncate" Style="color: var(--mud-palette-text-secondary)">
+            @NoteText
+        </MudText>
+    </MudStack>
+
+    <MudText Typo="Typo.body2" Class="text-truncate" Style="color: var(--mud-palette-text-secondary)">
+        @StockCount.GetGroupsText(AllGroupsCount)
+    </MudText>
+
+    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+        @StockCount.CountedCount of @StockCount.LinesCount counted
+    </MudText>
+
+    <MudText Typo="Typo.subtitle1" Align="Align.Right" Style="@StockCount.ValueChange.GetValueChangeStyle()">
+        @StockCount.ValueChange.ToSignedMoneyText()
+    </MudText>
+</div>

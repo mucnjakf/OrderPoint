@@ -464,6 +464,75 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                     b.ToTable("RecipeLines", (string)null);
                 });
 
+            modelBuilder.Entity("OrderPoint.Domain.Entities.StockCount", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("ClosedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.PrimitiveCollection<int[]>("Groups")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StockCounts", (string)null);
+                });
+
+            modelBuilder.Entity("OrderPoint.Domain.Entities.StockCountLine", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal?>("CountedQuantity")
+                        .HasPrecision(12, 3)
+                        .HasColumnType("numeric(12,3)");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<decimal?>("ExpectedQuantity")
+                        .HasPrecision(12, 3)
+                        .HasColumnType("numeric(12,3)");
+
+                    b.Property<Guid>("StockCountId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("StockItemId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal?>("UnitCost")
+                        .HasPrecision(12, 6)
+                        .HasColumnType("numeric(12,6)");
+
+                    b.Property<DateTimeOffset?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StockItemId");
+
+                    b.HasIndex("StockCountId", "StockItemId")
+                        .IsUnique();
+
+                    b.ToTable("StockCountLines", (string)null);
+                });
+
             modelBuilder.Entity("OrderPoint.Domain.Entities.StockItem", b =>
                 {
                     b.Property<Guid>("Id")
@@ -896,6 +965,23 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                     b.Navigation("StockItem");
                 });
 
+            modelBuilder.Entity("OrderPoint.Domain.Entities.StockCountLine", b =>
+                {
+                    b.HasOne("OrderPoint.Domain.Entities.StockCount", null)
+                        .WithMany("Lines")
+                        .HasForeignKey("StockCountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OrderPoint.Domain.Entities.StockItem", "StockItem")
+                        .WithMany()
+                        .HasForeignKey("StockItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("StockItem");
+                });
+
             modelBuilder.Entity("OrderPoint.Domain.Entities.StockItem", b =>
                 {
                     b.HasOne("OrderPoint.Domain.Entities.Supplier", "Supplier")
@@ -980,6 +1066,11 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
             modelBuilder.Entity("OrderPoint.Domain.Entities.Order", b =>
                 {
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("OrderPoint.Domain.Entities.StockCount", b =>
+                {
+                    b.Navigation("Lines");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,0 +1,151 @@
+﻿@page "/counts/{Id:guid}"
+
+<PageTitle>Stock count</PageTitle>
+
+<PageHeader Text="Stock count">
+    <MudButton Variant="Variant.Text" StartIcon="@Icons.Material.Filled.ArrowBack" Href="/counts">
+        All counts
+    </MudButton>
+</PageHeader>
+
+<StatefulView IsLoading="@IsLoading"
+              ShowContent="@(StockCount is not null)"
+              EmptyStateIcon="@Icons.Material.Filled.FactCheck"
+              EmptyStateText="Count not found"
+              EmptyStateDetail="It may have been discarded.">
+    <LoadingContent>
+        <StockCountSheetSkeleton/>
+    </LoadingContent>
+
+    <ChildContent>
+        @if (StockCount is not null)
+        {
+            @if (IsClosed)
+            {
+                <MudAlert Severity="Severity.Info" Variant="Variant.Text" Dense="true" Class="mb-3">
+                    <MudText Typo="Typo.body2">
+                        This count was closed
+                        @StockCount.ClosedAtUtc?.ToDisplayDateTime(TimeZoneService.TimeZone) and can't be changed.
+                    </MudText>
+                </MudAlert>
+            }
+
+            <MudPaper Class="pa-4 mb-5">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                    <MudAvatar Rounded="true" Variant="Variant.Outlined">
+                        <MudIcon Icon="@Icons.Material.Filled.FactCheck"/>
+                    </MudAvatar>
+
+                    <MudStack Spacing="0" Class="flex-1" Style="min-width: 0">
+                        <MudText Typo="Typo.subtitle1">@StockCount.GetGroupsText(AllGroupsCount)</MudText>
+
+                        <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                            Started @StockCount.CreatedAtUtc.ToDisplayDateTime(TimeZoneService.TimeZone)
+                        </MudText>
+                    </MudStack>
+
+                    <MudStack Spacing="1" Style="width: 240px">
+                        <MudText Typo="Typo.body2" Align="Align.Right">
+                            @CountedCount of @Entries.Count counted
+                        </MudText>
+
+                        <MudProgressLinear Value="@ProgressPercent" Color="Color.Primary" Rounded="true"/>
+                    </MudStack>
+                </MudStack>
+            </MudPaper>
+
+            <DataSheet TItem="StockCountEntryDto"
+                       Items="@PageEntries"
+                       Pagination="@Pagination"
+                       IsLoading="false"
+                       SearchLabel="Search by name"
+                       SearchQuery="@SearchQuery"
+                       SearchQueryChanged="@(value => SearchQuery = value)"
+                       SelectedSortBy="@SelectedSortBy"
+                       SelectedSortByChanged="@(value => SelectedSortBy = value)"
+                       OnSearchChanged="@OnFiltersChanged"
+                       OnSortChanged="@OnFiltersChanged"
+                       OnPageChanged="@OnPageChanged"
+                       SortByOptions="@StockCountSorting.LineSortByOptions"
+                       GetSortByLabel="@StockCountSorting.GetLineSortByLabel"
+                       GetSortByIcon="@StockCountSorting.GetLineSortByIcon"
+                       GetGroupKey="@(entry => entry.Line.Group)"
+                       EmptyStateIcon="@Icons.Material.Filled.Inventory2"
+                       EmptyStateText="No stock items found">
+
+                <FilterContent>
+                    <MudSwitch @bind-Value="@IsOnlyNotCounted"
+                               @bind-Value:after="@OnFiltersChanged"
+                               T="bool"
+                               Color="Color.Primary"
+                               Label="Only not counted"
+                               Class="mb-2"/>
+                </FilterContent>
+
+                <HeaderContent>
+                    <div style="@StockCountLineRowLayout.GridStyle">
+                        <MudText Typo="Typo.caption" Style="@ColumnTitleStyle">Stock item</MudText>
+                        <MudText Typo="Typo.caption" Style="@ColumnTitleStyle">Expected</MudText>
+                        <MudText Typo="Typo.caption" Style="@ColumnTitleStyle">Counted</MudText>
+                        <MudText Typo="Typo.caption" Style="@ColumnTitleStyle">Difference</MudText>
+                        <div></div>
+                    </div>
+                </HeaderContent>
+
+                <GroupHeaderTemplate>
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                        <MudIcon Icon="@context[0].Line.Group.GetIcon()" Size="Size.Small"/>
+
+                        <MudText Typo="Typo.subtitle2">
+                            @context[0].Line.Group
+                        </MudText>
+
+                        <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                            · @GetGroupText(context)
+                        </MudText>
+                    </MudStack>
+                </GroupHeaderTemplate>
+
+                <RowTemplate>
+                    <StockCountLineRow Entry="@context" IsReadOnly="@IsClosed" OnChanged="@SaveEntryAsync"/>
+                </RowTemplate>
+            </DataSheet>
+
+            @if (!IsClosed)
+            {
+                <MudPaper Class="pa-4 mt-4" Style="@FooterStyle">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="4">
+                        <MudStack Spacing="0" Class="flex-1">
+                            <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                                Difference so far
+                            </MudText>
+
+                            <MudText Typo="Typo.h6" Style="@ValueChange.GetValueChangeStyle()">
+                                @ValueChange.ToSignedMoneyText()
+                            </MudText>
+                        </MudStack>
+
+                        <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                            @NotCountedText
+                        </MudText>
+
+                        <MudButton Variant="Variant.Outlined"
+                                   Color="Color.Error"
+                                   StartIcon="@Icons.Material.Filled.Delete"
+                                   OnClick="@ShowDiscardStockCountDialogAsync">
+                            Discard
+                        </MudButton>
+
+                        <MudButton Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.FactCheck"
+                                   Disabled="@(CountedCount == 0 || IsSaving)"
+                                   OnClick="@ShowCloseStockCountDialogAsync">
+                            Close count
+                        </MudButton>
+                    </MudStack>
+                </MudPaper>
+            }
+        }
+    </ChildContent>
+</StatefulView>

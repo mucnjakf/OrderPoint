@@ -17,6 +17,7 @@ using OrderPoint.Admin.Payments.Api;
 using OrderPoint.Admin.Search.Services;
 using OrderPoint.Admin.Stock.Api;
 using OrderPoint.Admin.Stock.Services;
+using OrderPoint.Admin.StockCounts.Api;
 using OrderPoint.Admin.Suppliers.Api;
 using OrderPoint.Admin.Tables.Api;
 using OrderPoint.Admin.Tables.Services;
@@ -70,6 +71,7 @@ builder.Services.AddHttpClient<TableApiClient>(ConfigureApiClient).AddHttpMessag
 builder.Services.AddHttpClient<StockApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 builder.Services.AddHttpClient<SupplierApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 builder.Services.AddHttpClient<DeliveryApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
+builder.Services.AddHttpClient<StockCountApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 
 // MudBlazor's default is 5000
 const int SnackbarVisibleMilliseconds = 2000;

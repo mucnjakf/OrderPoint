@@ -1,0 +1,30 @@
+﻿<MudPaper Class="pa-4 mb-5">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="4">
+        <MudAvatar Rounded="true" Variant="Variant.Outlined" Color="Color.Warning">
+            <MudIcon Icon="@Icons.Material.Filled.FactCheck"/>
+        </MudAvatar>
+
+        <MudStack Spacing="1" Class="flex-1" Style="min-width: 0">
+            <MudText Typo="Typo.subtitle1">
+                Count in progress · @StockCount.GetGroupsText(AllGroupsCount)
+            </MudText>
+
+            <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                @DetailText
+            </MudText>
+
+            <MudProgressLinear Value="@ProgressPercent" Color="Color.Primary" Rounded="true" Style="max-width: 320px"/>
+        </MudStack>
+
+        <MudButton Variant="Variant.Text" Color="Color.Error" OnClick="@OnDiscardClickAsync">
+            Discard
+        </MudButton>
+
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   EndIcon="@Icons.Material.Filled.ArrowForward"
+                   Href="@($"/counts/{StockCount.Id}")">
+            Continue
+        </MudButton>
+    </MudStack>
+</MudPaper>

@@ -31,6 +31,10 @@ public interface IStockItemRepository
 
     Task<IReadOnlyList<StockItem>> GetBySupplierAsync(Guid supplierId, CancellationToken cancellationToken = default);
 
+    Task<IReadOnlyList<StockItem>> GetActiveByGroupsAsync(
+        IReadOnlyList<StockGroup> groups,
+        CancellationToken cancellationToken = default);
+
     // Active stock items at or below their par level, with their supplier
     Task<IReadOnlyList<StockItem>> GetToReorderAsync(CancellationToken cancellationToken = default);
 

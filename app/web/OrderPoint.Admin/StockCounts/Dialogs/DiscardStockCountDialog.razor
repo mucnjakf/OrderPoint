@@ -1,0 +1,53 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Error"/>
+            <MudText Typo="Typo.h6">Discard count</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudAlert Severity="Severity.Error" Variant="Variant.Text" Dense="true" Class="mb-4">
+            <MudText Typo="Typo.body2">
+                This action cannot be undone.
+            </MudText>
+        </MudAlert>
+
+        <MudPaper Outlined="true" Class="pa-4">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="4">
+                <MudAvatar Rounded="true" Variant="Variant.Outlined" Size="Size.Large">
+                    <MudIcon Icon="@Icons.Material.Filled.FactCheck"/>
+                </MudAvatar>
+
+                <MudStack Spacing="1" Class="flex-1">
+                    <MudText Typo="Typo.h6">@StockCount.GetGroupsText(AllGroupsCount)</MudText>
+
+                    <MudText Typo="Typo.body2">
+                        @StockCount.CountedCount of @StockCount.LinesCount counted
+                    </MudText>
+
+                    <MudText Typo="Typo.caption">
+                        Started @StockCount.CreatedAtUtc.ToRelativeTime()
+                    </MudText>
+                </MudStack>
+            </MudStack>
+        </MudPaper>
+
+        <MudText Typo="Typo.body2" Class="mt-4">
+            The figures entered so far are deleted; the stock stays as it is.
+        </MudText>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
+            Keep counting
+        </MudButton>
+
+        <MudButton OnClick="@Confirm"
+                   Variant="Variant.Filled"
+                   Color="Color.Error"
+                   StartIcon="@Icons.Material.Filled.Delete">
+            Discard count
+        </MudButton>
+    </DialogActions>
+</MudDialog>

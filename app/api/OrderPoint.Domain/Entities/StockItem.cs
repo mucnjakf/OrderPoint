@@ -158,6 +158,16 @@ public sealed class StockItem : Entity
         return StockMovement.Create(this, StockMovementType.Delivery, received, note, receivedUnitCost);
     }
 
+    // The difference a count found, valued at the cost when it was counted. Called by the count
+    internal StockMovement RecordCount(decimal quantityChange, decimal unitCost, string note)
+    {
+        Quantity += quantityChange;
+
+        UpdatedAtUtc = DateTimeOffset.UtcNow;
+
+        return StockMovement.Create(this, StockMovementType.Count, quantityChange, note, unitCost);
+    }
+
     // What was on the shelf when the stock item was added
     public Result<StockMovement> RecordOpening(decimal quantity)
     {

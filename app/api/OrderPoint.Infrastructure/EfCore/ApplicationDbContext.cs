@@ -36,6 +36,10 @@ public sealed class ApplicationDbContext(DbContextOptions<ApplicationDbContext> 
 
     internal DbSet<DeliveryLine> DeliveryLines { get; init; } = null!;
 
+    internal DbSet<StockCount> StockCounts { get; init; } = null!;
+
+    internal DbSet<StockCountLine> StockCountLines { get; init; } = null!;
+
     internal DbSet<ApplicationUser> Users { get; init; } = null!;
 
     internal DbSet<RefreshToken> RefreshTokens { get; init; } = null!;

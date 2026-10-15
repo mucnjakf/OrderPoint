@@ -10,6 +10,7 @@ using OrderPoint.Application.Queries.Menu;
 using OrderPoint.Application.Queries.Orders;
 using OrderPoint.Application.Queries.Payments;
 using OrderPoint.Application.Queries.Stock;
+using OrderPoint.Application.Queries.StockCounts;
 using OrderPoint.Application.Queries.Suppliers;
 using OrderPoint.Application.Queries.Tables;
 using OrderPoint.Domain.Enumerations;
@@ -70,6 +71,11 @@ internal static class CacheKeys
     internal static string For(GetStockSummaryQuery query) => "stock:summary";
 
     internal static string For(GetReorderListQuery query) => "stock:reorder";
+
+    internal static string For(GetStockCountQuery query) => $"stock-counts:{query.Id}";
+
+    internal static string For(GetStockCountsQuery query)
+        => $"stock-counts:page:{query.PageNumber}:{query.PageSize}:{query.Status}:{query.SortBy}:{query.SearchQuery}";
 
     internal static string For(GetSupplierQuery query) => $"suppliers:{query.Id}";
 

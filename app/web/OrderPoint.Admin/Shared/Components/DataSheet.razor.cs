@@ -79,12 +79,11 @@ public sealed partial class DataSheet<TItem>
     [Parameter]
     public RenderFragment? FilterContent { get; set; }
 
+    // The create button only shows when OnCreateClick is set
     [Parameter]
-    [EditorRequired]
-    public string CreateButtonText { get; set; }
+    public string? CreateButtonText { get; set; }
 
     [Parameter]
-    [EditorRequired]
     public EventCallback OnCreateClick { get; set; }
 
     [Parameter]
@@ -105,8 +104,8 @@ public sealed partial class DataSheet<TItem>
     [EditorRequired]
     public RenderFragment<TItem> RowTemplate { get; set; }
 
+    // Without it the rows are not clickable, e.g. when they hold fields
     [Parameter]
-    [EditorRequired]
     public EventCallback<TItem> OnRowClick { get; set; }
 
     [Parameter]
@@ -121,6 +120,8 @@ public sealed partial class DataSheet<TItem>
     public RenderFragment? LoadingTemplate { get; set; }
 
     private TItem? HoveredItem { get; set; }
+
+    private string? RowClass => OnRowClick.HasDelegate ? "cursor-pointer" : null;
 
     private IReadOnlyList<IReadOnlyList<TItem>> Groups
     {
@@ -161,7 +162,10 @@ public sealed partial class DataSheet<TItem>
 
     private async Task OnRowClickAsync(TItem item)
     {
-        await OnRowClick.InvokeAsync(item);
+        if (OnRowClick.HasDelegate)
+        {
+            await OnRowClick.InvokeAsync(item);
+        }
     }
 
     private string GetRowStyle(TItem item)

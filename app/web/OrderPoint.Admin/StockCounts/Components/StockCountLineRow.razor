@@ -1,0 +1,85 @@
+﻿<div style="@StockCountLineRowLayout.GridStyle">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Style="min-width: 0">
+        <MudIcon Icon="@StatusIcon" Size="Size.Small" Color="@StatusColor"/>
+
+        <MudStack Spacing="0" Style="min-width: 0">
+            <MudText Typo="Typo.body1" Class="text-truncate">@Line.StockItemName</MudText>
+
+            <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                @Line.PackName · @Line.Unit.FormatAmount(Line.PackSize)
+            </MudText>
+        </MudStack>
+    </MudStack>
+
+    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+        @ExpectedText
+    </MudText>
+
+    <MudStack Spacing="0">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <div style="@StockCountLineRowLayout.FieldStyle">
+                <MudNumericField @bind-Value="@Entry.FullPacks"
+                                 @bind-Value:after="@OnChangedAsync"
+                                 T="decimal?"
+                                 Variant="Variant.Outlined"
+                                 Margin="Margin.Dense"
+                                 Min="0"
+                                 HideSpinButtons="true"
+                                 Immediate="false"
+                                 Disabled="@IsReadOnly"
+                                 Adornment="Adornment.End"
+                                 AdornmentText="@PacksLabel"/>
+            </div>
+
+            @if (HasOpenedAmount)
+            {
+                <MudText Typo="Typo.body2">+</MudText>
+
+                <div style="@StockCountLineRowLayout.FieldStyle">
+                    <MudNumericField @bind-Value="@Entry.OpenedAmount"
+                                     @bind-Value:after="@OnChangedAsync"
+                                     T="decimal?"
+                                     Variant="Variant.Outlined"
+                                     Margin="Margin.Dense"
+                                     Min="0"
+                                     HideSpinButtons="true"
+                                     Immediate="false"
+                                     Disabled="@IsReadOnly"
+                                     Adornment="Adornment.End"
+                                     AdornmentText="@Line.Unit.GetSymbol()"/>
+                </div>
+            }
+        </MudStack>
+
+        @if (HasOpenedAmount && Entry.Quantity is { } quantity)
+        {
+            <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                = @Line.Unit.FormatAmount(quantity)
+            </MudText>
+        }
+    </MudStack>
+
+    <MudStack Spacing="0">
+        <MudText Typo="Typo.body2" Style="@ChangeStyle">@Line.GetQuantityChangeText()</MudText>
+
+        @if (Line.ValueChange is { } valueChange)
+        {
+            <MudText Typo="Typo.caption" Style="@valueChange.GetValueChangeStyle()">
+                @valueChange.ToSignedMoneyText()
+            </MudText>
+        }
+    </MudStack>
+
+    <div>
+        @if (Entry.IsSaving)
+        {
+            <MudProgressCircular Indeterminate="true" Size="Size.Small"/>
+        }
+        else if (Line.CountedQuantity is not null && !IsReadOnly)
+        {
+            <MudTooltip Text="Clear">
+                <MudIconButton Icon="@Icons.Material.Filled.Close" Size="Size.Small" OnClick="@ClearAsync"/>
+            </MudTooltip>
+        }
+    </div>
+</div>

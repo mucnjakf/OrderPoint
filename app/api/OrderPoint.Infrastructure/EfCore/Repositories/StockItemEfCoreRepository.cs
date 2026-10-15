@@ -68,6 +68,13 @@ internal sealed class StockItemEfCoreRepository(ApplicationDbContext dbContext) 
             .Where(stockItem => stockItem.SupplierId == supplierId)
             .ToListAsync(cancellationToken);
 
+    public async Task<IReadOnlyList<StockItem>> GetActiveByGroupsAsync(
+        IReadOnlyList<StockGroup> groups,
+        CancellationToken cancellationToken = default)
+        => await dbContext.StockItems
+            .Where(stockItem => stockItem.Status == StockItemStatus.Active && groups.Contains(stockItem.Group))
+            .ToListAsync(cancellationToken);
+
     public async Task<IReadOnlyList<StockItem>> GetToReorderAsync(CancellationToken cancellationToken = default)
         => await dbContext.StockItems
             .AsNoTracking()

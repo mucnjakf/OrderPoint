@@ -1,0 +1,30 @@
+﻿<div style="@StockCountLineRowLayout.GridStyle">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+        <MudSkeleton SkeletonType="SkeletonType.Circle" Width="20px" Height="20px"/>
+
+        <MudStack Spacing="0" Class="flex-1">
+            <MudText Typo="Typo.body1">
+                <MudSkeleton Width="60%"/>
+            </MudText>
+
+            <MudText Typo="Typo.caption">
+                <MudSkeleton Width="40%"/>
+            </MudText>
+        </MudStack>
+    </MudStack>
+
+    <MudText Typo="Typo.body2">
+        <MudSkeleton Width="80%"/>
+    </MudText>
+
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="130px" Height="40px"/>
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="130px" Height="40px"/>
+    </MudStack>
+
+    <MudText Typo="Typo.body2">
+        <MudSkeleton Width="60%"/>
+    </MudText>
+
+    <div></div>
+</div>

@@ -34,12 +34,15 @@
         }
     </MudStack>
 
-    <MudButton Variant="Variant.Filled"
-               StartIcon="@Icons.Material.Filled.Add"
-               Color="Color.Primary"
-               OnClick="@OnCreateClickAsync">
-        @CreateButtonText
-    </MudButton>
+    @if (OnCreateClick.HasDelegate)
+    {
+        <MudButton Variant="Variant.Filled"
+                   StartIcon="@Icons.Material.Filled.Add"
+                   Color="Color.Primary"
+                   OnClick="@OnCreateClickAsync">
+            @CreateButtonText
+        </MudButton>
+    }
 </MudStack>
 
 <StableHeight IsLoading="@IsLoading" KeepHeight="@(Pagination?.PageNumber > 1)" IsFramed="true">
@@ -72,7 +75,7 @@
                 @foreach (TItem item in group)
                 {
                     <div @key="@item"
-                         class="cursor-pointer"
+                         class="@RowClass"
                          style="@GetRowStyle(item)"
                          @onclick="@(() => OnRowClickAsync(item))"
                          @onmouseenter="@(() => HoveredItem = item)"

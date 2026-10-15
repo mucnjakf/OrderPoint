@@ -1,0 +1,47 @@
+﻿@page "/counts"
+
+<PageTitle>Counts</PageTitle>
+
+<PageHeader Text="Counts">
+    <MudButton Variant="Variant.Filled"
+               Color="Color.Primary"
+               StartIcon="@Icons.Material.Filled.FactCheck"
+               Disabled="@(IsLoadingOpenCount || OpenCount is not null)"
+               OnClick="@ShowStartStockCountDialogAsync">
+        Start count
+    </MudButton>
+</PageHeader>
+
+@if (OpenCount is not null)
+{
+    <OpenStockCountBanner StockCount="@OpenCount" OnDiscardClick="@ShowDiscardStockCountDialogAsync"/>
+}
+
+<DataLedger TItem="StockCountDto"
+            Items="@StockCounts"
+            Pagination="@Pagination"
+            IsLoading="@IsLoading"
+            SearchLabel="Search by note"
+            SearchQuery="@SearchQuery"
+            SearchQueryChanged="@(value => SearchQuery = value)"
+            SelectedSortBy="@SelectedSortBy"
+            SelectedSortByChanged="@(value => SelectedSortBy = value)"
+            OnSearchChanged="@OnFiltersChangedAsync"
+            OnSortChanged="@OnFiltersChangedAsync"
+            OnPageChanged="@OnPageChangedAsync"
+            SortByOptions="@StockCountSorting.SortByOptions"
+            GetSortByLabel="@StockCountSorting.GetSortByLabel"
+            GetSortByIcon="@StockCountSorting.GetSortByIcon"
+            IsItemSelected="@(_ => false)"
+            OnItemClick="@ShowStockCountDetailsDialogAsync"
+            EmptyStateIcon="@Icons.Material.Filled.FactCheck"
+            EmptyStateText="No closed counts yet">
+
+    <LoadingTemplate>
+        <StockCountRowSkeleton/>
+    </LoadingTemplate>
+
+    <ItemTemplate>
+        <StockCountRow StockCount="@context"/>
+    </ItemTemplate>
+</DataLedger>

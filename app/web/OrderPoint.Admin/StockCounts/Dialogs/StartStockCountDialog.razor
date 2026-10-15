@@ -1,0 +1,49 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.FactCheck"/>
+            <MudText Typo="Typo.h6">Start count</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudText Typo="Typo.body2" Class="mb-3">
+            Which groups do you want to count?
+        </MudText>
+
+        <MudPaper Outlined="true" Class="pa-3 mb-4">
+            <div style="@GroupsStyle">
+                @foreach (StockGroup group in Enum.GetValues<StockGroup>())
+                {
+                    StockGroup currentGroup = group;
+
+                    <MudCheckBox T="bool"
+                                 Value="@SelectedGroups.Contains(currentGroup)"
+                                 ValueChanged="@(isChecked => ToggleGroup(currentGroup, isChecked))"
+                                 Label="@currentGroup.ToString()"/>
+                }
+            </div>
+        </MudPaper>
+
+        <MudAlert Severity="Severity.Info" Variant="Variant.Text" Dense="true">
+            <MudText Typo="Typo.body2">
+                Every active stock item in these groups gets a line. Each figure is compared with the stock when you
+                enter it, so the bar can stay open while you count.
+            </MudText>
+        </MudAlert>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
+            Cancel
+        </MudButton>
+
+        <MudButton OnClick="@Confirm"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.FactCheck"
+                   Disabled="@(SelectedGroups.Count == 0)">
+            Start count
+        </MudButton>
+    </DialogActions>
+</MudDialog>

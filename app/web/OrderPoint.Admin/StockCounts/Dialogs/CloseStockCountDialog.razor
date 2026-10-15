@@ -1,0 +1,77 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.FactCheck"/>
+            <MudText Typo="Typo.h6">Close count</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <EditForm Model="@Request" OnValidSubmit="@Submit" id="@FormId">
+            <DataAnnotationsValidator/>
+
+            <div style="@FactsStyle" class="mb-4">
+                @foreach ((string label, string value, string? style) in Facts)
+                {
+                    <MudPaper Outlined="true" Elevation="0" Class="pa-3">
+                        <MudText Typo="Typo.caption" Color="Color.Surface">@label</MudText>
+                        <MudText Typo="Typo.body1" Style="@($"font-weight: 600; {style}")">@value</MudText>
+                    </MudPaper>
+                }
+            </div>
+
+            @if (BiggestLosses.Count != 0)
+            {
+                <MudText Typo="Typo.subtitle2" Class="mb-2">Biggest losses</MudText>
+
+                <MudStack Spacing="1" Class="mb-4">
+                    @foreach (StockCountLineDto line in BiggestLosses)
+                    {
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                            <MudIcon Icon="@line.Group.GetIcon()" Size="Size.Small"/>
+                            <MudText Typo="Typo.body2" Class="flex-1">@line.StockItemName</MudText>
+                            <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                                @line.GetQuantityChangeText()
+                            </MudText>
+                            <MudText Typo="Typo.body2" Style="@line.ValueChange!.Value.GetValueChangeStyle()">
+                                @line.ValueChange!.Value.ToSignedMoneyText()
+                            </MudText>
+                        </MudStack>
+                    }
+                </MudStack>
+            }
+
+            @if (NotCountedCount > 0)
+            {
+                <MudAlert Severity="Severity.Info" Variant="Variant.Text" Dense="true" Class="mb-4">
+                    <MudText Typo="Typo.body2">
+                        @NotCountedCount.ToCountText("stock item", "stock items") not counted stay as they are.
+                    </MudText>
+                </MudAlert>
+            }
+
+            <MudTextField @bind-Value="@Request.Note"
+                          For="@(() => Request.Note)"
+                          Label="Note"
+                          Variant="Variant.Outlined"
+                          HelperText="Optional, e.g. Month end; shown in the stock history"
+                          Counter="200"
+                          MaxLength="200"
+                          Immediate="true"/>
+        </EditForm>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
+            Keep counting
+        </MudButton>
+
+        <MudButton ButtonType="ButtonType.Submit"
+                   form="@FormId"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.FactCheck">
+            Close count
+        </MudButton>
+    </DialogActions>
+</MudDialog>

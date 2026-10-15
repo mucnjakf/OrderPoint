@@ -34,16 +34,16 @@ internal static class StockItemDtoExtensions
     }
 
     // A simple English plural is enough for packs: bottles, kegs, boxes
-    private static string GetPackName(string packName, decimal packs)
+    internal static string ToPluralPackName(this string packName)
     {
-        if (Math.Abs(packs) == 1)
-        {
-            return packName;
-        }
-
         bool needsEs = packName.EndsWith('s') || packName.EndsWith('x') || packName.EndsWith("ch")
                        || packName.EndsWith("sh");
 
         return needsEs ? $"{packName}es" : $"{packName}s";
+    }
+
+    private static string GetPackName(string packName, decimal packs)
+    {
+        return Math.Abs(packs) == 1 ? packName : packName.ToPluralPackName();
     }
 }

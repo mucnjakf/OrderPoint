@@ -18,6 +18,7 @@ internal sealed partial class DeleteStockItemCommandHandler(
     IStockItemRepository stockItemRepository,
     IStockMovementRepository stockMovementRepository,
     IRecipeLineRepository recipeLineRepository,
+    IStockCountRepository stockCountRepository,
     IUnitOfWork unitOfWork,
     ILogger<DeleteStockItemCommandHandler> logger)
     : ICommandHandler<DeleteStockItemCommand>
@@ -36,6 +37,13 @@ internal sealed partial class DeleteStockItemCommandHandler(
         if (isUsedInRecipes)
         {
             return Result.Failure(StockItemErrors.UsedInRecipes);
+        }
+
+        bool isOnCounts = await stockCountRepository.ExistsByStockItemAsync(stockItem.Id, cancellationToken);
+
+        if (isOnCounts)
+        {
+            return Result.Failure(StockItemErrors.UsedInCounts);
         }
 
         IReadOnlyList<StockMovement> movements = await stockMovementRepository.GetByStockItemAsync(

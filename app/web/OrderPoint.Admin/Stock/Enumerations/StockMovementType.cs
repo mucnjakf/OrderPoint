@@ -6,5 +6,6 @@ public enum StockMovementType
     Waste,
     Correction,
     Sale,
-    Delivery
+    Delivery,
+    Count
 }

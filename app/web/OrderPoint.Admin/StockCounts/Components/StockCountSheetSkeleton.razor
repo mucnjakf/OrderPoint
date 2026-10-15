@@ -1,0 +1,32 @@
+﻿<MudPaper Class="pa-4 mb-5">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="40px" Height="40px"/>
+
+        <MudStack Spacing="0" Class="flex-1">
+            <MudText Typo="Typo.subtitle1">
+                <MudSkeleton Width="30%"/>
+            </MudText>
+
+            <MudText Typo="Typo.caption">
+                <MudSkeleton Width="20%"/>
+            </MudText>
+        </MudStack>
+
+        <MudStack Spacing="1" Style="width: 240px">
+            <MudText Typo="Typo.body2">
+                <MudSkeleton Width="50%" Class="ml-auto"/>
+            </MudText>
+
+            <MudSkeleton Height="4px"/>
+        </MudStack>
+    </MudStack>
+</MudPaper>
+
+<StableHeight IsLoading="true" KeepHeight="false" IsFramed="true">
+    @for (int i = 0; i < RowsCount; i++)
+    {
+        <div style="@RowStyle">
+            <StockCountLineRowSkeleton/>
+        </div>
+    }
+</StableHeight>
