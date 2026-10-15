@@ -248,6 +248,10 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                     b.Property<DateTimeOffset>("CreatedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("CustomerName")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
                     b.Property<string>("DeclineReason")
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
@@ -277,15 +281,20 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                     b.Property<DateTimeOffset?>("RefundedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int>("Source")
+                        .HasColumnType("integer");
+
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
                     b.Property<string>("TableCode")
-                        .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("character varying(10)");
 
-                    b.Property<Guid>("TableId")
+                    b.Property<Guid?>("TableId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("TakenByBartenderId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTimeOffset?>("UpdatedAtUtc")
@@ -299,6 +308,8 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                         .IsUnique();
 
                     b.HasIndex("TableId");
+
+                    b.HasIndex("TakenByBartenderId");
 
                     b.ToTable("Orders", (string)null);
                 });
@@ -553,10 +564,16 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                     b.HasOne("OrderPoint.Domain.Entities.Table", null)
                         .WithMany()
                         .HasForeignKey("TableId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("OrderPoint.Domain.Entities.Bartender", "TakenByBartender")
+                        .WithMany()
+                        .HasForeignKey("TakenByBartenderId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Bartender");
+
+                    b.Navigation("TakenByBartender");
                 });
 
             modelBuilder.Entity("OrderPoint.Domain.Entities.OrderItem", b =>

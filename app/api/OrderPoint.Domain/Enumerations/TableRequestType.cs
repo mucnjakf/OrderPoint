@@ -2,6 +2,5 @@
 
 public enum TableRequestType
 {
-    CallBartender,
-    Bill
+    CallBartender
 }

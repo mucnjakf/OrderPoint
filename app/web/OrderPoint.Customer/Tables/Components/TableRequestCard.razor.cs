@@ -23,9 +23,7 @@ public sealed partial class TableRequestCard
     [EditorRequired]
     public EventCallback<TableRequestType> OnRequest { get; set; }
 
-    private string WaitingText => Type is TableRequestType.Bill
-        ? "The bill is on its way"
-        : "A bartender is on the way";
+    private const string WaitingText = "A bartender is on the way";
 
     private async Task OnRequestClickAsync()
     {

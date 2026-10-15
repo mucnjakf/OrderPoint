@@ -92,7 +92,7 @@ internal sealed partial class CreateOrderCommandHandler(
         var orderDto = order.ToOrderDto();
 
         telemetry.RecordOrderPlaced(orderDto.Total);
-        LogOrderPlaced(orderDto.Number, orderDto.TableCode, orderDto.Items.Count, orderDto.Total);
+        LogOrderPlaced(orderDto.Number, table.Code, orderDto.Items.Count, orderDto.Total);
 
         return Result.Success(orderDto);
     }

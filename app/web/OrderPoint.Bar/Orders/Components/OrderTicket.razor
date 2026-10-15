@@ -6,7 +6,7 @@
 
                 <MudStack Spacing="0" Class="flex-1" Style="min-width: 0">
                     <MudText Typo="Typo.body1">
-                        Table @Order.TableCode
+                        @Order.GetPlaceText()
                     </MudText>
 
                     <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
@@ -42,6 +42,13 @@
             {
                 <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary); font-style: italic">
                     "@Order.Note"
+                </MudText>
+            }
+
+            @if (TakenByText is not null)
+            {
+                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                    @TakenByText
                 </MudText>
             }
         </MudStack>

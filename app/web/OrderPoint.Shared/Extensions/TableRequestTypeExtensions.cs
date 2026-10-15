@@ -10,7 +10,6 @@ internal static class TableRequestTypeExtensions
         return type switch
         {
             TableRequestType.CallBartender => "Call bartender",
-            TableRequestType.Bill => "Bill please",
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
     }
@@ -20,7 +19,6 @@ internal static class TableRequestTypeExtensions
         return type switch
         {
             TableRequestType.CallBartender => Icons.Material.Filled.RoomService,
-            TableRequestType.Bill => Icons.Material.Filled.ReceiptLong,
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
     }

@@ -87,6 +87,14 @@ public sealed partial class OrderTicket
         ? "you"
         : $"{Order.Bartender.FirstName} {Order.Bartender.LastName}";
 
+    // Orders a bartender entered in the Bartender app
+    private string? TakenByText => Order.TakenByBartender switch
+    {
+        null => null,
+        { } takenBy when takenBy.Id == AuthService.UserId => "Taken by you",
+        { } takenBy => $"Taken by {takenBy.FirstName} {takenBy.LastName}"
+    };
+
     private async Task OnTicketClickAsync()
     {
         await OnClick.InvokeAsync(Order);

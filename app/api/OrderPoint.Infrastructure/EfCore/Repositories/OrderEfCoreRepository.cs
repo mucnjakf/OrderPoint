@@ -22,6 +22,7 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
         IQueryable<Order> query = dbContext.Orders
             .AsNoTracking()
             .Include(order => order.Bartender)
+            .Include(order => order.TakenByBartender)
             .Include(order => order.Items);
 
         query = SearchOrders(query, searchQuery);
@@ -50,6 +51,7 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
     public async Task<Order?> GetAsync(Guid id, CancellationToken cancellationToken = default)
         => await dbContext.Orders
             .Include(order => order.Bartender)
+            .Include(order => order.TakenByBartender)
             .Include(order => order.Items)
             .SingleOrDefaultAsync(order => order.Id == id, cancellationToken);
 
@@ -103,8 +105,11 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
                 bartenderCount => bartenderCount.OrdersCount,
                 cancellationToken);
 
+    // Orders the bartender handled or entered
     public async Task<bool> ExistsByBartenderAsync(Guid bartenderId, CancellationToken cancellationToken = default)
-        => await dbContext.Orders.AnyAsync(order => order.BartenderId == bartenderId, cancellationToken);
+        => await dbContext.Orders.AnyAsync(
+            order => order.BartenderId == bartenderId || order.TakenByBartenderId == bartenderId,
+            cancellationToken);
 
     public async Task<bool> ExistsByTableAsync(Guid tableId, CancellationToken cancellationToken = default)
         => await dbContext.Orders.AnyAsync(order => order.TableId == tableId, cancellationToken);
@@ -113,7 +118,9 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
         IReadOnlyList<Guid> bartenderIds,
         CancellationToken cancellationToken = default)
         => await dbContext.Orders.AnyAsync(
-            order => order.BartenderId != null && bartenderIds.Contains(order.BartenderId.Value),
+            order =>
+                (order.BartenderId != null && bartenderIds.Contains(order.BartenderId.Value)) ||
+                (order.TakenByBartenderId != null && bartenderIds.Contains(order.TakenByBartenderId.Value)),
             cancellationToken);
 
     // Accepted or active, tracked, so a release can change them
@@ -134,7 +141,8 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
             string normalizedSearchQuery = searchQuery.ToLower();
 
             query = query.Where(order =>
-                order.TableCode.ToLower().Contains(normalizedSearchQuery) ||
+                order.TableCode!.ToLower().Contains(normalizedSearchQuery) ||
+                order.CustomerName!.ToLower().Contains(normalizedSearchQuery) ||
                 order.Number.ToString().Contains(normalizedSearchQuery));
         }
 

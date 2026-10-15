@@ -331,7 +331,7 @@ public sealed partial class GlobalSearchDialog : IDisposable
 
         return new SearchResultDto(
             SearchResultKind.Order,
-            $"Table {order.TableCode}",
+            order.GetPlaceText(),
             $"{createdAtText} · {order.Status}",
             order.Total.ToString("C", CultureInfo.CurrentCulture),
             order.Id,

@@ -28,8 +28,8 @@ internal sealed class DocumentInfoTransformer : IOpenApiDocumentTransformer
         ("Tables", "The tables guests order from: code (in the QR code), seats, status and place on the floor plan. " +
                    "Looking a table up by its code is anonymous."),
         ("Fixtures", "Fixed pieces of a floor plan (bar counter, entrance, wall) that help staff find the tables."),
-        ("Table requests", "Guests call a bartender or ask for the bill from their table (anonymous); bartenders " +
-                           "see the open ones and mark them done."),
+        ("Table requests", "Guests call a bartender from their table (anonymous); bartenders see the open calls " +
+                           "and mark them done."),
         ("Dashboard", "Aggregated numbers for the Admin dashboard, one endpoint per widget so they load in parallel."),
         ("Health", "The health of the API, the database and the blob storage, for the Admin's system health page.")
     ];

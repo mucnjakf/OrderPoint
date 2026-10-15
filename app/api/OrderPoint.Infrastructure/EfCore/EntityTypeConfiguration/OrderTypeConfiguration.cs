@@ -27,9 +27,18 @@ internal sealed class OrderTypeConfiguration : IEntityTypeConfiguration<Order>
             .IsUnique();
 
         builder
+            .Property(order => order.Source)
+            .IsRequired();
+
+        builder
             .Property(order => order.TableCode)
             .HasMaxLength(10)
-            .IsRequired();
+            .IsRequired(false);
+
+        builder
+            .Property(order => order.CustomerName)
+            .HasMaxLength(30)
+            .IsRequired(false);
 
         builder
             .Property(order => order.Note)
@@ -94,12 +103,19 @@ internal sealed class OrderTypeConfiguration : IEntityTypeConfiguration<Order>
             .WithMany()
             .HasForeignKey(order => order.TableId)
             .OnDelete(DeleteBehavior.Restrict)
-            .IsRequired();
+            .IsRequired(false);
 
         builder
             .HasOne(order => order.Bartender)
             .WithMany(bartender => bartender.Orders)
             .HasForeignKey(order => order.BartenderId)
+            .OnDelete(DeleteBehavior.Restrict)
+            .IsRequired(false);
+
+        builder
+            .HasOne(order => order.TakenByBartender)
+            .WithMany()
+            .HasForeignKey(order => order.TakenByBartenderId)
             .OnDelete(DeleteBehavior.Restrict)
             .IsRequired(false);
     }

@@ -5,7 +5,7 @@ namespace OrderPoint.Application.Dtos;
 /// <summary>An order as the guest who placed it follows it: no bartender details.</summary>
 /// <param name="Id">The id.</param>
 /// <param name="Number">The human-readable order number.</param>
-/// <param name="TableCode">The code of the table the order was placed from, e.g. `T11`.</param>
+/// <param name="TableCode">The code of the table the order was placed from, e.g. `T11`, or `null` at the counter.</param>
 /// <param name="Note">The guest's note for the bartender, or `null`.</param>
 /// <param name="Status">The status: `Pending`, `Accepted`, `Active`, `Completed`, `Declined`, or `Cancelled`.</param>
 /// <param name="Total">The sum of quantity times unit price of the lines, in euros.</param>
@@ -24,7 +24,7 @@ namespace OrderPoint.Application.Dtos;
 public sealed record OrderTrackingDto(
     Guid Id,
     int Number,
-    string TableCode,
+    string? TableCode,
     string? Note,
     OrderStatus Status,
     decimal Total,

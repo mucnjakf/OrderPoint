@@ -9,10 +9,21 @@ public sealed class Order : Entity
 {
     public int Number { get; private set; }
 
-    public Guid TableId { get; private set; }
+    public OrderSource Source { get; private set; }
+
+    // Null for an order at the counter
+    public Guid? TableId { get; private set; }
 
     // Copied from the table, so renaming a table does not rewrite past orders
-    public string TableCode { get; private set; }
+    public string? TableCode { get; private set; }
+
+    // Who to call at the counter, e.g. "Ana"; only for counter orders
+    public string? CustomerName { get; private set; }
+
+    // The bartender who entered it in the Bartender app, or null for a guest's order
+    public Guid? TakenByBartenderId { get; private set; }
+
+    public Bartender? TakenByBartender { get; private set; }
 
     public string? Note { get; private set; }
 
@@ -48,19 +59,25 @@ public sealed class Order : Entity
 
     private Order(
         Guid id,
-        Guid tableId,
-        string tableCode,
+        OrderSource source,
+        Guid? tableId,
+        string? tableCode,
+        string? customerName,
+        Guid? takenByBartenderId,
         string? note,
-        OrderStatus status,
         DateTimeOffset createdAtUtc) : base(id, createdAtUtc)
     {
+        Source = source;
         TableId = tableId;
         TableCode = tableCode;
+        CustomerName = customerName;
+        TakenByBartenderId = takenByBartenderId;
         Note = note;
-        Status = status;
+        Status = OrderStatus.Pending;
         PaymentStatus = PaymentStatus.Unpaid;
     }
 
+    // A guest's order from the customer app, at the table whose QR code they scanned
     public static Result<Order> Create(
         Table table,
         string? note,
@@ -71,27 +88,81 @@ public sealed class Order : Entity
             return Result.Failure<Order>(TableErrors.IsInactive);
         }
 
+        Error? itemsError = ValidateItems(items);
+
+        if (itemsError is not null)
+        {
+            return Result.Failure<Order>(itemsError);
+        }
+
+        return Result.Success(New(OrderSource.Guest, table, customerName: null, takenByBartenderId: null, note, items));
+    }
+
+    // An order a bartender takes in the Bartender app, at a table or (without one) at the counter; paid later
+    public static Result<Order> CreateByBartender(
+        Table? table,
+        string? customerName,
+        Guid bartenderId,
+        string? note,
+        IReadOnlyList<(Item Item, int Quantity)> items)
+    {
+        if (table?.Status == TableStatus.Inactive)
+        {
+            return Result.Failure<Order>(TableErrors.IsInactive);
+        }
+
+        Error? itemsError = ValidateItems(items);
+
+        if (itemsError is not null)
+        {
+            return Result.Failure<Order>(itemsError);
+        }
+
+        return Result.Success(New(
+            OrderSource.Bartender,
+            table,
+            table is null ? customerName : null,
+            bartenderId,
+            note,
+            items));
+    }
+
+    private static Error? ValidateItems(IReadOnlyList<(Item Item, int Quantity)> items)
+    {
         if (items.Count == 0)
         {
-            return Result.Failure<Order>(OrderErrors.ItemsAreRequired);
+            return OrderErrors.ItemsAreRequired;
         }
 
         if (items.Any(orderItem => orderItem.Quantity <= 0))
         {
-            return Result.Failure<Order>(OrderErrors.QuantityMustBePositive);
+            return OrderErrors.QuantityMustBePositive;
         }
 
         if (items.Any(orderItem => !orderItem.Item.IsAvailable))
         {
-            return Result.Failure<Order>(OrderErrors.ItemIsUnavailable);
+            return OrderErrors.ItemIsUnavailable;
         }
 
+        return null;
+    }
+
+    private static Order New(
+        OrderSource source,
+        Table? table,
+        string? customerName,
+        Guid? takenByBartenderId,
+        string? note,
+        IReadOnlyList<(Item Item, int Quantity)> items)
+    {
         Order order = new(
             Guid.CreateVersion7(),
-            table.Id,
-            table.Code,
+            source,
+            table?.Id,
+            table?.Code,
+            customerName,
+            takenByBartenderId,
             note,
-            OrderStatus.Pending,
             DateTimeOffset.UtcNow);
 
         foreach ((Item item, int quantity) in items)
@@ -99,7 +170,7 @@ public sealed class Order : Entity
             order._items.Add(OrderItem.Create(order.Id, item, quantity));
         }
 
-        return Result.Success(order);
+        return order;
     }
 
     public Result Accept(Guid bartenderId)
@@ -241,6 +312,30 @@ public sealed class Order : Entity
     // The guest changed their mind before any bartender took the order
     public Result Cancel()
     {
+        if (Status != OrderStatus.Pending)
+        {
+            return Result.Failure(OrderErrors.InvalidStatusTransition);
+        }
+
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+
+        Status = OrderStatus.Cancelled;
+        CancelledAtUtc = now;
+        Refund(now);
+
+        UpdatedAtUtc = now;
+
+        return Result.Success();
+    }
+
+    // The bartender who entered an order takes it back before the bar starts on it
+    public Result Withdraw(Guid bartenderId)
+    {
+        if (TakenByBartenderId != bartenderId)
+        {
+            return Result.Failure(OrderErrors.EnteredByAnotherBartender);
+        }
+
         if (Status != OrderStatus.Pending)
         {
             return Result.Failure(OrderErrors.InvalidStatusTransition);

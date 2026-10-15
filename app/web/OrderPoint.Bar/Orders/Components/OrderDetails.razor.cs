@@ -101,7 +101,15 @@ public sealed partial class OrderDetails : IDisposable
 
     private bool HasActions => CanAccept || CanDecline || CanStart || CanComplete;
 
-    private string TableMapHref => $"/tables?table={Uri.EscapeDataString(Order!.TableCode)}";
+    private string TableMapHref => $"/tables?table={Uri.EscapeDataString(Order!.TableCode!)}";
+
+    // Orders a bartender entered in the Bartender app
+    private string? TakenBySuffix => Order?.TakenByBartender switch
+    {
+        null => null,
+        { } takenBy when takenBy.Id == AuthService.UserId => " · taken by you",
+        { } takenBy => $" · taken by {takenBy.FirstName} {takenBy.LastName}"
+    };
 
     private string BartenderInitials => Order?.Bartender is null
         ? string.Empty

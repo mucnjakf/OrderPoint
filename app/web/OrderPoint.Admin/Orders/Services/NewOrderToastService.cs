@@ -5,6 +5,7 @@ using OrderPoint.Admin.Orders.Api;
 using OrderPoint.Admin.Orders.Dialogs;
 using OrderPoint.Admin.Orders.Sorting;
 using OrderPoint.Shared.Dtos;
+using OrderPoint.Shared.Extensions;
 using OrderPoint.Shared.Orders.Dtos;
 using OrderPoint.Shared.Services;
 
@@ -89,7 +90,7 @@ internal sealed class NewOrderToastService(
         string total = order.Total.ToString("C", CultureInfo.CurrentCulture);
 
         snackbar.Add(
-            $"New order #{order.Number} · Table {order.TableCode} · {total}",
+            $"New order #{order.Number} · {order.GetPlaceText()} · {total}",
             Severity.Info,
             options =>
             {

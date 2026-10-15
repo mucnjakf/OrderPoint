@@ -5,12 +5,15 @@ namespace OrderPoint.Application.Dtos;
 /// <summary>An order.</summary>
 /// <param name="Id">The id.</param>
 /// <param name="Number">The human-readable order number, counting up from 1.</param>
-/// <param name="TableCode">The code of the table the order was placed from, e.g. `T11`.</param>
+/// <param name="Source">Where it came from: `Guest` (customer app), `Bartender` (Bartender app), or `Register`.</param>
+/// <param name="TableCode">The code of the table the order was placed from, e.g. `T11`, or `null` at the counter.</param>
+/// <param name="CustomerName">Who to call at the counter, e.g. `Ana`, or `null`.</param>
 /// <param name="Note">The customer's note for the bartender, or `null`.</param>
 /// <param name="Status">The status: `Pending`, `Accepted`, `Active`, `Completed`, `Declined`, or `Cancelled`.</param>
 /// <param name="Total">The sum of quantity times unit price of the lines, in euros.</param>
 /// <param name="Items">The order lines.</param>
 /// <param name="Bartender">The bartender handling the order, or `null` while nobody has taken it.</param>
+/// <param name="TakenByBartender">The bartender who entered it in the Bartender app, or `null` for a guest's order.</param>
 /// <param name="DeclineReason">Why the order was declined, shown to the guest, or `null`.</param>
 /// <param name="AcceptedAtUtc">When a bartender accepted the order (UTC), or `null`.</param>
 /// <param name="DeclinedAtUtc">When a bartender or the admin declined the order (UTC), or `null`.</param>
@@ -26,12 +29,15 @@ namespace OrderPoint.Application.Dtos;
 public sealed record OrderDto(
     Guid Id,
     int Number,
-    string TableCode,
+    OrderSource Source,
+    string? TableCode,
+    string? CustomerName,
     string? Note,
     OrderStatus Status,
     decimal Total,
     IReadOnlyList<OrderItemDto> Items,
     OrderBartenderDto? Bartender,
+    OrderBartenderDto? TakenByBartender,
     string? DeclineReason,
     DateTimeOffset? AcceptedAtUtc,
     DateTimeOffset? DeclinedAtUtc,

@@ -31,4 +31,8 @@ public static class OrderErrors
     internal static readonly Error AssignedToAnotherBartender = Error.Conflict(
         "Order.AssignedToAnotherBartender",
         "Order is assigned to another bartender");
+
+    internal static readonly Error EnteredByAnotherBartender = Error.Conflict(
+        "Order.EnteredByAnotherBartender",
+        "Order was entered by another bartender");
 }

@@ -6,7 +6,7 @@ namespace OrderPoint.Customer.Orders.Dtos;
 public sealed record OrderTrackingDto(
     Guid Id,
     int Number,
-    string TableCode,
+    string? TableCode,
     string? Note,
     OrderStatus Status,
     decimal Total,

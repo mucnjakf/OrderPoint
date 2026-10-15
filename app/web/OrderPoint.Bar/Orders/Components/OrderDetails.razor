@@ -22,20 +22,23 @@
 
                                     <MudStack Spacing="0" Class="flex-1" Style="min-width: 0">
                                         <MudText Typo="Typo.h6">
-                                            Table @Order.TableCode
+                                            @Order.GetPlaceText()
                                         </MudText>
 
                                         <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
-                                            Placed @Order.CreatedAtUtc.ToRelativeTime()
+                                            Placed @Order.CreatedAtUtc.ToRelativeTime()@TakenBySuffix
                                         </MudText>
                                     </MudStack>
 
-                                    <MudTooltip Text="Show on map">
-                                        <MudIconButton Icon="@Icons.Material.Filled.Map"
-                                                       Size="Size.Small"
-                                                       Href="@TableMapHref"
-                                                       aria-label="Show the table on the map"/>
-                                    </MudTooltip>
+                                    @if (Order.TableCode is not null)
+                                    {
+                                        <MudTooltip Text="Show on map">
+                                            <MudIconButton Icon="@Icons.Material.Filled.Map"
+                                                           Size="Size.Small"
+                                                           Href="@TableMapHref"
+                                                           aria-label="Show the table on the map"/>
+                                        </MudTooltip>
+                                    }
 
                                     <MudChip T="string"
                                              Variant="Variant.Text"

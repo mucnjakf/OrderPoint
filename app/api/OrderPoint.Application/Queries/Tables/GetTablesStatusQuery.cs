@@ -16,7 +16,7 @@ internal sealed class GetTablesStatusQueryHandler(IOrderRepository orderReposito
     private static readonly IReadOnlyList<OrderStatus> OpenStatuses =
         [OrderStatus.Pending, OrderStatus.Accepted, OrderStatus.Active];
 
-    // Only tables with open orders; the others are quiet
+    // Only tables with open orders; the others are quiet, and counter orders have no table
     public async Task<Result<IReadOnlyList<TableStatusDto>>> Handle(
         GetTablesStatusQuery query,
         CancellationToken cancellationToken)
@@ -24,7 +24,8 @@ internal sealed class GetTablesStatusQueryHandler(IOrderRepository orderReposito
         IReadOnlyList<Order> openOrders = await orderRepository.GetByStatusesAsync(OpenStatuses, cancellationToken);
 
         List<TableStatusDto> tables = openOrders
-            .GroupBy(order => order.TableId)
+            .Where(order => order.TableId is not null)
+            .GroupBy(order => order.TableId!.Value)
             .Select(group => new TableStatusDto(
                 group.Key,
                 group.Count(order => order.Status == OrderStatus.Pending),
