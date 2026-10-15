@@ -42,10 +42,6 @@ public sealed partial class ToPayPage : IDisposable
 
     private Guid? PayingOrderId { get; set; }
 
-    private string? SearchQuery { get; set; }
-
-    private bool IsSearching => !string.IsNullOrWhiteSpace(SearchQuery);
-
     protected override async Task OnInitializedAsync()
     {
         OrdersHubService.OrdersChanged += OnOrdersChanged;
@@ -66,10 +62,7 @@ public sealed partial class ToPayPage : IDisposable
         _ = InvokeAsync(() => GetOrdersAsync(isLiveUpdate: true));
     }
 
-    private async Task OnSearchChangedAsync()
-    {
-        await GetOrdersAsync();
-    }
+
 
     // A live update shows no skeleton, and a failed one keeps what is shown
     private async Task GetOrdersAsync(bool isLiveUpdate = false)
@@ -83,8 +76,7 @@ public sealed partial class ToPayPage : IDisposable
             pageNumber: 1,
             PageSize,
             nameof(OrderSortBy.CreatedAtUtcAsc),
-            OrderPaymentFilter.ToPay,
-            SearchQuery));
+            OrderPaymentFilter.ToPay));
 
         if (pagination is not null || !isLiveUpdate)
         {

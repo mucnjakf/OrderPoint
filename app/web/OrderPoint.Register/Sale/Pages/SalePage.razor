@@ -33,15 +33,13 @@
         <MudTextField @bind-Value="@SearchQuery"
                       @bind-Value:after="@ShowFirstPage"
                       T="string"
-                      Placeholder="@(SelectedCategory is null ? "Search categories" : "Search items")"
+                      Label="@(SelectedCategory is null ? "Search categories" : "Search items")"
                       Variant="Variant.Outlined"
-                      Adornment="Adornment.Start"
-                      AdornmentIcon="@Icons.Material.Filled.Search"
                       Clearable="true"
                       DebounceInterval="300"
                       Immediate="true"
                       Class="mb-3"
-                      Style="max-width: 480px"/>
+                      Style="max-width: 360px"/>
 
         <StatefulView IsLoading="@IsLoading"
                       ShowContent="@HasCards"

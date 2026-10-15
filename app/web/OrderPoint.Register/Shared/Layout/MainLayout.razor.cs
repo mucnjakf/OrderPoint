@@ -1,6 +1,5 @@
-﻿using System.Security.Cryptography;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Routing;
 using MudBlazor;
 using OrderPoint.Register.Orders.Api;
 using OrderPoint.Register.Orders.Sorting;
@@ -15,26 +14,27 @@ using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Register.Shared.Layout;
 
-// The Admin's shell for the till: a drawer with what is waiting at the register, signed in as a bartender
+// The till's shell: the pages as tabs in the middle of the app bar, with what is waiting at the register, signed in as
+// a bartender
 public sealed partial class MainLayout : IDisposable
 {
-    private const string DrawerOpenStorageKey = "drawer-open";
-
     // Only the counts are read
     private const int CountedOrdersPageSize = 1;
 
-    private const string DrawerToggleWrapperStyle =
-        "position: fixed; left: 0; bottom: 72px; transform: translateX(-50%); " +
-        "z-index: calc(var(--mud-zindex-drawer) + 1)";
+    // The brand and the account take equal room on both sides, so the tabs sit in the middle
+    private const string SideStyle = "flex: 1 1 0; min-width: 0;";
 
-    private const string DrawerToggleButtonStyle =
-        "background-color: var(--mud-palette-surface); border: 1px solid var(--mud-palette-lines-default)";
+    // As tall as the app bar, so the underline of the current page sits on its bottom border
+    private const string TabStyle = "height: 64px; border-radius: 0; border-bottom: 2px solid transparent;";
+
+    private const string CurrentTabStyle =
+        "height: 64px; border-radius: 0; border-bottom: 2px solid var(--mud-palette-primary); font-weight: 600;";
 
     [Inject]
     private AuthService AuthService { get; set; } = null!;
 
     [Inject]
-    private ProtectedLocalStorage ProtectedLocalStorage { get; set; } = null!;
+    private NavigationManager NavigationManager { get; set; } = null!;
 
     [Inject]
     private TimeZoneService TimeZoneService { get; set; } = null!;
@@ -56,24 +56,18 @@ public sealed partial class MainLayout : IDisposable
 
     private MudTheme Theme { get; } = AppTheme.Create();
 
-    private bool DrawerOpen { get; set; } = true;
-
     private int? ToPayCount { get; set; }
 
     private int? RefundsDueCount { get; set; }
-
-    private string DrawerToggleIcon => DrawerOpen
-        ? Icons.Material.Filled.ChevronLeft
-        : Icons.Material.Filled.ChevronRight;
 
     protected override async Task OnInitializedAsync()
     {
         AuthService.SessionChanged += OnSessionChanged;
         DarkModeService.Changed += OnDarkModeChanged;
         OrdersHubService.OrdersChanged += OnOrdersChanged;
+        NavigationManager.LocationChanged += OnLocationChanged;
 
         await Task.WhenAll(
-            LoadLayoutPreferencesAsync(),
             DarkModeService.LoadAsync(),
             AuthService.LoadAsync(),
             TimeZoneService.LoadAsync());
@@ -91,6 +85,7 @@ public sealed partial class MainLayout : IDisposable
         AuthService.SessionChanged -= OnSessionChanged;
         DarkModeService.Changed -= OnDarkModeChanged;
         OrdersHubService.OrdersChanged -= OnOrdersChanged;
+        NavigationManager.LocationChanged -= OnLocationChanged;
     }
 
     private void OnSessionChanged()
@@ -126,6 +121,20 @@ public sealed partial class MainLayout : IDisposable
         _ = InvokeAsync(GetCountsAsync);
     }
 
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    // Today is the root, so it only matches itself
+    private string GetTabStyle(string href)
+    {
+        string path = "/" + NavigationManager.ToBaseRelativePath(NavigationManager.Uri).Split('?')[0];
+        bool isCurrent = href == "/" ? path == "/" : path.StartsWith(href, StringComparison.OrdinalIgnoreCase);
+
+        return isCurrent ? CurrentTabStyle : TabStyle;
+    }
+
     // A failed reload keeps what is shown
     private async Task GetCountsAsync()
     {
@@ -153,27 +162,5 @@ public sealed partial class MainLayout : IDisposable
             CountedOrdersPageSize,
             nameof(OrderSortBy.CreatedAtUtcAsc),
             payment));
-    }
-
-    private async Task LoadLayoutPreferencesAsync()
-    {
-        try
-        {
-            ProtectedBrowserStorageResult<bool> result =
-                await ProtectedLocalStorage.GetAsync<bool>(DrawerOpenStorageKey);
-
-            DrawerOpen = !result.Success || result.Value;
-        }
-        catch (CryptographicException)
-        {
-            await ProtectedLocalStorage.DeleteAsync(DrawerOpenStorageKey);
-        }
-    }
-
-    private async Task ToggleDrawerAsync()
-    {
-        DrawerOpen = !DrawerOpen;
-
-        await ProtectedLocalStorage.SetAsync(DrawerOpenStorageKey, DrawerOpen);
     }
 }

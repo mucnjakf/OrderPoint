@@ -10,24 +10,13 @@
     Orders taken in the Bartender app, paid here before the guest leaves. Oldest first.
 </MudText>
 
-<MudTextField @bind-Value="@SearchQuery"
-              @bind-Value:after="@OnSearchChangedAsync"
-              T="string"
-              Placeholder="Order number, table or name"
-              Variant="Variant.Outlined"
-              Adornment="Adornment.Start"
-              AdornmentIcon="@Icons.Material.Filled.Search"
-              Clearable="true"
-              DebounceInterval="300"
-              Immediate="true"
-              Class="mb-3"
-              Style="max-width: 480px"/>
+
 
 <StatefulView IsLoading="@IsLoading"
               ShowContent="@(Orders.Count != 0)"
-              EmptyStateIcon="@(IsSearching ? Icons.Material.Filled.SearchOff : Icons.Material.Filled.TaskAlt)"
-              EmptyStateText="@(IsSearching ? "Nothing found" : "Nothing to pay")"
-              EmptyStateDetail="@(IsSearching ? "Try another number, table or name." : "Every order is paid.")">
+              EmptyStateIcon="@Icons.Material.Filled.TaskAlt"
+              EmptyStateText="Nothing to pay"
+              EmptyStateDetail="Every order is paid.">
     <LoadingContent>
         <div style="@OrderCardsLayout.GridStyle">
             @for (int i = 0; i < LoadingCardsCount; i++)

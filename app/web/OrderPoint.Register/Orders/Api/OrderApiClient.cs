@@ -15,7 +15,6 @@ internal sealed class OrderApiClient(HttpClient httpClient)
         int pageSize,
         string sortBy,
         OrderPaymentFilter? payment = null,
-        string? searchQuery = null,
         CancellationToken cancellationToken = default)
     {
         string requestUri = $"api/orders?pageNumber={pageNumber}&pageSize={pageSize}&sortBy={sortBy}";
@@ -25,10 +24,7 @@ internal sealed class OrderApiClient(HttpClient httpClient)
             requestUri += $"&payment={payment}";
         }
 
-        if (!string.IsNullOrWhiteSpace(searchQuery))
-        {
-            requestUri += $"&searchQuery={Uri.EscapeDataString(searchQuery)}";
-        }
+
 
         HttpResponseMessage response = await httpClient.GetAsync(requestUri, cancellationToken);
 

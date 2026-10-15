@@ -4,29 +4,124 @@
                   Compact="true"
                   EmptyStateIcon="@Icons.Material.Filled.ReceiptLong"
                   EmptyStateText="Select a payment"
-                  EmptyStateDetail="Its receipt shows here.">
+                  EmptyStateDetail="Its summary shows here.">
         @if (Order is { } order)
         {
             <MudStack Spacing="3">
-                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                    <MudIcon Icon="@order.GetPaymentIcon()" Color="@order.GetPaymentColor()"/>
-
-                    <MudText Typo="Typo.subtitle1" Class="flex-1">
-                        Order #@order.Number
-                    </MudText>
+                <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                    <MudAvatar Rounded="true" Variant="Variant.Outlined">
+                        <MudIcon Icon="@(Channel?.GetIcon() ?? Icons.Material.Filled.Payments)"/>
+                    </MudAvatar>
 
                     <MudChip T="string"
                              Variant="Variant.Outlined"
                              Size="Size.Small"
                              Color="@order.GetPaymentColor()"
+                             Icon="@order.GetPaymentIcon()"
                              Class="ma-0">
                         @order.GetPaymentText()
                     </MudChip>
                 </MudStack>
 
-                <MudPaper Outlined="true" Elevation="0" Class="pa-4">
-                    <Receipt @key="@order.Id" @ref="@ReceiptComponent" Order="@order"/>
-                </MudPaper>
+                <MudStack Spacing="0">
+                    <MudText Typo="Typo.h4" Style="@AmountStyle">
+                        @order.Total.ToString("C", CultureInfo.CurrentCulture)
+                    </MudText>
+
+                    <MudText Typo="Typo.body2" Style="@LabelStyle">
+                        @MethodText
+                    </MudText>
+                </MudStack>
+
+                <MudDivider/>
+
+                <MudStack Spacing="2">
+                    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                        <MudText Typo="Typo.body2" Style="@LabelStyle">Order</MudText>
+                        <MudText Typo="Typo.body2">#@order.Number · @order.GetPlaceText()</MudText>
+                    </MudStack>
+
+                    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                        <MudText Typo="Typo.body2" Style="@LabelStyle">Paid</MudText>
+
+                        <MudText Typo="Typo.body2">
+                            @order.PaidAtUtc!.Value.ToDisplayDateTime(TimeZoneService.TimeZone)
+                        </MudText>
+                    </MudStack>
+
+                    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                        <MudText Typo="Typo.body2" Style="@LabelStyle">Paid to</MudText>
+
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                            @if (order.PaidByBartender is { } paidBy)
+                            {
+                                <BartenderAvatar FirstName="@paidBy.FirstName"
+                                                 LastName="@paidBy.LastName"
+                                                 ImageUrl="@paidBy.ImageUrl"
+                                                 Size="Size.Small"/>
+
+                                <MudText Typo="Typo.body2">@paidBy.FirstName @paidBy.LastName</MudText>
+                            }
+                            else
+                            {
+                                <MudText Typo="Typo.body2">Guest, online</MudText>
+                            }
+                        </MudStack>
+                    </MudStack>
+
+                    @if (order.CashReceived is { } cashReceived)
+                    {
+                        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                            <MudText Typo="Typo.body2" Style="@LabelStyle">Cash received</MudText>
+
+                            <MudText Typo="Typo.body2">
+                                @cashReceived.ToString("C", CultureInfo.CurrentCulture)
+                            </MudText>
+                        </MudStack>
+
+                        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                            <MudText Typo="Typo.body2" Style="@LabelStyle">Change</MudText>
+
+                            <MudText Typo="Typo.body2">
+                                @((cashReceived - order.Total).ToString("C", CultureInfo.CurrentCulture))
+                            </MudText>
+                        </MudStack>
+                    }
+
+                    @if (RefundText is not null)
+                    {
+                        <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                            <MudText Typo="Typo.body2" Style="@LabelStyle">Refund</MudText>
+                            <MudText Typo="Typo.body2">@RefundText</MudText>
+                        </MudStack>
+                    }
+                </MudStack>
+
+                <MudDivider/>
+
+                <MudStack Spacing="2">
+                    @foreach (OrderItemDto orderItem in order.Items)
+                    {
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                            <MudImage Src="@(orderItem.ImageUrl ?? ImageUrls.Placeholder)"
+                                      Alt="Item image"
+                                      Width="32"
+                                      Height="32"
+                                      ObjectFit="ObjectFit.Cover"
+                                      Style="@($"{ImageStyles.Rounded} flex-shrink: 0;")"/>
+
+                            <MudText Typo="Typo.body2" Class="flex-1">
+                                <strong>@orderItem.Quantity×</strong> @orderItem.Name
+                            </MudText>
+
+                            <MudText Typo="Typo.body2">
+                                @GetLineTotalText(orderItem)
+                            </MudText>
+                        </MudStack>
+                    }
+                </MudStack>
+
+                <MudDivider/>
 
                 <MudStack Row="true" Justify="Justify.SpaceBetween">
                     <MudButton Variant="Variant.Outlined"
@@ -42,6 +137,11 @@
                         Order details
                     </MudButton>
                 </MudStack>
+
+                @* The till receipt that Print sends to the printer *@
+                <div style="display: none">
+                    <Receipt @key="@order.Id" @ref="@ReceiptComponent" Order="@order"/>
+                </div>
             </MudStack>
         }
     </StatefulView>

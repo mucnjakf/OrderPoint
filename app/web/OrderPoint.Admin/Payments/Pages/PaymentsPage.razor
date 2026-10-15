@@ -129,6 +129,7 @@
                          Clearable="true"
                          OnClearButtonClick="@OnBartenderClearedAsync"
                          ShowProgressIndicator="true"
+                         Style="width: 200px"
                          ToStringFunc="@(bartender => bartender is null
                                              ? null
                                              : $"{bartender.FirstName} {bartender.LastName}")">

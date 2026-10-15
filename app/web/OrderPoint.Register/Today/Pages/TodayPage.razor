@@ -108,29 +108,24 @@
                 Payments
             </MudText>
 
-            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-3">
+            <MudStack Row="true" AlignItems="AlignItems.End" Class="mb-3">
                 <MudTextField @bind-Value="@SearchQuery"
                               @bind-Value:after="@OnFiltersChangedAsync"
                               T="string"
-                              Placeholder="Order number, table or name"
+                              Label="Search by number, table or name"
                               Variant="Variant.Outlined"
-                              Margin="Margin.Dense"
-                              Adornment="Adornment.Start"
-                              AdornmentIcon="@Icons.Material.Filled.Search"
                               Clearable="true"
                               DebounceInterval="300"
-                              Immediate="true"
-                              Class="flex-1"
-                              Style="min-width: 0"/>
+                              Immediate="true"/>
 
                 <MudSelect @bind-Value="@SelectedChannel"
                            @bind-Value:after="@OnFiltersChangedAsync"
                            T="PaymentChannel?"
                            Label="How"
                            Variant="Variant.Outlined"
-                           Margin="Margin.Dense"
                            Clearable="true"
-                           FitContent="true">
+                           RelativeWidth="DropdownWidth.Adaptive"
+                           Style="width: 150px">
                     @foreach (PaymentChannel channel in Enum.GetValues<PaymentChannel>())
                     {
                         <MudSelectItem T="PaymentChannel?" Value="@channel">
@@ -147,7 +142,6 @@
                            T="Guid?"
                            Label="Paid by"
                            Variant="Variant.Outlined"
-                           Margin="Margin.Dense"
                            Clearable="true"
                            FitContent="true"
                            ToStringFunc="@GetBartenderName">
@@ -171,7 +165,6 @@
                            T="string"
                            Label="Sort by"
                            Variant="Variant.Outlined"
-                           Margin="Margin.Dense"
                            FitContent="true">
                     @foreach (string sortBy in Enum.GetNames<PaymentSortBy>())
                     {
