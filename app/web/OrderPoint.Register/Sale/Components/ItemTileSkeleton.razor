@@ -1,13 +1,17 @@
 ﻿<MudPaper Style="overflow: hidden;">
-    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="96px"/>
+    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="160px"/>
 
-    <div class="pa-2">
-        <MudText Typo="Typo.body2">
-            <MudSkeleton Width="80%"/>
+    <MudStack Spacing="1" Class="pa-3">
+        <MudText Typo="Typo.subtitle2">
+            <MudSkeleton Width="70%"/>
         </MudText>
 
-        <MudText Typo="Typo.body2">
-            <MudSkeleton Width="40%"/>
+        <MudText Typo="Typo.caption">
+            <MudSkeleton Width="90%"/>
         </MudText>
-    </div>
+
+        <MudText Typo="Typo.body1">
+            <MudSkeleton Width="35%"/>
+        </MudText>
+    </MudStack>
 </MudPaper>

@@ -56,72 +56,106 @@
 
     <MudItem xs="12" sm="8">
         <MudPaper Class="pa-5" Style="height: 100%">
-            <SettingsSection Icon="@Icons.Material.Filled.Contrast"
-                             Title="Appearance"
-                             Description="Light or dark colours, remembered on this device.">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudIcon Icon="@Icons.Material.Filled.Contrast"/>
+
+                <MudStack Spacing="0" Class="flex-1">
+                    <MudText Typo="Typo.subtitle1">
+                        Appearance
+                    </MudText>
+
+                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                        Light or dark colours, remembered in this browser.
+                    </MudText>
+                </MudStack>
+
                 <MudToggleGroup T="bool"
                                 Value="@DarkModeService.IsDarkMode"
                                 ValueChanged="@OnDarkModeChangedAsync"
                                 Color="Color.Primary"
-                                Style="width: 100%;">
+                                Size="Size.Small">
                     <MudToggleItem Value="false" Class="px-4 py-2">
-                        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.Center" Spacing="1">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
                             <MudIcon Icon="@Icons.Material.Filled.LightMode" Size="Size.Small"/>
                             <MudText Typo="Typo.body2">Light</MudText>
                         </MudStack>
                     </MudToggleItem>
 
                     <MudToggleItem Value="true" Class="px-4 py-2">
-                        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.Center" Spacing="1">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
                             <MudIcon Icon="@Icons.Material.Filled.DarkMode" Size="Size.Small"/>
                             <MudText Typo="Typo.body2">Dark</MudText>
                         </MudStack>
                     </MudToggleItem>
                 </MudToggleGroup>
-            </SettingsSection>
+            </MudStack>
 
             <MudDivider Class="my-5"/>
 
-            <SettingsSection Icon="@Icons.Material.Filled.Password"
-                             Title="Password"
-                             Description="Change the password you sign in with. Other devices are signed out.">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudIcon Icon="@Icons.Material.Filled.Password"/>
+
+                <MudStack Spacing="0" Class="flex-1">
+                    <MudText Typo="Typo.subtitle1">
+                        Password
+                    </MudText>
+
+                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                        Change the password you sign in with. Other devices are signed out.
+                    </MudText>
+                </MudStack>
+
                 <MudButton Variant="Variant.Outlined"
-                           Size="Size.Large"
-                           FullWidth="true"
                            StartIcon="@Icons.Material.Filled.Edit"
-                           Href="/account/password">
+                           OnClick="@ShowChangePasswordDialogAsync">
                     Change password
                 </MudButton>
-            </SettingsSection>
+            </MudStack>
 
             <MudDivider Class="my-5"/>
 
-            <SettingsSection Icon="@Icons.Material.Filled.Devices"
-                             Title="Sessions"
-                             Description="Sign out of every device signed in with this account, including this one.">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudIcon Icon="@Icons.Material.Filled.Devices"/>
+
+                <MudStack Spacing="0" Class="flex-1">
+                    <MudText Typo="Typo.subtitle1">
+                        Sessions
+                    </MudText>
+
+                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                        Sign out of every device signed in with this account, including this one.
+                    </MudText>
+                </MudStack>
+
                 <MudButton Variant="Variant.Outlined"
                            Color="Color.Warning"
-                           Size="Size.Large"
-                           FullWidth="true"
                            StartIcon="@Icons.Material.Filled.PhonelinkErase"
                            OnClick="@ShowSignOutEverywhereDialogAsync">
                     Sign out everywhere
                 </MudButton>
-            </SettingsSection>
+            </MudStack>
 
             <MudDivider Class="my-5"/>
 
-            <SettingsSection Icon="@Icons.Material.Filled.Logout"
-                             Title="Sign out"
-                             Description="Sign out of this device.">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudIcon Icon="@Icons.Material.Filled.Logout"/>
+
+                <MudStack Spacing="0" Class="flex-1">
+                    <MudText Typo="Typo.subtitle1">
+                        Sign out
+                    </MudText>
+
+                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                        Sign out of this browser.
+                    </MudText>
+                </MudStack>
+
                 <MudButton Variant="Variant.Outlined"
-                           Size="Size.Large"
-                           FullWidth="true"
                            StartIcon="@Icons.Material.Filled.Logout"
                            OnClick="@ShowSignOutDialogAsync">
                     Sign out
                 </MudButton>
-            </SettingsSection>
+            </MudStack>
         </MudPaper>
     </MudItem>
 </MudGrid>

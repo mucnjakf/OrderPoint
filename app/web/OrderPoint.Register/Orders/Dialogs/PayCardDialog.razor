@@ -2,15 +2,43 @@
     <TitleContent>
         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
             <MudIcon Icon="@Icons.Material.Filled.CreditCard"/>
-            <MudText Typo="Typo.h6">Card · @Total.ToString("C", CultureInfo.CurrentCulture)</MudText>
+            <MudText Typo="Typo.h6">Card payment</MudText>
         </MudStack>
     </TitleContent>
 
     <DialogContent>
-        <MudText Typo="Typo.body1">
-            Charge @Total.ToString("C", CultureInfo.CurrentCulture) on the card terminal, then confirm here once it
-            is approved.
-        </MudText>
+        <MudStack Spacing="4">
+            <MudPaper Elevation="0" Class="pa-4" Style="@TotalStyle">
+                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                    To pay
+                </MudText>
+
+                <MudText Typo="Typo.h3" Style="font-weight: 700">
+                    @Total.ToString("C", CultureInfo.CurrentCulture)
+                </MudText>
+            </MudPaper>
+
+            <MudStack Spacing="3">
+                @foreach ((int number, string icon, string text) in Steps)
+                {
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                        <MudAvatar Size="Size.Small" Variant="Variant.Outlined">
+                            @number
+                        </MudAvatar>
+
+                        <MudIcon Icon="@icon" Style="color: var(--mud-palette-text-secondary)"/>
+
+                        <MudText Typo="Typo.body1">
+                            @text
+                        </MudText>
+                    </MudStack>
+                }
+            </MudStack>
+
+            <MudAlert Severity="Severity.Info" Variant="Variant.Text" Dense="true">
+                The terminal charges the card; the register only records the payment.
+            </MudAlert>
+        </MudStack>
     </DialogContent>
 
     <DialogActions>
@@ -21,7 +49,8 @@
         <MudButton OnClick="@Confirm"
                    Variant="Variant.Filled"
                    Color="Color.Primary"
-                   StartIcon="@Icons.Material.Filled.CreditCard">
+                   Size="Size.Large"
+                   StartIcon="@Icons.Material.Filled.CheckCircle">
             Card approved
         </MudButton>
     </DialogActions>

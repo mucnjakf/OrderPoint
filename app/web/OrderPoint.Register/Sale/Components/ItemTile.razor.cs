@@ -3,15 +3,10 @@ using OrderPoint.Shared.Menu.Dtos;
 
 namespace OrderPoint.Register.Sale.Components;
 
-// An item to tap onto the sale; the count shows how many are on it already
+// An item to tap onto the sale; the chip shows how many are on it already
 public sealed partial class ItemTile
 {
     private const string BaseStyle = "position: relative; overflow: hidden; height: 100%;";
-
-    // A long name wraps onto a second line before it is cut off
-    private const string NameStyle =
-        "overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; " +
-        "overflow: hidden;";
 
     [Parameter]
     [EditorRequired]

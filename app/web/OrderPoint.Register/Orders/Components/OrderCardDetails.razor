@@ -1,0 +1,99 @@
+﻿<MudStack Spacing="3">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+        <OrderAvatar Number="@Order.Number"/>
+
+        <MudStack Spacing="0" Class="flex-1" Style="min-width: 0">
+            <MudText Typo="Typo.h6">
+                @Order.GetPlaceText()
+            </MudText>
+
+            <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                @SourceText
+            </MudText>
+        </MudStack>
+
+        <MudChip T="string"
+                 Variant="Variant.Text"
+                 Size="Size.Small"
+                 Color="@Order.Status.GetColor()"
+                 Icon="@Order.Status.GetIcon()"
+                 Class="ma-0">
+            @Order.Status.ToString()
+        </MudChip>
+    </MudStack>
+
+    <MudStack Spacing="1">
+        @if (Order.TakenByBartender is { } takenBy)
+        {
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Small" Style="@SecondaryStyle"/>
+                <MudText Typo="Typo.body2">Taken by @takenBy.FirstName @takenBy.LastName</MudText>
+            </MudStack>
+        }
+
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.Schedule" Size="Size.Small" Style="@SecondaryStyle"/>
+
+            <MudText Typo="Typo.body2">
+                Placed @Order.CreatedAtUtc.ToDisplayDateTime(TimeZoneService.TimeZone)
+                <span style="@SecondaryStyle">· @Order.CreatedAtUtc.ToRelativeTime()</span>
+            </MudText>
+        </MudStack>
+
+        @if (Order.Bartender is { } handledBy)
+        {
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                <MudIcon Icon="@Icons.Material.Filled.LocalBar" Size="Size.Small" Style="@SecondaryStyle"/>
+                <MudText Typo="Typo.body2">At the bar: @handledBy.FirstName @handledBy.LastName</MudText>
+            </MudStack>
+        }
+    </MudStack>
+
+    <MudDivider/>
+
+    <MudStack Spacing="2">
+        @foreach (OrderItemDto orderItem in Order.Items)
+        {
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudImage Src="@(orderItem.ImageUrl ?? ImageUrls.Placeholder)"
+                          Alt="Item image"
+                          Width="32"
+                          Height="32"
+                          ObjectFit="ObjectFit.Cover"
+                          Style="@($"{ImageStyles.Rounded} flex-shrink: 0;")"/>
+
+                <MudText Typo="Typo.body2" Class="flex-1">
+                    <strong>@orderItem.Quantity×</strong> @orderItem.Name
+                </MudText>
+
+                <MudText Typo="Typo.body2" Style="@SecondaryStyle">
+                    @((orderItem.Quantity * orderItem.UnitPrice).ToString("C", CultureInfo.CurrentCulture))
+                </MudText>
+            </MudStack>
+        }
+    </MudStack>
+
+    @if (Order.Note is not null)
+    {
+        <MudAlert Severity="Severity.Info" Variant="Variant.Text" Dense="true" Icon="@Icons.Material.Filled.Notes">
+            @Order.Note
+        </MudAlert>
+    }
+
+    @if (Order.DeclineReason is not null)
+    {
+        <MudAlert Severity="Severity.Warning" Variant="Variant.Text" Dense="true">
+            Declined: @Order.DeclineReason
+        </MudAlert>
+    }
+
+    <MudStack Row="true" AlignItems="AlignItems.End" Justify="Justify.SpaceBetween">
+        <MudText Typo="Typo.caption" Style="@SecondaryStyle">
+            @ItemsCount.ToCountText("item", "items")
+        </MudText>
+
+        <MudText Typo="Typo.h5" Style="font-weight: 700">
+            @Order.Total.ToString("C", CultureInfo.CurrentCulture)
+        </MudText>
+    </MudStack>
+</MudStack>

@@ -1,52 +1,18 @@
-﻿<MudPaper Class="pa-3">
-    <MudStack Spacing="2">
-        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
-            <OrderAvatar Number="@Order.Number"/>
+﻿<MudPaper Class="pa-4">
+    <MudStack Spacing="3">
+        <OrderCardDetails Order="@Order"/>
 
-            <MudStack Spacing="0" Class="flex-1" Style="min-width: 0">
-                <MudText Typo="Typo.body1">
-                    @Order.GetPlaceText()
-                </MudText>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@MethodIcon" Size="Size.Small" Style="color: var(--mud-palette-text-secondary)"/>
 
-                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
-                    @CaptionText
-                </MudText>
-            </MudStack>
-
-            <MudStack Spacing="1" AlignItems="AlignItems.End">
-                <MudText Typo="Typo.h6">
-                    @Order.Total.ToString("C", CultureInfo.CurrentCulture)
-                </MudText>
-
-                <MudChip T="string"
-                         Variant="Variant.Text"
-                         Size="Size.Small"
-                         Color="@Order.Status.GetColor()"
-                         Class="ma-0">
-                    @Order.Status.ToString()
-                </MudChip>
-            </MudStack>
-        </MudStack>
-
-        <MudDivider/>
-
-        @foreach (OrderItemDto orderItem in Order.Items)
-        {
             <MudText Typo="Typo.body2">
-                <strong>@orderItem.Quantity×</strong> @orderItem.Name
+                @MethodText
             </MudText>
-        }
-
-        @if (Order.DeclineReason is not null)
-        {
-            <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
-                Declined: @Order.DeclineReason
-            </MudText>
-        }
+        </MudStack>
 
         <MudButton Variant="Variant.Filled"
                    Color="Color.Warning"
-                   Class="mt-1"
+                   Class="py-2"
                    FullWidth="true"
                    StartIcon="@Icons.Material.Filled.AssignmentReturn"
                    Disabled="@IsRefunding"

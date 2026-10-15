@@ -1,0 +1,31 @@
+﻿<MudPaper Class="cursor-pointer d-flex flex-column"
+          Style="overflow: hidden; height: 100%;"
+          @onclick="@OnCardClickAsync">
+    <ItemCardImage ImageUrl="@Category.ImageUrl" IsActive="true"/>
+
+    <MudStack Spacing="1" Class="pa-3 flex-grow-1">
+        <MudText Typo="Typo.subtitle1" Style="font-weight: 600">
+            @Category.Name
+        </MudText>
+
+        @if (!string.IsNullOrWhiteSpace(Category.Description))
+        {
+            <MudText Typo="Typo.caption" Style="@SaleLayout.SecondaryTwoLinesStyle">
+                @Category.Description
+            </MudText>
+        }
+
+        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mt-auto pt-1">
+            <MudChip T="string" Variant="Variant.Text" Size="Size.Small" Class="ma-0">
+                @Category.Items.Count.ToCountText("item", "items")
+            </MudChip>
+
+            @if (LowestPrice is { } lowestPrice)
+            {
+                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                    from @lowestPrice.ToString("C", CultureInfo.CurrentCulture)
+                </MudText>
+            }
+        </MudStack>
+    </MudStack>
+</MudPaper>

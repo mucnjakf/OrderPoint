@@ -1,9 +1,5 @@
-﻿<MudPaper Class="cursor-pointer" Style="@TileStyle" @onclick="@OnTileClickAsync">
-    <MudImage Src="@(Item.ImageUrl ?? ImageUrls.Placeholder)"
-              Alt="Item image"
-              Height="96"
-              ObjectFit="ObjectFit.Cover"
-              Style="width: 100%; display: block;"/>
+﻿<MudPaper Class="cursor-pointer d-flex flex-column" Style="@TileStyle" @onclick="@OnTileClickAsync">
+    <ItemCardImage ImageUrl="@Item.ImageUrl" IsActive="true"/>
 
     @if (Quantity != 0)
     {
@@ -11,18 +7,31 @@
                  Variant="Variant.Filled"
                  Color="Color.Primary"
                  Size="Size.Small"
-                 Style="position: absolute; top: 6px; right: 6px; margin: 0;">
-            @Quantity
+                 Style="position: absolute; top: 8px; right: 8px; margin: 0;">
+            @Quantity× on the sale
         </MudChip>
     }
 
-    <div class="pa-2">
-        <MudText Typo="Typo.body2" Style="@NameStyle">
+    <MudStack Spacing="1" Class="pa-3 flex-grow-1">
+        <MudText Typo="Typo.subtitle2" Style="@SaleLayout.TwoLinesStyle">
             @Item.Name
         </MudText>
 
-        <MudText Typo="Typo.body2" Style="font-weight: 600">
-            @Item.Price.ToString("C", CultureInfo.CurrentCulture)
-        </MudText>
-    </div>
+        @if (!string.IsNullOrWhiteSpace(Item.Description))
+        {
+            <MudText Typo="Typo.caption" Style="@SaleLayout.SecondaryTwoLinesStyle">
+                @Item.Description
+            </MudText>
+        }
+
+        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mt-auto pt-1">
+            <MudText Typo="Typo.body1" Style="font-weight: 700">
+                @Item.Price.ToString("C", CultureInfo.CurrentCulture)
+            </MudText>
+
+            <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                Portion @Item.Portion.ToString(CultureInfo.CurrentCulture)
+            </MudText>
+        </MudStack>
+    </MudStack>
 </MudPaper>

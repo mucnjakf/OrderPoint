@@ -39,6 +39,19 @@
             @if (DrawerOpen)
             {
                 <MudText Typo="Typo.button" HtmlTag="p" Class="px-3 pt-3 pb-1" Style="font-size: 12px">
+                    Overview
+                </MudText>
+            }
+
+            <MudNavLink Href="/today" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Today">
+                <MudText Typo="Typo.body1">Today</MudText>
+            </MudNavLink>
+
+            <MudDivider Class="my-3" />
+
+            @if (DrawerOpen)
+            {
+                <MudText Typo="Typo.button" HtmlTag="p" Class="px-3 pt-1 pb-1" Style="font-size: 12px">
                     Till
                 </MudText>
             }
@@ -59,10 +72,6 @@
                     <MudText Typo="Typo.body1">Refunds due</MudText>
                     <TabCount Count="@RefundsDueCount" />
                 </MudStack>
-            </MudNavLink>
-
-            <MudNavLink Href="/today" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Today">
-                <MudText Typo="Typo.body1">Today</MudText>
             </MudNavLink>
 
             <MudDivider Class="my-3" />

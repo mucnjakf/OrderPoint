@@ -12,7 +12,15 @@ public sealed partial class PayCashDialog
 
     private const int QuickAmountsCount = 4;
 
-    private const string NotEnoughStyle = "color: var(--mud-palette-error)";
+    private const string TotalStyle = "background-color: rgba(var(--mud-palette-text-primary-rgb), 0.04);";
+
+    private const string QuickAmountsStyle = "display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;";
+
+    private const string ChangeStyle = "background-color: rgba(var(--mud-palette-success-rgb), 0.12);";
+
+    private const string ShortStyle = "background-color: rgba(var(--mud-palette-error-rgb), 0.12);";
+
+    private const string WaitingStyle = "background-color: rgba(var(--mud-palette-text-primary-rgb), 0.04);";
 
     private static readonly decimal[] NoteSteps = [5, 10, 20, 50, 100];
 
@@ -26,6 +34,8 @@ public sealed partial class PayCashDialog
 
     private bool IsEnough => Received is { } received && received >= Total && received <= MaxCashReceived;
 
+    private bool IsShort => Received is { } received && received < Total;
+
     // The exact amount, then the total rounded up to the next notes
     private IEnumerable<decimal> QuickAmounts => NoteSteps
         .Select(step => Math.Ceiling(Total / step) * step)
@@ -33,11 +43,24 @@ public sealed partial class PayCashDialog
         .Distinct()
         .Take(QuickAmountsCount);
 
-    private string ChangeText => Received is { } received && received >= Total
-        ? (received - Total).ToString("C", CultureInfo.CurrentCulture)
-        : "-";
+    private string ChangeLabel => IsShort ? "Still short" : "Change to give";
 
-    private string? ChangeStyle => Received is { } received && received < Total ? NotEnoughStyle : null;
+    private string ChangeText => Received switch
+    {
+        null => "-",
+        { } received when received < Total => (Total - received).ToString("C", CultureInfo.CurrentCulture),
+        { } received => (received - Total).ToString("C", CultureInfo.CurrentCulture)
+    };
+
+    private string ChangeIcon => IsShort ? Icons.Material.Filled.ErrorOutline : Icons.Material.Filled.CurrencyExchange;
+
+    private Color ChangeColor => Received is null ? Color.Default : IsShort ? Color.Error : Color.Success;
+
+    private string ChangeBoxStyle => Received is null ? WaitingStyle : IsShort ? ShortStyle : ChangeStyle;
+
+    private string ConfirmText => Received is { } received && IsEnough
+        ? $"Take {received.ToString("C", CultureInfo.CurrentCulture)}"
+        : "Take cash";
 
     private void Confirm()
     {

@@ -2,15 +2,25 @@
     <TitleContent>
         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
             <MudIcon Icon="@Icons.Material.Filled.Payments"/>
-            <MudText Typo="Typo.h6">Cash · @Total.ToString("C", CultureInfo.CurrentCulture)</MudText>
+            <MudText Typo="Typo.h6">Cash payment</MudText>
         </MudStack>
     </TitleContent>
 
     <DialogContent>
-        <MudStack Spacing="3">
+        <MudStack Spacing="4">
+            <MudPaper Elevation="0" Class="pa-4" Style="@TotalStyle">
+                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                    To pay
+                </MudText>
+
+                <MudText Typo="Typo.h3" Style="font-weight: 700">
+                    @Total.ToString("C", CultureInfo.CurrentCulture)
+                </MudText>
+            </MudPaper>
+
             <MudNumericField @bind-Value="@Received"
                              T="decimal?"
-                             Label="Received"
+                             Label="Received from the guest"
                              Adornment="Adornment.Start"
                              AdornmentText="€"
                              Min="0"
@@ -20,22 +30,36 @@
                              Immediate="true"
                              AutoFocus="true"/>
 
-            <MudStack Row="true" Spacing="2" Wrap="Wrap.Wrap">
+            <div style="@QuickAmountsStyle">
                 @foreach (decimal amount in QuickAmounts)
                 {
                     decimal quickAmount = amount;
 
-                    <MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => Received = quickAmount)">
-                        @quickAmount.ToString("C", CultureInfo.CurrentCulture)
+                    <MudButton Variant="@(Received == quickAmount ? Variant.Filled : Variant.Outlined)"
+                               Color="Color.Primary"
+                               Class="py-3"
+                               OnClick="@(() => Received = quickAmount)">
+                        <MudStack Spacing="0" AlignItems="AlignItems.Center">
+                            <MudText Typo="Typo.subtitle1" Style="font-weight: 600">
+                                @quickAmount.ToString("C", CultureInfo.CurrentCulture)
+                            </MudText>
+
+                            <MudText Typo="Typo.caption">
+                                @(quickAmount == Total ? "Exact" : "Note")
+                            </MudText>
+                        </MudStack>
                     </MudButton>
                 }
-            </MudStack>
+            </div>
 
-            <MudPaper Outlined="true" Class="pa-3">
+            <MudPaper Elevation="0" Class="pa-4" Style="@ChangeBoxStyle">
                 <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
-                    <MudText Typo="Typo.h6">Change</MudText>
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                        <MudIcon Icon="@ChangeIcon" Color="@ChangeColor"/>
+                        <MudText Typo="Typo.subtitle1">@ChangeLabel</MudText>
+                    </MudStack>
 
-                    <MudText Typo="Typo.h6" Style="@ChangeStyle">
+                    <MudText Typo="Typo.h4" Style="font-weight: 700">
                         @ChangeText
                     </MudText>
                 </MudStack>
@@ -51,9 +75,10 @@
         <MudButton OnClick="@Confirm"
                    Variant="Variant.Filled"
                    Color="Color.Primary"
+                   Size="Size.Large"
                    Disabled="@(!IsEnough)"
                    StartIcon="@Icons.Material.Filled.Payments">
-            Take cash
+            @ConfirmText
         </MudButton>
     </DialogActions>
 </MudDialog>

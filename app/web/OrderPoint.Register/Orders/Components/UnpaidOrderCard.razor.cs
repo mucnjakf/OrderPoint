@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using OrderPoint.Shared.Extensions;
 using OrderPoint.Shared.Orders.Dtos;
 
 namespace OrderPoint.Register.Orders.Components;
@@ -22,10 +21,6 @@ public sealed partial class UnpaidOrderCard
     [Parameter]
     [EditorRequired]
     public EventCallback<OrderDto> OnPayByCard { get; set; }
-
-    private string CaptionText => Order.TakenByBartender is { } takenBy
-        ? $"Taken by {takenBy.FirstName} {takenBy.LastName} · {Order.CreatedAtUtc.ToRelativeTime()}"
-        : Order.CreatedAtUtc.ToRelativeTime();
 
     private async Task OnPayInCashClickAsync()
     {

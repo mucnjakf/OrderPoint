@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using OrderPoint.Register.Menu.Services;
 using OrderPoint.Register.Orders.Api;
@@ -8,6 +7,7 @@ using OrderPoint.Register.Orders.Services;
 using OrderPoint.Register.Sale.Dtos;
 using OrderPoint.Register.Sale.Services;
 using OrderPoint.Shared.Errors;
+using OrderPoint.Shared.Extensions;
 using OrderPoint.Shared.Menu.Dtos;
 using OrderPoint.Shared.Orders.Dtos;
 using OrderPoint.Shared.Orders.Enumerations;
@@ -15,25 +15,14 @@ using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Register.Sale.Pages;
 
-// The till: a category's items (or a search across all of them) onto the sale, then cash or card
+// The till: a category, then its items onto the sale below, then cash or card
 public sealed partial class SalePage : IDisposable
 {
-    // As long as the API accepts
-    private const int NoteMaxLength = 200;
-
-    private const int CustomerNameMaxLength = 30;
-
     // Two rows on a desktop
-    private const int LoadingTilesCount = 8;
+    private const int LoadingCardsCount = 8;
 
-    private const string CategoryStyle = "justify-content: flex-start; text-transform: none;";
-
-    private const string SelectedCategoryStyle =
-        $"{CategoryStyle} background-color: var(--mud-palette-table-hover); font-weight: 600;";
-
-    private const string SecondaryStyle = "color: var(--mud-palette-text-secondary)";
-
-    private const string GoneStyle = "color: var(--mud-palette-error-text)";
+    // As tall as the screen under the app bar (64px) and the page padding, so the sale sits at the bottom
+    private const string PageStyle = "display: flex; flex-direction: column; min-height: calc(100vh - 88px);";
 
     private const string ItemIsUnavailableCode = "Order.ItemIsUnavailable";
 
@@ -66,17 +55,28 @@ public sealed partial class SalePage : IDisposable
 
     private bool IsSearching => !string.IsNullOrWhiteSpace(SearchQuery);
 
-    private MenuCategoryDto? SelectedCategory =>
-        Menu.FirstOrDefault(category => category.Id == SelectedCategoryId) ?? Menu.FirstOrDefault();
+    // Null while the categories show, or once the category left the menu
+    private MenuCategoryDto? SelectedCategory => Menu.FirstOrDefault(category => category.Id == SelectedCategoryId);
 
-    // A search looks through every category
-    private IEnumerable<MenuItemDto> ShownItems => IsSearching
-        ? Menu
-            .SelectMany(category => category.Items)
+    private IEnumerable<MenuCategoryDto> FoundCategories => IsSearching
+        ? Menu.Where(category =>
+            category.Name.Contains(SearchQuery!.Trim(), StringComparison.CurrentCultureIgnoreCase))
+        : Menu;
+
+    private IEnumerable<MenuItemDto> FoundItems => IsSearching
+        ? (SelectedCategory?.Items ?? [])
             .Where(item => item.Name.Contains(SearchQuery!.Trim(), StringComparison.CurrentCultureIgnoreCase))
         : SelectedCategory?.Items ?? [];
 
-    private IEnumerable<(SaleLineDto Line, MenuItemDto? Item)> Rows
+    private bool HasCards => SelectedCategory is null ? FoundCategories.Any() : FoundItems.Any();
+
+    private string SubtitleText => SelectedCategory is null
+        ? "Pick a category, or search for one."
+        : string.IsNullOrWhiteSpace(SelectedCategory.Description)
+            ? SelectedCategory.Items.Count.ToCountText("item", "items")
+            : SelectedCategory.Description;
+
+    private IReadOnlyList<(SaleLineDto Line, MenuItemDto? Item)> Rows
     {
         get
         {
@@ -84,15 +84,11 @@ public sealed partial class SalePage : IDisposable
                 .SelectMany(category => category.Items)
                 .ToDictionary(item => item.Id);
 
-            return SaleService.Lines.Select(line => (line, items.GetValueOrDefault(line.ItemId)));
+            return SaleService.Lines.Select(line => (line, items.GetValueOrDefault(line.ItemId))).ToList();
         }
     }
 
-    private bool HasUnavailableLines => Rows.Any(row => row.Item is null);
-
-    private decimal Total => SaleService.GetTotal(Menu);
-
-    private bool CanPay => !IsPaying && SaleService.Lines.Count != 0 && !HasUnavailableLines;
+    private int ItemsCount => SaleService.Lines.Sum(line => line.Quantity);
 
     private string EmptyStateIcon => IsSearching ? Icons.Material.Filled.SearchOff : Icons.Material.Filled.MenuBook;
 
@@ -136,22 +132,15 @@ public sealed partial class SalePage : IDisposable
         StateHasChanged();
     }
 
-    private string GetCategoryStyle(MenuCategoryDto category)
-    {
-        return !IsSearching && category.Id == SelectedCategory?.Id ? SelectedCategoryStyle : CategoryStyle;
-    }
-
-    private static string GetLineText(MenuItemDto item, SaleLineDto line)
-    {
-        string price = item.Price.ToString("C", CultureInfo.CurrentCulture);
-        string lineTotal = (item.Price * line.Quantity).ToString("C", CultureInfo.CurrentCulture);
-
-        return $"{price} each · {lineTotal}";
-    }
-
     private void SelectCategory(MenuCategoryDto category)
     {
         SelectedCategoryId = category.Id;
+        SearchQuery = null;
+    }
+
+    private void ShowCategories()
+    {
+        SelectedCategoryId = null;
         SearchQuery = null;
     }
 
@@ -160,14 +149,14 @@ public sealed partial class SalePage : IDisposable
         SaleService.SetQuantity(item.Id, item.Name, SaleService.GetQuantity(item.Id) + 1);
     }
 
-    private void SetQuantity(SaleLineDto line, int quantity)
+    private void SetQuantity((SaleLineDto Line, int Quantity) change)
     {
-        SaleService.SetQuantity(line.ItemId, line.Name, quantity);
+        SaleService.SetQuantity(change.Line.ItemId, change.Line.Name, change.Quantity);
     }
 
     private async Task PayInCashAsync()
     {
-        decimal? cashReceived = await PaymentDialogService.AskForCashAsync(Total);
+        decimal? cashReceived = await PaymentDialogService.AskForCashAsync(SaleService.GetTotal(Menu));
 
         if (cashReceived is null)
         {
@@ -179,7 +168,7 @@ public sealed partial class SalePage : IDisposable
 
     private async Task PayByCardAsync()
     {
-        bool isApproved = await PaymentDialogService.ConfirmCardAsync(Total);
+        bool isApproved = await PaymentDialogService.ConfirmCardAsync(SaleService.GetTotal(Menu));
 
         if (!isApproved)
         {

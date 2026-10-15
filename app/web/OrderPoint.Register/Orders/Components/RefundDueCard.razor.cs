@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using OrderPoint.Shared.Orders.Dtos;
 using OrderPoint.Shared.Orders.Enumerations;
 
@@ -20,9 +21,15 @@ public sealed partial class RefundDueCard
     [EditorRequired]
     public EventCallback<OrderDto> OnHandBack { get; set; }
 
-    private string CaptionText => Order.PaymentMethod == PaymentMethod.Cash ? "Paid in cash" : "Paid by card";
+    private bool IsCash => Order.PaymentMethod == PaymentMethod.Cash;
 
-    private string HandBackText => Order.PaymentMethod == PaymentMethod.Cash
+    private string MethodIcon => IsCash ? Icons.Material.Filled.Payments : Icons.Material.Filled.CreditCard;
+
+    private string MethodText => Order.PaidByBartender is { } paidBy
+        ? $"Paid {(IsCash ? "in cash" : "by card")} to {paidBy.FirstName} {paidBy.LastName}"
+        : $"Paid {(IsCash ? "in cash" : "by card")}";
+
+    private string HandBackText => IsCash
         ? $"Hand back {Order.Total.ToString("C", CultureInfo.CurrentCulture)} in cash"
         : $"Refund {Order.Total.ToString("C", CultureInfo.CurrentCulture)} on the terminal";
 

@@ -4,5 +4,5 @@
 internal static class OrderCardsLayout
 {
     internal const string GridStyle =
-        "display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; align-items: start;";
+        "display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 12px; align-items: start;";
 }

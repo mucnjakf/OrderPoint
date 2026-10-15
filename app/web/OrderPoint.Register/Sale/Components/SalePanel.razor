@@ -1,0 +1,166 @@
+﻿<MudPaper Class="pa-4" Style="@PanelStyle">
+    <div style="@PanelGridStyle">
+        <MudStack Spacing="2" Style="min-width: 0">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                <MudIcon Icon="@Icons.Material.Filled.ShoppingBasket" Size="Size.Small"/>
+
+                <MudText Typo="Typo.subtitle1" HtmlTag="h2" Style="font-weight: 600">
+                    Sale
+                </MudText>
+
+                @if (ItemsCount != 0)
+                {
+                    <MudChip T="string" Variant="Variant.Text" Size="Size.Small" Class="ma-0">
+                        @ItemsCount.ToCountText("item", "items")
+                    </MudChip>
+
+                    <MudSpacer/>
+
+                    <MudButton Variant="Variant.Text"
+                               Color="Color.Error"
+                               Size="Size.Small"
+                               StartIcon="@Icons.Material.Filled.DeleteSweep"
+                               Disabled="@IsPaying"
+                               OnClick="@OnClear">
+                        Clear
+                    </MudButton>
+                }
+            </MudStack>
+
+            @if (Rows.Count == 0)
+            {
+                <MudStack AlignItems="AlignItems.Center" Justify="Justify.Center" Spacing="1" Class="py-6">
+                    <MudIcon Icon="@Icons.Material.Filled.TouchApp" Style="color: var(--mud-palette-text-secondary)"/>
+
+                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                        Tap an item to add it to the sale.
+                    </MudText>
+                </MudStack>
+            }
+            else
+            {
+                <div style="@LineGridStyle">
+                    <MudText Typo="Typo.caption" Style="@SecondaryStyle">Item</MudText>
+                    <MudText Typo="Typo.caption" Align="Align.Right" Style="@SecondaryStyle">Price</MudText>
+                    <MudText Typo="Typo.caption" Align="Align.Center" Style="@SecondaryStyle">Quantity</MudText>
+                    <MudText Typo="Typo.caption" Align="Align.Right" Style="@SecondaryStyle">Subtotal</MudText>
+                </div>
+
+                <MudStack Spacing="2" Style="@LinesStyle">
+                    @foreach ((SaleLineDto line, MenuItemDto? item) in Rows)
+                    {
+                        SaleLineDto rowLine = line;
+
+                        <div @key="@rowLine.ItemId" style="@LineGridStyle">
+                            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3" Style="min-width: 0">
+                                <MudImage Src="@(item?.ImageUrl ?? ImageUrls.Placeholder)"
+                                          Alt="Item image"
+                                          Width="40"
+                                          Height="40"
+                                          ObjectFit="ObjectFit.Cover"
+                                          Style="@($"{ImageStyles.Rounded} flex-shrink: 0;")"/>
+
+                                <MudStack Spacing="0" Style="min-width: 0">
+                                    <MudText Typo="Typo.body2" Style="font-weight: 600">
+                                        @rowLine.Name
+                                    </MudText>
+
+                                    @if (item is null)
+                                    {
+                                        <MudText Typo="Typo.caption" Style="@GoneStyle">
+                                            No longer on the menu
+                                        </MudText>
+                                    }
+                                </MudStack>
+                            </MudStack>
+
+                            <MudText Typo="Typo.body2" Align="Align.Right" Style="@SecondaryStyle">
+                                @(item is null ? "-" : item.Price.ToString("C", CultureInfo.CurrentCulture))
+                            </MudText>
+
+                            <div class="d-flex justify-center">
+                                <QuantityStepper Value="@rowLine.Quantity"
+                                                 ValueChanged="@(quantity => OnQuantityChangedAsync(rowLine, quantity))"
+                                                 Min="0"
+                                                 Max="@SaleService.MaxQuantity"/>
+                            </div>
+
+                            <MudText Typo="Typo.body2" Align="Align.Right" Style="font-weight: 600">
+                                @(item is null ? "-" : GetSubtotalText(item, rowLine))
+                            </MudText>
+                        </div>
+                    }
+                </MudStack>
+            }
+        </MudStack>
+
+        <MudStack Spacing="3">
+            <MudStack Row="true" Spacing="2">
+                <MudTextField Value="@CustomerName"
+                              ValueChanged="@OnCustomerNameChanged"
+                              T="string"
+                              Label="Name to call"
+                              Placeholder="e.g. Ana"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                              MaxLength="@CustomerNameMaxLength"
+                              Immediate="true"
+                              Class="flex-1"
+                              Style="min-width: 0"/>
+
+                <MudTextField Value="@Note"
+                              ValueChanged="@OnNoteChanged"
+                              T="string"
+                              Label="Note for the bar"
+                              Placeholder="e.g. no ice"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                              MaxLength="@NoteMaxLength"
+                              Immediate="true"
+                              Class="flex-1"
+                              Style="min-width: 0"/>
+            </MudStack>
+
+            <MudStack Row="true" AlignItems="AlignItems.End" Justify="Justify.SpaceBetween">
+                <MudStack Spacing="0">
+                    <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                        Total · @ItemsCount.ToCountText("item", "items") · counter order
+                    </MudText>
+
+                    <MudText Typo="Typo.h4" Style="font-weight: 700">
+                        @Total.ToString("C", CultureInfo.CurrentCulture)
+                    </MudText>
+                </MudStack>
+
+                @if (HasUnavailableLines)
+                {
+                    <MudText Typo="Typo.caption" Align="Align.Right" Style="@($"{GoneStyle}; max-width: 160px")">
+                        Remove what is no longer on the menu to take the payment.
+                    </MudText>
+                }
+            </MudStack>
+
+            <MudStack Row="true" Spacing="2">
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Size="Size.Large"
+                           Class="flex-1 py-3"
+                           StartIcon="@Icons.Material.Filled.Payments"
+                           Disabled="@(!CanPay)"
+                           OnClick="@OnPayInCash">
+                    Cash
+                </MudButton>
+
+                <MudButton Variant="Variant.Outlined"
+                           Color="Color.Primary"
+                           Size="Size.Large"
+                           Class="flex-1 py-3"
+                           StartIcon="@Icons.Material.Filled.CreditCard"
+                           Disabled="@(!CanPay)"
+                           OnClick="@OnPayByCard">
+                    Card
+                </MudButton>
+            </MudStack>
+        </MudStack>
+    </div>
+</MudPaper>
