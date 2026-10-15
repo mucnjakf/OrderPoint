@@ -17,4 +17,8 @@ public sealed record OrderTrackingDto(
     DateTimeOffset? ActivatedAtUtc,
     DateTimeOffset? CompletedAtUtc,
     DateTimeOffset? CancelledAtUtc,
+    PaymentStatus PaymentStatus,
+    PaymentMethod? PaymentMethod,
+    DateTimeOffset? PaidAtUtc,
+    DateTimeOffset? RefundedAtUtc,
     DateTimeOffset CreatedAtUtc);

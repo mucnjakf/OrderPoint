@@ -28,6 +28,8 @@ internal sealed class DeclineOrderEndpoint : IEndpoint
                 Declines an order. A bartender declines a pending order (any bartender) or one they accepted, and is
                 recorded on it. The admin can decline any open order (pending, accepted or active), e.g. one nobody
                 will finish at closing time; its bartender, if any, stays recorded. The reason is shown to the guest.
+                A paid order is refunded: a card at once (`paymentStatus` `Refunded`), cash at the register
+                (`RefundDue`).
 
                 - `403 Auth.AccountInactive`: the signed-in bartender was deactivated
                 - `403 Auth.AccountDeleted`: the signed-in bartender no longer exists

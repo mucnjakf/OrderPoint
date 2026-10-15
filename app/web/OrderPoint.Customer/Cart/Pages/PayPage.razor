@@ -1,0 +1,151 @@
+﻿@page "/cart/pay"
+
+<PageTitle>Pay</PageTitle>
+
+<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mb-2">
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack"
+                   Href="/cart"
+                   aria-label="Back to the cart"/>
+
+    <MudText Typo="Typo.h6" HtmlTag="h1">
+        Pay
+    </MudText>
+</MudStack>
+
+@if (TableService.TableCode is null)
+{
+    <MudAlert Severity="Severity.Warning" Variant="Variant.Text" Dense="true" Class="mb-3">
+        Scan the QR code on your table to order.
+    </MudAlert>
+}
+
+<StatefulView IsLoading="@IsLoading"
+              ShowContent="@Rows.Any()"
+              EmptyStateIcon="@Icons.Material.Filled.ShoppingCart"
+              EmptyStateText="Your cart is empty"
+              EmptyStateDetail="Add something from the menu.">
+    <EditForm Model="@Card" OnValidSubmit="@PayAsync">
+        <DataAnnotationsValidator/>
+
+        <MudStack Spacing="3">
+            <MudPaper Class="pa-4">
+                <MudStack Spacing="2">
+                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                        @SummaryText
+                    </MudText>
+
+                    @foreach ((CartLineDto line, MenuItemDto? item) in Rows)
+                    {
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Spacing="2">
+                            <MudText Typo="Typo.body1">
+                                <strong>@line.Quantity×</strong> @line.Name
+                            </MudText>
+
+                            @if (item is null)
+                            {
+                                <MudText Typo="Typo.body2" Style="color: var(--mud-palette-error-text)">
+                                    No longer on the menu
+                                </MudText>
+                            }
+                            else
+                            {
+                                <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                                    @((item.Price * line.Quantity).ToString("C", CultureInfo.CurrentCulture))
+                                </MudText>
+                            }
+                        </MudStack>
+                    }
+
+                    @if (CartService.Note is not null)
+                    {
+                        <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                            Note: @CartService.Note
+                        </MudText>
+                    }
+
+                    <MudDivider/>
+
+                    <MudStack Row="true" Justify="Justify.SpaceBetween">
+                        <MudText Typo="Typo.h6">Total</MudText>
+
+                        <MudText Typo="Typo.h6">
+                            @Total.ToString("C", CultureInfo.CurrentCulture)
+                        </MudText>
+                    </MudStack>
+                </MudStack>
+            </MudPaper>
+
+            <MudPaper Class="pa-4">
+                <MudStack Spacing="3">
+                    <MudText Typo="Typo.subtitle1" HtmlTag="h2">
+                        Card
+                    </MudText>
+
+                    <MudTextField @bind-Value="@Card.Number"
+                                  For="@(() => Card.Number)"
+                                  T="string"
+                                  Label="Card number"
+                                  Placeholder="1234 5678 9012 3456"
+                                  InputMode="InputMode.numeric"
+                                  Mask="@CardNumberMask"
+                                  Adornment="Adornment.End"
+                                  AdornmentIcon="@Icons.Material.Filled.CreditCard"
+                                  Variant="Variant.Outlined"
+                                  Immediate="true"/>
+
+                    <MudStack Row="true" Spacing="3">
+                        <MudTextField @bind-Value="@Card.Expiry"
+                                      For="@(() => Card.Expiry)"
+                                      T="string"
+                                      Label="Expiry"
+                                      Placeholder="MM/YY"
+                                      InputMode="InputMode.numeric"
+                                      Mask="@ExpiryMask"
+                                      Variant="Variant.Outlined"
+                                      Immediate="true"
+                                      Class="flex-1"
+                                      Style="min-width: 0"/>
+
+                        <MudTextField @bind-Value="@Card.Cvc"
+                                      For="@(() => Card.Cvc)"
+                                      T="string"
+                                      Label="CVC"
+                                      InputMode="InputMode.numeric"
+                                      Mask="@CvcMask"
+                                      Variant="Variant.Outlined"
+                                      Immediate="true"
+                                      Class="flex-1"
+                                      Style="min-width: 0"/>
+                    </MudStack>
+
+                    <MudAlert Severity="Severity.Info" Variant="Variant.Text" Dense="true">
+                        Test payments only: use 4242 4242 4242 4242 with any future date and CVC.
+                        4000 0000 0000 0002 is declined.
+                    </MudAlert>
+                </MudStack>
+            </MudPaper>
+
+            @if (HasUnavailableLines)
+            {
+                <MudText Typo="Typo.body2" Style="color: var(--mud-palette-error-text)">
+                    Something in your cart is no longer on the menu. Remove it in the cart to pay.
+                </MudText>
+            }
+
+            <MudButton ButtonType="ButtonType.Submit"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Size="Size.Large"
+                       FullWidth="true"
+                       Disabled="@(!CanPay)"
+                       StartIcon="@(IsPaying ? null : Icons.Material.Filled.Lock)">
+                @if (IsPaying)
+                {
+                    <MudProgressCircular Indeterminate="true" Size="Size.Small" Class="mr-2"/>
+                }
+
+                Pay @Total.ToString("C", CultureInfo.CurrentCulture)
+            </MudButton>
+        </MudStack>
+    </EditForm>
+</StatefulView>

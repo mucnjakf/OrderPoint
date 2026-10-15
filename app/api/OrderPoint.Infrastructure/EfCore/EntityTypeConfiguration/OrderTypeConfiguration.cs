@@ -66,6 +66,22 @@ internal sealed class OrderTypeConfiguration : IEntityTypeConfiguration<Order>
             .IsRequired(false);
 
         builder
+            .Property(order => order.PaymentStatus)
+            .IsRequired();
+
+        builder
+            .Property(order => order.PaymentMethod)
+            .IsRequired(false);
+
+        builder
+            .Property(order => order.PaidAtUtc)
+            .IsRequired(false);
+
+        builder
+            .Property(order => order.RefundedAtUtc)
+            .IsRequired(false);
+
+        builder
             .Property(order => order.CreatedAtUtc)
             .IsRequired();
 

@@ -12,7 +12,6 @@
         <MudButton Variant="Variant.Text"
                    Color="Color.Error"
                    StartIcon="@Icons.Material.Filled.DeleteSweep"
-                   Disabled="@IsPlacingOrder"
                    OnClick="@ClearCartAsync">
             Clear
         </MudButton>
@@ -79,7 +78,7 @@
                     @if (HasUnavailableLines)
                     {
                         <MudText Typo="Typo.body2" Style="color: var(--mud-palette-error-text)">
-                            Remove what is no longer on the menu to place the order.
+                            Remove what is no longer on the menu to check out.
                         </MudText>
                     }
 
@@ -87,15 +86,10 @@
                                Color="Color.Primary"
                                Size="Size.Large"
                                FullWidth="true"
-                               Disabled="@(!CanPlaceOrder)"
-                               StartIcon="@(IsPlacingOrder ? null : Icons.Material.Filled.Send)"
-                               OnClick="@PlaceOrderAsync">
-                        @if (IsPlacingOrder)
-                        {
-                            <MudProgressCircular Indeterminate="true" Size="Size.Small" Class="mr-2"/>
-                        }
-
-                        Place order
+                               Disabled="@(!CanCheckOut)"
+                               StartIcon="@Icons.Material.Filled.ShoppingCartCheckout"
+                               OnClick="@CheckOut">
+                        Checkout · @Total.ToString("C", CultureInfo.CurrentCulture)
                     </MudButton>
                 </MudStack>
             </MudPaper>

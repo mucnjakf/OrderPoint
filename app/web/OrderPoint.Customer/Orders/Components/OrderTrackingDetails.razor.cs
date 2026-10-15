@@ -28,6 +28,14 @@ public sealed partial class OrderTrackingDetails
 
     private bool CanCancel => Order.Status is OrderStatus.Pending && OnCancelClick.HasDelegate;
 
+    // Guests pay by card in this app
+    private string PaymentText => Order.PaymentStatus switch
+    {
+        PaymentStatus.Paid => "Paid by card",
+        PaymentStatus.RefundDue or PaymentStatus.Refunded => "Refunded to your card",
+        _ => "Not paid yet"
+    };
+
     private IReadOnlyList<(OrderStatus Status, DateTimeOffset? ReachedAtUtc)> StatusSteps =>
         Order.Status switch
         {

@@ -30,6 +30,14 @@ public sealed class Order : Entity
 
     public string? DeclineReason { get; private set; }
 
+    public PaymentStatus PaymentStatus { get; private set; }
+
+    public PaymentMethod? PaymentMethod { get; private set; }
+
+    public DateTimeOffset? PaidAtUtc { get; private set; }
+
+    public DateTimeOffset? RefundedAtUtc { get; private set; }
+
     public Guid? BartenderId { get; private set; }
 
     public Bartender? Bartender { get; private set; }
@@ -50,6 +58,7 @@ public sealed class Order : Entity
         TableCode = tableCode;
         Note = note;
         Status = status;
+        PaymentStatus = PaymentStatus.Unpaid;
     }
 
     public static Result<Order> Create(
@@ -135,6 +144,7 @@ public sealed class Order : Entity
         BartenderId = bartenderId;
         DeclinedAtUtc = now;
         DeclineReason = reason;
+        Refund(now);
 
         UpdatedAtUtc = now;
 
@@ -221,6 +231,7 @@ public sealed class Order : Entity
         Status = OrderStatus.Declined;
         DeclinedAtUtc = now;
         DeclineReason = reason;
+        Refund(now);
 
         UpdatedAtUtc = now;
 
@@ -239,9 +250,48 @@ public sealed class Order : Entity
 
         Status = OrderStatus.Cancelled;
         CancelledAtUtc = now;
+        Refund(now);
 
         UpdatedAtUtc = now;
 
         return Result.Success();
+    }
+
+    // The card was charged before the order was saved
+    public Result PayByCard()
+    {
+        if (PaymentStatus != PaymentStatus.Unpaid)
+        {
+            return Result.Failure(PaymentErrors.AlreadyPaid);
+        }
+
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+
+        PaymentStatus = PaymentStatus.Paid;
+        PaymentMethod = Enumerations.PaymentMethod.Card;
+        PaidAtUtc = now;
+
+        UpdatedAtUtc = now;
+
+        return Result.Success();
+    }
+
+    // A card is refunded at once (simulated); cash waits for the register to hand it back
+    private void Refund(DateTimeOffset now)
+    {
+        if (PaymentStatus != PaymentStatus.Paid)
+        {
+            return;
+        }
+
+        if (PaymentMethod == Enumerations.PaymentMethod.Card)
+        {
+            PaymentStatus = PaymentStatus.Refunded;
+            RefundedAtUtc = now;
+
+            return;
+        }
+
+        PaymentStatus = PaymentStatus.RefundDue;
     }
 }

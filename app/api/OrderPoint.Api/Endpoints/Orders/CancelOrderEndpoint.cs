@@ -19,7 +19,8 @@ internal sealed class CancelOrderEndpoint : IEndpoint
             .WithSummary("Cancel an order")
             .WithDescription("""
                 The guest who placed the order cancels it in the customer app, as long as no bartender has accepted
-                it yet. No token is needed; the order id (returned when the order is placed) is not guessable.
+                it yet. No token is needed; the order id (returned when the order is placed) is not guessable. The
+                card it was paid with is refunded (`paymentStatus` `Refunded`).
 
                 - `404 Order.NotFound`: the order does not exist
                 - `409 Order.InvalidStatusTransition`: the order is not pending (e.g. a bartender accepted it first)

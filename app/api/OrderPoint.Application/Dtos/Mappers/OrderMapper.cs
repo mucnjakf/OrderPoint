@@ -19,6 +19,10 @@ internal static class OrderMapper
         order.ActivatedAtUtc,
         order.CompletedAtUtc,
         order.CancelledAtUtc,
+        order.PaymentStatus,
+        order.PaymentMethod,
+        order.PaidAtUtc,
+        order.RefundedAtUtc,
         order.CreatedAtUtc,
         order.UpdatedAtUtc);
 
@@ -36,6 +40,10 @@ internal static class OrderMapper
         order.ActivatedAtUtc,
         order.CompletedAtUtc,
         order.CancelledAtUtc,
+        order.PaymentStatus,
+        order.PaymentMethod,
+        order.PaidAtUtc,
+        order.RefundedAtUtc,
         order.CreatedAtUtc);
 
     internal static OrderItemDto ToOrderItemDto(this OrderItem orderItem) => new(

@@ -3,6 +3,7 @@ using OrderPoint.Application.Caching;
 using OrderPoint.Application.Dtos;
 using OrderPoint.Application.Dtos.Mappers;
 using OrderPoint.Application.Mediator;
+using OrderPoint.Application.Payments;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Application.Telemetry;
 using OrderPoint.Domain.Entities;
@@ -16,7 +17,8 @@ public sealed record CreateOrderItemCommand(Guid ItemId, int Quantity);
 public sealed record CreateOrderCommand(
     string TableCode,
     string? Note,
-    IReadOnlyList<CreateOrderItemCommand> Items)
+    IReadOnlyList<CreateOrderItemCommand> Items,
+    CardDetails Card)
     : ICommand<OrderDto>, ICacheInvalidatingCommand, IOrderNotifyingCommand
 {
     IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.OrderChanges;
@@ -26,6 +28,7 @@ internal sealed partial class CreateOrderCommandHandler(
     IOrderRepository orderRepository,
     IItemRepository itemRepository,
     ITableRepository tableRepository,
+    IPaymentProvider paymentProvider,
     IUnitOfWork unitOfWork,
     ApplicationTelemetry telemetry,
     ILogger<CreateOrderCommandHandler> logger)
@@ -62,6 +65,25 @@ internal sealed partial class CreateOrderCommandHandler(
             return Result.Failure<OrderDto>(result.Error);
         }
 
+        // Charged before saving, so a declined card leaves no order behind
+        decimal total = result.Value.Items.Sum(orderItem => orderItem.Quantity * orderItem.UnitPrice);
+
+        bool isCardApproved = await paymentProvider.ChargeCardAsync(command.Card, total, cancellationToken);
+
+        if (!isCardApproved)
+        {
+            LogCardDeclined(table.Code, total);
+
+            return Result.Failure<OrderDto>(PaymentErrors.CardDeclined);
+        }
+
+        Result paymentResult = result.Value.PayByCard();
+
+        if (paymentResult.IsFailure)
+        {
+            return Result.Failure<OrderDto>(paymentResult.Error);
+        }
+
         await orderRepository.CreateAsync(result.Value, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
@@ -79,4 +101,9 @@ internal sealed partial class CreateOrderCommandHandler(
         Level = LogLevel.Information,
         Message = "Order #{OrderNumber} placed at table {TableCode}: {LineCount} lines, {Total} EUR")]
     private partial void LogOrderPlaced(int orderNumber, string tableCode, int lineCount, decimal total);
+
+    [LoggerMessage(
+        Level = LogLevel.Warning,
+        Message = "Card declined for an order at table {TableCode}: {Total} EUR")]
+    private partial void LogCardDeclined(string tableCode, decimal total);
 }

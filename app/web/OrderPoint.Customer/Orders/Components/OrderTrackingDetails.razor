@@ -107,6 +107,16 @@
                     @Order.Total.ToString("C", CultureInfo.CurrentCulture)
                 </MudText>
             </MudStack>
+
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                <MudIcon Icon="@Icons.Material.Filled.CreditCard"
+                         Size="Size.Small"
+                         Style="color: var(--mud-palette-text-secondary)"/>
+
+                <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                    @PaymentText
+                </MudText>
+            </MudStack>
         </MudStack>
     </MudPaper>
 </MudStack>

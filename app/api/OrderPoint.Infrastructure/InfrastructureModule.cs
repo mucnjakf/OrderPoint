@@ -4,11 +4,13 @@ using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OrderPoint.Application.Identity;
+using OrderPoint.Application.Payments;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Application.Storage;
 using OrderPoint.Infrastructure.EfCore;
 using OrderPoint.Infrastructure.EfCore.Repositories;
 using OrderPoint.Infrastructure.Identity;
+using OrderPoint.Infrastructure.Payments;
 using OrderPoint.Infrastructure.Storage;
 
 namespace OrderPoint.Infrastructure;
@@ -43,6 +45,7 @@ public static class InfrastructureModule
         services.AddScoped<IDashboardRepository, DashboardEfCoreRepository>();
 
         services.AddScoped<IImageStorage, BlobImageStorage>();
+        services.AddScoped<IPaymentProvider, SimulatedPaymentProvider>();
 
         // In memory and, through the IDistributedCache the API registers, in Redis; writes remove entries by tag
         services.AddHybridCache(options => options.DefaultEntryOptions = new HybridCacheEntryOptions

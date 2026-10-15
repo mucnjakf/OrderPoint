@@ -17,5 +17,9 @@ public sealed record OrderDto(
     DateTimeOffset? ActivatedAtUtc,
     DateTimeOffset? CompletedAtUtc,
     DateTimeOffset? CancelledAtUtc,
+    PaymentStatus PaymentStatus,
+    PaymentMethod? PaymentMethod,
+    DateTimeOffset? PaidAtUtc,
+    DateTimeOffset? RefundedAtUtc,
     DateTimeOffset CreatedAtUtc,
     DateTimeOffset? UpdatedAtUtc);

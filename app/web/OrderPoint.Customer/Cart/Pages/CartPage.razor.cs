@@ -1,17 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
-using MudBlazor;
-using OrderPoint.Customer.Cart.Dialogs;
 using OrderPoint.Customer.Cart.Dtos;
 using OrderPoint.Customer.Cart.Services;
 using OrderPoint.Customer.Menu.Dtos;
 using OrderPoint.Customer.Menu.Services;
-using OrderPoint.Customer.Orders.Api;
-using OrderPoint.Customer.Orders.Api.Requests;
-using OrderPoint.Customer.Orders.Services;
 using OrderPoint.Customer.Tables.Services;
-using OrderPoint.Shared.Errors;
-using OrderPoint.Shared.Orders.Dtos;
-using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Customer.Cart.Pages;
 
@@ -23,14 +15,6 @@ public sealed partial class CartPage : IDisposable
 
     private const int LoadingRowsCount = 3;
 
-    private const string ItemIsUnavailableCode = "Order.ItemIsUnavailable";
-
-    private const string ItemNotFoundCode = "Item.NotFound";
-
-    private const string TableNotFoundCode = "Table.NotFound";
-
-    private const string TableIsInactiveCode = "Table.IsInactive";
-
     [Inject]
     private CartService CartService { get; set; } = null!;
 
@@ -41,28 +25,11 @@ public sealed partial class CartPage : IDisposable
     private TableService TableService { get; set; } = null!;
 
     [Inject]
-    private ApiService ApiService { get; set; } = null!;
-
-    [Inject]
-    private OrderApiClient OrderApiClient { get; set; } = null!;
-
-    [Inject]
     private NavigationManager NavigationManager { get; set; } = null!;
-
-    [Inject]
-    private MyOrdersService MyOrdersService { get; set; } = null!;
-
-    [Inject]
-    private OrderTrackingHubService OrderTrackingHubService { get; set; } = null!;
-
-    [Inject]
-    private IDialogService DialogService { get; set; } = null!;
 
     private Dictionary<Guid, MenuItemDto> MenuItems { get; set; } = [];
 
     private bool IsLoading { get; set; } = true;
-
-    private bool IsPlacingOrder { get; set; }
 
     private string? Note { get; set; }
 
@@ -75,8 +42,8 @@ public sealed partial class CartPage : IDisposable
         .Where(row => row.Item is not null)
         .Sum(row => row.Item!.Price * row.Line.Quantity);
 
-    private bool CanPlaceOrder =>
-        TableService.TableCode is not null && !HasUnavailableLines && !IsPlacingOrder && CartService.Lines.Count != 0;
+    private bool CanCheckOut =>
+        TableService.TableCode is not null && !HasUnavailableLines && CartService.Lines.Count != 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -126,86 +93,9 @@ public sealed partial class CartPage : IDisposable
         await CartService.SetNoteAsync(Note);
     }
 
-    private async Task PlaceOrderAsync()
+    private void CheckOut()
     {
-        bool isConfirmed = await ShowPlaceOrderDialogAsync();
-
-        if (!isConfirmed)
-        {
-            return;
-        }
-
-        IsPlacingOrder = true;
-
-        OrderDto? order = await ApiService.ExecuteAsync(CreateOrderAsync);
-
-        IsPlacingOrder = false;
-
-        if (order is null)
-        {
-            return;
-        }
-
-        await MyOrdersService.AddAsync(order.Id, order.CreatedAtUtc);
-        await OrderTrackingHubService.TrackAsync(order.Id);
-        await CartService.ClearAsync();
-
-        // The status page says it was sent, so no snackbar
-        NavigationManager.NavigateTo($"/orders/{order.Id}");
-    }
-
-    private async Task<bool> ShowPlaceOrderDialogAsync()
-    {
-        var parameters = new DialogParameters<PlaceOrderDialog>
-        {
-            { dialog => dialog.TableCode, TableService.TableCode! },
-            { dialog => dialog.ItemsCount, CartService.ItemsCount },
-            { dialog => dialog.Total, Total }
-        };
-
-        var options = new DialogOptions
-        {
-            MaxWidth = MaxWidth.ExtraSmall,
-            FullWidth = true
-        };
-
-        IDialogReference dialogReference = await DialogService
-            .ShowAsync<PlaceOrderDialog>(string.Empty, parameters, options);
-
-        DialogResult dialogResult = (await dialogReference.Result)!;
-
-        return !dialogResult.Canceled;
-    }
-
-    private async Task<OrderDto> CreateOrderAsync()
-    {
-        CreateOrderRequest request = new(
-            TableService.TableCode!,
-            CartService.Note,
-            CartService.Lines.Select(line => new CreateOrderItemRequest(line.ItemId, line.Quantity)).ToList());
-
-        try
-        {
-            return await OrderApiClient.CreateOrderAsync(request);
-        }
-        catch (ApiException exception)
-            when (exception.HasErrorCode(ItemIsUnavailableCode) || exception.HasErrorCode(ItemNotFoundCode))
-        {
-            // The menu changed since it was loaded: reload it, so the cart marks what is gone
-            MenuService.Reset();
-
-            await GetMenuItemsAsync();
-
-            throw;
-        }
-        catch (ApiException exception)
-            when (exception.HasErrorCode(TableNotFoundCode) || exception.HasErrorCode(TableIsInactiveCode))
-        {
-            // The table was removed or closed since it was scanned: the cart asks for a scan again
-            await TableService.ClearAsync();
-
-            throw;
-        }
+        NavigationManager.NavigateTo("/cart/pay");
     }
 
     // Every line and the note at once

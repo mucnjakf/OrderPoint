@@ -3,4 +3,5 @@
 internal sealed record CreateOrderRequest(
     string TableCode,
     string? Note,
-    IReadOnlyList<CreateOrderItemRequest> Items);
+    IReadOnlyList<CreateOrderItemRequest> Items,
+    CreateOrderCardRequest Card);

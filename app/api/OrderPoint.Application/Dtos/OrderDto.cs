@@ -17,6 +17,10 @@ namespace OrderPoint.Application.Dtos;
 /// <param name="ActivatedAtUtc">When the preparation started (UTC), or `null`.</param>
 /// <param name="CompletedAtUtc">When the order was completed (UTC), or `null`.</param>
 /// <param name="CancelledAtUtc">When the guest cancelled the order (UTC), or `null`.</param>
+/// <param name="PaymentStatus">The payment: `Unpaid`, `Paid`, `RefundDue` (cash to hand back), or `Refunded`.</param>
+/// <param name="PaymentMethod">How it was paid: `Cash` or `Card`, or `null` while unpaid.</param>
+/// <param name="PaidAtUtc">When it was paid (UTC), or `null`.</param>
+/// <param name="RefundedAtUtc">When the payment was refunded (UTC), or `null`.</param>
 /// <param name="CreatedAtUtc">When the order was placed (UTC).</param>
 /// <param name="UpdatedAtUtc">When it was last updated (UTC), or `null` if it never was.</param>
 public sealed record OrderDto(
@@ -34,5 +38,9 @@ public sealed record OrderDto(
     DateTimeOffset? ActivatedAtUtc,
     DateTimeOffset? CompletedAtUtc,
     DateTimeOffset? CancelledAtUtc,
+    PaymentStatus PaymentStatus,
+    PaymentMethod? PaymentMethod,
+    DateTimeOffset? PaidAtUtc,
+    DateTimeOffset? RefundedAtUtc,
     DateTimeOffset CreatedAtUtc,
     DateTimeOffset? UpdatedAtUtc);
