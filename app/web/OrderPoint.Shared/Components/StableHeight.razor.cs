@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
-namespace OrderPoint.Admin.Shared.Components;
+namespace OrderPoint.Shared.Components;
 
 // Keeps a list as tall as before while a page loads, and while on later pages, so the pager below never moves
 public sealed partial class StableHeight : IAsyncDisposable
 {
-    private const string ModulePath = "./Shared/Components/StableHeight.razor.js";
+    private const string ModulePath = "./_content/OrderPoint.Shared/Components/StableHeight.razor.js";
 
     private const string FramedStyle =
         "background-color: rgba(var(--mud-palette-text-primary-rgb), 0.02); " +

@@ -35,18 +35,78 @@ public sealed partial class OrderDetailsDialog : IDisposable
     private IMudDialogInstance MudDialogInstance { get; set; } = null!;
 
     // The parameter is reset whenever the dialog provider re-renders, so live updates go here
-    private string PaidAtText => CurrentOrder.PaidAtUtc?.ToDisplayDateTime(TimeZoneService.TimeZone) ?? "Not yet";
-
-    private string ChangeText => CurrentOrder.CashReceived is { } cashReceived
-        ? (cashReceived - CurrentOrder.Total).ToString("C", CultureInfo.CurrentCulture)
-        : "-";
-
-    // Who took the money at the register; a guest's card in the customer app has nobody
-    private string PaidToText => CurrentOrder.PaidByBartender is { } paidBy
-        ? $"{paidBy.FirstName} {paidBy.LastName}"
-        : CurrentOrder.PaymentMethod is null ? "-" : "The guest, in the customer app";
-
     private OrderDto CurrentOrder { get; set; } = null!;
+
+    // One row of equal tiles, however many facts the payment has
+    private string PaymentFactsStyle =>
+        $"display: grid; grid-template-columns: repeat({PaymentFacts.Count}, minmax(0, 1fr)); gap: 12px;";
+
+    private IReadOnlyList<(string Icon, string Label, string Value)> PaymentFacts
+    {
+        get
+        {
+            string total = CurrentOrder.Total.ToString("C", CultureInfo.CurrentCulture);
+
+            if (CurrentOrder.PaymentStatus == PaymentStatus.Unpaid)
+            {
+                return CurrentOrder.Status switch
+                {
+                    OrderStatus.Declined =>
+                    [
+                        (Icons.Material.Filled.Euro, "Amount due", "Nothing"),
+                        (Icons.Material.Filled.Info, "Why", "Declined before it was paid")
+                    ],
+                    OrderStatus.Cancelled =>
+                    [
+                        (Icons.Material.Filled.Euro, "Amount due", "Nothing"),
+                        (Icons.Material.Filled.Info, "Why", "Cancelled before it was paid")
+                    ],
+                    _ =>
+                    [
+                        (Icons.Material.Filled.Euro, "Amount due", total),
+                        (Icons.Material.Filled.PointOfSale, "Pays at", "The register")
+                    ]
+                };
+            }
+
+            // A guest's card in the customer app has nobody at the register
+            string paidTo = CurrentOrder.PaidByBartender is { } paidBy
+                ? $"{paidBy.FirstName} {paidBy.LastName}"
+                : "Guest, online";
+
+            string paidAt = CurrentOrder.PaidAtUtc!.Value.ToDisplayDateTime(TimeZoneService.TimeZone);
+
+            List<(string Icon, string Label, string Value)> facts =
+            [
+                (Icons.Material.Filled.Euro, "Amount", total),
+                (Icons.Material.Filled.Schedule, "Paid", paidAt),
+                (Icons.Material.Filled.Person, "Paid to", paidTo)
+            ];
+
+            if (CurrentOrder.CashReceived is { } cashReceived)
+            {
+                string received = cashReceived.ToString("C", CultureInfo.CurrentCulture);
+                string change = (cashReceived - CurrentOrder.Total).ToString("C", CultureInfo.CurrentCulture);
+
+                facts.Add((Icons.Material.Filled.Payments, "Cash received", received));
+                facts.Add((Icons.Material.Filled.CurrencyExchange, "Change", change));
+            }
+
+            if (CurrentOrder.PaymentStatus == PaymentStatus.RefundDue)
+            {
+                facts.Add((Icons.Material.Filled.AssignmentReturn, "Refund", "Due at the register"));
+            }
+
+            if (CurrentOrder.RefundedAtUtc is { } refundedAtUtc)
+            {
+                string refundedAt = refundedAtUtc.ToDisplayDateTime(TimeZoneService.TimeZone);
+
+                facts.Add((Icons.Material.Filled.AssignmentReturn, "Refunded", refundedAt));
+            }
+
+            return facts;
+        }
+    }
 
     private bool IsDeclining { get; set; }
 

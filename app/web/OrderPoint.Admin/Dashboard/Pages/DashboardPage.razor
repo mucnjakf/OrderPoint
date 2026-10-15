@@ -6,11 +6,10 @@
     <MudToggleGroup T="DashboardPeriod"
                     @bind-Value="@SelectedPeriod"
                     @bind-Value:after="@OnPeriodChangedAsync"
-                    Color="Color.Primary"
-                    Size="Size.Small">
+                    Color="Color.Primary">
         @foreach (DashboardPeriod period in Enum.GetValues<DashboardPeriod>())
         {
-            <MudToggleItem Value="@period" Text="@period.GetLabel()"/>
+            <MudToggleItem Value="@period" Text="@period.GetLabel()" Class="px-5 py-2"/>
         }
     </MudToggleGroup>
 </PageHeader>

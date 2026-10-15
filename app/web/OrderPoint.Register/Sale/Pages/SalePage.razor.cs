@@ -6,6 +6,7 @@ using OrderPoint.Register.Orders.Api.Requests;
 using OrderPoint.Register.Orders.Services;
 using OrderPoint.Register.Sale.Dtos;
 using OrderPoint.Register.Sale.Services;
+using OrderPoint.Shared.Dtos;
 using OrderPoint.Shared.Errors;
 using OrderPoint.Shared.Extensions;
 using OrderPoint.Shared.Menu.Dtos;
@@ -21,8 +22,12 @@ public sealed partial class SalePage : IDisposable
     // Two rows on a desktop
     private const int LoadingCardsCount = 8;
 
-    // As tall as the screen under the app bar (64px) and the page padding, so the sale sits at the bottom
-    private const string PageStyle = "display: flex; flex-direction: column; min-height: calc(100vh - 88px);";
+    private const int CategoriesPageSize = 12;
+
+    private const int ItemsPageSize = 18;
+
+    // As tall as the screen under the app bar (64px) and the top padding, so the sale sits at the bottom
+    private const string PageStyle = "display: flex; flex-direction: column; min-height: calc(100vh - 76px);";
 
     private const string ItemIsUnavailableCode = "Order.ItemIsUnavailable";
 
@@ -53,6 +58,8 @@ public sealed partial class SalePage : IDisposable
 
     private string? SearchQuery { get; set; }
 
+    private int PageNumber { get; set; } = 1;
+
     private bool IsSearching => !string.IsNullOrWhiteSpace(SearchQuery);
 
     // Null while the categories show, or once the category left the menu
@@ -67,6 +74,10 @@ public sealed partial class SalePage : IDisposable
         ? (SelectedCategory?.Items ?? [])
             .Where(item => item.Name.Contains(SearchQuery!.Trim(), StringComparison.CurrentCultureIgnoreCase))
         : SelectedCategory?.Items ?? [];
+
+    private PaginationDto<MenuCategoryDto> CategoriesPage => GetPage(FoundCategories.ToList(), CategoriesPageSize);
+
+    private PaginationDto<MenuItemDto> ItemsPage => GetPage(FoundItems.ToList(), ItemsPageSize);
 
     private bool HasCards => SelectedCategory is null ? FoundCategories.Any() : FoundItems.Any();
 
@@ -136,12 +147,37 @@ public sealed partial class SalePage : IDisposable
     {
         SelectedCategoryId = category.Id;
         SearchQuery = null;
+        PageNumber = 1;
     }
 
     private void ShowCategories()
     {
         SelectedCategoryId = null;
         SearchQuery = null;
+        PageNumber = 1;
+    }
+
+    private void ShowFirstPage()
+    {
+        PageNumber = 1;
+    }
+
+    private void ShowPage(int pageNumber)
+    {
+        PageNumber = pageNumber;
+    }
+
+    // The menu is already loaded, so pages are cut from it; a page that is gone after a menu change shows the last one
+    private PaginationDto<T> GetPage<T>(IReadOnlyList<T> found, int pageSize)
+    {
+        int totalPages = Math.Max(1, (int)Math.Ceiling(found.Count / (double)pageSize));
+        int pageNumber = Math.Min(PageNumber, totalPages);
+
+        return new PaginationDto<T>(
+            found.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList(),
+            pageNumber,
+            pageSize,
+            found.Count);
     }
 
     private void AddItem(MenuItemDto item)

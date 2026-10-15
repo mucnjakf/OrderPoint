@@ -2,12 +2,12 @@
 using Microsoft.JSInterop;
 using OrderPoint.Shared.Dtos;
 
-namespace OrderPoint.Admin.Shared.Components;
+namespace OrderPoint.Shared.Components;
 
 // Rendered while loading too (disabled), so it stays where it is
 public sealed partial class ListPager<TItem> : IAsyncDisposable
 {
-    private const string ModulePath = "./Shared/Components/ListPager.razor.js";
+    private const string ModulePath = "./_content/OrderPoint.Shared/Components/ListPager.razor.js";
 
     private IJSObjectReference? _module;
 

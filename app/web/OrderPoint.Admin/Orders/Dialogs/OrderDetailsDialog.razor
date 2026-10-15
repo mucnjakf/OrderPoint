@@ -111,7 +111,7 @@
 
             <MudItem xs="12">
                 <MudPaper Class="pa-5">
-                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-2">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-4">
                         <MudIcon Icon="@CurrentOrder.GetPaymentIcon()" Color="@CurrentOrder.GetPaymentColor()"/>
 
                         <MudText Typo="Typo.subtitle1" Class="flex-1">
@@ -127,40 +127,24 @@
                         </MudChip>
                     </MudStack>
 
-                    <MudGrid Spacing="3">
-                        <MudItem xs="12" sm="6">
-                            <TextDisplayRow Icon="@Icons.Material.Filled.Schedule"
-                                            Label="Paid"
-                                            Text="@PaidAtText"
-                                            ShowDivider="true"/>
+                    <div style="@PaymentFactsStyle">
+                        @foreach ((string icon, string label, string value) in PaymentFacts)
+                        {
+                            <MudPaper Outlined="true" Elevation="0" Class="pa-3">
+                                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mb-1">
+                                    <MudIcon Icon="@icon" Size="Size.Small" Color="Color.Surface"/>
 
-                            <TextDisplayRow Icon="@Icons.Material.Filled.Person"
-                                            Label="Paid to"
-                                            Text="@PaidToText"/>
-                        </MudItem>
+                                    <MudText Typo="Typo.caption" Color="Color.Surface">
+                                        @label
+                                    </MudText>
+                                </MudStack>
 
-                        <MudItem xs="12" sm="6">
-                            @if (CurrentOrder.CashReceived is { } cashReceived)
-                            {
-                                <TextDisplayRow Icon="@Icons.Material.Filled.Payments"
-                                                Label="Cash received"
-                                                Text="@cashReceived.ToString("C", CultureInfo.CurrentCulture)"
-                                                ShowDivider="true"/>
-
-                                <TextDisplayRow Icon="@Icons.Material.Filled.CurrencyExchange"
-                                                Label="Change"
-                                                Text="@ChangeText"
-                                                ShowDivider="@(CurrentOrder.RefundedAtUtc is not null)"/>
-                            }
-
-                            @if (CurrentOrder.RefundedAtUtc is { } refundedAtUtc)
-                            {
-                                <TextDisplayRow Icon="@Icons.Material.Filled.AssignmentReturn"
-                                                Label="Refunded"
-                                                Text="@refundedAtUtc.ToDisplayDateTime(TimeZoneService.TimeZone)"/>
-                            }
-                        </MudItem>
-                    </MudGrid>
+                                <MudText Typo="Typo.body1" Style="font-weight: 600">
+                                    @value
+                                </MudText>
+                            </MudPaper>
+                        }
+                    </div>
                 </MudPaper>
             </MudItem>
 

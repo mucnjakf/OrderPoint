@@ -16,8 +16,10 @@ public sealed partial class SalePanel
     private const int CustomerNameMaxLength = 30;
 
     // At the bottom of the screen: pushed there on a short page (the page is a flex column of the screen's height),
-    // stuck there while the cards scroll
-    private const string PanelStyle = "position: sticky; bottom: 12px; z-index: 2; margin-top: auto;";
+    // stuck there while the cards scroll; a solid bar over the page padding, so nothing shows at its sides or below it
+    private const string PanelStyle =
+        "position: sticky; bottom: 0; z-index: 2; margin: auto -12px -12px; " +
+        "border-top: 1px solid var(--mud-palette-lines-default);";
 
     private const string PanelGridStyle =
         "display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 24px; align-items: start;";

@@ -118,6 +118,11 @@ public sealed partial class TodayPage : IDisposable
         return $"{bartender.PaymentsCount.ToCountText("payment", "payments")} · cash {cash} · card {card}";
     }
 
+    private static string GetBartenderTotalText(RegisterBartenderDto bartender)
+    {
+        return (bartender.CashTotal + bartender.CardTotal).ToString("C", CultureInfo.CurrentCulture);
+    }
+
     private static string GetMethodText(OrderDto order)
     {
         if (order.PaymentMethod == PaymentMethod.Cash)

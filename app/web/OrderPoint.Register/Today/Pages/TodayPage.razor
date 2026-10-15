@@ -1,4 +1,4 @@
-﻿@page "/today"
+﻿@page "/"
 
 <PageTitle>Today</PageTitle>
 
@@ -64,37 +64,39 @@
                           Compact="true"
                           EmptyStateIcon="@Icons.Material.Filled.People"
                           EmptyStateText="No payments taken yet">
-                <MudStack Spacing="3">
+                <MudStack Spacing="2">
                     @foreach (RegisterBartenderDto bartender in Day!.Bartenders)
                     {
-                        <MudStack @key="@bartender.Id" Row="true" AlignItems="AlignItems.Center" Spacing="3">
-                            <MudAvatar Color="Color.Primary" Size="Size.Small">
-                                @if (bartender.ImageUrl is not null)
-                                {
-                                    <MudImage Src="@bartender.ImageUrl"
-                                              Alt="Bartender photo"
-                                              ObjectFit="ObjectFit.Cover"/>
-                                }
-                                else
-                                {
-                                    @(bartender.FirstName[..1])
-                                }
-                            </MudAvatar>
+                        <MudPaper @key="@bartender.Id" Outlined="true" Class="pa-3">
+                            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                                <MudAvatar Color="Color.Primary" Size="Size.Small">
+                                    @if (bartender.ImageUrl is not null)
+                                    {
+                                        <MudImage Src="@bartender.ImageUrl"
+                                                  Alt="Bartender photo"
+                                                  ObjectFit="ObjectFit.Cover"/>
+                                    }
+                                    else
+                                    {
+                                        @(bartender.FirstName[..1])
+                                    }
+                                </MudAvatar>
 
-                            <MudStack Spacing="0" Class="flex-1" Style="min-width: 0">
-                                <MudText Typo="Typo.body2">
-                                    @bartender.FirstName @bartender.LastName
-                                </MudText>
+                                <MudStack Spacing="0" Class="flex-1" Style="min-width: 0">
+                                    <MudText Typo="Typo.body2">
+                                        @bartender.FirstName @bartender.LastName
+                                    </MudText>
 
-                                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
-                                    @GetBartenderText(bartender)
+                                    <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                                        @GetBartenderText(bartender)
+                                    </MudText>
+                                </MudStack>
+
+                                <MudText Typo="Typo.body1" Style="font-weight: 600">
+                                    @GetBartenderTotalText(bartender)
                                 </MudText>
                             </MudStack>
-
-                            <MudText Typo="Typo.body1" Style="font-weight: 600">
-                                @((bartender.CashTotal + bartender.CardTotal).ToString("C", CultureInfo.CurrentCulture))
-                            </MudText>
-                        </MudStack>
+                        </MudPaper>
                     }
                 </MudStack>
             </StatefulView>

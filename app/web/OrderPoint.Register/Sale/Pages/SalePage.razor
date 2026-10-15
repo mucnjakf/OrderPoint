@@ -1,9 +1,9 @@
-﻿@page "/"
+﻿@page "/sales"
 
 <PageTitle>Sale</PageTitle>
 
 <div style="@PageStyle">
-    <div>
+    <div class="pb-3">
         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-3">
             @if (SelectedCategory is not null)
             {
@@ -31,6 +31,7 @@
         </MudStack>
 
         <MudTextField @bind-Value="@SearchQuery"
+                      @bind-Value:after="@ShowFirstPage"
                       T="string"
                       Placeholder="@(SelectedCategory is null ? "Search categories" : "Search items")"
                       Variant="Variant.Outlined"
@@ -60,18 +61,20 @@
                 @if (SelectedCategory is null)
                 {
                     <div style="@SaleLayout.CategoryGridStyle">
-                        @foreach (MenuCategoryDto category in FoundCategories)
+                        @foreach (MenuCategoryDto category in CategoriesPage.Items)
                         {
                             MenuCategoryDto cardCategory = category;
 
                             <CategoryCard @key="@cardCategory.Id" Category="@cardCategory" OnClick="@SelectCategory"/>
                         }
                     </div>
+
+                    <ListPager Pagination="@CategoriesPage" IsLoading="false" OnPageChanged="@ShowPage"/>
                 }
                 else
                 {
                     <div style="@SaleLayout.ItemGridStyle">
-                        @foreach (MenuItemDto item in FoundItems)
+                        @foreach (MenuItemDto item in ItemsPage.Items)
                         {
                             MenuItemDto tileItem = item;
 
@@ -81,6 +84,8 @@
                                       OnClick="@AddItem"/>
                         }
                     </div>
+
+                    <ListPager Pagination="@ItemsPage" IsLoading="false" OnPageChanged="@ShowPage"/>
                 }
             </ChildContent>
         </StatefulView>
