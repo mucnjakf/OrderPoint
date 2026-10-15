@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using MudBlazor;
+using Microsoft.JSInterop;
 using OrderPoint.Customer.Cart.Dtos;
 using OrderPoint.Customer.Cart.Services;
 using OrderPoint.Customer.Menu.Dtos;
@@ -16,8 +16,10 @@ using OrderPoint.Shared.Services;
 namespace OrderPoint.Customer.Cart.Pages;
 
 // Guests pay when ordering: the card is charged, then the order goes to the bar
-public sealed partial class PayPage : IDisposable
+public sealed partial class PayPage : IAsyncDisposable
 {
+    private const string ModulePath = "./Cart/Pages/PayPage.razor.js";
+
     private const string CartUri = "/cart";
 
     private const string ItemIsUnavailableCode = "Order.ItemIsUnavailable";
@@ -52,14 +54,15 @@ public sealed partial class PayPage : IDisposable
     [Inject]
     private OrderTrackingHubService OrderTrackingHubService { get; set; } = null!;
 
+    [Inject]
+    private IJSRuntime JsRuntime { get; set; } = null!;
+
+    private IJSObjectReference? _module;
+
     private CreateOrderCardRequest Card { get; } = new();
 
-    // Digits only, with the spaces and the slash typed in for the guest; a mask keeps state, so one per page
-    private PatternMask CardNumberMask { get; } = new("0000 0000 0000 0000 000");
-
-    private PatternMask ExpiryMask { get; } = new("00/00");
-
-    private PatternMask CvcMask { get; } = new("0000");
+    // The browser formats the card fields as the guest types; they reach the server when the guest leaves them
+    private ElementReference CardFieldsElement { get; set; }
 
     private Dictionary<Guid, MenuItemDto> MenuItems { get; set; } = [];
 
@@ -91,9 +94,36 @@ public sealed partial class PayPage : IDisposable
         IsLoading = false;
     }
 
-    public void Dispose()
+    // The card fields render once the menu has loaded
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_module is not null || CardFieldsElement.Id is null)
+        {
+            return;
+        }
+
+        _module = await JsRuntime.InvokeAsync<IJSObjectReference>("import", ModulePath);
+
+        await _module.InvokeVoidAsync("formatCardFields", CardFieldsElement);
+    }
+
+    public async ValueTask DisposeAsync()
     {
         MenuService.Changed -= OnMenuChanged;
+
+        if (_module is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await _module.DisposeAsync();
+        }
+        catch (JSDisconnectedException)
+        {
+            // The browser is already gone, and the module with it
+        }
     }
 
     private async Task GetMenuItemsAsync()

@@ -76,7 +76,7 @@
             </MudPaper>
 
             <MudPaper Class="pa-4">
-                <MudStack Spacing="3">
+                <div @ref="@CardFieldsElement" class="d-flex flex-column gap-3">
                     <MudText Typo="Typo.subtitle1" HtmlTag="h2">
                         Card
                     </MudText>
@@ -87,11 +87,11 @@
                                   Label="Card number"
                                   Placeholder="1234 5678 9012 3456"
                                   InputMode="InputMode.numeric"
-                                  Mask="@CardNumberMask"
+                                  data-format="card-number"
+                                  autocomplete="cc-number"
                                   Adornment="Adornment.End"
                                   AdornmentIcon="@Icons.Material.Filled.CreditCard"
-                                  Variant="Variant.Outlined"
-                                  Immediate="true"/>
+                                  Variant="Variant.Outlined"/>
 
                     <MudStack Row="true" Spacing="3">
                         <MudTextField @bind-Value="@Card.Expiry"
@@ -100,9 +100,9 @@
                                       Label="Expiry"
                                       Placeholder="MM/YY"
                                       InputMode="InputMode.numeric"
-                                      Mask="@ExpiryMask"
+                                      data-format="expiry"
+                                      autocomplete="cc-exp"
                                       Variant="Variant.Outlined"
-                                      Immediate="true"
                                       Class="flex-1"
                                       Style="min-width: 0"/>
 
@@ -111,9 +111,9 @@
                                       T="string"
                                       Label="CVC"
                                       InputMode="InputMode.numeric"
-                                      Mask="@CvcMask"
+                                      data-format="cvc"
+                                      autocomplete="cc-csc"
                                       Variant="Variant.Outlined"
-                                      Immediate="true"
                                       Class="flex-1"
                                       Style="min-width: 0"/>
                     </MudStack>
@@ -122,7 +122,7 @@
                         Test payments only: use 4242 4242 4242 4242 with any future date and CVC.
                         4000 0000 0000 0002 is declined.
                     </MudAlert>
-                </MudStack>
+                </div>
             </MudPaper>
 
             @if (HasUnavailableLines)
