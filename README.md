@@ -4,7 +4,7 @@
 Order Management Web Application - 2026.
 
 <p align="justify">
-    OrderPoint is a multi-application order management system designed to streamline customer ordering and beverage service operations. The system includes a customer mobile app that allows users to browse menus and place orders, and an admin web app for managing products, categories, and orders in real time.
+    OrderPoint is an order management system for a bar, made of five web apps that work together in real time. Guests scan the QR code on their table to browse the menu, order and pay from their phone, and follow their order live. Bartenders work the order queue and the tables map in the bar app, take orders at the tables and the counter in the bartender app, and handle counter sales, payments, refunds and receipts in the register app. The owner manages the menu, the team, the floor plan and the inventory (stock, recipes, suppliers, deliveries and counts) in the admin web app, and follows revenue, profit and service on a live dashboard.
 </p>
 
 #
@@ -12,26 +12,30 @@ Order Management Web Application - 2026.
 ### **⚙️ Tech Stack**
 - Hosting
   - Aspire
+  - Docker
 - Frontend
-  - .NET 10 - ASP.NET Core Blazor App
+  - .NET 10 - ASP.NET Core Blazor Web App (Interactive Server)
   - MudBlazor
+  - SignalR Client
+  - QRCoder
 - Backend
   - .NET 10 - ASP.NET Core Minimal API
+  - MediatR
   - FluentValidation
-  - MediatR  
   - Entity Framework Core
+  - ASP.NET Core Identity + JWT
+  - SignalR
+  - HybridCache
   - Scalar
   - OpenTelemetry
-- Database
+- Data
   - PostgreSQL
+  - Redis
+  - Azure Blob Storage (Azurite)
 
 #
 
 ### **📖 Documentation**
-Everything about OrderPoint is in the [wiki](https://github.com/mucnjakf/OrderPoint/wiki): the features of every app, the architecture, the data model, the API, and how to run it.
-
-- [Getting started](https://github.com/mucnjakf/OrderPoint/wiki/Getting-Started): from installing the tools to a first order
-- [Testing on a phone](https://github.com/mucnjakf/OrderPoint/wiki/Testing-on-a-Phone): the dev tunnel
-- [System architecture](https://github.com/mucnjakf/OrderPoint/wiki/System-Architecture)
-
-The wiki is written in [`docs/wiki`](docs/wiki) and published to GitHub by hand.
+<p align="justify">
+    Everything about OrderPoint, from the features of every app to the architecture, the data model, the API and how to run it, is in the <a href="https://github.com/mucnjakf/OrderPoint/wiki">wiki</a>.
+</p>
