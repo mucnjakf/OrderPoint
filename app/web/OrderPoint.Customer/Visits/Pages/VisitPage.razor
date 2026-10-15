@@ -1,0 +1,105 @@
+﻿@page "/visit"
+
+<PageTitle>Your visit</PageTitle>
+
+<MudText Typo="Typo.h6" HtmlTag="h1" Class="mb-3">
+    Your visit
+</MudText>
+
+<MudText Typo="Typo.subtitle1" HtmlTag="h2" Class="mb-2">
+    Table
+</MudText>
+
+<MudPaper Class="pa-4">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+        <MudIcon Icon="@Icons.Material.Filled.QrCodeScanner" Style="color: var(--mud-palette-text-secondary)"/>
+
+        @if (TableService.TableCode is null)
+        {
+            <MudText Typo="Typo.body1" Style="color: var(--mud-palette-text-secondary)">
+                No table yet: scan the QR code on your table.
+            </MudText>
+        }
+        else
+        {
+            <MudStack Spacing="0">
+                <MudText Typo="Typo.h6">@TableText</MudText>
+
+                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                    Orders go here for 12 hours after scanning. Scan another QR code to change it.
+                </MudText>
+            </MudStack>
+        }
+    </MudStack>
+</MudPaper>
+
+@if (TableService.TableCode is not null)
+{
+    <MudText Typo="Typo.subtitle1" HtmlTag="h2" Class="mt-5">
+        Need something?
+    </MudText>
+
+    <MudText Typo="Typo.body2" Class="mb-3" Style="color: var(--mud-palette-text-secondary)">
+        A bartender comes to your table.
+    </MudText>
+
+    <MudStack Spacing="3">
+        @foreach (TableRequestType type in Enum.GetValues<TableRequestType>())
+        {
+            TableRequestType requestType = type;
+
+            @if (IsLoading)
+            {
+                <TableRequestCardSkeleton/>
+            }
+            else
+            {
+                <TableRequestCard Type="@requestType"
+                                  OpenRequest="@GetOpenRequest(requestType)"
+                                  IsSending="@(SendingType == requestType)"
+                                  OnRequest="@CreateRequestAsync"/>
+            }
+        }
+    </MudStack>
+}
+
+<MudText Typo="Typo.subtitle1" HtmlTag="h2" Class="mt-5 mb-2">
+    Settings
+</MudText>
+
+<MudPaper Class="pa-5">
+    <SettingsSection Icon="@Icons.Material.Filled.Contrast"
+                     Title="Appearance"
+                     Description="Follow your phone, or pick light or dark. Remembered on this phone.">
+        <MudToggleGroup T="AppearanceMode"
+                        Value="@AppearanceService.Mode"
+                        ValueChanged="@OnAppearanceModeChangedAsync"
+                        Color="Color.Primary"
+                        Style="width: 100%;">
+            @foreach ((AppearanceMode mode, string icon) in AppearanceModes)
+            {
+                <MudToggleItem Value="@mode" Class="px-4 py-2">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.Center" Spacing="1">
+                        <MudIcon Icon="@icon" Size="Size.Small"/>
+                        <MudText Typo="Typo.body2">@mode.ToString()</MudText>
+                    </MudStack>
+                </MudToggleItem>
+            }
+        </MudToggleGroup>
+    </SettingsSection>
+
+    <MudDivider Class="my-5"/>
+
+    <SettingsSection Icon="@Icons.Material.Filled.Receipt"
+                     Title="Your orders"
+                     Description="Orders placed on this phone stay in Orders for 12 hours.">
+        <MudButton Variant="Variant.Outlined"
+                   Size="Size.Large"
+                   FullWidth="true"
+                   StartIcon="@Icons.Material.Filled.DeleteOutline"
+                   Disabled="@(MyOrdersService.OrderIds.Count == 0)"
+                   OnClick="@ForgetOrdersAsync">
+            Forget this phone's orders
+        </MudButton>
+    </SettingsSection>
+</MudPaper>

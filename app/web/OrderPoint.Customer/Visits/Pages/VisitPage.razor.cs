@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using OrderPoint.Customer.Orders.Services;
+using OrderPoint.Customer.Settings.Dialogs;
+using OrderPoint.Customer.Settings.Enumerations;
+using OrderPoint.Customer.Settings.Services;
 using OrderPoint.Customer.Tables.Api;
 using OrderPoint.Customer.Tables.Api.Requests;
 using OrderPoint.Customer.Tables.Services;
@@ -7,13 +11,21 @@ using OrderPoint.Shared.Services;
 using OrderPoint.Shared.Tables.Dtos;
 using OrderPoint.Shared.Tables.Enumerations;
 
-namespace OrderPoint.Customer.Tables.Pages;
+namespace OrderPoint.Customer.Visits.Pages;
 
-// Call a bartender or ask for the bill; live, so "on the way" disappears once a bartender marks it done
-public sealed partial class MyTablePage : IDisposable
+// Everything about this visit: the table, calling a bartender (live, so "on the way" disappears once a bartender marks
+// it done), and the settings kept on this phone
+public sealed partial class VisitPage : IDisposable
 {
     // "Asked 3 min ago" moves on even when nothing changes
     private const int TimeRefreshIntervalInSeconds = 30;
+
+    private static readonly (AppearanceMode Mode, string Icon)[] AppearanceModes =
+    [
+        (AppearanceMode.Auto, Icons.Material.Filled.BrightnessAuto),
+        (AppearanceMode.Light, Icons.Material.Filled.LightMode),
+        (AppearanceMode.Dark, Icons.Material.Filled.DarkMode)
+    ];
 
     private readonly PeriodicTimer _timeRefreshTimer = new(TimeSpan.FromSeconds(TimeRefreshIntervalInSeconds));
 
@@ -28,6 +40,15 @@ public sealed partial class MyTablePage : IDisposable
 
     [Inject]
     private OrderTrackingHubService OrderTrackingHubService { get; set; } = null!;
+
+    [Inject]
+    private AppearanceService AppearanceService { get; set; } = null!;
+
+    [Inject]
+    private MyOrdersService MyOrdersService { get; set; } = null!;
+
+    [Inject]
+    private IDialogService DialogService { get; set; } = null!;
 
     private IReadOnlyList<TableRequestDto> OpenRequests { get; set; } = [];
 
@@ -99,6 +120,38 @@ public sealed partial class MyTablePage : IDisposable
         {
             OpenRequests = [.. OpenRequests.Where(other => other.Id != request.Id), request];
         }
+    }
+
+    private async Task OnAppearanceModeChangedAsync(AppearanceMode mode)
+    {
+        await AppearanceService.SetAsync(mode);
+    }
+
+    // Only hides them on this phone; the orders themselves stay with the bar
+    private async Task ForgetOrdersAsync()
+    {
+        var parameters = new DialogParameters<ForgetOrdersDialog>
+        {
+            { dialog => dialog.OrdersCount, MyOrdersService.OrderIds.Count }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.ExtraSmall,
+            FullWidth = true
+        };
+
+        IDialogReference dialogReference = await DialogService
+            .ShowAsync<ForgetOrdersDialog>(string.Empty, parameters, options);
+
+        DialogResult dialogResult = (await dialogReference.Result)!;
+
+        if (dialogResult.Canceled)
+        {
+            return;
+        }
+
+        await MyOrdersService.ClearAsync();
     }
 
     private async Task RefreshTimesAsync()
