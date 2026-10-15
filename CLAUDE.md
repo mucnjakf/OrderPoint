@@ -37,6 +37,7 @@ app/
   web/OrderPoint.Customer             Blazor customer app (guests' phones, no sign-in), organised by feature folder
   web/OrderPoint.Shared               Razor class library with the web code the Admin, the bar app and the customer app share
 design/                               static HTML mockups (admin-web, bartender-web, customer-web)
+docs/                                 plans and decisions (modular-monolith-plan.md: the API split into modules, in progress)
 ```
 
 Dependency direction: Api -> Infrastructure -> Application -> Domain. Admin does not reference the API projects; it talks to the API over HTTP and keeps its own copies of DTOs and enums. Admin -> Shared (web), Bar -> Shared (web), Bartender -> Shared (web), Customer -> Shared (web), Register -> Shared (web); the apps never reference each other.
