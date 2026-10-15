@@ -12,6 +12,7 @@ internal static class StockMovementTypeExtensions
             StockMovementType.Opening => "Opening stock",
             StockMovementType.Waste => "Waste",
             StockMovementType.Sale => "Sale",
+            StockMovementType.Delivery => "Delivery",
             _ => "Correction"
         };
     }
@@ -23,6 +24,7 @@ internal static class StockMovementTypeExtensions
             StockMovementType.Opening => Color.Info,
             StockMovementType.Waste => Color.Error,
             StockMovementType.Sale => Color.Success,
+            StockMovementType.Delivery => Color.Secondary,
             _ => Color.Warning
         };
     }
@@ -34,6 +36,7 @@ internal static class StockMovementTypeExtensions
             StockMovementType.Opening => Icons.Material.Filled.Inventory,
             StockMovementType.Waste => Icons.Material.Filled.DeleteSweep,
             StockMovementType.Sale => Icons.Material.Filled.PointOfSale,
+            StockMovementType.Delivery => Icons.Material.Filled.LocalShipping,
             _ => Icons.Material.Filled.Tune
         };
     }

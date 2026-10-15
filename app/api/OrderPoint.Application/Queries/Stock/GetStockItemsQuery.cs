@@ -18,6 +18,7 @@ public sealed record GetStockItemsQuery(
     StockGroup? Group,
     StockLevel? Level,
     StockItemStatus? Status,
+    Guid? SupplierId,
     StockItemSortBy? SortBy)
     : IQuery<PaginationDto<StockItemDto>>;
 
@@ -50,6 +51,7 @@ internal sealed class GetStockItemsQueryHandler(IStockItemRepository stockItemRe
                 query.Group,
                 query.Level,
                 query.Status,
+                query.SupplierId,
                 query.SortBy,
                 cancellationToken);
 

@@ -17,6 +17,7 @@ internal sealed class StockApiClient(HttpClient httpClient)
         StockGroup? group = null,
         StockLevel? level = null,
         StockItemStatus? status = null,
+        Guid? supplierId = null,
         CancellationToken cancellationToken = default)
     {
         string requestUri = $"api/stock-items?pageNumber={pageNumber}&pageSize={pageSize}&sortBy={sortBy}";
@@ -39,6 +40,11 @@ internal sealed class StockApiClient(HttpClient httpClient)
         if (status is not null)
         {
             requestUri += $"&status={status}";
+        }
+
+        if (supplierId is not null)
+        {
+            requestUri += $"&supplierId={supplierId}";
         }
 
         HttpResponseMessage response = await httpClient.GetAsync(requestUri, cancellationToken);
@@ -83,6 +89,23 @@ internal sealed class StockApiClient(HttpClient httpClient)
         GetStockSummaryResponse result =
             await response.Content.ReadFromJsonAsync<GetStockSummaryResponse>(cancellationToken)
             ?? throw new InvalidOperationException($"Unable to parse {nameof(GetStockSummaryResponse)}");
+
+        return result.Data;
+    }
+
+    internal async Task<IReadOnlyList<ReorderGroupDto>> GetReorderListAsync(
+        CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await httpClient.GetAsync("api/stock-items/reorder", cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+
+        GetReorderListResponse result =
+            await response.Content.ReadFromJsonAsync<GetReorderListResponse>(cancellationToken)
+            ?? throw new InvalidOperationException($"Unable to parse {nameof(GetReorderListResponse)}");
 
         return result.Data;
     }

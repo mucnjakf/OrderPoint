@@ -1,0 +1,56 @@
+﻿@page "/suppliers"
+
+<PageTitle>Suppliers</PageTitle>
+
+<PageHeader Text="Suppliers"/>
+
+<DataGrid TItem="SupplierDto"
+          Items="@Suppliers"
+          Pagination="@Pagination"
+          IsLoading="@IsLoading"
+          SearchLabel="Search by name or contact"
+          SearchQuery="@SearchQuery"
+          SearchQueryChanged="@(value => SearchQuery = value)"
+          SelectedSortBy="@SelectedSortBy"
+          SelectedSortByChanged="@(value => SelectedSortBy = value)"
+          OnSearchChanged="@OnFiltersChangedAsync"
+          OnSortChanged="@OnFiltersChangedAsync"
+          OnPageChanged="@OnPageChangedAsync"
+          SortByOptions="@SupplierSorting.SortByOptions"
+          GetSortByLabel="@SupplierSorting.GetSortByLabel"
+          GetSortByIcon="@SupplierSorting.GetSortByIcon"
+          CreateButtonText="New supplier"
+          OnCreateClick="@ShowCreateSupplierDialogAsync"
+          OnDetailsClick="@ShowSupplierDetailsDialogAsync"
+          OnUpdateClick="@ShowUpdateSupplierDialogAsync"
+          OnDeleteClick="@ShowDeleteSupplierDialogAsync"
+          DeleteButtonDisabled="@(supplier => supplier.LastDeliveredOn is not null)"
+          DeleteButtonDisabledTooltipText="Supplier has deliveries; deactivate it instead"
+          EmptyStateIcon="@Icons.Material.Filled.Storefront"
+          EmptyStateText="No suppliers found">
+
+    <LoadingTemplate>
+        <SupplierCardSkeleton/>
+    </LoadingTemplate>
+
+    <FilterContent>
+        <MudSelect @bind-Value="@SelectedStatus"
+                   @bind-Value:after="@OnFiltersChangedAsync"
+                   T="SupplierStatus?"
+                   Variant="Variant.Outlined"
+                   Label="Status"
+                   Clearable="true"
+                   FitContent="true">
+            @foreach (SupplierStatus status in Enum.GetValues<SupplierStatus>())
+            {
+                <MudSelectItem Value="@status" T="SupplierStatus?">
+                    <MudText>@status.ToString()</MudText>
+                </MudSelectItem>
+            }
+        </MudSelect>
+    </FilterContent>
+
+    <RowTemplate>
+        <SupplierCard Supplier="@context"/>
+    </RowTemplate>
+</DataGrid>

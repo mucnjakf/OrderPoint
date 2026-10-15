@@ -36,6 +36,9 @@ internal sealed class DocumentInfoTransformer : IOpenApiDocumentTransformer
                            "and mark them done."),
         ("Stock", "What the bar buys and counts: stock items in a base unit (ml, g or pieces) with their pack, cost " +
                   "and par level, and every change to their quantity (opening, waste, correction) as movements."),
+        ("Deliveries", "What suppliers delivered: each line adds stock and averages the stock item's pack cost; " +
+                       "never edited."),
+        ("Suppliers", "Who the bar buys stock from, with their contact details, stock items and deliveries."),
         ("Dashboard", "Aggregated numbers for the Admin dashboard, one endpoint per widget so they load in parallel."),
         ("Health", "The health of the API, the database and the blob storage, for the Admin's system health page.")
     ];
@@ -47,7 +50,7 @@ internal sealed class DocumentInfoTransformer : IOpenApiDocumentTransformer
         ("Staff", ["Bartenders"]),
         ("Orders", ["Orders", "Payments", "Shift", "Register"]),
         ("Floor plan", ["Areas", "Tables", "Fixtures", "Table requests"]),
-        ("Inventory", ["Stock"]),
+        ("Inventory", ["Stock", "Deliveries", "Suppliers"]),
         ("Insights", ["Dashboard"]),
         ("System", ["Health"])
     ];

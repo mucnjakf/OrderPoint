@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using OrderPoint.Admin.Stock.Enumerations;
+using OrderPoint.Admin.Suppliers.Dtos;
 
 namespace OrderPoint.Admin.Stock.Api.Requests;
 
@@ -33,6 +34,12 @@ internal sealed class CreateStockItemRequest
 
     [Required(ErrorMessage = "Status is required.")]
     public StockItemStatus Status { get; set; }
+
+    // Optional: who it is usually bought from
+    [JsonIgnore]
+    public SupplierOptionDto? Supplier { get; set; }
+
+    public Guid? SupplierId => Supplier?.Id;
 
     [JsonIgnore]
     [Range(0, 100_000, ErrorMessage = "Opening stock must be between 0 and 100,000 packs.")]

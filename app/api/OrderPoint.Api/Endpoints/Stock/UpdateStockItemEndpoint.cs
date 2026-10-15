@@ -18,6 +18,7 @@ namespace OrderPoint.Api.Endpoints.Stock;
 /// <param name="PackCost">What one pack costs, in euros.</param>
 /// <param name="ParLevel">The quantity at or below which it counts as low, in base units.</param>
 /// <param name="Status">The status. An inactive stock item is no longer bought.</param>
+/// <param name="SupplierId">Who it is usually bought from, for the reorder list; optional.</param>
 internal sealed record UpdateStockItemRequest(
     string Name,
     StockGroup Group,
@@ -25,7 +26,8 @@ internal sealed record UpdateStockItemRequest(
     decimal PackSize,
     decimal PackCost,
     decimal ParLevel,
-    StockItemStatus Status);
+    StockItemStatus Status,
+    Guid? SupplierId);
 
 internal sealed class UpdateStockItemEndpoint : IEndpoint
 {
@@ -37,10 +39,11 @@ internal sealed class UpdateStockItemEndpoint : IEndpoint
             .WithTags("Stock")
             .WithSummary("Update a stock item")
             .WithDescription("""
-                Updates the name, group, pack, pack cost, par level and status. The unit can't change, and the
-                quantity only changes through movements (`POST api/stock-items/{id}/waste` and `/correction`).
-                Movements already recorded keep the cost of their time.
+                Updates the name, group, pack, pack cost, par level, status and supplier. The unit can't change, and
+                the quantity only changes through movements (`POST api/stock-items/{id}/waste` and `/correction`,
+                deliveries, sales). Movements already recorded keep the cost of their time.
 
+                - `404 Supplier.NotFound`: the supplier does not exist
                 - `409 StockItem.NameAlreadyExists`: another stock item has this name
                 """)
             .ProducesProblem(StatusCodes.Status404NotFound)
@@ -65,7 +68,8 @@ internal sealed class UpdateStockItemEndpoint : IEndpoint
             request.PackSize,
             request.PackCost,
             request.ParLevel,
-            request.Status);
+            request.Status,
+            request.SupplierId);
 
         Result result = await sender.Send(command, cancellationToken);
 

@@ -16,12 +16,16 @@ public sealed record UpdateStockItemCommand(
     decimal PackSize,
     decimal PackCost,
     decimal ParLevel,
-    StockItemStatus Status) : ICommand, ICacheInvalidatingCommand
+    StockItemStatus Status,
+    Guid? SupplierId) : ICommand, ICacheInvalidatingCommand
 {
     IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.StockChanges;
 }
 
-internal sealed class UpdateStockItemCommandHandler(IStockItemRepository stockItemRepository, IUnitOfWork unitOfWork)
+internal sealed class UpdateStockItemCommandHandler(
+    IStockItemRepository stockItemRepository,
+    ISupplierRepository supplierRepository,
+    IUnitOfWork unitOfWork)
     : ICommandHandler<UpdateStockItemCommand>
 {
     public async Task<Result> Handle(UpdateStockItemCommand command, CancellationToken cancellationToken)
@@ -43,6 +47,13 @@ internal sealed class UpdateStockItemCommandHandler(IStockItemRepository stockIt
             }
         }
 
+        if (command.SupplierId is { } supplierId
+            && supplierId != stockItem.SupplierId
+            && !await supplierRepository.ExistsAsync(supplierId, cancellationToken))
+        {
+            return Result.Failure(SupplierErrors.NotFound);
+        }
+
         Result result = stockItem.Update(
             command.Name,
             command.Group,
@@ -50,7 +61,8 @@ internal sealed class UpdateStockItemCommandHandler(IStockItemRepository stockIt
             command.PackSize,
             command.PackCost,
             command.ParLevel,
-            command.Status);
+            command.Status,
+            command.SupplierId);
 
         if (result.IsFailure)
         {

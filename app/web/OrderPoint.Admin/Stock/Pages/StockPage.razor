@@ -2,7 +2,13 @@
 
 <PageTitle>Stock</PageTitle>
 
-<PageHeader Text="Stock"/>
+<PageHeader Text="Stock">
+    <MudButton Variant="Variant.Outlined"
+               StartIcon="@Icons.Material.Filled.ShoppingCart"
+               OnClick="@ShowReorderDialogAsync">
+        Reorder@(ReorderCount > 0 ? $" ({ReorderCount})" : string.Empty)
+    </MudButton>
+</PageHeader>
 
 <MudStack Row="true" Spacing="3" Class="mb-5">
     <StockSummaryCard Label="Stock value"

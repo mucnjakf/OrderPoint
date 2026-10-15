@@ -1,0 +1,133 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.Storefront"/>
+            <MudText Typo="Typo.h6">Supplier</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudGrid Spacing="3">
+            <MudItem xs="12" md="5">
+                <MudPaper Class="pa-5" Style="height: 100%">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3" Class="mb-4">
+                        <SupplierAvatar Name="@Supplier.Name" Size="Size.Large"/>
+
+                        <MudStack Spacing="0" Class="flex-1" Style="min-width: 0">
+                            <MudText Typo="Typo.h6">@Supplier.Name</MudText>
+
+                            <MudText Typo="Typo.caption" Style="@SecondaryStyle">
+                                @Supplier.StockItemsCount.ToCountText("stock item", "stock items")
+                            </MudText>
+                        </MudStack>
+                    </MudStack>
+
+                    <TextDisplayRow Icon="@Icons.Material.Filled.Person"
+                                    Label="Contact"
+                                    Text="@(Supplier.ContactName ?? "-")"
+                                    ShowDivider="true"/>
+
+                    <TextDisplayRow Icon="@Icons.Material.Filled.Phone" Label="Phone" ShowDivider="true">
+                        @if (Supplier.Phone is not null)
+                        {
+                            <MudLink Href="@($"tel:{Supplier.Phone}")">@Supplier.Phone</MudLink>
+                        }
+                        else
+                        {
+                            <MudText Typo="Typo.body1">-</MudText>
+                        }
+                    </TextDisplayRow>
+
+                    <TextDisplayRow Icon="@Icons.Material.Filled.Email" Label="Email" ShowDivider="true">
+                        @if (Supplier.Email is not null)
+                        {
+                            <MudLink Href="@($"mailto:{Supplier.Email}")">@Supplier.Email</MudLink>
+                        }
+                        else
+                        {
+                            <MudText Typo="Typo.body1">-</MudText>
+                        }
+                    </TextDisplayRow>
+
+                    <TextDisplayRow Icon="@Icons.Material.Filled.Notes" Label="Note" Text="@(Supplier.Note ?? "-")"/>
+                </MudPaper>
+            </MudItem>
+
+            <MudItem xs="12" md="7">
+                <MudPaper Class="pa-5 mb-3">
+                    <MudText Typo="Typo.subtitle1" Class="mb-2">Stock items</MudText>
+
+                    <StatefulView IsLoading="@IsLoadingStockItems"
+                                  ShowContent="@(StockItems.Count != 0)"
+                                  Compact="true"
+                                  EmptyStateIcon="@Icons.Material.Filled.Inventory2"
+                                  EmptyStateText="None yet"
+                                  EmptyStateDetail="Pick this supplier on a stock item.">
+                        <MudStack Spacing="2">
+                            @foreach (StockItemDto stockItem in StockItems)
+                            {
+                                <MudStack @key="@stockItem.Id" Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                    <MudIcon Icon="@stockItem.Group.GetIcon()"
+                                             Size="Size.Small"
+                                             Style="@SecondaryStyle"/>
+
+                                    <MudText Typo="Typo.body2" Class="flex-1">@stockItem.Name</MudText>
+
+                                    <MudText Typo="Typo.body2" Style="@SecondaryStyle">
+                                        @stockItem.GetQuantityText(stockItem.Quantity)
+                                    </MudText>
+
+                                    <MudChip T="string"
+                                             Variant="Variant.Text"
+                                             Size="Size.Small"
+                                             Color="@stockItem.Level.GetColor()"
+                                             Class="ma-0">
+                                        @stockItem.Level.GetLabel()
+                                    </MudChip>
+                                </MudStack>
+                            }
+                        </MudStack>
+                    </StatefulView>
+                </MudPaper>
+
+                <MudPaper Class="pa-5">
+                    <MudText Typo="Typo.subtitle1" Class="mb-2">Recent deliveries</MudText>
+
+                    <StatefulView IsLoading="@IsLoadingDeliveries"
+                                  ShowContent="@(Deliveries.Count != 0)"
+                                  Compact="true"
+                                  EmptyStateIcon="@Icons.Material.Filled.LocalShipping"
+                                  EmptyStateText="No deliveries yet">
+                        <MudStack Spacing="2">
+                            @foreach (DeliveryDto delivery in Deliveries)
+                            {
+                                <MudStack @key="@delivery.Id" Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                    <MudText Typo="Typo.body2" Style="width: 80px">
+                                        @GetDateText(delivery.DeliveredOn)
+                                    </MudText>
+
+                                    <MudText Typo="Typo.body2" Class="flex-1" Style="@SecondaryStyle">
+                                        @GetDeliveryText(delivery)
+                                    </MudText>
+
+                                    <MudText Typo="Typo.body2" Style="font-weight: 600">
+                                        @delivery.Total.ToString("C", CultureInfo.CurrentCulture)
+                                    </MudText>
+                                </MudStack>
+                            }
+                        </MudStack>
+                    </StatefulView>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Variant="Variant.Filled"
+                   OnClick="@Close"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Close">
+            Close
+        </MudButton>
+    </DialogActions>
+</MudDialog>

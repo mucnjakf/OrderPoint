@@ -20,6 +20,7 @@ namespace OrderPoint.Api.Endpoints.Stock;
 /// <param name="Level">Only stock items at this level: `Out` (at or below 0), `Low` (above 0, at or below the par
 /// level) or `Ok`.</param>
 /// <param name="Status">Only stock items with this status.</param>
+/// <param name="SupplierId">Only stock items usually bought from this supplier.</param>
 /// <param name="SortBy">The sort order within each group. Default: `NameAsc`.</param>
 internal sealed record GetStockItemsRequest(
     [FromQuery] int PageNumber,
@@ -28,6 +29,7 @@ internal sealed record GetStockItemsRequest(
     [FromQuery] StockGroup? Group,
     [FromQuery] StockLevel? Level,
     [FromQuery] StockItemStatus? Status,
+    [FromQuery] Guid? SupplierId,
     [FromQuery] StockItemSortBy? SortBy);
 
 /// <summary>A page of stock items.</summary>
@@ -44,9 +46,9 @@ internal sealed class GetStockItemsEndpoint : IEndpoint
             .WithTags("Stock")
             .WithSummary("List stock items")
             .WithDescription("""
-                A page of stock items with search (name), group, level and status filters and sorting. The list is
-                always sorted by group first (in the order of `StockGroup`), so a group's rows stay together across
-                pages; `sortBy` orders the rows within each group (default: by name). `value` and `level` are
+                A page of stock items with search (name), group, level, status and supplier filters and sorting. The
+                list is always sorted by group first (in the order of `StockGroup`), so a group's rows stay together
+                across pages; `sortBy` orders the rows within each group (default: by name). `value` and `level` are
                 calculated from the quantity, the pack cost and the par level.
                 """)
             .RequireAuthorization(AuthorizationPolicies.Admin);
@@ -67,6 +69,7 @@ internal sealed class GetStockItemsEndpoint : IEndpoint
             request.Group,
             request.Level,
             request.Status,
+            request.SupplierId,
             request.SortBy);
 
         Result<PaginationDto<StockItemDto>> result = await sender.Send(query, cancellationToken);

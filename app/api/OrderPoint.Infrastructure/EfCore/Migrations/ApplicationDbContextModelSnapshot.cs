@@ -140,6 +140,73 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                     b.ToTable("Categories", (string)null);
                 });
 
+            modelBuilder.Entity("OrderPoint.Domain.Entities.Delivery", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateOnly>("DeliveredOn")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("Reference")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<Guid>("SupplierId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("Deliveries", (string)null);
+                });
+
+            modelBuilder.Entity("OrderPoint.Domain.Entities.DeliveryLine", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("DeliveryId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("PackCost")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("numeric(10,2)");
+
+                    b.Property<decimal>("Packs")
+                        .HasPrecision(12, 3)
+                        .HasColumnType("numeric(12,3)");
+
+                    b.Property<Guid>("StockItemId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StockItemId");
+
+                    b.HasIndex("DeliveryId", "StockItemId")
+                        .IsUnique();
+
+                    b.ToTable("DeliveryLines", (string)null);
+                });
+
             modelBuilder.Entity("OrderPoint.Domain.Entities.Fixture", b =>
                 {
                     b.Property<Guid>("Id")
@@ -437,6 +504,9 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
+                    b.Property<Guid?>("SupplierId")
+                        .HasColumnType("uuid");
+
                     b.Property<int>("Unit")
                         .HasColumnType("integer");
 
@@ -447,6 +517,8 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
 
                     b.HasIndex("Name")
                         .IsUnique();
+
+                    b.HasIndex("SupplierId");
 
                     b.ToTable("StockItems", (string)null);
                 });
@@ -489,6 +561,49 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                     b.HasIndex("StockItemId");
 
                     b.ToTable("StockMovements", (string)null);
+                });
+
+            modelBuilder.Entity("OrderPoint.Domain.Entities.Supplier", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ContactName")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Suppliers", (string)null);
                 });
 
             modelBuilder.Entity("OrderPoint.Domain.Entities.Table", b =>
@@ -668,6 +783,34 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                     b.ToTable("RefreshTokens", (string)null);
                 });
 
+            modelBuilder.Entity("OrderPoint.Domain.Entities.Delivery", b =>
+                {
+                    b.HasOne("OrderPoint.Domain.Entities.Supplier", "Supplier")
+                        .WithMany()
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Supplier");
+                });
+
+            modelBuilder.Entity("OrderPoint.Domain.Entities.DeliveryLine", b =>
+                {
+                    b.HasOne("OrderPoint.Domain.Entities.Delivery", null)
+                        .WithMany("Lines")
+                        .HasForeignKey("DeliveryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("OrderPoint.Domain.Entities.StockItem", "StockItem")
+                        .WithMany()
+                        .HasForeignKey("StockItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("StockItem");
+                });
+
             modelBuilder.Entity("OrderPoint.Domain.Entities.Fixture", b =>
                 {
                     b.HasOne("OrderPoint.Domain.Entities.Area", null)
@@ -753,6 +896,16 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                     b.Navigation("StockItem");
                 });
 
+            modelBuilder.Entity("OrderPoint.Domain.Entities.StockItem", b =>
+                {
+                    b.HasOne("OrderPoint.Domain.Entities.Supplier", "Supplier")
+                        .WithMany()
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Supplier");
+                });
+
             modelBuilder.Entity("OrderPoint.Domain.Entities.StockMovement", b =>
                 {
                     b.HasOne("OrderPoint.Domain.Entities.StockItem", "StockItem")
@@ -810,6 +963,11 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
             modelBuilder.Entity("OrderPoint.Domain.Entities.Category", b =>
                 {
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("OrderPoint.Domain.Entities.Delivery", b =>
+                {
+                    b.Navigation("Lines");
                 });
 
             modelBuilder.Entity("OrderPoint.Domain.Entities.Item", b =>

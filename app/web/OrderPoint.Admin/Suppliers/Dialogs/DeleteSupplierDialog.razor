@@ -1,0 +1,68 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.Warning" Color="Color.Error"/>
+            <MudText Typo="Typo.h6">Delete supplier</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudAlert Severity="Severity.Error" Variant="Variant.Text" Dense="true" Class="mb-4">
+            <MudText Typo="Typo.body2">
+                This action cannot be undone.
+            </MudText>
+        </MudAlert>
+
+        <MudPaper Outlined="true" Class="pa-4">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="4">
+                <SupplierAvatar Name="@Supplier.Name" Size="Size.Large"/>
+
+                <MudStack Spacing="1" Class="flex-1">
+                    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                        <MudText Typo="Typo.h6">@Supplier.Name</MudText>
+
+                        <MudChip T="string"
+                                 Variant="Variant.Text"
+                                 Size="Size.Small"
+                                 Color="@(Supplier.Status is SupplierStatus.Active ? Color.Success : Color.Error)">
+                            @Supplier.Status
+                        </MudChip>
+                    </MudStack>
+
+                    <MudText Typo="Typo.body2">
+                        @SummaryText
+                    </MudText>
+
+                    <MudText Typo="Typo.caption">
+                        Created @Supplier.CreatedAtUtc.ToRelativeTime()
+                    </MudText>
+                </MudStack>
+            </MudStack>
+        </MudPaper>
+
+        @if (Supplier.StockItemsCount > 0)
+        {
+            <MudText Typo="Typo.body2" Class="mt-4 mb-2">
+                Its stock items stay, without a supplier:
+            </MudText>
+
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                <MudIcon Icon="@Icons.Material.Filled.Inventory2" Size="Size.Small"/>
+                <MudText Typo="Typo.body2">@Supplier.StockItemsCount.ToCountText("stock item", "stock items")</MudText>
+            </MudStack>
+        }
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
+            Cancel
+        </MudButton>
+
+        <MudButton OnClick="@Confirm"
+                   Variant="Variant.Filled"
+                   Color="Color.Error"
+                   StartIcon="@Icons.Material.Filled.Delete">
+            Delete @Supplier.Name
+        </MudButton>
+    </DialogActions>
+</MudDialog>

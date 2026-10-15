@@ -40,12 +40,14 @@ public sealed class StockMovement : Entity
         Note = note;
     }
 
-    // Called by the stock item once its quantity has changed
+    // Called by the stock item once its quantity has changed; valued at its current unit cost, or at what a delivery
+    // cost when given
     internal static StockMovement Create(
         StockItem stockItem,
         StockMovementType type,
         decimal quantityChange,
-        string? note)
+        string? note,
+        decimal? unitCost = null)
     {
         return new StockMovement(
             Guid.CreateVersion7(),
@@ -53,7 +55,7 @@ public sealed class StockMovement : Entity
             type,
             quantityChange,
             stockItem.Quantity,
-            stockItem.UnitCost,
+            unitCost ?? stockItem.UnitCost,
             note,
             DateTimeOffset.UtcNow);
     }

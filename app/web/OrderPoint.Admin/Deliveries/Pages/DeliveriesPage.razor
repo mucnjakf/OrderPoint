@@ -1,0 +1,87 @@
+﻿@page "/deliveries"
+
+<PageTitle>Deliveries</PageTitle>
+
+<PageHeader Text="Deliveries"/>
+
+<DataSheet TItem="DeliveryDto"
+           Items="@Deliveries"
+           Pagination="@Pagination"
+           IsLoading="@IsLoading"
+           SearchLabel="Search by invoice or supplier"
+           SearchQuery="@SearchQuery"
+           SearchQueryChanged="@(value => SearchQuery = value)"
+           SelectedSortBy="@SelectedSortBy"
+           SelectedSortByChanged="@(value => SelectedSortBy = value)"
+           OnSearchChanged="@OnFiltersChangedAsync"
+           OnSortChanged="@OnFiltersChangedAsync"
+           OnPageChanged="@OnPageChangedAsync"
+           SortByOptions="@DeliverySorting.SortByOptions"
+           GetSortByLabel="@DeliverySorting.GetSortByLabel"
+           GetSortByIcon="@DeliverySorting.GetSortByIcon"
+           CreateButtonText="Record delivery"
+           OnCreateClick="@RecordDeliveryAsync"
+           GetGroupKey="@(delivery => new DateOnly(delivery.DeliveredOn.Year, delivery.DeliveredOn.Month, 1))"
+           OnRowClick="@ShowDeliveryDetailsDialogAsync"
+           EmptyStateIcon="@Icons.Material.Filled.LocalShipping"
+           EmptyStateText="No deliveries found">
+
+    <LoadingTemplate>
+        <DeliveryRowSkeleton/>
+    </LoadingTemplate>
+
+    <FilterContent>
+        <MudAutocomplete @ref="@SupplierAutocomplete"
+                         @bind-Value="@SelectedSupplier"
+                         @bind-Value:after="@OnFiltersChangedAsync"
+                         T="SupplierOptionDto"
+                         SearchFunc="@SearchSuppliersAsync"
+                         Variant="Variant.Outlined"
+                         Label="Supplier"
+                         Clearable="true"
+                         OnClearButtonClick="@OnSupplierClearedAsync"
+                         ShowProgressIndicator="true"
+                         ToStringFunc="@(supplier => supplier?.Name)"
+                         Style="width: 220px">
+            <ItemTemplate Context="supplier">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                    <SupplierAvatar Name="@supplier.Name" Size="Size.Small"/>
+                    <MudText Typo="Typo.body1">@supplier.Name</MudText>
+                </MudStack>
+            </ItemTemplate>
+
+            <NoItemsTemplate>
+                <MudText Align="Align.Center" Class="px-3 py-1">
+                    No suppliers found
+                </MudText>
+            </NoItemsTemplate>
+        </MudAutocomplete>
+    </FilterContent>
+
+    <HeaderContent>
+        <div style="@DeliveryRowLayout.GridStyle">
+            <MudText Typo="Typo.caption" Style="@ColumnTitleStyle">Supplier</MudText>
+            <MudText Typo="Typo.caption" Style="@ColumnTitleStyle">Items</MudText>
+            <MudText Typo="Typo.caption" Style="@ColumnTitleStyle">Lines</MudText>
+            <MudText Typo="Typo.caption" Align="Align.Right" Style="@ColumnTitleStyle">Total</MudText>
+        </div>
+    </HeaderContent>
+
+    <GroupHeaderTemplate>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.CalendarMonth" Size="Size.Small"/>
+
+            <MudText Typo="Typo.subtitle2">
+                @GetMonthText(context[0].DeliveredOn)
+            </MudText>
+
+            <MudText Typo="Typo.caption" Style="@ColumnTitleStyle">
+                · @context.Count.ToCountText("delivery", "deliveries") · @GetTotalText(context)
+            </MudText>
+        </MudStack>
+    </GroupHeaderTemplate>
+
+    <RowTemplate>
+        <DeliveryRow Delivery="@context"/>
+    </RowTemplate>
+</DataSheet>

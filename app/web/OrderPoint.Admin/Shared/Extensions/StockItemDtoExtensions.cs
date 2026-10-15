@@ -16,9 +16,13 @@ internal static class StockItemDtoExtensions
     // "3.4 kegs", "1 bottle"
     internal static string GetPacksText(this StockItemDto stockItem, decimal quantity)
     {
-        decimal packs = quantity / stockItem.PackSize;
+        return (quantity / stockItem.PackSize).FormatPacks(stockItem.PackName);
+    }
 
-        return $"{packs.ToString("0.#", CultureInfo.CurrentCulture)} {GetPackName(stockItem.PackName, packs)}";
+    // "2 kegs", "0.5 bottles"
+    internal static string FormatPacks(this decimal packs, string packName)
+    {
+        return $"{packs.ToString("0.#", CultureInfo.CurrentCulture)} {GetPackName(packName, packs)}";
     }
 
     // "bottle · 700 ml · €14.00"

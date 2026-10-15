@@ -19,6 +19,8 @@ internal static class StockMapper
         Math.Round(stockItem.Value, MoneyDecimals, MidpointRounding.AwayFromZero),
         stockItem.Level,
         stockItem.Status,
+        stockItem.SupplierId,
+        stockItem.Supplier?.Name,
         stockItem.CreatedAtUtc,
         stockItem.UpdatedAtUtc);
 

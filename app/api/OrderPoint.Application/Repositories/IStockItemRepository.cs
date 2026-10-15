@@ -13,6 +13,7 @@ public interface IStockItemRepository
         StockGroup? group = null,
         StockLevel? level = null,
         StockItemStatus? status = null,
+        Guid? supplierId = null,
         StockItemSortBy? sortBy = null,
         CancellationToken cancellationToken = default);
 
@@ -27,6 +28,19 @@ public interface IStockItemRepository
     Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default);
 
     Task<bool> ExistsByNameAsync(string name, CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<StockItem>> GetBySupplierAsync(Guid supplierId, CancellationToken cancellationToken = default);
+
+    // Active stock items at or below their par level, with their supplier
+    Task<IReadOnlyList<StockItem>> GetToReorderAsync(CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyDictionary<Guid, int>> CountBySuppliersAsync(
+        IReadOnlyList<Guid> supplierIds,
+        CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyDictionary<Guid, int>> CountToReorderBySuppliersAsync(
+        IReadOnlyList<Guid> supplierIds,
+        CancellationToken cancellationToken = default);
 
     // Active stock items only: the value on the shelves, and how many are low or out
     Task<(decimal TotalValue, int LowCount, int OutCount)> GetSummaryAsync(

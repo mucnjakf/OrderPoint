@@ -15,13 +15,16 @@ internal sealed class StockItemEfCoreRepository(ApplicationDbContext dbContext) 
         StockGroup? group = null,
         StockLevel? level = null,
         StockItemStatus? status = null,
+        Guid? supplierId = null,
         StockItemSortBy? sortBy = null,
         CancellationToken cancellationToken = default)
     {
-        IQueryable<StockItem> query = dbContext.StockItems.AsNoTracking();
+        IQueryable<StockItem> query = dbContext.StockItems
+            .AsNoTracking()
+            .Include(stockItem => stockItem.Supplier);
 
         query = SearchStockItems(query, searchQuery);
-        query = FilterStockItems(query, group, level, status);
+        query = FilterStockItems(query, group, level, status, supplierId);
         query = SortStockItems(query, sortBy);
 
         int totalCount = await query.CountAsync(cancellationToken);
@@ -35,7 +38,9 @@ internal sealed class StockItemEfCoreRepository(ApplicationDbContext dbContext) 
     }
 
     public async Task<StockItem?> GetAsync(Guid id, CancellationToken cancellationToken = default)
-        => await dbContext.StockItems.SingleOrDefaultAsync(stockItem => stockItem.Id == id, cancellationToken);
+        => await dbContext.StockItems
+            .Include(stockItem => stockItem.Supplier)
+            .SingleOrDefaultAsync(stockItem => stockItem.Id == id, cancellationToken);
 
     public async Task<IReadOnlyList<StockItem>> GetAsync(
         IReadOnlyList<Guid> ids,
@@ -55,6 +60,50 @@ internal sealed class StockItemEfCoreRepository(ApplicationDbContext dbContext) 
 
     public async Task<bool> ExistsByNameAsync(string name, CancellationToken cancellationToken = default)
         => await dbContext.StockItems.AnyAsync(stockItem => stockItem.Name == name, cancellationToken);
+
+    public async Task<IReadOnlyList<StockItem>> GetBySupplierAsync(
+        Guid supplierId,
+        CancellationToken cancellationToken = default)
+        => await dbContext.StockItems
+            .Where(stockItem => stockItem.SupplierId == supplierId)
+            .ToListAsync(cancellationToken);
+
+    public async Task<IReadOnlyList<StockItem>> GetToReorderAsync(CancellationToken cancellationToken = default)
+        => await dbContext.StockItems
+            .AsNoTracking()
+            .Include(stockItem => stockItem.Supplier)
+            .Where(stockItem =>
+                stockItem.Status == StockItemStatus.Active &&
+                (stockItem.Quantity <= 0 || stockItem.Quantity <= stockItem.ParLevel))
+            .ToListAsync(cancellationToken);
+
+    public async Task<IReadOnlyDictionary<Guid, int>> CountBySuppliersAsync(
+        IReadOnlyList<Guid> supplierIds,
+        CancellationToken cancellationToken = default)
+        => await dbContext.StockItems
+            .Where(stockItem => stockItem.SupplierId.HasValue && supplierIds.Contains(stockItem.SupplierId.Value))
+            .GroupBy(stockItem => stockItem.SupplierId!.Value)
+            .Select(group => new { SupplierId = group.Key, Count = group.Count() })
+            .ToDictionaryAsync(
+                supplierCount => supplierCount.SupplierId,
+                supplierCount => supplierCount.Count,
+                cancellationToken);
+
+    public async Task<IReadOnlyDictionary<Guid, int>> CountToReorderBySuppliersAsync(
+        IReadOnlyList<Guid> supplierIds,
+        CancellationToken cancellationToken = default)
+        => await dbContext.StockItems
+            .Where(stockItem =>
+                stockItem.SupplierId.HasValue &&
+                supplierIds.Contains(stockItem.SupplierId.Value) &&
+                stockItem.Status == StockItemStatus.Active &&
+                (stockItem.Quantity <= 0 || stockItem.Quantity <= stockItem.ParLevel))
+            .GroupBy(stockItem => stockItem.SupplierId!.Value)
+            .Select(group => new { SupplierId = group.Key, Count = group.Count() })
+            .ToDictionaryAsync(
+                supplierCount => supplierCount.SupplierId,
+                supplierCount => supplierCount.Count,
+                cancellationToken);
 
     public async Task<(decimal TotalValue, int LowCount, int OutCount)> GetSummaryAsync(
         CancellationToken cancellationToken = default)
@@ -92,7 +141,8 @@ internal sealed class StockItemEfCoreRepository(ApplicationDbContext dbContext) 
         IQueryable<StockItem> query,
         StockGroup? group,
         StockLevel? level,
-        StockItemStatus? status)
+        StockItemStatus? status,
+        Guid? supplierId)
     {
         if (group.HasValue)
         {
@@ -112,6 +162,11 @@ internal sealed class StockItemEfCoreRepository(ApplicationDbContext dbContext) 
         if (status.HasValue)
         {
             query = query.Where(stockItem => stockItem.Status == status.Value);
+        }
+
+        if (supplierId.HasValue)
+        {
+            query = query.Where(stockItem => stockItem.SupplierId == supplierId.Value);
         }
 
         return query;

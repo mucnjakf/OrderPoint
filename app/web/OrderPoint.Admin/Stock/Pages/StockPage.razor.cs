@@ -55,6 +55,8 @@ public sealed partial class StockPage : IDisposable
 
     private bool IsLoadingSummary { get; set; } = true;
 
+    private int ReorderCount => (Summary?.LowCount ?? 0) + (Summary?.OutCount ?? 0);
+
     private bool IsLoading { get; set; } = true;
 
     protected override async Task OnInitializedAsync()
@@ -173,6 +175,22 @@ public sealed partial class StockPage : IDisposable
         };
 
         await DialogService.ShowAsync<StockItemDetailsDialog>(string.Empty, parameters, options);
+    }
+
+    private async Task ShowReorderDialogAsync()
+    {
+        var parameters = new DialogParameters<ReorderDialog>
+        {
+            { dialog => dialog.OnStockChanged, EventCallback.Factory.Create(this, ReloadAsync) }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true
+        };
+
+        await DialogService.ShowAsync<ReorderDialog>(string.Empty, parameters, options);
     }
 
     private async Task ShowCreateStockItemDialogAsync()

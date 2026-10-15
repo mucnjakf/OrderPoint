@@ -1,0 +1,60 @@
+﻿<MudCardContent>
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3" Class="mb-3">
+        <SupplierAvatar Name="@Supplier.Name"/>
+
+        <MudText Typo="Typo.h6" Class="flex-1 text-truncate">
+            @Supplier.Name
+        </MudText>
+
+        <MudChip T="string"
+                 Variant="Variant.Text"
+                 Size="Size.Small"
+                 Color="@(Supplier.Status is SupplierStatus.Active ? Color.Success : Color.Error)"
+                 Class="ma-0">
+            @Supplier.Status
+        </MudChip>
+    </MudStack>
+
+    <MudStack Spacing="1" Class="mb-3">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Small" Style="@SecondaryStyle"/>
+            <MudText Typo="Typo.body2">@(Supplier.ContactName ?? "-")</MudText>
+        </MudStack>
+
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icons.Material.Filled.Phone" Size="Size.Small" Style="@SecondaryStyle"/>
+
+            @if (Supplier.Phone is not null)
+            {
+                <MudLink Href="@($"tel:{Supplier.Phone}")" Typo="Typo.body2">@Supplier.Phone</MudLink>
+            }
+            else
+            {
+                <MudText Typo="Typo.body2">-</MudText>
+            }
+        </MudStack>
+
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Style="min-width: 0">
+            <MudIcon Icon="@Icons.Material.Filled.Email" Size="Size.Small" Style="@SecondaryStyle"/>
+
+            @if (Supplier.Email is not null)
+            {
+                <MudLink Href="@($"mailto:{Supplier.Email}")" Typo="Typo.body2" Class="text-truncate">
+                    @Supplier.Email
+                </MudLink>
+            }
+            else
+            {
+                <MudText Typo="Typo.body2">-</MudText>
+            }
+        </MudStack>
+    </MudStack>
+
+    <MudText Typo="Typo.body2">
+        @Supplier.StockItemsCount.ToCountText("stock item", "stock items")@ReorderText
+    </MudText>
+
+    <MudText Typo="Typo.caption" Style="@SecondaryStyle">
+        @LastDeliveryText
+    </MudText>
+</MudCardContent>

@@ -2,6 +2,9 @@
 using MudBlazor;
 using OrderPoint.Admin.Stock.Api.Requests;
 using OrderPoint.Admin.Stock.Dtos;
+using OrderPoint.Admin.Suppliers.Api;
+using OrderPoint.Admin.Suppliers.Dtos;
+using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Stock.Dialogs;
 
@@ -9,6 +12,12 @@ namespace OrderPoint.Admin.Stock.Dialogs;
 public sealed partial class UpdateStockItemDialog
 {
     private const int PacksDecimals = 3;
+
+    [Inject]
+    private ApiService ApiService { get; set; } = null!;
+
+    [Inject]
+    private SupplierApiClient SupplierApiClient { get; set; } = null!;
 
     [Parameter]
     public StockItemDto StockItem { get; set; } = null!;
@@ -39,8 +48,22 @@ public sealed partial class UpdateStockItemDialog
             PackSize = StockItem.PackSize,
             PackCost = StockItem.PackCost,
             ParLevelInPacks = Math.Round(StockItem.ParLevel / StockItem.PackSize, PacksDecimals),
-            Status = StockItem.Status
+            Status = StockItem.Status,
+            Supplier = StockItem.SupplierId is { } supplierId
+                ? new SupplierOptionDto(supplierId, StockItem.SupplierName!)
+                : null
         };
+    }
+
+    private async Task<IEnumerable<SupplierOptionDto>> SearchSuppliersAsync(
+        string? value,
+        CancellationToken cancellationToken)
+    {
+        IReadOnlyList<SupplierOptionDto>? suppliers = await ApiService.ExecuteAsync(
+            () => SupplierApiClient.SearchSuppliersAsync(value, cancellationToken),
+            cancellationToken);
+
+        return suppliers ?? [];
     }
 
     private void OnValidSubmit()

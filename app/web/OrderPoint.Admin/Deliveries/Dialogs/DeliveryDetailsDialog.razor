@@ -1,0 +1,82 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.LocalShipping"/>
+            <MudText Typo="Typo.h6">Delivery</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudStack Spacing="3">
+            <MudPaper Class="pa-5">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3" Class="mb-3">
+                    <SupplierAvatar Name="@Delivery.Supplier.Name"/>
+
+                    <MudStack Spacing="0" Class="flex-1">
+                        <MudText Typo="Typo.h6">@Delivery.Supplier.Name</MudText>
+
+                        <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                            @DateText · recorded @Delivery.CreatedAtUtc.ToDisplayDateTime(TimeZoneService.TimeZone)
+                        </MudText>
+                    </MudStack>
+
+                    <MudText Typo="Typo.h5" Style="font-weight: 600">
+                        @Delivery.Total.ToString("C", CultureInfo.CurrentCulture)
+                    </MudText>
+                </MudStack>
+
+                <TextDisplayRow Icon="@Icons.Material.Filled.Receipt"
+                                Label="Invoice"
+                                Text="@(Delivery.Reference ?? "-")"
+                                ShowDivider="true"/>
+
+                <TextDisplayRow Icon="@Icons.Material.Filled.Notes" Label="Note" Text="@(Delivery.Note ?? "-")"/>
+            </MudPaper>
+
+            <MudPaper Class="pa-5">
+                <MudSimpleTable Elevation="0">
+                    <thead>
+                        <tr>
+                            <th>Stock item</th>
+                            <th style="text-align: right">Packs</th>
+                            <th style="text-align: right">Quantity</th>
+                            <th style="text-align: right">Price per pack</th>
+                            <th style="text-align: right">Total</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (DeliveryLineDto line in Delivery.Lines)
+                        {
+                            <tr @key="@line.StockItemId">
+                                <td>
+                                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                        <MudIcon Icon="@line.Group.GetIcon()" Size="Size.Small"/>
+                                        <span>@line.StockItemName</span>
+                                    </MudStack>
+                                </td>
+                                <td style="text-align: right">@line.Packs.FormatPacks(line.PackName)</td>
+                                <td style="text-align: right">@line.Unit.FormatAmount(line.Packs * line.PackSize)</td>
+                                <td style="text-align: right">
+                                    @line.PackCost.ToString("C", CultureInfo.CurrentCulture)
+                                </td>
+                                <td style="text-align: right; font-weight: 600">
+                                    @line.Total.ToString("C", CultureInfo.CurrentCulture)
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </MudSimpleTable>
+            </MudPaper>
+        </MudStack>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Variant="Variant.Filled"
+                   OnClick="@Close"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Close">
+            Close
+        </MudButton>
+    </DialogActions>
+</MudDialog>

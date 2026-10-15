@@ -19,6 +19,7 @@ public sealed record CreateStockItemCommand(
     decimal PackCost,
     decimal ParLevel,
     StockItemStatus Status,
+    Guid? SupplierId,
     decimal OpeningQuantity)
     : ICommand<StockItemDto>, ICacheInvalidatingCommand
 {
@@ -28,6 +29,7 @@ public sealed record CreateStockItemCommand(
 internal sealed class CreateStockItemCommandHandler(
     IStockItemRepository stockItemRepository,
     IStockMovementRepository stockMovementRepository,
+    ISupplierRepository supplierRepository,
     IUnitOfWork unitOfWork)
     : ICommandHandler<CreateStockItemCommand, StockItemDto>
 {
@@ -42,6 +44,12 @@ internal sealed class CreateStockItemCommandHandler(
             return Result.Failure<StockItemDto>(StockItemErrors.NameAlreadyExists);
         }
 
+        if (command.SupplierId is { } supplierId
+            && !await supplierRepository.ExistsAsync(supplierId, cancellationToken))
+        {
+            return Result.Failure<StockItemDto>(SupplierErrors.NotFound);
+        }
+
         Result<StockItem> result = StockItem.Create(
             command.Name,
             command.Group,
@@ -50,7 +58,8 @@ internal sealed class CreateStockItemCommandHandler(
             command.PackSize,
             command.PackCost,
             command.ParLevel,
-            command.Status);
+            command.Status,
+            command.SupplierId);
 
         if (result.IsFailure)
         {
@@ -74,7 +83,10 @@ internal sealed class CreateStockItemCommandHandler(
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        var stockItemDto = result.Value.ToStockItemDto();
+        // Reloaded with its supplier
+        StockItem stockItem = (await stockItemRepository.GetAsync(result.Value.Id, cancellationToken))!;
+
+        var stockItemDto = stockItem.ToStockItemDto();
 
         return Result.Success(stockItemDto);
     }

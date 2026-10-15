@@ -3,12 +3,14 @@ using OrderPoint.Application.Queries.Areas;
 using OrderPoint.Application.Queries.Bartenders;
 using OrderPoint.Application.Queries.Categories;
 using OrderPoint.Application.Queries.Dashboard;
+using OrderPoint.Application.Queries.Deliveries;
 using OrderPoint.Application.Queries.Fixtures;
 using OrderPoint.Application.Queries.Items;
 using OrderPoint.Application.Queries.Menu;
 using OrderPoint.Application.Queries.Orders;
 using OrderPoint.Application.Queries.Payments;
 using OrderPoint.Application.Queries.Stock;
+using OrderPoint.Application.Queries.Suppliers;
 using OrderPoint.Application.Queries.Tables;
 using OrderPoint.Domain.Enumerations;
 
@@ -60,12 +62,25 @@ internal static class CacheKeys
 
     internal static string For(GetStockItemsQuery query)
         => $"stock:page:{query.PageNumber}:{query.PageSize}:{query.Group}:{query.Level}:{query.Status}:" +
-           $"{query.SortBy}:{query.SearchQuery}";
+           $"{query.SupplierId}:{query.SortBy}:{query.SearchQuery}";
 
     internal static string For(GetStockMovementsQuery query)
         => $"stock:{query.StockItemId}:movements:{query.PageNumber}:{query.PageSize}";
 
     internal static string For(GetStockSummaryQuery query) => "stock:summary";
+
+    internal static string For(GetReorderListQuery query) => "stock:reorder";
+
+    internal static string For(GetSupplierQuery query) => $"suppliers:{query.Id}";
+
+    internal static string For(GetSuppliersQuery query)
+        => $"suppliers:page:{query.PageNumber}:{query.PageSize}:{query.Status}:{query.SortBy}:{query.SearchQuery}";
+
+    internal static string For(GetDeliveryQuery query) => $"deliveries:{query.Id}";
+
+    internal static string For(GetDeliveriesQuery query)
+        => $"deliveries:page:{query.PageNumber}:{query.PageSize}:{query.SupplierId}:{query.SortBy}:" +
+           $"{query.SearchQuery}";
 
     internal static string For(GetOrdersQuery query)
         => $"orders:page:{query.PageNumber}:{query.PageSize}:{query.Status}:{query.ItemId}:{query.BartenderId}:" +

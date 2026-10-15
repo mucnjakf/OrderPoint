@@ -5,5 +5,6 @@ public enum StockMovementType
     Opening,
     Waste,
     Correction,
-    Sale
+    Sale,
+    Delivery
 }

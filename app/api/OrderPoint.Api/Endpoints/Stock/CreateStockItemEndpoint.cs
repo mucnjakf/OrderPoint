@@ -21,6 +21,7 @@ namespace OrderPoint.Api.Endpoints.Stock;
 /// <param name="PackCost">What one pack costs, in euros.</param>
 /// <param name="ParLevel">The quantity at or below which it counts as low, in base units.</param>
 /// <param name="Status">The status. An inactive stock item is no longer bought.</param>
+/// <param name="SupplierId">Who it is usually bought from, for the reorder list; optional.</param>
 /// <param name="OpeningQuantity">What is on the shelf now, in base units; 0 starts it empty.</param>
 internal sealed record CreateStockItemRequest(
     string Name,
@@ -31,6 +32,7 @@ internal sealed record CreateStockItemRequest(
     decimal PackCost,
     decimal ParLevel,
     StockItemStatus Status,
+    Guid? SupplierId,
     decimal OpeningQuantity);
 
 /// <summary>The created stock item.</summary>
@@ -54,8 +56,10 @@ internal sealed class CreateStockItemEndpoint : IEndpoint
             .WithDescription("""
                 Creates a stock item. An opening quantity above 0 is recorded as its first movement (`Opening`).
 
+                - `404 Supplier.NotFound`: the supplier does not exist
                 - `409 StockItem.NameAlreadyExists`: another stock item has this name
                 """)
+            .ProducesProblem(StatusCodes.Status404NotFound)
             .ProducesProblem(StatusCodes.Status409Conflict)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }
@@ -77,6 +81,7 @@ internal sealed class CreateStockItemEndpoint : IEndpoint
             request.PackCost,
             request.ParLevel,
             request.Status,
+            request.SupplierId,
             request.OpeningQuantity);
 
         Result<StockItemDto> result = await sender.Send(command, cancellationToken);

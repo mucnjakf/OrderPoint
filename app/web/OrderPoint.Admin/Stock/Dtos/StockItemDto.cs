@@ -15,5 +15,7 @@ public sealed record StockItemDto(
     decimal Value,
     StockLevel Level,
     StockItemStatus Status,
+    Guid? SupplierId,
+    string? SupplierName,
     DateTimeOffset CreatedAtUtc,
     DateTimeOffset? UpdatedAtUtc);

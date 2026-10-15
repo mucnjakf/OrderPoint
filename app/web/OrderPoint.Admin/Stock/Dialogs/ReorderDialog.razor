@@ -1,0 +1,100 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.ShoppingCart"/>
+            <MudText Typo="Typo.h6">Reorder</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudText Typo="Typo.body2" Class="mb-4" Style="@SecondaryStyle">
+            Active stock items at or below their par level, by supplier. The suggestion is enough whole packs for twice
+            the par level.
+        </MudText>
+
+        <StatefulView IsLoading="@IsLoading"
+                      ShowContent="@(Groups.Count != 0)"
+                      EmptyStateIcon="@Icons.Material.Filled.TaskAlt"
+                      EmptyStateText="Nothing to reorder"
+                      EmptyStateDetail="Every active stock item is above its par level.">
+            <MudStack Spacing="3">
+                @foreach (ReorderGroupDto group in Groups)
+                {
+                    ReorderGroupDto currentGroup = group;
+
+                    <MudPaper @key="@(currentGroup.SupplierId?.ToString() ?? "none")" Class="pa-4">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3" Class="mb-3">
+                            @if (currentGroup.SupplierName is not null)
+                            {
+                                <SupplierAvatar Name="@currentGroup.SupplierName"/>
+                            }
+                            else
+                            {
+                                <MudAvatar Variant="Variant.Outlined">
+                                    <MudIcon Icon="@Icons.Material.Filled.HelpOutline"/>
+                                </MudAvatar>
+                            }
+
+                            <MudStack Spacing="0" Class="flex-1">
+                                <MudText Typo="Typo.subtitle1">@(currentGroup.SupplierName ?? "No supplier")</MudText>
+
+                                <MudText Typo="Typo.caption" Style="@SecondaryStyle">
+                                    @GetGroupText(currentGroup)
+                                </MudText>
+                            </MudStack>
+
+                            <MudButton Variant="Variant.Outlined"
+                                       StartIcon="@Icons.Material.Filled.LocalShipping"
+                                       OnClick="@(() => RecordDeliveryAsync(currentGroup))">
+                                Record delivery
+                            </MudButton>
+                        </MudStack>
+
+                        <MudSimpleTable Elevation="0" Dense="true">
+                            <thead>
+                                <tr>
+                                    <th>Stock item</th>
+                                    <th>On the shelf</th>
+                                    <th>Par level</th>
+                                    <th style="text-align: right">Suggested</th>
+                                    <th style="text-align: right">About</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach (ReorderLineDto line in currentGroup.Lines)
+                                {
+                                    <tr @key="@line.StockItemId">
+                                        <td>
+                                            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                                <MudIcon Icon="@line.Group.GetIcon()" Size="Size.Small"/>
+                                                <span>@line.Name</span>
+                                            </MudStack>
+                                        </td>
+                                        <td style="@GetQuantityStyle(line)">@line.Unit.FormatAmount(line.Quantity)</td>
+                                        <td>@((line.ParLevel / line.PackSize).FormatPacks(line.PackName))</td>
+                                        <td style="text-align: right; font-weight: 600">
+                                            @line.SuggestedPacks.FormatPacks(line.PackName)
+                                        </td>
+                                        <td style="text-align: right">
+                                            @line.EstimatedCost.ToString("C", CultureInfo.CurrentCulture)
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </MudSimpleTable>
+                    </MudPaper>
+                }
+            </MudStack>
+        </StatefulView>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Variant="Variant.Filled"
+                   OnClick="@Close"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.Close">
+            Close
+        </MudButton>
+    </DialogActions>
+</MudDialog>

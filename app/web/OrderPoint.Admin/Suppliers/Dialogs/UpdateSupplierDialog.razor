@@ -1,0 +1,96 @@
+﻿<EditForm Model="@Request" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator/>
+
+    <MudDialog ActionsClass="pa-6" Class="mud-background">
+        <TitleContent>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudIcon Icon="@Icons.Material.Filled.Edit"/>
+                <MudText Typo="Typo.h6">Edit supplier</MudText>
+            </MudStack>
+        </TitleContent>
+
+        <DialogContent>
+            <MudStack Spacing="4">
+                <MudStack Row="true" Spacing="3">
+                    <MudTextField Label="Name"
+                                  @bind-Value="@Request.Name"
+                                  For="@(() => Request.Name)"
+                                  HelperText="As on their invoices."
+                                  Variant="Variant.Outlined"
+                                  Immediate="true"
+                                  Class="flex-1"
+                                  Style="min-width: 0"/>
+
+                    <MudTextField Label="Contact"
+                                  @bind-Value="@Request.ContactName"
+                                  For="@(() => Request.ContactName)"
+                                  HelperText="Who to talk to."
+                                  Variant="Variant.Outlined"
+                                  Immediate="true"
+                                  Class="flex-1"
+                                  Style="min-width: 0"/>
+                </MudStack>
+
+                <MudStack Row="true" Spacing="3">
+                    <MudTextField Label="Phone"
+                                  @bind-Value="@Request.Phone"
+                                  For="@(() => Request.Phone)"
+                                  HelperText="For orders and questions."
+                                  Variant="Variant.Outlined"
+                                  InputType="InputType.Telephone"
+                                  Immediate="true"
+                                  Class="flex-1"
+                                  Style="min-width: 0"/>
+
+                    <MudTextField Label="Email"
+                                  @bind-Value="@Request.Email"
+                                  For="@(() => Request.Email)"
+                                  HelperText="For orders and invoices."
+                                  Variant="Variant.Outlined"
+                                  InputType="InputType.Email"
+                                  Immediate="true"
+                                  Class="flex-1"
+                                  Style="min-width: 0"/>
+                </MudStack>
+
+                <MudTextField Label="Note"
+                              @bind-Value="@Request.Note"
+                              For="@(() => Request.Note)"
+                              HelperText="E.g. delivery days or a minimum order."
+                              Variant="Variant.Outlined"
+                              Lines="3"
+                              MaxLength="200"
+                              Counter="200"
+                              Immediate="true"/>
+
+                <MudSelect Label="Status"
+                           T="SupplierStatus"
+                           @bind-Value="@Request.Status"
+                           For="@(() => Request.Status)"
+                           HelperText="Inactive when no longer bought from."
+                           Variant="Variant.Outlined"
+                           Style="max-width: 50%">
+                    @foreach (SupplierStatus status in Enum.GetValues<SupplierStatus>())
+                    {
+                        <MudSelectItem Value="@status" T="SupplierStatus">
+                            <MudText>@status.ToString()</MudText>
+                        </MudSelectItem>
+                    }
+                </MudSelect>
+            </MudStack>
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
+                Cancel
+            </MudButton>
+
+            <MudButton ButtonType="ButtonType.Submit"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       StartIcon="@Icons.Material.Filled.Save">
+                Save
+            </MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>

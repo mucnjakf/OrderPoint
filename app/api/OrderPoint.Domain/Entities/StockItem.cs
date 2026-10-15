@@ -8,6 +8,8 @@ namespace OrderPoint.Domain.Entities;
 // What the bar buys and counts, in a base unit (ml, g or pieces); a pack (keg, bottle, case) is a number of base units
 public sealed class StockItem : Entity
 {
+    // Like the pack cost column
+    private const int PackCostDecimals = 2;
     public string Name { get; private set; }
 
     public StockGroup Group { get; private set; }
@@ -26,6 +28,11 @@ public sealed class StockItem : Entity
     public decimal Quantity { get; private set; }
 
     public StockItemStatus Status { get; private set; }
+
+    // Who it is usually bought from, for the reorder list
+    public Guid? SupplierId { get; private set; }
+
+    public Supplier? Supplier { get; private set; }
 
     // The cost of one base unit, so movements are valued at the cost of their time
     public decimal UnitCost => PackCost / PackSize;
@@ -46,6 +53,7 @@ public sealed class StockItem : Entity
         decimal packCost,
         decimal parLevel,
         StockItemStatus status,
+        Guid? supplierId,
         DateTimeOffset createdAtUtc) : base(id, createdAtUtc)
     {
         Name = name;
@@ -56,6 +64,7 @@ public sealed class StockItem : Entity
         PackCost = packCost;
         ParLevel = parLevel;
         Status = status;
+        SupplierId = supplierId;
     }
 
     public static Result<StockItem> Create(
@@ -66,7 +75,8 @@ public sealed class StockItem : Entity
         decimal packSize,
         decimal packCost,
         decimal parLevel,
-        StockItemStatus status)
+        StockItemStatus status,
+        Guid? supplierId)
     {
         Result validation = Validate(name, packName, packSize, packCost, parLevel);
 
@@ -85,6 +95,7 @@ public sealed class StockItem : Entity
             packCost,
             parLevel,
             status,
+            supplierId,
             DateTimeOffset.UtcNow);
 
         return Result.Success(stockItem);
@@ -98,7 +109,8 @@ public sealed class StockItem : Entity
         decimal packSize,
         decimal packCost,
         decimal parLevel,
-        StockItemStatus status)
+        StockItemStatus status,
+        Guid? supplierId)
     {
         Result validation = Validate(name, packName, packSize, packCost, parLevel);
 
@@ -114,10 +126,36 @@ public sealed class StockItem : Entity
         PackCost = packCost;
         ParLevel = parLevel;
         Status = status;
+        SupplierId = supplierId;
 
         UpdatedAtUtc = DateTimeOffset.UtcNow;
 
         return Result.Success();
+    }
+
+    // When its supplier is deleted
+    public void RemoveSupplier()
+    {
+        SupplierId = null;
+
+        UpdatedAtUtc = DateTimeOffset.UtcNow;
+    }
+
+    // Takes the packs in and averages the pack cost by what is on the shelf; stock below zero counts as none. Called by
+    // the delivery, which has checked its lines
+    internal StockMovement RecordDelivery(decimal packs, decimal packCost, string note)
+    {
+        decimal received = packs * PackSize;
+        decimal onHand = Math.Max(Quantity, 0);
+        decimal receivedUnitCost = packCost / PackSize;
+        decimal averageUnitCost = (onHand * UnitCost + received * receivedUnitCost) / (onHand + received);
+
+        PackCost = Math.Round(averageUnitCost * PackSize, PackCostDecimals, MidpointRounding.AwayFromZero);
+        Quantity += received;
+
+        UpdatedAtUtc = DateTimeOffset.UtcNow;
+
+        return StockMovement.Create(this, StockMovementType.Delivery, received, note, receivedUnitCost);
     }
 
     // What was on the shelf when the stock item was added

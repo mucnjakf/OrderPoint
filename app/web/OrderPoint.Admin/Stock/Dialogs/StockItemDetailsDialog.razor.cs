@@ -51,9 +51,17 @@ public sealed partial class StockItemDetailsDialog : IDisposable
 
     private bool IsLoadingMovements { get; set; } = true;
 
-    // "Spirits · in milliliters (ml)"
-    private string SubtitleText =>
-        $"{CurrentStockItem.Group} · in {StockDialogDefaults.GetUnitLabel(CurrentStockItem.Unit).ToLowerInvariant()}";
+    // "Spirits · in milliliters (ml) · from Metro"
+    private string SubtitleText
+    {
+        get
+        {
+            string unit = StockDialogDefaults.GetUnitLabel(CurrentStockItem.Unit).ToLowerInvariant();
+            string text = $"{CurrentStockItem.Group} · in {unit}";
+
+            return CurrentStockItem.SupplierName is null ? text : $"{text} · from {CurrentStockItem.SupplierName}";
+        }
+    }
 
     private IReadOnlyList<(string Icon, string Label, string Value)> Facts =>
     [

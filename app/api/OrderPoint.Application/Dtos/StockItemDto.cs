@@ -16,6 +16,8 @@ namespace OrderPoint.Application.Dtos;
 /// <param name="Value">What the quantity is worth at the pack cost, in euros; 0 when nothing is left.</param>
 /// <param name="Level">`Out` at or below 0, `Low` at or below the par level, else `Ok`.</param>
 /// <param name="Status">The status. An inactive stock item is no longer bought.</param>
+/// <param name="SupplierId">Who it is usually bought from, or `null`.</param>
+/// <param name="SupplierName">That supplier's name, or `null`.</param>
 /// <param name="CreatedAtUtc">When it was created (UTC).</param>
 /// <param name="UpdatedAtUtc">When it or its quantity last changed (UTC), or `null` if it never did.</param>
 public sealed record StockItemDto(
@@ -31,5 +33,7 @@ public sealed record StockItemDto(
     decimal Value,
     StockLevel Level,
     StockItemStatus Status,
+    Guid? SupplierId,
+    string? SupplierName,
     DateTimeOffset CreatedAtUtc,
     DateTimeOffset? UpdatedAtUtc);

@@ -1,0 +1,160 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.LocalShipping"/>
+            <MudText Typo="Typo.h6">Record delivery</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudStack Spacing="4">
+            <MudStack Row="true" Spacing="3">
+                <MudAutocomplete @bind-Value="@SelectedSupplier"
+                                 T="SupplierOptionDto"
+                                 SearchFunc="@SearchSuppliersAsync"
+                                 Variant="Variant.Outlined"
+                                 Label="Supplier"
+                                 HelperText="Who brought it."
+                                 ShowProgressIndicator="true"
+                                 ToStringFunc="@(supplier => supplier?.Name)"
+                                 Class="flex-1"
+                                 Style="min-width: 0">
+                    <ItemTemplate Context="supplier">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                            <SupplierAvatar Name="@supplier.Name" Size="Size.Small"/>
+                            <MudText Typo="Typo.body1">@supplier.Name</MudText>
+                        </MudStack>
+                    </ItemTemplate>
+
+                    <NoItemsTemplate>
+                        <MudText Align="Align.Center" Class="px-3 py-1">
+                            No suppliers found
+                        </MudText>
+                    </NoItemsTemplate>
+                </MudAutocomplete>
+
+                <MudDatePicker @bind-Date="@DeliveredDate"
+                               Label="Delivered on"
+                               HelperText="The day the goods came."
+                               Variant="Variant.Outlined"
+                               MaxDate="@Today"
+                               Style="width: 200px"/>
+
+                <MudTextField @bind-Value="@Reference"
+                              Label="Invoice number"
+                              HelperText="Optional."
+                              Variant="Variant.Outlined"
+                              MaxLength="50"
+                              Immediate="true"
+                              Style="width: 200px"/>
+            </MudStack>
+
+            <MudStack Spacing="3">
+                @foreach (DeliveryRowState row in Rows)
+                {
+                    DeliveryRowState currentRow = row;
+
+                    <MudStack @key="@currentRow" Row="true" AlignItems="AlignItems.Start" Spacing="3">
+                        <MudAutocomplete @bind-Value="@currentRow.StockItem"
+                                         @bind-Value:after="@(() => OnStockItemChanged(currentRow))"
+                                         T="DeliveryStockItemDto"
+                                         SearchFunc="@SearchStockItemsAsync"
+                                         Variant="Variant.Outlined"
+                                         Label="Stock item"
+                                         ShowProgressIndicator="true"
+                                         Error="@IsDuplicate(currentRow)"
+                                         ErrorText="Already on the delivery"
+                                         ToStringFunc="@(stockItem => stockItem?.Name)"
+                                         Class="flex-1"
+                                         Style="min-width: 0">
+                            <ItemTemplate Context="stockItem">
+                                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                    <MudIcon Icon="@stockItem.Group.GetIcon()" Size="Size.Small"/>
+                                    <MudText Typo="Typo.body1">@stockItem.Name</MudText>
+                                </MudStack>
+                            </ItemTemplate>
+
+                            <NoItemsTemplate>
+                                <MudText Align="Align.Center" Class="px-3 py-1">
+                                    No stock items found
+                                </MudText>
+                            </NoItemsTemplate>
+                        </MudAutocomplete>
+
+                        <MudNumericField @bind-Value="@currentRow.Packs"
+                                         Label="Packs"
+                                         Variant="Variant.Outlined"
+                                         Adornment="Adornment.End"
+                                         AdornmentText="@(currentRow.StockItem?.PackName ?? string.Empty)"
+                                         Min="0"
+                                         Immediate="true"
+                                         Style="width: 150px"/>
+
+                        <MudNumericField @bind-Value="@currentRow.PackCost"
+                                         Label="Price per pack"
+                                         Variant="Variant.Outlined"
+                                         Adornment="Adornment.End"
+                                         AdornmentText="€"
+                                         Min="0"
+                                         Immediate="true"
+                                         Style="width: 150px"/>
+
+                        <MudText Typo="Typo.body2" Class="mt-4" Style="width: 80px; text-align: right">
+                            @((currentRow.Packs * currentRow.PackCost).ToString("C", CultureInfo.CurrentCulture))
+                        </MudText>
+
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                       Color="Color.Error"
+                                       Class="mt-2"
+                                       aria-label="Remove line"
+                                       Disabled="@(Rows.Count == 1)"
+                                       OnClick="@(() => Rows.Remove(currentRow))"/>
+                    </MudStack>
+                }
+
+                <div>
+                    <MudButton Variant="Variant.Text"
+                               StartIcon="@Icons.Material.Filled.Add"
+                               Disabled="@(Rows.Count >= MaxLines)"
+                               OnClick="@AddRow">
+                        Add line
+                    </MudButton>
+                </div>
+            </MudStack>
+
+            <MudTextField @bind-Value="@Note"
+                          Label="Note"
+                          HelperText="Optional, e.g. what was missing."
+                          Variant="Variant.Outlined"
+                          MaxLength="200"
+                          Counter="200"
+                          Immediate="true"/>
+
+            <MudPaper Outlined="true" Elevation="0" Class="pa-4">
+                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                        Adds the packs to the stock and averages each stock item's cost.
+                    </MudText>
+
+                    <MudText Typo="Typo.h6">
+                        Total @Total.ToString("C", CultureInfo.CurrentCulture)
+                    </MudText>
+                </MudStack>
+            </MudPaper>
+        </MudStack>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
+            Cancel
+        </MudButton>
+
+        <MudButton OnClick="@Save"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Disabled="@(!CanSave)"
+                   StartIcon="@Icons.Material.Filled.Save">
+            Record delivery
+        </MudButton>
+    </DialogActions>
+</MudDialog>

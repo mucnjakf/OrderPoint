@@ -70,5 +70,12 @@ internal sealed class StockItemTypeConfiguration : IEntityTypeConfiguration<Stoc
         builder
             .Property(stockItem => stockItem.UpdatedAtUtc)
             .IsRequired(false);
+
+        builder
+            .HasOne(stockItem => stockItem.Supplier)
+            .WithMany()
+            .HasForeignKey(stockItem => stockItem.SupplierId)
+            .OnDelete(DeleteBehavior.Restrict)
+            .IsRequired(false);
     }
 }

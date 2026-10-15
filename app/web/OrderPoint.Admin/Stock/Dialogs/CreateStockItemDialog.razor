@@ -39,6 +39,31 @@
                             </MudSelectItem>
                         }
                     </MudSelect>
+
+                    <MudAutocomplete @bind-Value="@Request.Supplier"
+                                     T="SupplierOptionDto"
+                                     SearchFunc="@SearchSuppliersAsync"
+                                     Variant="Variant.Outlined"
+                                     Label="Supplier"
+                                     HelperText="Usually bought from; optional."
+                                     Clearable="true"
+                                     ShowProgressIndicator="true"
+                                     ToStringFunc="@(supplier => supplier?.Name)"
+                                     Class="flex-1"
+                                     Style="min-width: 0">
+                        <ItemTemplate Context="supplier">
+                            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                <SupplierAvatar Name="@supplier.Name" Size="Size.Small"/>
+                                <MudText Typo="Typo.body1">@supplier.Name</MudText>
+                            </MudStack>
+                        </ItemTemplate>
+
+                        <NoItemsTemplate>
+                            <MudText Align="Align.Center" Class="px-3 py-1">
+                                No suppliers found
+                            </MudText>
+                        </NoItemsTemplate>
+                    </MudAutocomplete>
                 </MudStack>
 
                 <MudStack Row="true" Spacing="3">

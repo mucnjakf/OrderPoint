@@ -1,0 +1,25 @@
+﻿<div style="@DeliveryRowLayout.GridStyle">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3" Style="min-width: 0">
+        <SupplierAvatar Name="@Delivery.Supplier.Name"/>
+
+        <MudStack Spacing="0" Style="min-width: 0">
+            <MudText Typo="Typo.body1" Class="text-truncate">@Delivery.Supplier.Name</MudText>
+
+            <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                @DateAndReferenceText
+            </MudText>
+        </MudStack>
+    </MudStack>
+
+    <MudText Typo="Typo.body2" Class="text-truncate" Style="color: var(--mud-palette-text-secondary)">
+        @ItemsText
+    </MudText>
+
+    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+        @Delivery.Lines.Count.ToCountText("line", "lines")
+    </MudText>
+
+    <MudText Typo="Typo.subtitle1" Align="Align.Right" Style="font-weight: 600">
+        @Delivery.Total.ToString("C", CultureInfo.CurrentCulture)
+    </MudText>
+</div>
