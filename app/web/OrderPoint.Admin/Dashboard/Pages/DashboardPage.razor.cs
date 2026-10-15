@@ -12,6 +12,11 @@ using OrderPoint.Admin.Items.Dtos;
 using OrderPoint.Admin.Orders.Api;
 using OrderPoint.Admin.Orders.Dialogs;
 using OrderPoint.Admin.Orders.Sorting;
+using OrderPoint.Admin.Stock.Api;
+using OrderPoint.Admin.Stock.Dialogs;
+using OrderPoint.Admin.Stock.Dtos;
+using OrderPoint.Admin.Stock.Enumerations;
+using OrderPoint.Admin.Stock.Sorting;
 using OrderPoint.Shared.Dtos;
 using OrderPoint.Shared.Orders.Dtos;
 using OrderPoint.Shared.Orders.Services;
@@ -22,6 +27,8 @@ namespace OrderPoint.Admin.Dashboard.Pages;
 public sealed partial class DashboardPage : IDisposable
 {
     private const int RecentOrdersCount = 5;
+
+    private const int LowStockCount = 5;
 
     private const int LiveRefreshIntervalInSeconds = 30;
 
@@ -46,6 +53,9 @@ public sealed partial class DashboardPage : IDisposable
     private BartenderApiClient BartenderApiClient { get; set; } = null!;
 
     [Inject]
+    private StockApiClient StockApiClient { get; set; } = null!;
+
+    [Inject]
     private OrdersHubService OrdersHubService { get; set; } = null!;
 
     private NewOrdersTracker NewRecentOrders { get; } = new();
@@ -65,6 +75,12 @@ public sealed partial class DashboardPage : IDisposable
     private IReadOnlyList<CategoryRevenueDto> CategoryRevenue { get; set; } = [];
 
     private PaymentMethodsDto? PaymentMethods { get; set; }
+
+    private GrossProfitDto? GrossProfit { get; set; }
+
+    private StockSummaryDto? StockSummary { get; set; }
+
+    private IReadOnlyList<StockItemDto> LowStockItems { get; set; } = [];
 
     private IReadOnlyList<TopItemDto> TopItems { get; set; } = [];
 
@@ -86,6 +102,16 @@ public sealed partial class DashboardPage : IDisposable
 
     private bool HasPayments =>
         PaymentMethods is { } methods && methods.CashCount + methods.CardCount + methods.OnlineCardCount > 0;
+
+    private bool IsLoadingGrossProfit { get; set; } = true;
+
+    private bool HasGrossProfit => GrossProfit is { } grossProfit &&
+                                   (grossProfit.Revenue != 0 ||
+                                    grossProfit.CostOfGoods != 0 ||
+                                    grossProfit.WasteValue != 0 ||
+                                    grossProfit.CountDifferenceValue != 0);
+
+    private bool IsLoadingLowStock { get; set; } = true;
 
     private bool IsLoadingTopItems { get; set; } = true;
 
@@ -124,6 +150,7 @@ public sealed partial class DashboardPage : IDisposable
         IsLoadingRevenueTrend = true;
         IsLoadingCategoryRevenue = true;
         IsLoadingPaymentMethods = true;
+        IsLoadingGrossProfit = true;
         IsLoadingTopItems = true;
         IsLoadingLeaderboard = true;
 
@@ -136,6 +163,7 @@ public sealed partial class DashboardPage : IDisposable
             GetPeriodSectionsAsync(),
             GetLiveAsync(),
             GetBusiestTimesAsync(),
+            GetLowStockAsync(),
             GetRecentOrdersAsync());
     }
 
@@ -146,6 +174,7 @@ public sealed partial class DashboardPage : IDisposable
             GetRevenueTrendAsync(),
             GetCategoryRevenueAsync(),
             GetPaymentMethodsAsync(),
+            GetGrossProfitAsync(),
             GetTopItemsAsync(),
             GetLeaderboardAsync());
     }
@@ -209,6 +238,48 @@ public sealed partial class DashboardPage : IDisposable
         IsLoadingPaymentMethods = false;
 
         StateHasChanged();
+    }
+
+    private async Task GetGrossProfitAsync()
+    {
+        GrossProfit = await ApiService.ExecuteAsync(() => DashboardApiClient.GetGrossProfitAsync(SelectedPeriod));
+
+        IsLoadingGrossProfit = false;
+
+        StateHasChanged();
+    }
+
+    // Out first, then low, from the stock sheet's own list
+    private async Task GetLowStockAsync()
+    {
+        Task<StockSummaryDto?> summaryTask = ApiService.ExecuteAsync(() => StockApiClient.GetStockSummaryAsync());
+        Task<PaginationDto<StockItemDto>?> outTask = GetStockItemsByLevelAsync(StockLevel.Out);
+        Task<PaginationDto<StockItemDto>?> lowTask = GetStockItemsByLevelAsync(StockLevel.Low);
+
+        await Task.WhenAll(summaryTask, outTask, lowTask);
+
+        StockSummary = await summaryTask;
+        PaginationDto<StockItemDto>? outStockItems = await outTask;
+        PaginationDto<StockItemDto>? lowStockItems = await lowTask;
+
+        LowStockItems = (outStockItems?.Items ?? [])
+            .Concat(lowStockItems?.Items ?? [])
+            .Take(LowStockCount)
+            .ToList();
+
+        IsLoadingLowStock = false;
+
+        StateHasChanged();
+    }
+
+    private Task<PaginationDto<StockItemDto>?> GetStockItemsByLevelAsync(StockLevel level)
+    {
+        return ApiService.ExecuteAsync(() => StockApiClient.GetStockItemsAsync(
+            pageNumber: 1,
+            LowStockCount,
+            nameof(StockItemSortBy.NameAsc),
+            level: level,
+            status: StockItemStatus.Active));
     }
 
     private async Task GetCategoryRevenueAsync()
@@ -313,6 +384,47 @@ public sealed partial class DashboardPage : IDisposable
 
         await DialogService
             .ShowAsync<BartenderOrdersDialog>(string.Empty, parameters, options);
+    }
+
+    private async Task ShowStockItemDetailsDialogAsync(StockItemDto stockItem)
+    {
+        var parameters = new DialogParameters<StockItemDetailsDialog>
+        {
+            { dialog => dialog.StockItem, stockItem },
+            { dialog => dialog.OnStockChanged, EventCallback.Factory.Create(this, ReloadStockSectionsAsync) }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true
+        };
+
+        await DialogService.ShowAsync<StockItemDetailsDialog>(string.Empty, parameters, options);
+    }
+
+    private async Task ShowReorderDialogAsync()
+    {
+        var parameters = new DialogParameters<ReorderDialog>
+        {
+            { dialog => dialog.OnStockChanged, EventCallback.Factory.Create(this, ReloadStockSectionsAsync) }
+        };
+
+        var options = new DialogOptions
+        {
+            MaxWidth = MaxWidth.Medium,
+            FullWidth = true
+        };
+
+        await DialogService.ShowAsync<ReorderDialog>(string.Empty, parameters, options);
+    }
+
+    // Waste, corrections and deliveries change the stock and the losses
+    private async Task ReloadStockSectionsAsync()
+    {
+        await Task.WhenAll(
+            GetLowStockAsync(),
+            GetGrossProfitAsync());
     }
 
     private async Task ShowOrderDetailsDialogAsync(OrderDto order)

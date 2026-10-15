@@ -14,6 +14,16 @@ public interface IDashboardRepository
         DateTimeOffset toUtc,
         CancellationToken cancellationToken = default);
 
+    Task<decimal> GetCostedRevenueAsync(
+        DateTimeOffset fromUtc,
+        DateTimeOffset toUtc,
+        CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<DashboardStockMovementDto>> GetStockMovementValuesAsync(
+        DateTimeOffset fromUtc,
+        DateTimeOffset toUtc,
+        CancellationToken cancellationToken = default);
+
     Task<DashboardLiveDto> GetLiveAsync(
         DateTimeOffset todayFromUtc,
         DateTimeOffset nowUtc,

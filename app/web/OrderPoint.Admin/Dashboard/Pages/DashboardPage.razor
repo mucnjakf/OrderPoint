@@ -122,26 +122,72 @@
                     </ChildContent>
                 </DashboardTile>
             </MudItem>
+
+            <MudItem xs="12">
+                <DashboardTile Title="@($"Gross profit · {SelectedPeriod.GetLabel()}")"
+                               Icon="@Icons.Material.Filled.Savings"
+                               IsLoading="@IsLoadingGrossProfit"
+                               ShowContent="@HasGrossProfit"
+                               EmptyStateText="No sales in this period">
+                    <LoadingContent>
+                        <GrossProfitSummarySkeleton/>
+                    </LoadingContent>
+
+                    <ChildContent>
+                        <GrossProfitSummary GrossProfit="@(GrossProfit!)"/>
+                    </ChildContent>
+                </DashboardTile>
+            </MudItem>
         </MudGrid>
     </MudItem>
 
     <MudItem xs="12" lg="3">
-        <DashboardTile Title="Right now"
-                       Icon="@Icons.Material.Filled.Bolt"
-                       IsLoading="@IsLoadingLive"
-                       ShowContent="@(Live is not null)"
-                       EmptyStateText="Live data unavailable">
-            <LoadingContent>
-                <LiveOrdersPanelSkeleton/>
-            </LoadingContent>
+        <div class="d-flex flex-column gap-3" style="height: 100%">
+            <div class="flex-1">
+                <DashboardTile Title="Right now"
+                               Icon="@Icons.Material.Filled.Bolt"
+                               IsLoading="@IsLoadingLive"
+                               ShowContent="@(Live is not null)"
+                               EmptyStateText="Live data unavailable">
+                    <LoadingContent>
+                        <LiveOrdersPanelSkeleton/>
+                    </LoadingContent>
 
-            <ChildContent>
-                @if (Live is not null)
-                {
-                    <LiveOrdersPanel Live="@Live" UpdatedAtUtc="@LiveUpdatedAtUtc"/>
-                }
-            </ChildContent>
-        </DashboardTile>
+                    <ChildContent>
+                        @if (Live is not null)
+                        {
+                            <LiveOrdersPanel Live="@Live" UpdatedAtUtc="@LiveUpdatedAtUtc"/>
+                        }
+                    </ChildContent>
+                </DashboardTile>
+            </div>
+
+            <DashboardTile Title="Low stock"
+                           Icon="@Icons.Material.Filled.Inventory2"
+                           IsLoading="@IsLoadingLowStock"
+                           ShowContent="@LowStockItems.Any()"
+                           EmptyStateText="Everything is stocked">
+                <HeaderContent>
+                    <MudButton Variant="Variant.Text"
+                               Size="Size.Small"
+                               StartIcon="@Icons.Material.Filled.ShoppingCart"
+                               OnClick="@ShowReorderDialogAsync">
+                        Reorder
+                    </MudButton>
+                </HeaderContent>
+
+                <LoadingContent>
+                    <LowStockListSkeleton/>
+                </LoadingContent>
+
+                <ChildContent>
+                    <LowStockList StockItems="@LowStockItems"
+                                  OutCount="@(StockSummary?.OutCount ?? 0)"
+                                  LowCount="@(StockSummary?.LowCount ?? 0)"
+                                  OnStockItemClick="@ShowStockItemDetailsDialogAsync"/>
+                </ChildContent>
+            </DashboardTile>
+        </div>
     </MudItem>
 
     <MudItem xs="12" md="6" lg="4">

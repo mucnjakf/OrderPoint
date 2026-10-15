@@ -73,6 +73,17 @@ internal sealed class DashboardApiClient(HttpClient httpClient, TimeZoneService 
         return result.Data;
     }
 
+    internal async Task<GrossProfitDto> GetGrossProfitAsync(
+        DashboardPeriod period,
+        CancellationToken cancellationToken = default)
+    {
+        GetGrossProfitResponse result = await GetAsync<GetGrossProfitResponse>(
+            $"api/dashboard/gross-profit?period={period}&timeZone={TimeZone}",
+            cancellationToken);
+
+        return result.Data;
+    }
+
     internal async Task<IReadOnlyList<TopItemDto>> GetTopItemsAsync(
         DashboardPeriod period,
         CancellationToken cancellationToken = default)

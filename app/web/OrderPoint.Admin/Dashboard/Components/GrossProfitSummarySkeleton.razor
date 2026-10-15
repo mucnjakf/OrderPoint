@@ -1,0 +1,38 @@
+﻿<MudGrid Spacing="3">
+    @foreach (string label in Labels)
+    {
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Outlined="true" Class="pa-4">
+                <MudStack Spacing="2">
+                    <MudText Typo="Typo.body2">
+                        @label
+                    </MudText>
+
+                    <MudText Typo="Typo.h5">
+                        <MudSkeleton Width="50%"/>
+                    </MudText>
+
+                    <MudText Typo="Typo.caption">
+                        <MudSkeleton Width="70%"/>
+                    </MudText>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+    }
+
+    <MudItem xs="12">
+        <MudPaper Outlined="true" Class="pa-3">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                <MudIcon Icon="@Icons.Material.Filled.DeleteSweep" Size="Size.Small"/>
+
+                <MudText Typo="Typo.body2" Class="flex-1">
+                    Stock losses
+                </MudText>
+
+                <MudText Typo="Typo.body2">
+                    <MudSkeleton Width="240px"/>
+                </MudText>
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+</MudGrid>

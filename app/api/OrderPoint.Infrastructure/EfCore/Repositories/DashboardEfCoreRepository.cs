@@ -33,6 +33,28 @@ internal sealed class DashboardEfCoreRepository(ApplicationDbContext dbContext) 
                 order.PaidByBartenderId))
             .ToListAsync(cancellationToken);
 
+    // Revenue from items with a recipe today, so the cost of what was sold is known
+    public async Task<decimal> GetCostedRevenueAsync(
+        DateTimeOffset fromUtc,
+        DateTimeOffset toUtc,
+        CancellationToken cancellationToken = default)
+        => await GetPaidOrderItemsInRange(fromUtc, toUtc)
+            .Where(orderItem => dbContext.RecipeLines.Any(recipeLine => recipeLine.ItemId == orderItem.ItemId))
+            .SumAsync(orderItem => orderItem.Quantity * orderItem.UnitPrice, cancellationToken);
+
+    public async Task<IReadOnlyList<DashboardStockMovementDto>> GetStockMovementValuesAsync(
+        DateTimeOffset fromUtc,
+        DateTimeOffset toUtc,
+        CancellationToken cancellationToken = default)
+        => await dbContext.StockMovements
+            .AsNoTracking()
+            .Where(movement => movement.CreatedAtUtc >= fromUtc && movement.CreatedAtUtc < toUtc)
+            .GroupBy(movement => movement.Type)
+            .Select(group => new DashboardStockMovementDto(
+                group.Key,
+                group.Sum(movement => movement.QuantityChange * movement.UnitCost)))
+            .ToListAsync(cancellationToken);
+
     public async Task<DashboardLiveDto> GetLiveAsync(
         DateTimeOffset todayFromUtc,
         DateTimeOffset nowUtc,

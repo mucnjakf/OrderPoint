@@ -1,0 +1,48 @@
+﻿<MudStack Spacing="2">
+    <MudStack Row="true" Spacing="2">
+        <MudChip T="string" Variant="Variant.Outlined" Size="Size.Small" Color="Color.Error" Class="ma-0">
+            <RollingNumber Value="@OutCount" Text="@OutCount.ToString()"/>&nbsp;out
+        </MudChip>
+
+        <MudChip T="string" Variant="Variant.Outlined" Size="Size.Small" Color="Color.Warning" Class="ma-0">
+            <RollingNumber Value="@LowCount" Text="@LowCount.ToString()"/>&nbsp;low
+        </MudChip>
+    </MudStack>
+
+    @foreach (StockItemDto stockItem in StockItems)
+    {
+        <MudPaper Outlined="true"
+                  Class="pa-3 cursor-pointer"
+                  Style="@GetRowStyle(stockItem)"
+                  @onclick="@(() => OnStockItemClickAsync(stockItem))"
+                  @onmouseenter="@(() => HoveredStockItemId = stockItem.Id)"
+                  @onmouseleave="@(() => HoveredStockItemId = null)">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudAvatar Rounded="true" Variant="Variant.Outlined" Size="Size.Small">
+                    <MudIcon Icon="@stockItem.Group.GetIcon()" Size="Size.Small"/>
+                </MudAvatar>
+
+                <MudStack Spacing="0" Class="flex-1" Style="min-width: 0">
+                    <MudText Typo="Typo.body2" Class="text-truncate">
+                        @stockItem.Name
+                    </MudText>
+
+                    <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                        Par @stockItem.GetPacksText(stockItem.ParLevel)
+                    </MudText>
+                </MudStack>
+
+                <MudText Typo="Typo.body2" Style="@GetQuantityStyle(stockItem)">
+                    @stockItem.GetPacksText(stockItem.Quantity)
+                </MudText>
+            </MudStack>
+        </MudPaper>
+    }
+
+    @if (OutCount + LowCount > StockItems.Count)
+    {
+        <MudButton Variant="Variant.Text" Href="/stock" EndIcon="@Icons.Material.Filled.ChevronRight">
+            View all @((OutCount + LowCount).ToString()) on the stock sheet
+        </MudButton>
+    }
+</MudStack>

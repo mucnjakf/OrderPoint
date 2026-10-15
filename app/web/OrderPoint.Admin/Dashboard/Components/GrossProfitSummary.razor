@@ -1,0 +1,131 @@
+﻿<MudGrid Spacing="3">
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Outlined="true" Class="pa-4" Style="height: 100%">
+            <MudStack Spacing="2">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                    <MudAvatar Color="Color.Success" Size="Size.Small" Rounded="true">
+                        <MudIcon Icon="@Icons.Material.Filled.Payments" Size="Size.Small"/>
+                    </MudAvatar>
+
+                    <MudText Typo="Typo.body2">
+                        Revenue
+                    </MudText>
+                </MudStack>
+
+                <MudText Typo="Typo.h5" Style="font-weight: 700">
+                    <RollingNumber Value="@GrossProfit.Revenue"
+                                   Text="@GrossProfit.Revenue.ToString("C", CultureInfo.CurrentCulture)"/>
+                </MudText>
+
+                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                    Paid in the period
+                </MudText>
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Outlined="true" Class="pa-4" Style="height: 100%">
+            <MudStack Spacing="2">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                    <MudAvatar Color="Color.Warning" Size="Size.Small" Rounded="true">
+                        <MudIcon Icon="@Icons.Material.Filled.Inventory2" Size="Size.Small"/>
+                    </MudAvatar>
+
+                    <MudText Typo="Typo.body2">
+                        Cost of goods
+                    </MudText>
+                </MudStack>
+
+                <MudText Typo="Typo.h5" Style="font-weight: 700">
+                    <RollingNumber Value="@GrossProfit.CostOfGoods"
+                                   Text="@GrossProfit.CostOfGoods.ToString("C", CultureInfo.CurrentCulture)"/>
+                </MudText>
+
+                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                    @GetShareText(GrossProfit.CostOfGoods) of revenue
+                </MudText>
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Outlined="true" Class="pa-4" Style="height: 100%">
+            <MudStack Spacing="2">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                    <MudAvatar Color="Color.Primary" Size="Size.Small" Rounded="true">
+                        <MudIcon Icon="@Icons.Material.Filled.Savings" Size="Size.Small"/>
+                    </MudAvatar>
+
+                    <MudText Typo="Typo.body2">
+                        Gross profit
+                    </MudText>
+                </MudStack>
+
+                <MudText Typo="Typo.h5" Style="font-weight: 700">
+                    <RollingNumber Value="@GrossProfit.GrossProfit"
+                                   Text="@GrossProfit.GrossProfit.ToString("C", CultureInfo.CurrentCulture)"/>
+                </MudText>
+
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                    <MudChip T="string"
+                             Variant="Variant.Text"
+                             Size="Size.Small"
+                             Color="@ChangeColor"
+                             Icon="@ChangeIcon"
+                             Class="ma-0">
+                        @ChangeText
+                    </MudChip>
+
+                    <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                        vs previous period
+                    </MudText>
+                </MudStack>
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12" sm="6" md="3">
+        <MudPaper Outlined="true" Class="pa-4" Style="height: 100%">
+            <MudStack Spacing="2">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                    <MudAvatar Color="Color.Info" Size="Size.Small" Rounded="true">
+                        <MudIcon Icon="@Icons.Material.Filled.Percent" Size="Size.Small"/>
+                    </MudAvatar>
+
+                    <MudText Typo="Typo.body2">
+                        Margin
+                    </MudText>
+                </MudStack>
+
+                <MudText Typo="Typo.h5" Style="font-weight: 700">
+                    <RollingNumber Value="@Margin" Text="@Margin.ToString("P0", CultureInfo.CurrentCulture)"/>
+                </MudText>
+
+                <MudText Typo="Typo.caption" Style="@CostsKnownStyle">
+                    @CostsKnownText
+                </MudText>
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12">
+        <MudPaper Outlined="true" Class="pa-3">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Wrap="Wrap.Wrap">
+                <MudIcon Icon="@Icons.Material.Filled.DeleteSweep" Size="Size.Small"/>
+
+                <MudText Typo="Typo.body2" Class="flex-1">
+                    Stock losses
+                </MudText>
+
+                <MudText Typo="Typo.body2">
+                    Waste <span style="@WasteChange.GetValueChangeStyle()">@WasteChange.ToSignedMoneyText()</span>
+                    · Count differences
+                    <span style="@GrossProfit.CountDifferenceValue.GetValueChangeStyle()">
+                        @GrossProfit.CountDifferenceValue.ToSignedMoneyText()
+                    </span>
+                </MudText>
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
