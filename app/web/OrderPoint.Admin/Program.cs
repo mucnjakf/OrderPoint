@@ -21,6 +21,7 @@ using OrderPoint.Shared.Account.Services;
 using OrderPoint.Shared.Auth.Api;
 using OrderPoint.Shared.Auth.Services;
 using OrderPoint.Shared.Extensions;
+using OrderPoint.Shared.Images;
 using OrderPoint.Shared.Orders.Services;
 using OrderPoint.Shared.Services;
 
@@ -37,6 +38,7 @@ builder.Services.AddScoped<CircuitHandler, ServicesAccessorCircuitHandler>();
 builder.Services.AddTransient<AccessTokenHandler>();
 builder.Services.AddScoped<AuthService>();
 
+builder.Services.AddImageProxy();
 builder.Services.AddScoped<ApiService>();
 builder.Services.AddScoped<TimeZoneService>();
 builder.Services.AddScoped<DarkModeService>();
@@ -100,6 +102,7 @@ app.Use(async (context, next) =>
 app.UseAntiforgery();
 
 app.MapStaticAssets();
+app.MapImageProxy();
 
 app
     .MapRazorComponents<App>()

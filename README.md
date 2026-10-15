@@ -29,7 +29,7 @@ Order Management Web Application - 2026.
 
 ### **📱 Testing on a phone**
 <p align="justify">
-    Aspire serves the apps on <code>localhost</code> only, so a phone can't reach them directly. A Microsoft dev tunnel gives the bar app, the Bartender app and the customer app public HTTPS addresses that forward to your machine. The AppHost declares it as the <code>tunnel</code> resource (Aspire's Dev Tunnels integration). Only the apps' pages go through it: they call the API from the server, so nothing else needs to be exposed.
+    Aspire serves the apps on <code>localhost</code> only, so a phone can't reach them directly. A Microsoft dev tunnel gives every app (Admin, Register, bar app, Bartender app, customer app) a public HTTPS address that forwards to your machine. The AppHost declares it as the <code>tunnel</code> resource (Aspire's Dev Tunnels integration). Only the apps' pages go through it: they call the API from the server, so nothing else needs to be exposed.
 </p>
 
 **One-time setup**
@@ -46,6 +46,8 @@ dotnet user-secrets set "CustomerApp:PublicUrl" "https://orderpoint-7038.euw.dev
 **Every time**
 1. Start the app: `aspire run --project app/host/OrderPoint.AppHost`.
 2. The `tunnel` resource does not start with the rest: start it in the Aspire dashboard (▶ on its row). It creates the tunnel `orderpoint` the first time and keeps the same addresses every time:
+   - Admin: `https://orderpoint-7025.euw.devtunnels.ms`
+   - Register: `https://orderpoint-7032.euw.devtunnels.ms`
    - Bar app: `https://orderpoint-7034.euw.devtunnels.ms`
    - Bartender app: `https://orderpoint-7036.euw.devtunnels.ms`
    - Customer app: `https://orderpoint-7038.euw.devtunnels.ms`
@@ -53,6 +55,6 @@ dotnet user-secrets set "CustomerApp:PublicUrl" "https://orderpoint-7038.euw.dev
 4. Stop the `tunnel` resource in the dashboard when you're done (stopping Aspire stops it too): while it runs, anyone with the address can open the apps.
 
 **Good to know**
-- Images work on the phone too: their stored addresses point at the storage emulator on your machine, which a phone can't reach, so the bar, Bartender and customer apps serve them themselves under `/images` (the AppHost passes them the storage address as `Images__StorageUrl`). The Admin still loads them straight from storage.
+- Images work on the phone too: their stored addresses point at the storage emulator on your machine, which a phone can't reach, so every app serves them itself under `/images` (the AppHost passes them the storage address as `Images__StorageUrl`).
 - While `CustomerApp:PublicUrl` is set, the QR codes and the Admin's "Open" button go through the tunnel, so they only work while it runs. To go back to the local address: `dotnet user-secrets remove "CustomerApp:PublicUrl" --project app/web/OrderPoint.Admin`, then restart.
 - If the tunnel resource reports a sign-in error, run `devtunnel user login -g` again.

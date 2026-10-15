@@ -9,7 +9,7 @@ const string BusinessDayStartHour = "6";
 // Fixed, because image URLs are stored with it
 const int BlobPort = 59287;
 
-// Every stored image URL starts with it; the phone apps serve images from it, so phones see them
+// Every stored image URL starts with it; the apps serve images from it, so phones see them through the tunnel
 string imagesStorageUrl = $"http://127.0.0.1:{BlobPort}/devstoreaccount1/images";
 
 IResourceBuilder<PostgresServerResource> postgres = builder
@@ -58,6 +58,7 @@ IResourceBuilder<ProjectResource> admin = builder
     .AddProject<Projects.OrderPoint_Admin>("order-point-admin")
     .WithExternalHttpEndpoints()
     .WithHttpHealthCheck("/health")
+    .WithEnvironment("Images__StorageUrl", imagesStorageUrl)
     .WithReference(api)
     .WaitFor(api);
 
@@ -92,16 +93,19 @@ IResourceBuilder<ProjectResource> register = builder
     .WithExternalHttpEndpoints()
     .WithHttpHealthCheck("/health")
     .WithEnvironment("BusinessDay__StartHour", BusinessDayStartHour)
+    .WithEnvironment("Images__StorageUrl", imagesStorageUrl)
     .WithReference(api)
     .WaitFor(api);
 
-// Public addresses for phones (orderpoint-<port>.euw.devtunnels.ms); started from the dashboard only when needed
+// Public addresses for every app (orderpoint-<port>.euw.devtunnels.ms); started from the dashboard only when needed
 builder
     .AddDevTunnel("tunnel", "orderpoint", new DevTunnelOptions { Region = DevTunnelRegion.WestEurope })
     .WithAnonymousAccess()
+    .WithReference(admin.GetEndpoint("https"))
     .WithReference(bar.GetEndpoint("https"))
     .WithReference(bartender.GetEndpoint("https"))
     .WithReference(customer.GetEndpoint("https"))
+    .WithReference(register.GetEndpoint("https"))
     .WithExplicitStart();
 
 // The Admin's table QR codes point to the customer app

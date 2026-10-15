@@ -7,8 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace OrderPoint.Shared.Images;
 
-// Stored image URLs point at the storage emulator on this machine, which a phone can't reach, so the bartender and
-// customer apps serve the images themselves under /images
+// Stored image URLs point at the storage emulator on this machine, which a phone can't reach, so the apps serve the
+// images themselves under /images
 internal static class ImageProxyExtensions
 {
     internal const string StorageUrlKey = "Images:StorageUrl";
