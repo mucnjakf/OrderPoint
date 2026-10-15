@@ -1,0 +1,163 @@
+﻿@page "/payments"
+
+<PageTitle>Payments</PageTitle>
+
+<PageHeader Text="Payments">
+    <MudToggleGroup T="DashboardPeriod"
+                    @bind-Value="@SelectedPeriod"
+                    @bind-Value:after="@OnPeriodChangedAsync"
+                    Color="Color.Primary">
+        @foreach (DashboardPeriod period in Enum.GetValues<DashboardPeriod>())
+        {
+            <MudToggleItem Value="@period" Text="@period.GetLabel()" Class="px-5 py-2"/>
+        }
+    </MudToggleGroup>
+</PageHeader>
+
+<MudGrid Spacing="3" Class="mb-3">
+    @if (PaymentMethods is null)
+    {
+        @for (int i = 0; i < ChannelCardsCount; i++)
+        {
+            <MudItem xs="12" sm="6" lg="3">
+                <PaymentTotalCardSkeleton/>
+            </MudItem>
+        }
+    }
+    else
+    {
+        <MudItem xs="12" sm="6" lg="3">
+            <PaymentTotalCard Icon="@PaymentChannel.Cash.GetIcon()"
+                              Label="Cash"
+                              Value="@PaymentMethods.CashTotal"
+                              Caption="@PaymentMethods.CashCount.ToCountText("payment", "payments")"/>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" lg="3">
+            <PaymentTotalCard Icon="@PaymentChannel.CardAtRegister.GetIcon()"
+                              Label="Card at the register"
+                              Value="@PaymentMethods.CardTotal"
+                              Caption="@PaymentMethods.CardCount.ToCountText("payment", "payments")"/>
+        </MudItem>
+
+        <MudItem xs="12" sm="6" lg="3">
+            <PaymentTotalCard Icon="@PaymentChannel.CardOnline.GetIcon()"
+                              Label="Card online"
+                              Value="@PaymentMethods.OnlineCardTotal"
+                              Caption="@PaymentMethods.OnlineCardCount.ToCountText("payment", "payments")"/>
+        </MudItem>
+    }
+
+    <MudItem xs="12" sm="6" lg="3">
+        @if (Live is null)
+        {
+            <PaymentTotalCardSkeleton/>
+        }
+        else
+        {
+            <PaymentTotalCard Icon="@Icons.Material.Filled.AssignmentReturn"
+                              Label="Refunds due"
+                              Value="@Live.RefundsDueTotal"
+                              Caption="@($"{Live.RefundsDueCount.ToCountText("order", "orders")} · from any day")"/>
+        }
+    </MudItem>
+</MudGrid>
+
+<DataLedger TItem="OrderDto"
+            Items="@Payments"
+            Pagination="@Pagination"
+            IsLoading="@IsLoading"
+            SearchLabel="Search by number, table or name"
+            SearchQuery="@SearchQuery"
+            SearchQueryChanged="@(value => SearchQuery = value)"
+            SelectedSortBy="@SelectedSortBy"
+            SelectedSortByChanged="@(value => SelectedSortBy = value)"
+            OnSearchChanged="@OnFiltersChangedAsync"
+            OnSortChanged="@OnFiltersChangedAsync"
+            OnPageChanged="@OnPageChangedAsync"
+            SortByOptions="@Enum.GetNames(typeof(PaymentSortBy))"
+            GetSortByLabel="@PaymentSorting.GetSortByLabel"
+            GetSortByIcon="@PaymentSorting.GetSortByIcon"
+            IsItemSelected="@(order => order.Id == SelectedPayment?.Id)"
+            OnItemClick="@SelectPayment"
+            EmptyStateIcon="@Icons.Material.Filled.Payments"
+            EmptyStateText="No payments found">
+
+    <LoadingTemplate>
+        <PaymentRowSkeleton/>
+    </LoadingTemplate>
+
+    <FilterContent>
+        <MudSelect @bind-Value="@SelectedChannel"
+                   @bind-Value:after="@OnFiltersChangedAsync"
+                   T="PaymentChannel?"
+                   Label="How"
+                   Variant="Variant.Outlined"
+                   Clearable="true"
+                   FitContent="true">
+            @foreach (PaymentChannel channel in Enum.GetValues<PaymentChannel>())
+            {
+                <MudSelectItem T="PaymentChannel?" Value="@channel">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                        <MudIcon Icon="@channel.GetIcon()" Size="Size.Small"/>
+                        <MudText Typo="Typo.body1">@channel.GetLabel()</MudText>
+                    </MudStack>
+                </MudSelectItem>
+            }
+        </MudSelect>
+
+        <MudSelect @bind-Value="@SelectedStatus"
+                   @bind-Value:after="@OnFiltersChangedAsync"
+                   T="PaymentStatus?"
+                   Label="Status"
+                   Variant="Variant.Outlined"
+                   Clearable="true"
+                   FitContent="true">
+            @foreach ((PaymentStatus status, string label) in StatusOptions)
+            {
+                <MudSelectItem T="PaymentStatus?" Value="@status">@label</MudSelectItem>
+            }
+        </MudSelect>
+
+        <MudAutocomplete @ref="@BartenderAutocomplete"
+                         @bind-Value="@SelectedBartender"
+                         @bind-Value:after="@OnFiltersChangedAsync"
+                         T="BartenderDto"
+                         SearchFunc="@OnBartenderSearchAsync"
+                         Variant="Variant.Outlined"
+                         Label="Paid to"
+                         Clearable="true"
+                         OnClearButtonClick="@OnBartenderClearedAsync"
+                         ShowProgressIndicator="true"
+                         ToStringFunc="@(bartender => bartender is null
+                                             ? null
+                                             : $"{bartender.FirstName} {bartender.LastName}")">
+            <ItemTemplate Context="bartender">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                    <BartenderAvatar FirstName="@bartender.FirstName"
+                                     LastName="@bartender.LastName"
+                                     ImageUrl="@bartender.ImageUrl"
+                                     Size="Size.Small"/>
+
+                    <MudText Typo="Typo.body1">
+                        @bartender.FirstName @bartender.LastName
+                    </MudText>
+                </MudStack>
+            </ItemTemplate>
+
+            <NoItemsTemplate>
+                <MudText Align="Align.Center" Class="px-3 py-1">
+                    No bartenders found
+                </MudText>
+            </NoItemsTemplate>
+        </MudAutocomplete>
+    </FilterContent>
+
+    <ItemTemplate>
+        <PaymentRow Order="@context"/>
+    </ItemTemplate>
+
+    <SideContent>
+        <PaymentReceiptPanel Order="@SelectedPayment" OnDetailsClick="@ShowOrderDetailsDialogAsync"/>
+    </SideContent>
+</DataLedger>

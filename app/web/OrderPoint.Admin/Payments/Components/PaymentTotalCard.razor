@@ -1,0 +1,19 @@
+﻿<MudPaper Class="pa-4" Style="height: 100%">
+    <MudStack Spacing="1">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudIcon Icon="@Icon" Size="Size.Small" Style="color: var(--mud-palette-text-secondary)"/>
+
+            <MudText Typo="Typo.subtitle2" Style="color: var(--mud-palette-text-secondary)">
+                @Label
+            </MudText>
+        </MudStack>
+
+        <MudText Typo="Typo.h5" Style="font-weight: 600">
+            <RollingNumber Value="@Value" Text="@Value.ToString("C", CultureInfo.CurrentCulture)"/>
+        </MudText>
+
+        <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+            @Caption
+        </MudText>
+    </MudStack>
+</MudPaper>

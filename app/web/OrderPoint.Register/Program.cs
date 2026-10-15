@@ -45,6 +45,7 @@ builder.Services.AddHttpClient<AuthApiClient>(ConfigureApiClient);
 builder.Services.AddHttpClient<AccountApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 builder.Services.AddHttpClient<OrderApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 builder.Services.AddHttpClient<RegisterDayApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
+builder.Services.AddHttpClient<PaymentApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 builder.Services.AddHttpClient<MenuApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 
 // MudBlazor's default is 5000

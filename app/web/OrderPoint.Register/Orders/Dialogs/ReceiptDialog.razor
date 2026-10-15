@@ -92,9 +92,7 @@
 
             @* The printed receipt: hidden here, copied into a frame by Print *@
             <div style="display: none">
-                <div @ref="@ReceiptElement">
-                    <Receipt Order="@Order"/>
-                </div>
+                <Receipt @ref="@ReceiptComponent" Order="@Order"/>
             </div>
         </MudStack>
     </DialogContent>

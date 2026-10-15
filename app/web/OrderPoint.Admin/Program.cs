@@ -11,6 +11,7 @@ using OrderPoint.Admin.Health.Services;
 using OrderPoint.Admin.Items.Api;
 using OrderPoint.Admin.Orders.Api;
 using OrderPoint.Admin.Orders.Services;
+using OrderPoint.Admin.Payments.Api;
 using OrderPoint.Admin.Search.Services;
 using OrderPoint.Admin.Tables.Api;
 using OrderPoint.Admin.Tables.Services;
@@ -52,6 +53,7 @@ builder.Services.AddHttpClient<CategoryApiClient>(ConfigureApiClient).AddHttpMes
 builder.Services.AddHttpClient<ItemApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 builder.Services.AddHttpClient<BartenderApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 builder.Services.AddHttpClient<OrderApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
+builder.Services.AddHttpClient<PaymentApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 builder.Services.AddHttpClient<DashboardApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 builder.Services.AddHttpClient<AccountApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 builder.Services.AddHttpClient<HealthApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();

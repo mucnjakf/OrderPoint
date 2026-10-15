@@ -1,0 +1,53 @@
+﻿<div style="@PaymentRowLayout.GridStyle">
+    <MudAvatar Rounded="true" Variant="Variant.Outlined">
+        <MudIcon Icon="@(Channel?.GetIcon() ?? Icons.Material.Filled.Payments)"/>
+    </MudAvatar>
+
+    <MudStack Spacing="0" Style="min-width: 0">
+        <MudText Typo="Typo.body1">
+            <strong>#@Order.Number</strong> · @Order.GetPlaceText()
+        </MudText>
+
+        <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+            @Order.PaidAtUtc!.Value.ToDisplayDateTime(TimeZoneService.TimeZone) · @Channel?.GetLabel()
+        </MudText>
+    </MudStack>
+
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Style="min-width: 0">
+        @if (Order.PaidByBartender is { } paidBy)
+        {
+            <BartenderAvatar FirstName="@paidBy.FirstName"
+                             LastName="@paidBy.LastName"
+                             ImageUrl="@paidBy.ImageUrl"
+                             Size="Size.Small"/>
+
+            <MudText Typo="Typo.body2" Class="text-truncate">
+                @paidBy.FirstName @paidBy.LastName
+            </MudText>
+        }
+        else
+        {
+            <MudAvatar Size="Size.Small" Variant="Variant.Outlined">
+                <MudIcon Icon="@Icons.Material.Filled.PhoneIphone" Size="Size.Small"/>
+            </MudAvatar>
+
+            <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                Guest, online
+            </MudText>
+        }
+    </MudStack>
+
+    <div>
+        <MudChip T="string"
+                 Variant="Variant.Outlined"
+                 Size="Size.Small"
+                 Color="@Order.GetPaymentColor()"
+                 Class="ma-0">
+            @StatusText
+        </MudChip>
+    </div>
+
+    <MudText Typo="Typo.h6" Align="Align.Right" Style="@AmountStyle">
+        @Order.Total.ToString("C", CultureInfo.CurrentCulture)
+    </MudText>
+</div>

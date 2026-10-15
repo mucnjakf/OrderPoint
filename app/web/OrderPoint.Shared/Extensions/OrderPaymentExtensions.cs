@@ -49,6 +49,18 @@ internal static class OrderPaymentExtensions
         };
     }
 
+    // How the payment came in; null while unpaid
+    internal static PaymentChannel? GetPaymentChannel(this OrderDto order)
+    {
+        return order.PaymentMethod switch
+        {
+            PaymentMethod.Cash => PaymentChannel.Cash,
+            PaymentMethod.Card when order.PaidByBartender is null => PaymentChannel.CardOnline,
+            PaymentMethod.Card => PaymentChannel.CardAtRegister,
+            _ => null
+        };
+    }
+
     internal static string GetSourceText(this OrderDto order)
     {
         return order.Source switch

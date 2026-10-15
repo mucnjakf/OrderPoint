@@ -1,0 +1,48 @@
+﻿<MudPaper Class="pa-4">
+    <StatefulView IsLoading="false"
+                  ShowContent="@(Order is not null)"
+                  Compact="true"
+                  EmptyStateIcon="@Icons.Material.Filled.ReceiptLong"
+                  EmptyStateText="Select a payment"
+                  EmptyStateDetail="Its receipt shows here.">
+        @if (Order is { } order)
+        {
+            <MudStack Spacing="3">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                    <MudIcon Icon="@order.GetPaymentIcon()" Color="@order.GetPaymentColor()"/>
+
+                    <MudText Typo="Typo.subtitle1" Class="flex-1">
+                        Order #@order.Number
+                    </MudText>
+
+                    <MudChip T="string"
+                             Variant="Variant.Outlined"
+                             Size="Size.Small"
+                             Color="@order.GetPaymentColor()"
+                             Class="ma-0">
+                        @order.GetPaymentText()
+                    </MudChip>
+                </MudStack>
+
+                <MudPaper Outlined="true" Elevation="0" Class="pa-4">
+                    <Receipt @key="@order.Id" @ref="@ReceiptComponent" Order="@order"/>
+                </MudPaper>
+
+                <MudStack Row="true" Justify="Justify.SpaceBetween">
+                    <MudButton Variant="Variant.Outlined"
+                               StartIcon="@Icons.Material.Filled.Print"
+                               OnClick="@PrintAsync">
+                        Print
+                    </MudButton>
+
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.Receipt"
+                               OnClick="@OnDetailsClickAsync">
+                        Order details
+                    </MudButton>
+                </MudStack>
+            </MudStack>
+        }
+    </StatefulView>
+</MudPaper>

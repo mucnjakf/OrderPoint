@@ -10,7 +10,7 @@ export function printReceipt(receipt) {
     const frameDocument = frame.contentDocument;
     frameDocument.open();
     frameDocument.write("<!DOCTYPE html><html><head><title>Receipt</title></head>");
-    frameDocument.write(`<body style="margin: 16px; color: #000; background: #fff;">${receipt.innerHTML}</body></html>`);
+    frameDocument.write(`<body style="margin: 16px; color: #000; background: #fff;">${receipt.outerHTML}</body></html>`);
     frameDocument.close();
 
     frame.contentWindow.focus();
