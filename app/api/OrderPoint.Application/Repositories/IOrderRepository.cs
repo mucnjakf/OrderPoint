@@ -15,8 +15,20 @@ public interface IOrderRepository
         Guid? bartenderId = null,
         Guid? tableId = null,
         Guid? takenByBartenderId = null,
-        PaymentStatus? paymentStatus = null,
+        OrderPaymentFilter? payment = null,
         OrderSortBy? sortBy = null,
+        CancellationToken cancellationToken = default);
+
+    // Only orders with a payment (paid, refund due or refunded), paid since paidFromUtc when given
+    Task<(IReadOnlyList<Order>, int)> GetPaymentsPaginatedAsync(
+        int pageNumber = 1,
+        int pageSize = 10,
+        string? searchQuery = null,
+        DateTimeOffset? paidFromUtc = null,
+        PaymentChannel? channel = null,
+        Guid? paidByBartenderId = null,
+        PaymentStatus? paymentStatus = null,
+        PaymentSortBy? sortBy = null,
         CancellationToken cancellationToken = default);
 
     Task<IReadOnlyList<Order>> GetByStatusesAsync(

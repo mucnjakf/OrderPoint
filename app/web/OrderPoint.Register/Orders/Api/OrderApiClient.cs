@@ -14,15 +14,15 @@ internal sealed class OrderApiClient(HttpClient httpClient)
         int pageNumber,
         int pageSize,
         string sortBy,
-        PaymentStatus? paymentStatus = null,
+        OrderPaymentFilter? payment = null,
         string? searchQuery = null,
         CancellationToken cancellationToken = default)
     {
         string requestUri = $"api/orders?pageNumber={pageNumber}&pageSize={pageSize}&sortBy={sortBy}";
 
-        if (paymentStatus is not null)
+        if (payment is not null)
         {
-            requestUri += $"&paymentStatus={paymentStatus}";
+            requestUri += $"&payment={payment}";
         }
 
         if (!string.IsNullOrWhiteSpace(searchQuery))

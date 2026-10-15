@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using MudBlazor;
 using OrderPoint.Register.Orders.Api;
 using OrderPoint.Register.Orders.Sorting;
-using OrderPoint.Register.Shared.Extensions;
 using OrderPoint.Shared.Account.Services;
 using OrderPoint.Shared.Auth.Services;
 using OrderPoint.Shared.Dtos;
@@ -21,8 +20,8 @@ public sealed partial class MainLayout : IDisposable
 {
     private const string DrawerOpenStorageKey = "drawer-open";
 
-    // Every unpaid order fits: a declined or cancelled one has nothing to pay, so they are counted here
-    private const int CountedOrdersPageSize = 100;
+    // Only the counts are read
+    private const int CountedOrdersPageSize = 1;
 
     private const string DrawerToggleWrapperStyle =
         "position: fixed; left: 0; bottom: 72px; transform: translateX(-50%); " +
@@ -131,12 +130,12 @@ public sealed partial class MainLayout : IDisposable
     private async Task GetCountsAsync()
     {
         PaginationDto<OrderDto>?[] pages = await Task.WhenAll(
-            GetOrdersAsync(PaymentStatus.Unpaid),
-            GetOrdersAsync(PaymentStatus.RefundDue));
+            GetOrdersAsync(OrderPaymentFilter.ToPay),
+            GetOrdersAsync(OrderPaymentFilter.RefundDue));
 
         if (pages[0] is not null)
         {
-            ToPayCount = pages[0]!.Items.Count(order => order.HasSomethingToPay());
+            ToPayCount = pages[0]!.TotalCount;
         }
 
         if (pages[1] is not null)
@@ -147,13 +146,13 @@ public sealed partial class MainLayout : IDisposable
         StateHasChanged();
     }
 
-    private Task<PaginationDto<OrderDto>?> GetOrdersAsync(PaymentStatus paymentStatus)
+    private Task<PaginationDto<OrderDto>?> GetOrdersAsync(OrderPaymentFilter payment)
     {
         return ApiService.ExecuteAsync(() => OrderApiClient.GetOrdersAsync(
             pageNumber: 1,
             CountedOrdersPageSize,
             nameof(OrderSortBy.CreatedAtUtcAsc),
-            paymentStatus));
+            payment));
     }
 
     private async Task LoadLayoutPreferencesAsync()

@@ -17,7 +17,7 @@ internal sealed class OrderApiClient(HttpClient httpClient)
         OrderStatus? status = null,
         Guid? itemId = null,
         Guid? bartenderId = null,
-        PaymentStatus? paymentStatus = null,
+        OrderPaymentFilter? payment = null,
         CancellationToken cancellationToken = default)
     {
         string requestUri = $"api/orders?pageNumber={pageNumber}&pageSize={pageSize}&sortBy={sortBy}";
@@ -42,9 +42,9 @@ internal sealed class OrderApiClient(HttpClient httpClient)
             requestUri += $"&bartenderId={bartenderId}";
         }
 
-        if (paymentStatus is not null)
+        if (payment is not null)
         {
-            requestUri += $"&paymentStatus={paymentStatus}";
+            requestUri += $"&payment={payment}";
         }
 
         HttpResponseMessage response = await httpClient.GetAsync(requestUri, cancellationToken);

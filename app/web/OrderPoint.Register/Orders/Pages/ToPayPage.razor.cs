@@ -3,7 +3,6 @@ using OrderPoint.Register.Orders.Api;
 using OrderPoint.Register.Orders.Api.Requests;
 using OrderPoint.Register.Orders.Services;
 using OrderPoint.Register.Orders.Sorting;
-using OrderPoint.Register.Shared.Extensions;
 using OrderPoint.Shared.Dtos;
 using OrderPoint.Shared.Orders.Dtos;
 using OrderPoint.Shared.Orders.Enumerations;
@@ -84,12 +83,12 @@ public sealed partial class ToPayPage : IDisposable
             pageNumber: 1,
             PageSize,
             nameof(OrderSortBy.CreatedAtUtcAsc),
-            PaymentStatus.Unpaid,
+            OrderPaymentFilter.ToPay,
             SearchQuery));
 
         if (pagination is not null || !isLiveUpdate)
         {
-            Orders = (pagination?.Items ?? []).Where(order => order.HasSomethingToPay()).ToList();
+            Orders = pagination?.Items ?? [];
         }
 
         IsLoading = false;

@@ -69,16 +69,16 @@
             </NoItemsTemplate>
         </MudAutocomplete>
 
-        <MudSelect @bind-Value="@SelectedPaymentStatus"
-                   @bind-Value:after="@OnPaymentStatusChangedAsync"
-                   T="PaymentStatus?"
+        <MudSelect @bind-Value="@SelectedPayment"
+                   @bind-Value:after="@OnPaymentChangedAsync"
+                   T="OrderPaymentFilter?"
                    Label="Payment"
                    Variant="Variant.Outlined"
                    Clearable="true"
                    FitContent="true">
-            @foreach ((PaymentStatus status, string label) in PaymentStatusOptions)
+            @foreach ((OrderPaymentFilter payment, string label) in PaymentOptions)
             {
-                <MudSelectItem T="PaymentStatus?" Value="@status">@label</MudSelectItem>
+                <MudSelectItem T="OrderPaymentFilter?" Value="@payment">@label</MudSelectItem>
             }
         </MudSelect>
     </FilterContent>

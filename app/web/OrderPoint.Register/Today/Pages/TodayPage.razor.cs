@@ -92,7 +92,7 @@ public sealed partial class TodayPage : IDisposable
             pageNumber: 1,
             PageSize,
             nameof(OrderSortBy.CreatedAtUtcDesc),
-            PaymentStatus.Paid));
+            OrderPaymentFilter.Paid));
 
         if (pagination is not null)
         {

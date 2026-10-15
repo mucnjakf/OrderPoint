@@ -37,12 +37,13 @@ public sealed partial class OrdersPage : IDisposable
 
     private NewOrdersTracker NewOrders { get; } = new();
 
-    private static readonly (PaymentStatus Status, string Label)[] PaymentStatusOptions =
+    private static readonly (OrderPaymentFilter Payment, string Label)[] PaymentOptions =
     [
-        (PaymentStatus.Unpaid, "To pay"),
-        (PaymentStatus.Paid, "Paid"),
-        (PaymentStatus.RefundDue, "Refund due"),
-        (PaymentStatus.Refunded, "Refunded")
+        (OrderPaymentFilter.ToPay, "To pay"),
+        (OrderPaymentFilter.NothingToPay, "Nothing to pay"),
+        (OrderPaymentFilter.Paid, "Paid"),
+        (OrderPaymentFilter.RefundDue, "Refund due"),
+        (OrderPaymentFilter.Refunded, "Refunded")
     ];
 
     private Dictionary<OrderStatus, int> StatusCounts { get; } = [];
@@ -61,7 +62,7 @@ public sealed partial class OrdersPage : IDisposable
 
     private BartenderDto? SelectedBartender { get; set; }
 
-    private PaymentStatus? SelectedPaymentStatus { get; set; }
+    private OrderPaymentFilter? SelectedPayment { get; set; }
 
     private MudAutocomplete<BartenderDto> BartenderAutocomplete { get; set; } = null!;
 
@@ -108,7 +109,7 @@ public sealed partial class OrdersPage : IDisposable
                 nameof(OrderSortBy.CreatedAtUtcDesc),
                 status: status,
                 bartenderId: SelectedBartender?.Id,
-                paymentStatus: SelectedPaymentStatus));
+                payment: SelectedPayment));
 
         StatusCounts[status] = pagination?.TotalCount ?? 0;
 
@@ -133,7 +134,7 @@ public sealed partial class OrdersPage : IDisposable
             SearchQuery,
             SelectedStatus,
             bartenderId: SelectedBartender?.Id,
-            paymentStatus: SelectedPaymentStatus));
+            payment: SelectedPayment));
 
         Orders = Pagination?.Items ?? [];
 
@@ -169,7 +170,7 @@ public sealed partial class OrdersPage : IDisposable
     }
 
     // The status counts follow it too, like the bartender filter
-    private async Task OnPaymentStatusChangedAsync()
+    private async Task OnPaymentChangedAsync()
     {
         await Task.WhenAll(
             GetStatusCountsAsync(),

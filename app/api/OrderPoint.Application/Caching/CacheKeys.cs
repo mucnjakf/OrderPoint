@@ -7,6 +7,7 @@ using OrderPoint.Application.Queries.Fixtures;
 using OrderPoint.Application.Queries.Items;
 using OrderPoint.Application.Queries.Menu;
 using OrderPoint.Application.Queries.Orders;
+using OrderPoint.Application.Queries.Payments;
 using OrderPoint.Application.Queries.Tables;
 using OrderPoint.Domain.Enumerations;
 
@@ -54,7 +55,20 @@ internal static class CacheKeys
 
     internal static string For(GetOrdersQuery query)
         => $"orders:page:{query.PageNumber}:{query.PageSize}:{query.Status}:{query.ItemId}:{query.BartenderId}:" +
-           $"{query.TableId}:{query.TakenByBartenderId}:{query.PaymentStatus}:{query.SortBy}:{query.SearchQuery}";
+           $"{query.TableId}:{query.TakenByBartenderId}:{query.Payment}:{query.SortBy}:{query.SearchQuery}";
+
+    // With a period the key holds the viewer's business date, so "today" moves on at the day start
+    internal static string For(GetPaymentsQuery query, TimeSpan dayStart)
+    {
+        string? localToday = query.Period is null
+            ? null
+            : DashboardPeriodRange
+                .GetLocalToday(DateTimeOffset.UtcNow, query.TimeZone!, dayStart)
+                .ToString(DateFormat, CultureInfo.InvariantCulture);
+
+        return $"payments:page:{query.PageNumber}:{query.PageSize}:{query.Period}:{query.TimeZone?.Id}:{localToday}:" +
+               $"{query.Channel}:{query.PaidByBartenderId}:{query.PaymentStatus}:{query.SortBy}:{query.SearchQuery}";
+    }
 
     internal static string For(GetDashboardSummaryQuery query, TimeSpan dayStart)
         => ForDashboard("summary", query.Period, query.TimeZone, dayStart);

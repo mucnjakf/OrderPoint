@@ -17,7 +17,7 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
         Guid? bartenderId = null,
         Guid? tableId = null,
         Guid? takenByBartenderId = null,
-        PaymentStatus? paymentStatus = null,
+        OrderPaymentFilter? payment = null,
         OrderSortBy? sortBy = null,
         CancellationToken cancellationToken = default)
     {
@@ -29,8 +29,41 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
             .Include(order => order.Items);
 
         query = SearchOrders(query, searchQuery);
-        query = FilterOrders(query, status, itemId, bartenderId, tableId, takenByBartenderId, paymentStatus);
+        query = FilterOrders(query, status, itemId, bartenderId, tableId, takenByBartenderId, payment);
         query = SortOrders(query, sortBy);
+
+        int totalCount = await query.CountAsync(cancellationToken);
+
+        List<Order> orders = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
+
+        return (orders.AsReadOnly(), totalCount);
+    }
+
+    public async Task<(IReadOnlyList<Order>, int)> GetPaymentsPaginatedAsync(
+        int pageNumber = 1,
+        int pageSize = 10,
+        string? searchQuery = null,
+        DateTimeOffset? paidFromUtc = null,
+        PaymentChannel? channel = null,
+        Guid? paidByBartenderId = null,
+        PaymentStatus? paymentStatus = null,
+        PaymentSortBy? sortBy = null,
+        CancellationToken cancellationToken = default)
+    {
+        IQueryable<Order> query = dbContext.Orders
+            .AsNoTracking()
+            .Include(order => order.Bartender)
+            .Include(order => order.TakenByBartender)
+            .Include(order => order.PaidByBartender)
+            .Include(order => order.Items)
+            .Where(order => order.PaidAtUtc != null);
+
+        query = SearchOrders(query, searchQuery);
+        query = FilterPayments(query, paidFromUtc, channel, paidByBartenderId, paymentStatus);
+        query = SortPayments(query, sortBy);
 
         int totalCount = await query.CountAsync(cancellationToken);
 
@@ -164,7 +197,7 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
         Guid? bartenderId,
         Guid? tableId,
         Guid? takenByBartenderId,
-        PaymentStatus? paymentStatus)
+        OrderPaymentFilter? payment)
     {
         if (status.HasValue)
         {
@@ -191,6 +224,51 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
             query = query.Where(order => order.TakenByBartenderId == takenByBartenderId.Value);
         }
 
+        query = payment switch
+        {
+            OrderPaymentFilter.ToPay => query.Where(order =>
+                order.PaymentStatus == PaymentStatus.Unpaid &&
+                order.Status != OrderStatus.Declined &&
+                order.Status != OrderStatus.Cancelled),
+            OrderPaymentFilter.NothingToPay => query.Where(order =>
+                order.PaymentStatus == PaymentStatus.Unpaid &&
+                (order.Status == OrderStatus.Declined || order.Status == OrderStatus.Cancelled)),
+            OrderPaymentFilter.Paid => query.Where(order => order.PaymentStatus == PaymentStatus.Paid),
+            OrderPaymentFilter.RefundDue => query.Where(order => order.PaymentStatus == PaymentStatus.RefundDue),
+            OrderPaymentFilter.Refunded => query.Where(order => order.PaymentStatus == PaymentStatus.Refunded),
+            _ => query
+        };
+
+        return query;
+    }
+
+    private static IQueryable<Order> FilterPayments(
+        IQueryable<Order> query,
+        DateTimeOffset? paidFromUtc,
+        PaymentChannel? channel,
+        Guid? paidByBartenderId,
+        PaymentStatus? paymentStatus)
+    {
+        if (paidFromUtc.HasValue)
+        {
+            query = query.Where(order => order.PaidAtUtc >= paidFromUtc.Value);
+        }
+
+        query = channel switch
+        {
+            PaymentChannel.Cash => query.Where(order => order.PaymentMethod == PaymentMethod.Cash),
+            PaymentChannel.CardAtRegister => query.Where(order =>
+                order.PaymentMethod == PaymentMethod.Card && order.PaidByBartenderId != null),
+            PaymentChannel.CardOnline => query.Where(order =>
+                order.PaymentMethod == PaymentMethod.Card && order.PaidByBartenderId == null),
+            _ => query
+        };
+
+        if (paidByBartenderId.HasValue)
+        {
+            query = query.Where(order => order.PaidByBartenderId == paidByBartenderId.Value);
+        }
+
         if (paymentStatus.HasValue)
         {
             query = query.Where(order => order.PaymentStatus == paymentStatus.Value);
@@ -210,6 +288,24 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
             OrderSortBy.CreatedAtUtcAsc => query.OrderBy(order => order.CreatedAtUtc),
             OrderSortBy.CreatedAtUtcDesc => query.OrderByDescending(order => order.CreatedAtUtc),
             _ => query.OrderByDescending(order => order.CreatedAtUtc)
+        };
+
+        return orderedQuery.ThenBy(order => order.Id);
+    }
+
+    private static IQueryable<Order> SortPayments(IQueryable<Order> query, PaymentSortBy? sortBy)
+    {
+        IOrderedQueryable<Order> orderedQuery = sortBy switch
+        {
+            PaymentSortBy.PaidAtUtcAsc => query.OrderBy(order => order.PaidAtUtc),
+            PaymentSortBy.PaidAtUtcDesc => query.OrderByDescending(order => order.PaidAtUtc),
+            PaymentSortBy.NumberAsc => query.OrderBy(order => order.Number),
+            PaymentSortBy.NumberDesc => query.OrderByDescending(order => order.Number),
+            PaymentSortBy.TotalAsc => query
+                .OrderBy(order => order.Items.Sum(orderItem => orderItem.Quantity * orderItem.UnitPrice)),
+            PaymentSortBy.TotalDesc => query
+                .OrderByDescending(order => order.Items.Sum(orderItem => orderItem.Quantity * orderItem.UnitPrice)),
+            _ => query.OrderByDescending(order => order.PaidAtUtc)
         };
 
         return orderedQuery.ThenBy(order => order.Id);

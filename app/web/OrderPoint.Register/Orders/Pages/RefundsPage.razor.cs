@@ -59,7 +59,7 @@ public sealed partial class RefundsPage : IDisposable
             pageNumber: 1,
             PageSize,
             nameof(OrderSortBy.CreatedAtUtcAsc),
-            PaymentStatus.RefundDue));
+            OrderPaymentFilter.RefundDue));
 
         if (pagination is not null || !isLiveUpdate)
         {
