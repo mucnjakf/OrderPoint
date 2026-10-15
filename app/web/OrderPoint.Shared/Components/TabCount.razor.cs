@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace OrderPoint.Bar.Orders.Components;
+namespace OrderPoint.Shared.Components;
 
 // A small pill next to a tab's name; nothing while the count is loading
 public sealed partial class TabCount

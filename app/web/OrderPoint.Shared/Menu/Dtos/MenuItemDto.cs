@@ -1,4 +1,4 @@
-﻿namespace OrderPoint.Customer.Menu.Dtos;
+﻿namespace OrderPoint.Shared.Menu.Dtos;
 
 public sealed record MenuItemDto(
     Guid Id,

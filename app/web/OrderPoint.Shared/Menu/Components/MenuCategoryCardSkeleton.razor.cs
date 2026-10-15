@@ -1,3 +1,3 @@
-﻿namespace OrderPoint.Customer.Menu.Components;
+﻿namespace OrderPoint.Shared.Menu.Components;
 
 public sealed partial class MenuCategoryCardSkeleton;

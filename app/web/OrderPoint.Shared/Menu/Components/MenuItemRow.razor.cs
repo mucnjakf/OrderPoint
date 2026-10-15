@@ -1,9 +1,8 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Components;
-using OrderPoint.Customer.Cart.Services;
-using OrderPoint.Customer.Menu.Dtos;
+using OrderPoint.Shared.Menu.Dtos;
 
-namespace OrderPoint.Customer.Menu.Components;
+namespace OrderPoint.Shared.Menu.Components;
 
 public sealed partial class MenuItemRow
 {
@@ -18,6 +17,10 @@ public sealed partial class MenuItemRow
     [Parameter]
     [EditorRequired]
     public int CartQuantity { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public int MaxQuantity { get; set; }
 
     [Parameter]
     [EditorRequired]

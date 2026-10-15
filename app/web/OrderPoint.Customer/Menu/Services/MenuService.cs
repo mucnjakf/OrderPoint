@@ -1,6 +1,6 @@
-﻿using OrderPoint.Customer.Menu.Api;
-using OrderPoint.Customer.Menu.Dtos;
-using OrderPoint.Customer.Orders.Services;
+﻿using OrderPoint.Customer.Orders.Services;
+using OrderPoint.Shared.Menu.Api;
+using OrderPoint.Shared.Menu.Dtos;
 using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Customer.Menu.Services;

@@ -1,8 +1,8 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Components;
 using OrderPoint.Customer.Cart.Services;
-using OrderPoint.Customer.Menu.Dtos;
 using OrderPoint.Customer.Menu.Services;
+using OrderPoint.Shared.Menu.Dtos;
 
 namespace OrderPoint.Customer.Menu.Pages;
 

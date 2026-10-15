@@ -2,7 +2,6 @@
 using Microsoft.JSInterop;
 using OrderPoint.Customer.Cart.Dtos;
 using OrderPoint.Customer.Cart.Services;
-using OrderPoint.Customer.Menu.Dtos;
 using OrderPoint.Customer.Menu.Services;
 using OrderPoint.Customer.Orders.Api;
 using OrderPoint.Customer.Orders.Api.Requests;
@@ -10,6 +9,7 @@ using OrderPoint.Customer.Orders.Services;
 using OrderPoint.Customer.Tables.Services;
 using OrderPoint.Shared.Errors;
 using OrderPoint.Shared.Extensions;
+using OrderPoint.Shared.Menu.Dtos;
 using OrderPoint.Shared.Orders.Dtos;
 using OrderPoint.Shared.Services;
 

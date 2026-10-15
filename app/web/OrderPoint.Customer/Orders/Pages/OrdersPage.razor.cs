@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using OrderPoint.Customer.Cart.Services;
-using OrderPoint.Customer.Menu.Dtos;
 using OrderPoint.Customer.Menu.Services;
 using OrderPoint.Customer.Orders.Api;
 using OrderPoint.Customer.Orders.Dialogs;
 using OrderPoint.Customer.Orders.Dtos;
 using OrderPoint.Customer.Orders.Services;
+using OrderPoint.Shared.Menu.Dtos;
 using OrderPoint.Shared.Orders.Dtos;
 using OrderPoint.Shared.Services;
 

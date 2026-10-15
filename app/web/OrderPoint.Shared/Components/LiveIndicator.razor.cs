@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 using MudBlazor;
 using OrderPoint.Shared.Orders.Services;
 
-namespace OrderPoint.Bar.Shared.Components;
+namespace OrderPoint.Shared.Components;
 
 // Whether orders update by themselves; offline means the list only changes after a reload
 public sealed partial class LiveIndicator : IDisposable

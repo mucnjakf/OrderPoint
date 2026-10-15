@@ -72,6 +72,7 @@
                 Guid itemId = item.Id;
 
                 <MenuItemRow @key="@itemId"
+                             MaxQuantity="@CartService.MaxQuantity"
                              Item="@item"
                              CartQuantity="@CartService.GetQuantity(itemId)"
                              OnClick="@OpenItem"

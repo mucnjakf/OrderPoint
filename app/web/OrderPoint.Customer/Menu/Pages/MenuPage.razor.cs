@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using OrderPoint.Customer.Menu.Dtos;
 using OrderPoint.Customer.Menu.Services;
 using OrderPoint.Customer.Tables.Services;
+using OrderPoint.Shared.Menu.Dtos;
 
 namespace OrderPoint.Customer.Menu.Pages;
 

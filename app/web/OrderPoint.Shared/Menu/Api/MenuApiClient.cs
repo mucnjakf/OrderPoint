@@ -1,8 +1,9 @@
-﻿using OrderPoint.Customer.Menu.Api.Responses;
-using OrderPoint.Customer.Menu.Dtos;
+﻿using System.Net.Http.Json;
 using OrderPoint.Shared.Errors;
+using OrderPoint.Shared.Menu.Api.Responses;
+using OrderPoint.Shared.Menu.Dtos;
 
-namespace OrderPoint.Customer.Menu.Api;
+namespace OrderPoint.Shared.Menu.Api;
 
 internal sealed class MenuApiClient(HttpClient httpClient)
 {

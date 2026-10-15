@@ -3,7 +3,6 @@ using MudBlazor;
 using MudBlazor.Services;
 using OrderPoint.Customer;
 using OrderPoint.Customer.Cart.Services;
-using OrderPoint.Customer.Menu.Api;
 using OrderPoint.Customer.Menu.Services;
 using OrderPoint.Customer.Orders.Api;
 using OrderPoint.Customer.Orders.Services;
@@ -13,6 +12,7 @@ using OrderPoint.Customer.Tables.Services;
 using OrderPoint.ServiceDefaults;
 using OrderPoint.Shared.Extensions;
 using OrderPoint.Shared.Images;
+using OrderPoint.Shared.Menu.Api;
 using OrderPoint.Shared.Services;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
-using OrderPoint.Customer.Menu.Dtos;
+using OrderPoint.Shared.Menu.Dtos;
 
-namespace OrderPoint.Customer.Menu.Components;
+namespace OrderPoint.Shared.Menu.Components;
 
 public sealed partial class MenuCategoryCard
 {

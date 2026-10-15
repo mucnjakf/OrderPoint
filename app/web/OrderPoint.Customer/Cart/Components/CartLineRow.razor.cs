@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Components;
 using OrderPoint.Customer.Cart.Dtos;
 using OrderPoint.Customer.Cart.Services;
-using OrderPoint.Customer.Menu.Dtos;
 using OrderPoint.Shared.Constants;
+using OrderPoint.Shared.Menu.Dtos;
 
 namespace OrderPoint.Customer.Cart.Components;
 

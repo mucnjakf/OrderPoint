@@ -2,7 +2,7 @@
 using OrderPoint.Shared.Extensions;
 using OrderPoint.Shared.Tables.Dtos;
 
-namespace OrderPoint.Bar.Tables.Components;
+namespace OrderPoint.Shared.Tables.Components;
 
 // A guest's request: what and since when, with Done; in the Orders strip it also names the table and opens it
 public sealed partial class TableRequestItem

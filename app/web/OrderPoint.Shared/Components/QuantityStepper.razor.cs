@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace OrderPoint.Customer.Cart.Components;
+namespace OrderPoint.Shared.Components;
 
 // − n +; with Min 0 the minus becomes a bin at 1, because going lower removes the line
 public sealed partial class QuantityStepper
