@@ -1,0 +1,24 @@
+﻿<MudGrid Spacing="3">
+    @foreach (string label in Labels)
+    {
+        <MudItem xs="12" sm="4">
+            <MudPaper Outlined="true" Class="pa-4">
+                <MudStack Spacing="2">
+                    <MudText Typo="Typo.body2">
+                        @label
+                    </MudText>
+
+                    <MudText Typo="Typo.h5">
+                        <MudSkeleton Width="50%"/>
+                    </MudText>
+
+                    <MudSkeleton Width="100%" Height="4px"/>
+
+                    <MudText Typo="Typo.caption">
+                        <MudSkeleton Width="40%"/>
+                    </MudText>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+    }
+</MudGrid>

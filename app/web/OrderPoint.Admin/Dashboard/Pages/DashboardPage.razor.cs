@@ -64,6 +64,8 @@ public sealed partial class DashboardPage : IDisposable
 
     private IReadOnlyList<CategoryRevenueDto> CategoryRevenue { get; set; } = [];
 
+    private PaymentMethodsDto? PaymentMethods { get; set; }
+
     private IReadOnlyList<TopItemDto> TopItems { get; set; } = [];
 
     private IReadOnlyList<BartenderLeaderboardEntryDto> Leaderboard { get; set; } = [];
@@ -79,6 +81,11 @@ public sealed partial class DashboardPage : IDisposable
     private bool IsLoadingBusiestTimes { get; set; } = true;
 
     private bool IsLoadingCategoryRevenue { get; set; } = true;
+
+    private bool IsLoadingPaymentMethods { get; set; } = true;
+
+    private bool HasPayments =>
+        PaymentMethods is { } methods && methods.CashCount + methods.CardCount + methods.OnlineCardCount > 0;
 
     private bool IsLoadingTopItems { get; set; } = true;
 
@@ -116,6 +123,7 @@ public sealed partial class DashboardPage : IDisposable
         IsLoadingSummary = true;
         IsLoadingRevenueTrend = true;
         IsLoadingCategoryRevenue = true;
+        IsLoadingPaymentMethods = true;
         IsLoadingTopItems = true;
         IsLoadingLeaderboard = true;
 
@@ -137,6 +145,7 @@ public sealed partial class DashboardPage : IDisposable
             GetSummaryAsync(),
             GetRevenueTrendAsync(),
             GetCategoryRevenueAsync(),
+            GetPaymentMethodsAsync(),
             GetTopItemsAsync(),
             GetLeaderboardAsync());
     }
@@ -188,6 +197,16 @@ public sealed partial class DashboardPage : IDisposable
         BusiestTimes = busiestTimes ?? [];
 
         IsLoadingBusiestTimes = false;
+
+        StateHasChanged();
+    }
+
+    private async Task GetPaymentMethodsAsync()
+    {
+        PaymentMethods = await ApiService.ExecuteAsync(
+            () => DashboardApiClient.GetPaymentMethodsAsync(SelectedPeriod));
+
+        IsLoadingPaymentMethods = false;
 
         StateHasChanged();
     }

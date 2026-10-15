@@ -35,8 +35,8 @@ internal sealed class GetRevenueTrendEndpoint : IEndpoint
             .WithTags("Dashboard")
             .WithSummary("Get the revenue trend")
             .WithDescription("""
-                Completed revenue per bucket in the viewer's time zone: hourly for `Today`, daily for `Last7Days` and
-                `Last30Days`. Buckets without revenue are included with 0.
+                What was paid per bucket (by payment time) in the viewer's time zone: hourly for `Today`, daily for
+                `Last7Days` and `Last30Days`. Buckets without revenue are included with 0.
                 """)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }

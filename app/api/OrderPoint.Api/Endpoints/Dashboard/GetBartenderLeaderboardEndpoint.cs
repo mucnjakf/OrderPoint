@@ -35,8 +35,8 @@ internal sealed class GetBartenderLeaderboardEndpoint : IEndpoint
             .WithTags("Dashboard")
             .WithSummary("Get the bartender leaderboard")
             .WithDescription("""
-                The 5 best bartenders of the period by completed revenue (then completed orders), with the number of
-                orders they handled, completed and declined.
+                The 5 best bartenders of the period by the revenue of the orders they handled (paid, by payment
+                time; then completed orders), with the number of orders they handled, completed and declined.
                 """)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }

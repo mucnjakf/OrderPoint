@@ -62,6 +62,9 @@ internal static class CacheKeys
     internal static string For(GetRevenueTrendQuery query, TimeSpan dayStart)
         => ForDashboard("revenue-trend", query.Period, query.TimeZone, dayStart);
 
+    internal static string For(GetPaymentMethodsQuery query, TimeSpan dayStart)
+        => ForDashboard("payment-methods", query.Period, query.TimeZone, dayStart);
+
     internal static string For(GetCategoryRevenueQuery query, TimeSpan dayStart)
         => ForDashboard("category-revenue", query.Period, query.TimeZone, dayStart);
 

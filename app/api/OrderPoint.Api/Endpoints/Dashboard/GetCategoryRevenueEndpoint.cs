@@ -35,7 +35,7 @@ internal sealed class GetCategoryRevenueEndpoint : IEndpoint
             .WithTags("Dashboard")
             .WithSummary("Get revenue by category")
             .WithDescription("""
-                Completed revenue per category for the period: the top 5 categories, highest first.
+                Paid revenue per category for the period (by payment time): the top 5 categories, highest first.
                 """)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }

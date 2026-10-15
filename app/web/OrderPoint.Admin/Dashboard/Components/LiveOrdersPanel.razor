@@ -84,6 +84,44 @@
         </MudPaper>
     </MudStack>
 
+    <MudText Typo="Typo.overline" Class="mt-3">
+        At the register
+    </MudText>
+
+    <MudPaper Outlined="true" Class="pa-3">
+        <MudStack Row="true" AlignItems="AlignItems.Center">
+            <MudAvatar Color="Color.Warning" Size="Size.Small" Rounded="true">
+                <MudIcon Icon="@Icons.Material.Filled.ReceiptLong" Size="Size.Small"/>
+            </MudAvatar>
+
+            <MudStack Spacing="0" Class="flex-1">
+                <MudText Typo="Typo.body2">To pay</MudText>
+                <MudText Typo="Typo.caption">@Live.ToPayTotal.ToString("C", CultureInfo.CurrentCulture)</MudText>
+            </MudStack>
+
+            <MudText Typo="Typo.h6">
+                <RollingNumber Value="@Live.ToPayCount" Text="@Live.ToPayCount.ToString()"/>
+            </MudText>
+        </MudStack>
+    </MudPaper>
+
+    <MudPaper Outlined="true" Class="pa-3">
+        <MudStack Row="true" AlignItems="AlignItems.Center">
+            <MudAvatar Color="Color.Warning" Size="Size.Small" Rounded="true">
+                <MudIcon Icon="@Icons.Material.Filled.AssignmentReturn" Size="Size.Small"/>
+            </MudAvatar>
+
+            <MudStack Spacing="0" Class="flex-1">
+                <MudText Typo="Typo.body2">Refunds due</MudText>
+                <MudText Typo="Typo.caption">@Live.RefundsDueTotal.ToString("C", CultureInfo.CurrentCulture)</MudText>
+            </MudStack>
+
+            <MudText Typo="Typo.h6">
+                <RollingNumber Value="@Live.RefundsDueCount" Text="@Live.RefundsDueCount.ToString()"/>
+            </MudText>
+        </MudStack>
+    </MudPaper>
+
     <MudSpacer/>
 
     <MudStack Spacing="0" AlignItems="AlignItems.Center">

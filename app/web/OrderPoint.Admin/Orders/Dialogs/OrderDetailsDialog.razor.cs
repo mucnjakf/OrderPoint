@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using OrderPoint.Shared.Extensions;
 using OrderPoint.Shared.Orders.Dtos;
 using OrderPoint.Admin.Orders.Api;
 using OrderPoint.Admin.Orders.Api.Requests;
@@ -33,6 +35,17 @@ public sealed partial class OrderDetailsDialog : IDisposable
     private IMudDialogInstance MudDialogInstance { get; set; } = null!;
 
     // The parameter is reset whenever the dialog provider re-renders, so live updates go here
+    private string PaidAtText => CurrentOrder.PaidAtUtc?.ToDisplayDateTime(TimeZoneService.TimeZone) ?? "Not yet";
+
+    private string ChangeText => CurrentOrder.CashReceived is { } cashReceived
+        ? (cashReceived - CurrentOrder.Total).ToString("C", CultureInfo.CurrentCulture)
+        : "-";
+
+    // Who took the money at the register; a guest's card in the customer app has nobody
+    private string PaidToText => CurrentOrder.PaidByBartender is { } paidBy
+        ? $"{paidBy.FirstName} {paidBy.LastName}"
+        : CurrentOrder.PaymentMethod is null ? "-" : "The guest, in the customer app";
+
     private OrderDto CurrentOrder { get; set; } = null!;
 
     private bool IsDeclining { get; set; }

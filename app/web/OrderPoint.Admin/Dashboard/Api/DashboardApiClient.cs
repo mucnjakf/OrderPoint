@@ -62,6 +62,17 @@ internal sealed class DashboardApiClient(HttpClient httpClient, TimeZoneService 
         return result.Data;
     }
 
+    internal async Task<PaymentMethodsDto> GetPaymentMethodsAsync(
+        DashboardPeriod period,
+        CancellationToken cancellationToken = default)
+    {
+        GetPaymentMethodsResponse result = await GetAsync<GetPaymentMethodsResponse>(
+            $"api/dashboard/payment-methods?period={period}&timeZone={TimeZone}",
+            cancellationToken);
+
+        return result.Data;
+    }
+
     internal async Task<IReadOnlyList<TopItemDto>> GetTopItemsAsync(
         DashboardPeriod period,
         CancellationToken cancellationToken = default)

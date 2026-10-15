@@ -56,6 +56,44 @@
         </MudStack>
     }
 
+    <MudText Typo="Typo.overline" Class="mt-3">
+        At the register
+    </MudText>
+
+    <MudPaper Outlined="true" Class="pa-3">
+        <MudStack Row="true" AlignItems="AlignItems.Center">
+            <MudAvatar Color="Color.Warning" Size="Size.Small" Rounded="true">
+                <MudIcon Icon="@Icons.Material.Filled.ReceiptLong" Size="Size.Small"/>
+            </MudAvatar>
+
+            <MudStack Spacing="0" Class="flex-1">
+                <MudText Typo="Typo.body2">To pay</MudText>
+                <MudText Typo="Typo.caption"><MudSkeleton Width="60px"/></MudText>
+            </MudStack>
+
+            <MudText Typo="Typo.h6">
+                <MudSkeleton Width="24px"/>
+            </MudText>
+        </MudStack>
+    </MudPaper>
+
+    <MudPaper Outlined="true" Class="pa-3">
+        <MudStack Row="true" AlignItems="AlignItems.Center">
+            <MudAvatar Color="Color.Warning" Size="Size.Small" Rounded="true">
+                <MudIcon Icon="@Icons.Material.Filled.AssignmentReturn" Size="Size.Small"/>
+            </MudAvatar>
+
+            <MudStack Spacing="0" Class="flex-1">
+                <MudText Typo="Typo.body2">Refunds due</MudText>
+                <MudText Typo="Typo.caption"><MudSkeleton Width="60px"/></MudText>
+            </MudStack>
+
+            <MudText Typo="Typo.h6">
+                <MudSkeleton Width="24px"/>
+            </MudText>
+        </MudStack>
+    </MudPaper>
+
     <MudSpacer/>
 
     <MudStack Spacing="0" AlignItems="AlignItems.Center">

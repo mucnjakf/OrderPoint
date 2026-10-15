@@ -20,6 +20,19 @@ internal sealed class DashboardEfCoreRepository(ApplicationDbContext dbContext) 
                 order.CompletedAtUtc))
             .ToListAsync(cancellationToken);
 
+    // Revenue is what was paid, by payment time; refunded payments (and refunds still due) are not revenue
+    public async Task<IReadOnlyList<DashboardPaymentDto>> GetPaymentsAsync(
+        DateTimeOffset fromUtc,
+        DateTimeOffset toUtc,
+        CancellationToken cancellationToken = default)
+        => await GetPaidInRange(fromUtc, toUtc)
+            .Select(order => new DashboardPaymentDto(
+                order.Items.Sum(orderItem => orderItem.Quantity * orderItem.UnitPrice),
+                order.PaidAtUtc!.Value,
+                order.PaymentMethod!.Value,
+                order.PaidByBartenderId))
+            .ToListAsync(cancellationToken);
+
     public async Task<DashboardLiveDto> GetLiveAsync(
         DateTimeOffset todayFromUtc,
         DateTimeOffset nowUtc,
@@ -36,9 +49,26 @@ internal sealed class DashboardEfCoreRepository(ApplicationDbContext dbContext) 
 
         IReadOnlyList<DashboardOrderDto> todayOrders = await GetOrdersAsync(todayFromUtc, nowUtc, cancellationToken);
 
-        List<DashboardOrderDto> todayCompletedOrders = todayOrders
-            .Where(order => order.Status == OrderStatus.Completed)
-            .ToList();
+        IReadOnlyList<DashboardPaymentDto> todayPayments =
+            await GetPaymentsAsync(todayFromUtc, nowUtc, cancellationToken);
+
+        // From any day: what still waits at the register
+        var waitingPayments = await dbContext.Orders
+            .AsNoTracking()
+            .Where(order =>
+                (order.PaymentStatus == PaymentStatus.Unpaid &&
+                 order.Status != OrderStatus.Declined &&
+                 order.Status != OrderStatus.Cancelled) ||
+                order.PaymentStatus == PaymentStatus.RefundDue)
+            .Select(order => new
+            {
+                order.PaymentStatus,
+                Total = order.Items.Sum(orderItem => orderItem.Quantity * orderItem.UnitPrice)
+            })
+            .ToListAsync(cancellationToken);
+
+        var toPay = waitingPayments.Where(payment => payment.PaymentStatus == PaymentStatus.Unpaid).ToList();
+        var refundsDue = waitingPayments.Where(payment => payment.PaymentStatus == PaymentStatus.RefundDue).ToList();
 
         return new DashboardLiveDto(
             openOrders.Count(order => order.Status == OrderStatus.Pending),
@@ -46,9 +76,13 @@ internal sealed class DashboardEfCoreRepository(ApplicationDbContext dbContext) 
             openOrders.Count(order => order.Status == OrderStatus.Active),
             openOrders.Count == 0 ? null : openOrders.Min(order => order.CreatedAtUtc),
             todayOrders.Count,
-            todayCompletedOrders.Sum(order => order.Total),
-            todayCompletedOrders.Count,
-            todayCompletedOrders.Count == 0 ? 0 : todayCompletedOrders.Average(order => order.Total));
+            todayPayments.Sum(payment => payment.Total),
+            todayOrders.Count(order => order.Status == OrderStatus.Completed),
+            todayPayments.Count == 0 ? 0 : todayPayments.Average(payment => payment.Total),
+            toPay.Count,
+            toPay.Sum(payment => payment.Total),
+            refundsDue.Count,
+            refundsDue.Sum(payment => payment.Total));
     }
 
     // Today's payments that are still with the bar (refunds not yet handed back included), and every refund due
@@ -195,7 +229,7 @@ internal sealed class DashboardEfCoreRepository(ApplicationDbContext dbContext) 
         int count,
         CancellationToken cancellationToken = default)
     {
-        var categories = await GetCompletedOrderItemsInRange(fromUtc, toUtc)
+        var categories = await GetPaidOrderItemsInRange(fromUtc, toUtc)
             .GroupBy(orderItem => new { orderItem.Item.CategoryId, orderItem.Item.Category.Name })
             .Select(group => new
             {
@@ -218,7 +252,7 @@ internal sealed class DashboardEfCoreRepository(ApplicationDbContext dbContext) 
         int count,
         CancellationToken cancellationToken = default)
     {
-        var items = await GetCompletedOrderItemsInRange(fromUtc, toUtc)
+        var items = await GetPaidOrderItemsInRange(fromUtc, toUtc)
             .GroupBy(orderItem => new { orderItem.ItemId, orderItem.Item.Name, orderItem.Item.ImageUrl })
             .Select(group => new
             {
@@ -252,10 +286,23 @@ internal sealed class DashboardEfCoreRepository(ApplicationDbContext dbContext) 
                 order.Bartender.FirstName,
                 order.Bartender.LastName,
                 order.Bartender.ImageUrl,
-                order.Status,
+                order.Status
+            })
+            .ToListAsync(cancellationToken);
+
+        // Revenue by payment time, like everywhere else; the counts stay by order time
+        var paidOrders = await GetPaidInRange(fromUtc, toUtc)
+            .Where(order => order.BartenderId != null)
+            .Select(order => new
+            {
+                BartenderId = order.BartenderId!.Value,
                 Total = order.Items.Sum(orderItem => orderItem.Quantity * orderItem.UnitPrice)
             })
             .ToListAsync(cancellationToken);
+
+        Dictionary<Guid, decimal> revenueByBartender = paidOrders
+            .GroupBy(order => order.BartenderId)
+            .ToDictionary(group => group.Key, group => group.Sum(order => order.Total));
 
         return bartenderOrders
             .GroupBy(order => new { order.Id, order.FirstName, order.LastName, order.ImageUrl })
@@ -267,7 +314,7 @@ internal sealed class DashboardEfCoreRepository(ApplicationDbContext dbContext) 
                 group.Count(),
                 group.Count(order => order.Status == OrderStatus.Completed),
                 group.Count(order => order.Status == OrderStatus.Declined),
-                group.Where(order => order.Status == OrderStatus.Completed).Sum(order => order.Total)))
+                revenueByBartender.GetValueOrDefault(group.Key.Id)))
             .OrderByDescending(entry => entry.Revenue)
             .ThenByDescending(entry => entry.CompletedOrdersCount)
             .Take(count)
@@ -279,10 +326,16 @@ internal sealed class DashboardEfCoreRepository(ApplicationDbContext dbContext) 
             .AsNoTracking()
             .Where(order => order.CreatedAtUtc >= fromUtc && order.CreatedAtUtc < toUtc);
 
-    private IQueryable<OrderItem> GetCompletedOrderItemsInRange(DateTimeOffset fromUtc, DateTimeOffset toUtc)
-        => GetOrdersInRange(fromUtc, toUtc)
-            .Where(order => order.Status == OrderStatus.Completed)
-            .SelectMany(order => order.Items);
+    private IQueryable<Order> GetPaidInRange(DateTimeOffset fromUtc, DateTimeOffset toUtc)
+        => dbContext.Orders
+            .AsNoTracking()
+            .Where(order =>
+                order.PaymentStatus == PaymentStatus.Paid &&
+                order.PaidAtUtc >= fromUtc &&
+                order.PaidAtUtc < toUtc);
+
+    private IQueryable<OrderItem> GetPaidOrderItemsInRange(DateTimeOffset fromUtc, DateTimeOffset toUtc)
+        => GetPaidInRange(fromUtc, toUtc).SelectMany(order => order.Items);
 
     // By completion time, wherever the order was placed, so an order taken before the day started still counts today
     private IQueryable<Order> GetCompletedByBartenderInRange(

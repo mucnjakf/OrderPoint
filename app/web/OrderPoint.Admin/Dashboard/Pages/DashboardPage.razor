@@ -64,7 +64,7 @@
                                Icon="@Icons.Material.Filled.ShowChart"
                                IsLoading="@IsLoadingRevenueTrend"
                                ShowContent="@RevenueTrend.Any(point => point.Revenue > 0)"
-                               EmptyStateText="No completed orders in this period"
+                               EmptyStateText="No payments in this period"
                                ContentHeight="@RevenueTrendChart.ChartHeight">
                     <LoadingContent>
                         <RevenueTrendChartSkeleton/>
@@ -97,13 +97,29 @@
                                Icon="@Icons.Material.Filled.DonutLarge"
                                IsLoading="@IsLoadingCategoryRevenue"
                                ShowContent="@CategoryRevenue.Any()"
-                               EmptyStateText="No completed orders in this period">
+                               EmptyStateText="No payments in this period">
                     <LoadingContent>
                         <CategoryRevenueDonutSkeleton/>
                     </LoadingContent>
 
                     <ChildContent>
                         <CategoryRevenueDonut CategoryRevenue="@CategoryRevenue"/>
+                    </ChildContent>
+                </DashboardTile>
+            </MudItem>
+
+            <MudItem xs="12">
+                <DashboardTile Title="@($"Payments by method · {SelectedPeriod.GetLabel()}")"
+                               Icon="@Icons.Material.Filled.AccountBalanceWallet"
+                               IsLoading="@IsLoadingPaymentMethods"
+                               ShowContent="@HasPayments"
+                               EmptyStateText="No payments in this period">
+                    <LoadingContent>
+                        <PaymentMethodsSummarySkeleton/>
+                    </LoadingContent>
+
+                    <ChildContent>
+                        <PaymentMethodsSummary PaymentMethods="@(PaymentMethods!)"/>
                     </ChildContent>
                 </DashboardTile>
             </MudItem>

@@ -43,7 +43,7 @@ internal sealed class GetRevenueTrendQueryHandler(
             query.TimeZone,
             businessDay.StartTime);
 
-        IReadOnlyList<DashboardOrderDto> orders = await dashboardRepository.GetOrdersAsync(
+        IReadOnlyList<DashboardPaymentDto> payments = await dashboardRepository.GetPaymentsAsync(
             range.FromUtc,
             range.ToUtc,
             cancellationToken);
@@ -51,10 +51,11 @@ internal sealed class GetRevenueTrendQueryHandler(
         bool isHourly = query.Period is DashboardPeriod.Today;
         int bucketsCount = isHourly ? HoursPerDay : range.DaysCount;
 
-        Dictionary<DateTime, decimal> revenueByLocalBucket = orders
-            .Where(order => order.Status == OrderStatus.Completed)
-            .GroupBy(order => GetLocalBucketStart(order.CreatedAtUtc, query.TimeZone, isHourly, businessDay.StartTime))
-            .ToDictionary(group => group.Key, group => group.Sum(order => order.Total));
+        // By payment time
+        Dictionary<DateTime, decimal> revenueByLocalBucket = payments
+            .GroupBy(payment =>
+                GetLocalBucketStart(payment.PaidAtUtc, query.TimeZone, isHourly, businessDay.StartTime))
+            .ToDictionary(group => group.Key, group => group.Sum(payment => payment.Total));
 
         List<RevenueTrendPointDto> points = Enumerable
             .Range(0, bucketsCount)

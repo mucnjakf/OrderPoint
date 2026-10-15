@@ -8,7 +8,7 @@
 /// <param name="HandledOrdersCount">The orders assigned to the bartender in the period, in any status.</param>
 /// <param name="CompletedOrdersCount">The completed orders.</param>
 /// <param name="DeclinedOrdersCount">The declined orders.</param>
-/// <param name="Revenue">The revenue of the completed orders, in euros.</param>
+/// <param name="Revenue">What the orders they handled were paid in the period, in euros.</param>
 public sealed record BartenderLeaderboardEntryDto(
     Guid BartenderId,
     string FirstName,

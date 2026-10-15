@@ -36,8 +36,9 @@ internal sealed class GetDashboardSummaryEndpoint : IEndpoint
             .WithSummary("Get the key figures")
             .WithDescription("""
                 Revenue, number of orders, average order value and average service time for the period, each with the
-                value of the previous period of the same length. Revenue and averages count completed orders only; the
-                number of orders includes every status.
+                value of the previous period of the same length. Revenue and the average order value count what was
+                paid, by payment time (refunded payments not counted); the number of orders includes every status by
+                order time, and the service time counts completed orders.
                 """)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }

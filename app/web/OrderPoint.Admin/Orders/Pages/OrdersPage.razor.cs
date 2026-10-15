@@ -37,6 +37,14 @@ public sealed partial class OrdersPage : IDisposable
 
     private NewOrdersTracker NewOrders { get; } = new();
 
+    private static readonly (PaymentStatus Status, string Label)[] PaymentStatusOptions =
+    [
+        (PaymentStatus.Unpaid, "To pay"),
+        (PaymentStatus.Paid, "Paid"),
+        (PaymentStatus.RefundDue, "Refund due"),
+        (PaymentStatus.Refunded, "Refunded")
+    ];
+
     private Dictionary<OrderStatus, int> StatusCounts { get; } = [];
 
     private HashSet<OrderStatus> LoadingStatuses { get; } = [.. Enum.GetValues<OrderStatus>()];
@@ -52,6 +60,8 @@ public sealed partial class OrdersPage : IDisposable
     private OrderStatus? SelectedStatus { get; set; }
 
     private BartenderDto? SelectedBartender { get; set; }
+
+    private PaymentStatus? SelectedPaymentStatus { get; set; }
 
     private MudAutocomplete<BartenderDto> BartenderAutocomplete { get; set; } = null!;
 
@@ -97,7 +107,8 @@ public sealed partial class OrdersPage : IDisposable
                 pageSize: 1,
                 nameof(OrderSortBy.CreatedAtUtcDesc),
                 status: status,
-                bartenderId: SelectedBartender?.Id));
+                bartenderId: SelectedBartender?.Id,
+                paymentStatus: SelectedPaymentStatus));
 
         StatusCounts[status] = pagination?.TotalCount ?? 0;
 
@@ -121,7 +132,8 @@ public sealed partial class OrdersPage : IDisposable
             SelectedSortBy,
             SearchQuery,
             SelectedStatus,
-            bartenderId: SelectedBartender?.Id));
+            bartenderId: SelectedBartender?.Id,
+            paymentStatus: SelectedPaymentStatus));
 
         Orders = Pagination?.Items ?? [];
 
@@ -150,6 +162,14 @@ public sealed partial class OrdersPage : IDisposable
     }
 
     private async Task OnBartenderChangedAsync()
+    {
+        await Task.WhenAll(
+            GetStatusCountsAsync(),
+            GetOrdersAsync(pageNumber: 1));
+    }
+
+    // The status counts follow it too, like the bartender filter
+    private async Task OnPaymentStatusChangedAsync()
     {
         await Task.WhenAll(
             GetStatusCountsAsync(),

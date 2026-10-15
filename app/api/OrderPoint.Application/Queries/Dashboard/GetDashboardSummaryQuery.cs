@@ -54,13 +54,27 @@ internal sealed class GetDashboardSummaryQueryHandler(
             .Where(order => order.CreatedAtUtc >= range.PreviousFromUtc && order.CreatedAtUtc < range.PreviousToUtc)
             .ToList();
 
+        // Revenue by payment time, the order counts by order time
+        IReadOnlyList<DashboardPaymentDto> payments = await dashboardRepository.GetPaymentsAsync(
+            range.PreviousFromUtc,
+            range.ToUtc,
+            cancellationToken);
+
+        List<DashboardPaymentDto> currentPayments = payments
+            .Where(payment => payment.PaidAtUtc >= range.FromUtc)
+            .ToList();
+
+        List<DashboardPaymentDto> previousPayments = payments
+            .Where(payment => payment.PaidAtUtc >= range.PreviousFromUtc && payment.PaidAtUtc < range.PreviousToUtc)
+            .ToList();
+
         return new DashboardSummaryDto(
-            GetRevenue(currentOrders),
-            GetRevenue(previousOrders),
+            currentPayments.Sum(payment => payment.Total),
+            previousPayments.Sum(payment => payment.Total),
             currentOrders.Count,
             previousOrders.Count,
-            GetAverageOrderValue(currentOrders),
-            GetAverageOrderValue(previousOrders),
+            GetAverageOrderValue(currentPayments),
+            GetAverageOrderValue(previousPayments),
             GetAverageServiceMinutes(currentOrders),
             GetAverageServiceMinutes(previousOrders));
     }
@@ -70,16 +84,9 @@ internal sealed class GetDashboardSummaryQueryHandler(
         return orders.Where(order => order.Status == OrderStatus.Completed);
     }
 
-    private static decimal GetRevenue(IEnumerable<DashboardOrderDto> orders)
+    private static decimal GetAverageOrderValue(IReadOnlyList<DashboardPaymentDto> payments)
     {
-        return GetCompleted(orders).Sum(order => order.Total);
-    }
-
-    private static decimal GetAverageOrderValue(IEnumerable<DashboardOrderDto> orders)
-    {
-        List<DashboardOrderDto> completedOrders = GetCompleted(orders).ToList();
-
-        return completedOrders.Count == 0 ? 0 : completedOrders.Average(order => order.Total);
+        return payments.Count == 0 ? 0 : payments.Average(payment => payment.Total);
     }
 
     private static double? GetAverageServiceMinutes(IEnumerable<DashboardOrderDto> orders)

@@ -35,7 +35,7 @@ internal sealed class GetTopItemsEndpoint : IEndpoint
             .WithTags("Dashboard")
             .WithSummary("Get the best-selling items")
             .WithDescription("""
-                The 5 best-selling items of the period by quantity (then revenue), from completed orders.
+                The 5 best-selling items of the period by quantity (then revenue), from paid orders (by payment time).
                 """)
             .RequireAuthorization(AuthorizationPolicies.Admin);
     }

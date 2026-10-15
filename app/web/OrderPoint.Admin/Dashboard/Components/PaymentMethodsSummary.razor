@@ -1,0 +1,30 @@
+﻿<MudGrid Spacing="3">
+    @foreach ((string label, string icon, Color color, decimal total, int count) in Methods)
+    {
+        <MudItem xs="12" sm="4">
+            <MudPaper Outlined="true" Class="pa-4" Style="height: 100%">
+                <MudStack Spacing="2">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                        <MudAvatar Color="@color" Size="Size.Small" Rounded="true">
+                            <MudIcon Icon="@icon" Size="Size.Small"/>
+                        </MudAvatar>
+
+                        <MudText Typo="Typo.body2">
+                            @label
+                        </MudText>
+                    </MudStack>
+
+                    <MudText Typo="Typo.h5" Style="font-weight: 700">
+                        <RollingNumber Value="@total" Text="@total.ToString("C", CultureInfo.CurrentCulture)"/>
+                    </MudText>
+
+                    <MudProgressLinear Value="@GetSharePercent(total)" Color="@color" Rounded="true" Size="Size.Small"/>
+
+                    <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                        @count.ToCountText("payment", "payments") · @GetShareText(total)
+                    </MudText>
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+    }
+</MudGrid>

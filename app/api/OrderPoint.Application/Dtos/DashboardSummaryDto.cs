@@ -1,11 +1,12 @@
 ﻿namespace OrderPoint.Application.Dtos;
 
 /// <summary>The key figures of the period and of the previous period of the same length.</summary>
-/// <param name="Revenue">The revenue of completed orders, in euros.</param>
+/// <param name="Revenue">What was paid in the period, in euros (by payment time, refunded payments not
+/// counted).</param>
 /// <param name="PreviousRevenue">The same for the previous period.</param>
 /// <param name="OrdersCount">The orders placed, in any status.</param>
 /// <param name="PreviousOrdersCount">The same for the previous period.</param>
-/// <param name="AverageOrderValue">The average total of completed orders, in euros.</param>
+/// <param name="AverageOrderValue">The average payment in the period, in euros.</param>
 /// <param name="PreviousAverageOrderValue">The same for the previous period.</param>
 /// <param name="AverageServiceMinutes">The average minutes from placing to completing an order, or `null` without
 /// completed orders.</param>

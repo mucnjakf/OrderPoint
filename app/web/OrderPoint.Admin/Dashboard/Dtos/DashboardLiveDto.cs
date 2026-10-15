@@ -8,4 +8,8 @@ public sealed record DashboardLiveDto(
     int TodayOrdersCount,
     decimal TodayRevenue,
     int TodayCompletedCount,
-    decimal TodayAverageOrderValue);
+    decimal TodayAverageOrderValue,
+    int ToPayCount,
+    decimal ToPayTotal,
+    int RefundsDueCount,
+    decimal RefundsDueTotal);
