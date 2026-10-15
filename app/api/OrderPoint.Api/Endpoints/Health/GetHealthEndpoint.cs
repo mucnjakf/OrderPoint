@@ -53,6 +53,7 @@ internal sealed class GetHealthEndpoint : IEndpoint
         ["storage-blobs-explorer"] = "Storage browser",
         ["redisinsight"] = "Cache browser",
         ["order-point-bar"] = "Bar web",
+        ["order-point-bartender"] = "Bartender web",
         ["order-point-customer"] = "Customer web"
     };
 

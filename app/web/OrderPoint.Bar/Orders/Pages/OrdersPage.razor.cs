@@ -4,7 +4,6 @@ using OrderPoint.Bar.Orders.Api;
 using OrderPoint.Bar.Orders.Enumerations;
 using OrderPoint.Bar.Orders.Services;
 using OrderPoint.Bar.Orders.Sorting;
-using OrderPoint.Bar.Shared.Extensions;
 using OrderPoint.Bar.Tables.Api;
 using OrderPoint.Shared.Auth.Services;
 using OrderPoint.Shared.Dtos;

@@ -1,0 +1,75 @@
+﻿<MudPaper Class="pa-3">
+    <MudStack Spacing="2">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <OrderAvatar Number="@Order.Number"/>
+
+            <MudStack Spacing="0" Class="flex-1" Style="min-width: 0">
+                <MudText Typo="Typo.body1">
+                    @Order.GetPlaceText()
+                </MudText>
+
+                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                    Placed @Order.CreatedAtUtc.ToRelativeTime()
+                </MudText>
+            </MudStack>
+
+            <MudStack Spacing="1" AlignItems="AlignItems.End">
+                <MudText Typo="Typo.h6">
+                    @Order.Total.ToString("C", CultureInfo.CurrentCulture)
+                </MudText>
+
+                <MudChip T="string"
+                         Variant="Variant.Text"
+                         Size="Size.Small"
+                         Color="@Order.Status.GetColor()"
+                         Class="ma-0">
+                    @Order.Status.ToString()
+                </MudChip>
+            </MudStack>
+        </MudStack>
+
+        <MudDivider/>
+
+        @foreach (OrderItemDto orderItem in Order.Items)
+        {
+            <MudText Typo="Typo.body1">
+                <strong>@orderItem.Quantity×</strong> @orderItem.Name
+            </MudText>
+        }
+
+        @if (Order.Note is not null)
+        {
+            <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary); font-style: italic">
+                "@Order.Note"
+            </MudText>
+        }
+
+        @if (Order.DeclineReason is not null)
+        {
+            <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                Declined: @Order.DeclineReason
+            </MudText>
+        }
+
+        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Spacing="2">
+            <MudChip T="string"
+                     Variant="Variant.Outlined"
+                     Size="Size.Small"
+                     Color="@PaymentColor"
+                     Class="ma-0">
+                @PaymentText
+            </MudChip>
+
+            @if (CanWithdraw)
+            {
+                <MudButton Variant="Variant.Outlined"
+                           Color="Color.Error"
+                           Size="Size.Small"
+                           Disabled="@IsWithdrawing"
+                           OnClick="@OnWithdrawClickAsync">
+                    Withdraw
+                </MudButton>
+            }
+        </MudStack>
+    </MudStack>
+</MudPaper>

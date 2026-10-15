@@ -1,0 +1,38 @@
+﻿@page "/orders"
+
+<PageTitle>My orders</PageTitle>
+
+<MudText Typo="Typo.h6" HtmlTag="h1">
+    My orders
+</MudText>
+
+<MudText Typo="Typo.body2" Class="mb-3" Style="color: var(--mud-palette-text-secondary)">
+    The orders you took since @DayStartText
+</MudText>
+
+<StatefulView IsLoading="@IsLoading"
+              ShowContent="@(Orders.Count != 0)"
+              EmptyStateIcon="@Icons.Material.Filled.Receipt"
+              EmptyStateText="No orders yet"
+              EmptyStateDetail="Orders you take at a table or at the counter show up here.">
+    <LoadingContent>
+        <MudStack Spacing="2">
+            @for (int i = 0; i < LoadingCardsCount; i++)
+            {
+                <TakenOrderCardSkeleton/>
+            }
+        </MudStack>
+    </LoadingContent>
+
+    <ChildContent>
+        <MudStack Spacing="2">
+            @foreach (OrderDto order in Orders)
+            {
+                <TakenOrderCard @key="@order.Id"
+                                Order="@order"
+                                IsWithdrawing="@(WithdrawingOrderId == order.Id)"
+                                OnWithdraw="@WithdrawAsync"/>
+            }
+        </MudStack>
+    </ChildContent>
+</StatefulView>

@@ -1,4 +1,4 @@
-﻿namespace OrderPoint.Bar.Shared.Extensions;
+﻿namespace OrderPoint.Shared.Extensions;
 
 internal static class TimeZoneInfoExtensions
 {

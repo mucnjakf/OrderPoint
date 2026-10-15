@@ -15,11 +15,12 @@ namespace OrderPoint.Api.Endpoints.Orders;
 /// <summary>Paging, search, filter and sort options.</summary>
 /// <param name="PageNumber">The page to return, starting at 1.</param>
 /// <param name="PageSize">The number of orders per page.</param>
-/// <param name="SearchQuery">Matches the order number or the table code.</param>
+/// <param name="SearchQuery">Matches the order number, the table code or a counter order's customer name.</param>
 /// <param name="Status">Only orders with this status.</param>
 /// <param name="ItemId">Only orders that contain this item.</param>
 /// <param name="BartenderId">Only orders handled by this bartender.</param>
 /// <param name="TableId">Only orders placed from this table.</param>
+/// <param name="TakenByBartenderId">Only orders this bartender took in the Bartender app.</param>
 /// <param name="SortBy">The sort order. Default: `CreatedAtUtcDesc` (newest first).</param>
 internal sealed record GetOrdersRequest(
     [FromQuery] int PageNumber,
@@ -29,6 +30,7 @@ internal sealed record GetOrdersRequest(
     [FromQuery] Guid? ItemId,
     [FromQuery] Guid? BartenderId,
     [FromQuery] Guid? TableId,
+    [FromQuery] Guid? TakenByBartenderId,
     [FromQuery] OrderSortBy? SortBy);
 
 /// <summary>A page of orders.</summary>
@@ -45,8 +47,9 @@ internal sealed class GetOrdersEndpoint : IEndpoint
             .WithTags("Orders")
             .WithSummary("List orders")
             .WithDescription("""
-                A page of orders with search (order number or table code), filters (status, item, bartender, table) and
-                sorting (default: newest first). `total` is calculated from the order lines.
+                A page of orders with search (order number, table code or customer name), filters (status, item,
+                bartender, table, the bartender who took it) and sorting (default: newest first). `total` is
+                calculated from the order lines.
                 """)
             .RequireAuthorization(AuthorizationPolicies.AdminOrBartender);
     }
@@ -67,6 +70,7 @@ internal sealed class GetOrdersEndpoint : IEndpoint
             request.ItemId,
             request.BartenderId,
             request.TableId,
+            request.TakenByBartenderId,
             request.SortBy);
 
         Result<PaginationDto<OrderDto>> result = await sender.Send(query, cancellationToken);

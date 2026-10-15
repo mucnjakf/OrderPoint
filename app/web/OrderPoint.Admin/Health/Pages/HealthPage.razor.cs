@@ -19,6 +19,7 @@ public sealed partial class HealthPage : IDisposable
     private static readonly (string Name, string Subtitle, string Icon)[] Apps =
     [
         ("Bar web", "OrderPoint Bar", Icons.Material.Filled.LocalBar),
+        ("Bartender web", "OrderPoint Bartender", Icons.Material.Filled.PhoneAndroid),
         ("Customer web", "OrderPoint Customer", Icons.Material.Filled.PhoneIphone)
     ];
 

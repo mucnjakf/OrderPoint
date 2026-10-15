@@ -16,6 +16,7 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
         Guid? itemId = null,
         Guid? bartenderId = null,
         Guid? tableId = null,
+        Guid? takenByBartenderId = null,
         OrderSortBy? sortBy = null,
         CancellationToken cancellationToken = default)
     {
@@ -26,7 +27,7 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
             .Include(order => order.Items);
 
         query = SearchOrders(query, searchQuery);
-        query = FilterOrders(query, status, itemId, bartenderId, tableId);
+        query = FilterOrders(query, status, itemId, bartenderId, tableId, takenByBartenderId);
         query = SortOrders(query, sortBy);
 
         int totalCount = await query.CountAsync(cancellationToken);
@@ -154,7 +155,8 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
         OrderStatus? status,
         Guid? itemId,
         Guid? bartenderId,
-        Guid? tableId)
+        Guid? tableId,
+        Guid? takenByBartenderId)
     {
         if (status.HasValue)
         {
@@ -174,6 +176,11 @@ internal sealed class OrderEfCoreRepository(ApplicationDbContext dbContext) : IO
         if (tableId.HasValue)
         {
             query = query.Where(order => order.TableId == tableId.Value);
+        }
+
+        if (takenByBartenderId.HasValue)
+        {
+            query = query.Where(order => order.TakenByBartenderId == takenByBartenderId.Value);
         }
 
         return query;

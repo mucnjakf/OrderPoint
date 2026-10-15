@@ -1,0 +1,28 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.Undo"/>
+            <MudText Typo="Typo.h6">Withdraw order #@OrderNumber</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudText Typo="Typo.body1">
+            The bar hasn't started on it yet. Withdraw it, e.g. because the guest changed their mind?
+        </MudText>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5" Style="white-space: nowrap">
+            Keep order
+        </MudButton>
+
+        <MudButton OnClick="@Confirm"
+                   Variant="Variant.Filled"
+                   Color="Color.Error"
+                   StartIcon="@Icons.Material.Filled.Undo"
+                   Style="white-space: nowrap">
+            Withdraw
+        </MudButton>
+    </DialogActions>
+</MudDialog>

@@ -1,0 +1,89 @@
+﻿@page "/tables/{TableCode}/order"
+@page "/counter/order"
+
+<PageTitle>New order</PageTitle>
+
+<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mb-3">
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack"
+                   OnClick="@GoBack"
+                   aria-label="@BackLabel"/>
+
+    <MudStack Spacing="0">
+        <MudText Typo="Typo.h6" HtmlTag="h1">
+            @PlaceText
+        </MudText>
+
+        <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+            @SubtitleText
+        </MudText>
+    </MudStack>
+</MudStack>
+
+<StatefulView IsLoading="@IsLoading"
+              ShowContent="@(Menu.Count != 0)"
+              EmptyStateIcon="@Icons.Material.Filled.MenuBook"
+              EmptyStateText="Nothing on the menu"
+              EmptyStateDetail="The admin hasn't put anything on the menu yet.">
+    <LoadingContent>
+        <MudGrid Spacing="2">
+            @for (int i = 0; i < LoadingCardsCount; i++)
+            {
+                <MudItem xs="6" sm="4">
+                    <MenuCategoryCardSkeleton/>
+                </MudItem>
+            }
+        </MudGrid>
+    </LoadingContent>
+
+    <ChildContent>
+        @if (SelectedCategory is null)
+        {
+            <MudGrid Spacing="2">
+                @foreach (MenuCategoryDto category in Menu)
+                {
+                    MenuCategoryDto cardCategory = category;
+
+                    <MudItem @key="@cardCategory.Id" xs="6" sm="4">
+                        <MenuCategoryCard Category="@cardCategory" OnClick="@SelectCategory"/>
+                    </MudItem>
+                }
+            </MudGrid>
+        }
+        else
+        {
+            <MudStack Spacing="2">
+                @foreach (MenuItemDto item in SelectedCategory.Items)
+                {
+                    MenuItemDto rowItem = item;
+
+                    <MenuItemRow @key="@rowItem.Id"
+                                 Item="@rowItem"
+                                 CartQuantity="@Draft.GetQuantity(rowItem.Id)"
+                                 MaxQuantity="@OrderDraft.MaxQuantity"
+                                 OnClick="@AddItem"
+                                 OnAdd="@AddItem"
+                                 OnCartQuantityChanged="@(quantity => SetQuantity(rowItem, quantity))"/>
+                }
+            </MudStack>
+        }
+    </ChildContent>
+</StatefulView>
+
+@if (Draft.ItemsCount != 0)
+{
+    <MudPaper Class="pa-3 mt-3" Style="@SummaryBarStyle">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudText Typo="Typo.body1" Class="flex-1">
+                <strong>@Draft.ItemsCount.ToCountText("item", "items")</strong>
+                · @Total.ToString("C", CultureInfo.CurrentCulture)
+            </MudText>
+
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       EndIcon="@Icons.Material.Filled.ArrowForward"
+                       OnClick="@Review">
+                Review
+            </MudButton>
+        </MudStack>
+    </MudPaper>
+}

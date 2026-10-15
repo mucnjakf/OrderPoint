@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Components;
 using OrderPoint.Bar.Orders.Enumerations;
 using OrderPoint.Bar.Orders.Services;
 using OrderPoint.Bar.Shift.Api;
-using OrderPoint.Bar.Shared.Extensions;
 using OrderPoint.Bar.Shift.Dtos;
+using OrderPoint.Shared.Extensions;
 using OrderPoint.Shared.Orders.Services;
 using OrderPoint.Shared.Services;
 

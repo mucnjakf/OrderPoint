@@ -1,0 +1,68 @@
+﻿@page "/"
+
+<PageTitle>Tables</PageTitle>
+
+<MudText Typo="Typo.h6" HtmlTag="h1" Class="mb-3">
+    Take an order
+</MudText>
+
+@if (Requests.Count != 0)
+{
+    <MudText Typo="Typo.subtitle2" HtmlTag="h2" Class="mb-2">
+        Calls
+    </MudText>
+
+    <MudStack Spacing="2" Class="mb-4">
+        @foreach (TableRequestDto request in Requests)
+        {
+            <TableRequestItem Request="@request"
+                              ShowsTable="true"
+                              IsCompleting="@(CompletingRequestId == request.Id)"
+                              OnDone="@CompleteRequestAsync"
+                              OnClick="@OpenRequestTable"/>
+        }
+    </MudStack>
+}
+
+<StatefulView IsLoading="@IsLoading" ShowContent="true">
+    <LoadingContent>
+        <TableTilesSkeleton/>
+    </LoadingContent>
+
+    <ChildContent>
+        <MudPaper Class="pa-4 mb-4 cursor-pointer" @onclick="@OpenCounter">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                <MudIcon Icon="@Icons.Material.Filled.LocalBar"/>
+
+                <MudStack Spacing="0" Class="flex-1">
+                    <MudText Typo="Typo.h6">Counter</MudText>
+
+                    <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                        An order at the bar counter, without a table
+                    </MudText>
+                </MudStack>
+
+                <MudIcon Icon="@Icons.Material.Filled.ChevronRight" Style="color: var(--mud-palette-text-secondary)"/>
+            </MudStack>
+        </MudPaper>
+
+        @foreach (AreaDto area in AreasWithTables)
+        {
+            <MudText Typo="Typo.subtitle2" HtmlTag="h2" Class="mb-2">
+                @area.Name
+            </MudText>
+
+            <div style="@TableTilesLayout.GridStyle" class="mb-4">
+                @foreach (TableDto table in area.Tables)
+                {
+                    TableDto tileTable = table;
+
+                    <TableTile @key="@tileTable.Id"
+                               Table="@tileTable"
+                               HasCall="@HasCall(tileTable)"
+                               OnClick="@OpenTable"/>
+                }
+            </div>
+        }
+    </ChildContent>
+</StatefulView>

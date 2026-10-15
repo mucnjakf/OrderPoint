@@ -14,6 +14,7 @@ public interface IOrderRepository
         Guid? itemId = null,
         Guid? bartenderId = null,
         Guid? tableId = null,
+        Guid? takenByBartenderId = null,
         OrderSortBy? sortBy = null,
         CancellationToken cancellationToken = default);
 

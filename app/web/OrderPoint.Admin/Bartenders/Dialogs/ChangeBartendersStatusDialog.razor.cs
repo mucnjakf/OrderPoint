@@ -28,7 +28,7 @@ public sealed partial class ChangeBartendersStatusDialog
     private Severity AlertSeverity => IsActivating ? Severity.Info : Severity.Warning;
 
     private string AlertText => IsActivating
-        ? "They can sign in to the bar app again."
+        ? "They can sign in to the staff apps again."
         : "They are signed out everywhere and can't sign in until they are activated again.";
 
     private string ConfirmText =>

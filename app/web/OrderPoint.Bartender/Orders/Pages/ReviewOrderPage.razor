@@ -1,0 +1,130 @@
+﻿@page "/tables/{TableCode}/order/review"
+@page "/counter/order/review"
+
+<PageTitle>Review order</PageTitle>
+
+<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mb-3">
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack"
+                   Href="@OrderPadUri"
+                   aria-label="Back to the order"/>
+
+    <MudStack Spacing="0">
+        <MudText Typo="Typo.h6" HtmlTag="h1">
+            Review order
+        </MudText>
+
+        <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+            @PlaceText
+        </MudText>
+    </MudStack>
+</MudStack>
+
+<StatefulView IsLoading="@IsLoading"
+              ShowContent="@(Draft.Lines.Count != 0)"
+              EmptyStateIcon="@Icons.Material.Filled.PlaylistAdd"
+              EmptyStateText="Nothing added yet"
+              EmptyStateDetail="Go back and add something from the menu.">
+    <MudStack Spacing="3">
+        <MudPaper Class="pa-4">
+            <MudStack Spacing="3">
+                @foreach ((OrderDraftLineDto line, MenuItemDto? item) in Rows)
+                {
+                    OrderDraftLineDto rowLine = line;
+
+                    <MudStack @key="@rowLine.ItemId" Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                        <MudImage Src="@(item?.ImageUrl ?? ImageUrls.Placeholder)"
+                                  Alt="Item image"
+                                  Width="40"
+                                  Height="40"
+                                  ObjectFit="ObjectFit.Cover"
+                                  Style="@($"{ImageStyles.Rounded} flex-shrink: 0;")"/>
+
+                        <MudStack Spacing="0" Class="flex-1" Style="min-width: 0">
+                            <MudText Typo="Typo.body1">
+                                @rowLine.Name
+                            </MudText>
+
+                            @if (item is null)
+                            {
+                                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-error-text)">
+                                    No longer on the menu
+                                </MudText>
+                            }
+                            else
+                            {
+                                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                                    @GetLineText(item, rowLine)
+                                </MudText>
+                            }
+                        </MudStack>
+
+                        <QuantityStepper Value="@rowLine.Quantity"
+                                         ValueChanged="@(quantity => SetQuantity(rowLine, quantity))"
+                                         Min="0"
+                                         Max="@OrderDraft.MaxQuantity"/>
+                    </MudStack>
+                }
+            </MudStack>
+        </MudPaper>
+
+        @if (TableCode is null)
+        {
+            <MudTextField @bind-Value="@Draft.CustomerName"
+                          T="string"
+                          Label="Name to call"
+                          Placeholder="e.g. Ana"
+                          HelperText="Optional; the bar calls it out when it's ready."
+                          Variant="Variant.Outlined"
+                          MaxLength="@CustomerNameMaxLength"
+                          Immediate="true"/>
+        }
+
+        <MudTextField @bind-Value="@Draft.Note"
+                      T="string"
+                      Label="Note for the bar"
+                      Placeholder="e.g. no ice"
+                      Variant="Variant.Outlined"
+                      Lines="2"
+                      MaxLength="@NoteMaxLength"
+                      Counter="@NoteMaxLength"
+                      Immediate="true"/>
+
+        <MudPaper Class="pa-4">
+            <MudStack Spacing="3">
+                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                    <MudText Typo="Typo.h6">Total</MudText>
+
+                    <MudText Typo="Typo.h6">
+                        @Total.ToString("C", CultureInfo.CurrentCulture)
+                    </MudText>
+                </MudStack>
+
+                <MudAlert Severity="Severity.Info" Variant="Variant.Text" Dense="true">
+                    Not paid yet: the guest pays at the register.
+                </MudAlert>
+
+                @if (HasUnavailableLines)
+                {
+                    <MudText Typo="Typo.body2" Style="color: var(--mud-palette-error-text)">
+                        Remove what is no longer on the menu to send the order.
+                    </MudText>
+                }
+
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Size="Size.Large"
+                           FullWidth="true"
+                           Disabled="@(!CanSend)"
+                           StartIcon="@(IsSending ? null : Icons.Material.Filled.Send)"
+                           OnClick="@SendAsync">
+                    @if (IsSending)
+                    {
+                        <MudProgressCircular Indeterminate="true" Size="Size.Small" Class="mr-2"/>
+                    }
+
+                    Send to the bar
+                </MudButton>
+            </MudStack>
+        </MudPaper>
+    </MudStack>
+</StatefulView>

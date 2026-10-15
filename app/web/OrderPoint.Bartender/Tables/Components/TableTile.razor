@@ -1,0 +1,17 @@
+﻿<MudPaper Class="@PaperClass" Style="@PaperStyle" @onclick="@OnTileClickAsync">
+    @if (HasCall)
+    {
+        <MudIcon Icon="@Icons.Material.Filled.RoomService"
+                 Color="Color.Primary"
+                 Size="Size.Small"
+                 Style="position: absolute; top: 4px; right: 4px;"/>
+    }
+
+    <MudText Typo="Typo.h6">
+        @Table.Code
+    </MudText>
+
+    <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+        @SubtitleText
+    </MudText>
+</MudPaper>

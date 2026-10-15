@@ -2,13 +2,13 @@
 
 IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
 
-// The hour the bar's day starts (local time), so a night past midnight is one day; the API and the bar app use it
+// The hour the bar's day starts (local time), so a night past midnight is one day; the API and the staff apps use it
 const string BusinessDayStartHour = "6";
 
 // Fixed, because image URLs are stored with it
 const int BlobPort = 59287;
 
-// Every stored image URL starts with it; the bar and customer apps serve images from it, so phones see them
+// Every stored image URL starts with it; the phone apps serve images from it, so phones see them
 string imagesStorageUrl = $"http://127.0.0.1:{BlobPort}/devstoreaccount1/images";
 
 IResourceBuilder<PostgresServerResource> postgres = builder
@@ -69,6 +69,15 @@ IResourceBuilder<ProjectResource> bar = builder
     .WithReference(api)
     .WaitFor(api);
 
+IResourceBuilder<ProjectResource> bartender = builder
+    .AddProject<Projects.OrderPoint_Bartender>("order-point-bartender")
+    .WithExternalHttpEndpoints()
+    .WithHttpHealthCheck("/health")
+    .WithEnvironment("BusinessDay__StartHour", BusinessDayStartHour)
+    .WithEnvironment("Images__StorageUrl", imagesStorageUrl)
+    .WithReference(api)
+    .WaitFor(api);
+
 IResourceBuilder<ProjectResource> customer = builder
     .AddProject<Projects.OrderPoint_Customer>("order-point-customer")
     .WithExternalHttpEndpoints()
@@ -83,6 +92,7 @@ admin.WithReference(customer);
 // The API checks the apps' health for the Admin, but does not wait for them
 api
     .WithReference(bar)
+    .WithReference(bartender)
     .WithReference(customer);
 
 builder.Build().Run();

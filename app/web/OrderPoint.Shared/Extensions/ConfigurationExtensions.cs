@@ -1,4 +1,6 @@
-﻿namespace OrderPoint.Bar.Shared.Extensions;
+﻿using Microsoft.Extensions.Configuration;
+
+namespace OrderPoint.Shared.Extensions;
 
 internal static class ConfigurationExtensions
 {
