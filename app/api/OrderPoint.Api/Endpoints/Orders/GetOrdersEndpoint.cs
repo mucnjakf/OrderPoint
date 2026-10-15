@@ -21,6 +21,7 @@ namespace OrderPoint.Api.Endpoints.Orders;
 /// <param name="BartenderId">Only orders handled by this bartender.</param>
 /// <param name="TableId">Only orders placed from this table.</param>
 /// <param name="TakenByBartenderId">Only orders this bartender took in the Bartender app.</param>
+/// <param name="PaymentStatus">Only orders with this payment status, e.g. `Unpaid` for the register.</param>
 /// <param name="SortBy">The sort order. Default: `CreatedAtUtcDesc` (newest first).</param>
 internal sealed record GetOrdersRequest(
     [FromQuery] int PageNumber,
@@ -31,6 +32,7 @@ internal sealed record GetOrdersRequest(
     [FromQuery] Guid? BartenderId,
     [FromQuery] Guid? TableId,
     [FromQuery] Guid? TakenByBartenderId,
+    [FromQuery] PaymentStatus? PaymentStatus,
     [FromQuery] OrderSortBy? SortBy);
 
 /// <summary>A page of orders.</summary>
@@ -48,8 +50,8 @@ internal sealed class GetOrdersEndpoint : IEndpoint
             .WithSummary("List orders")
             .WithDescription("""
                 A page of orders with search (order number, table code or customer name), filters (status, item,
-                bartender, table, the bartender who took it) and sorting (default: newest first). `total` is
-                calculated from the order lines.
+                bartender, table, the bartender who took it, payment status) and sorting (default: newest first).
+                `total` is calculated from the order lines.
                 """)
             .RequireAuthorization(AuthorizationPolicies.AdminOrBartender);
     }
@@ -71,6 +73,7 @@ internal sealed class GetOrdersEndpoint : IEndpoint
             request.BartenderId,
             request.TableId,
             request.TakenByBartenderId,
+            request.PaymentStatus,
             request.SortBy);
 
         Result<PaginationDto<OrderDto>> result = await sender.Send(query, cancellationToken);

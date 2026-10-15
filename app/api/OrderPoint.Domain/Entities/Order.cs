@@ -49,6 +49,14 @@ public sealed class Order : Entity
 
     public DateTimeOffset? RefundedAtUtc { get; private set; }
 
+    // Who took the payment at the register, or null for a guest's card in the customer app
+    public Guid? PaidByBartenderId { get; private set; }
+
+    public Bartender? PaidByBartender { get; private set; }
+
+    // What the guest handed over for a cash payment, so the receipt shows the change
+    public decimal? CashReceived { get; private set; }
+
     public Guid? BartenderId { get; private set; }
 
     public Bartender? Bartender { get; private set; }
@@ -56,6 +64,9 @@ public sealed class Order : Entity
     private readonly List<OrderItem> _items = [];
 
     public IReadOnlyList<OrderItem> Items => _items.AsReadOnly();
+
+    // Calculated from the lines, not stored
+    public decimal Total => _items.Sum(orderItem => orderItem.Quantity * orderItem.UnitPrice);
 
     private Order(
         Guid id,
@@ -125,6 +136,23 @@ public sealed class Order : Entity
             bartenderId,
             note,
             items));
+    }
+
+    // A sale at the register: always at the counter, paid right after (PayAtRegister)
+    public static Result<Order> CreateAtRegister(
+        string? customerName,
+        Guid bartenderId,
+        string? note,
+        IReadOnlyList<(Item Item, int Quantity)> items)
+    {
+        Error? itemsError = ValidateItems(items);
+
+        if (itemsError is not null)
+        {
+            return Result.Failure<Order>(itemsError);
+        }
+
+        return Result.Success(New(OrderSource.Register, table: null, customerName, bartenderId, note, items));
     }
 
     private static Error? ValidateItems(IReadOnlyList<(Item Item, int Quantity)> items)
@@ -371,7 +399,57 @@ public sealed class Order : Entity
         return Result.Success();
     }
 
-    // A card is refunded at once (simulated); cash waits for the register to hand it back
+    // At the register: cash with the amount handed over, or a card the bar's own terminal charged
+    public Result PayAtRegister(PaymentMethod method, decimal? cashReceived, Guid bartenderId)
+    {
+        if (Status is OrderStatus.Declined or OrderStatus.Cancelled)
+        {
+            return Result.Failure(PaymentErrors.NothingToPay);
+        }
+
+        if (PaymentStatus != PaymentStatus.Unpaid)
+        {
+            return Result.Failure(PaymentErrors.AlreadyPaid);
+        }
+
+        if (method == Enumerations.PaymentMethod.Cash && (cashReceived is null || cashReceived < Total))
+        {
+            return Result.Failure(PaymentErrors.NotEnoughCash);
+        }
+
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+
+        PaymentStatus = PaymentStatus.Paid;
+        PaymentMethod = method;
+        PaidAtUtc = now;
+        PaidByBartenderId = bartenderId;
+        CashReceived = method == Enumerations.PaymentMethod.Cash ? cashReceived : null;
+
+        UpdatedAtUtc = now;
+
+        return Result.Success();
+    }
+
+    // The register handed the money back (cash, or a refund on the bar's card terminal)
+    public Result CompleteRefund()
+    {
+        if (PaymentStatus != PaymentStatus.RefundDue)
+        {
+            return Result.Failure(PaymentErrors.NoRefundDue);
+        }
+
+        DateTimeOffset now = DateTimeOffset.UtcNow;
+
+        PaymentStatus = PaymentStatus.Refunded;
+        RefundedAtUtc = now;
+
+        UpdatedAtUtc = now;
+
+        return Result.Success();
+    }
+
+    // A guest's card from the customer app is refunded at once (simulated); what the register took waits for the
+    // register to hand it back
     private void Refund(DateTimeOffset now)
     {
         if (PaymentStatus != PaymentStatus.Paid)
@@ -379,7 +457,7 @@ public sealed class Order : Entity
             return;
         }
 
-        if (PaymentMethod == Enumerations.PaymentMethod.Card)
+        if (PaymentMethod == Enumerations.PaymentMethod.Card && PaidByBartenderId is null)
         {
             PaymentStatus = PaymentStatus.Refunded;
             RefundedAtUtc = now;

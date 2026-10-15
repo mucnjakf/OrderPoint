@@ -91,6 +91,11 @@ internal sealed class OrderTypeConfiguration : IEntityTypeConfiguration<Order>
             .IsRequired(false);
 
         builder
+            .Property(order => order.CashReceived)
+            .HasPrecision(10, 2)
+            .IsRequired(false);
+
+        builder
             .Property(order => order.CreatedAtUtc)
             .IsRequired();
 
@@ -116,6 +121,13 @@ internal sealed class OrderTypeConfiguration : IEntityTypeConfiguration<Order>
             .HasOne(order => order.TakenByBartender)
             .WithMany()
             .HasForeignKey(order => order.TakenByBartenderId)
+            .OnDelete(DeleteBehavior.Restrict)
+            .IsRequired(false);
+
+        builder
+            .HasOne(order => order.PaidByBartender)
+            .WithMany()
+            .HasForeignKey(order => order.PaidByBartenderId)
             .OnDelete(DeleteBehavior.Restrict)
             .IsRequired(false);
     }

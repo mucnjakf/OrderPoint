@@ -14,6 +14,7 @@ public sealed record OrderDto(
     IReadOnlyList<OrderItemDto> Items,
     OrderBartenderDto? Bartender,
     OrderBartenderDto? TakenByBartender,
+    OrderBartenderDto? PaidByBartender,
     string? DeclineReason,
     DateTimeOffset? AcceptedAtUtc,
     DateTimeOffset? DeclinedAtUtc,
@@ -24,5 +25,6 @@ public sealed record OrderDto(
     PaymentMethod? PaymentMethod,
     DateTimeOffset? PaidAtUtc,
     DateTimeOffset? RefundedAtUtc,
+    decimal? CashReceived,
     DateTimeOffset CreatedAtUtc,
     DateTimeOffset? UpdatedAtUtc);

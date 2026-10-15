@@ -54,7 +54,7 @@ internal static class CacheKeys
 
     internal static string For(GetOrdersQuery query)
         => $"orders:page:{query.PageNumber}:{query.PageSize}:{query.Status}:{query.ItemId}:{query.BartenderId}:" +
-           $"{query.TableId}:{query.TakenByBartenderId}:{query.SortBy}:{query.SearchQuery}";
+           $"{query.TableId}:{query.TakenByBartenderId}:{query.PaymentStatus}:{query.SortBy}:{query.SearchQuery}";
 
     internal static string For(GetDashboardSummaryQuery query, TimeSpan dayStart)
         => ForDashboard("summary", query.Period, query.TimeZone, dayStart);

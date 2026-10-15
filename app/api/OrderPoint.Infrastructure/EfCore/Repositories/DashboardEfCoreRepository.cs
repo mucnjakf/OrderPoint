@@ -51,6 +51,76 @@ internal sealed class DashboardEfCoreRepository(ApplicationDbContext dbContext) 
             todayCompletedOrders.Count == 0 ? 0 : todayCompletedOrders.Average(order => order.Total));
     }
 
+    // Today's payments that are still with the bar (refunds not yet handed back included), and every refund due
+    public async Task<RegisterDayDto> GetRegisterDayAsync(
+        DateTimeOffset todayFromUtc,
+        CancellationToken cancellationToken = default)
+    {
+        var payments = await dbContext.Orders
+            .Where(order =>
+                (order.PaidAtUtc >= todayFromUtc && order.PaymentStatus != PaymentStatus.Refunded) ||
+                order.PaymentStatus == PaymentStatus.RefundDue)
+            .Select(order => new
+            {
+                order.PaymentStatus,
+                order.PaymentMethod,
+                order.PaidAtUtc,
+                order.PaidByBartenderId,
+                Amount = order.Items.Sum(orderItem => orderItem.Quantity * orderItem.UnitPrice)
+            })
+            .ToListAsync(cancellationToken);
+
+        var todayPayments = payments.Where(payment => payment.PaidAtUtc >= todayFromUtc).ToList();
+        var refundsDue = payments.Where(payment => payment.PaymentStatus == PaymentStatus.RefundDue).ToList();
+
+        var registerPayments = todayPayments.Where(payment => payment.PaidByBartenderId is not null).ToList();
+        List<Guid> bartenderIds = registerPayments
+            .Select(payment => payment.PaidByBartenderId!.Value)
+            .Distinct()
+            .ToList();
+
+        var bartenders = await dbContext.Bartenders
+            .Where(bartender => bartenderIds.Contains(bartender.Id))
+            .Select(bartender => new { bartender.Id, bartender.FirstName, bartender.LastName, bartender.ImageUrl })
+            .ToListAsync(cancellationToken);
+
+        List<RegisterBartenderDto> bartenderTotals = bartenders
+            .Select(bartender =>
+            {
+                var taken = registerPayments.Where(payment => payment.PaidByBartenderId == bartender.Id).ToList();
+
+                return new RegisterBartenderDto(
+                    bartender.Id,
+                    bartender.FirstName,
+                    bartender.LastName,
+                    bartender.ImageUrl,
+                    taken
+                        .Where(payment => payment.PaymentMethod == PaymentMethod.Cash)
+                        .Sum(payment => payment.Amount),
+                    taken
+                        .Where(payment => payment.PaymentMethod == PaymentMethod.Card)
+                        .Sum(payment => payment.Amount),
+                    taken.Count);
+            })
+            .OrderByDescending(total => total.CashTotal + total.CardTotal)
+            .ToList();
+
+        return new RegisterDayDto(
+            registerPayments
+                .Where(payment => payment.PaymentMethod == PaymentMethod.Cash)
+                .Sum(payment => payment.Amount),
+            registerPayments
+                .Where(payment => payment.PaymentMethod == PaymentMethod.Card)
+                .Sum(payment => payment.Amount),
+            todayPayments
+                .Where(payment => payment.PaidByBartenderId is null && payment.PaymentMethod == PaymentMethod.Card)
+                .Sum(payment => payment.Amount),
+            todayPayments.Count,
+            refundsDue.Sum(payment => payment.Amount),
+            refundsDue.Count,
+            bartenderTotals);
+    }
+
     public async Task<ShiftDto> GetShiftAsync(
         Guid bartenderId,
         DateTimeOffset todayFromUtc,

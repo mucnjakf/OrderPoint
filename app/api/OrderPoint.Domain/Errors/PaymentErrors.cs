@@ -11,4 +11,16 @@ public static class PaymentErrors
     internal static readonly Error AlreadyPaid = Error.Conflict(
         "Payment.AlreadyPaid",
         "Order is already paid");
+
+    internal static readonly Error NotEnoughCash = Error.Validation(
+        "Payment.NotEnoughCash",
+        "The cash received is less than the total");
+
+    internal static readonly Error NothingToPay = Error.Conflict(
+        "Payment.NothingToPay",
+        "A declined or cancelled order has nothing to pay");
+
+    internal static readonly Error NoRefundDue = Error.Conflict(
+        "Payment.NoRefundDue",
+        "Order has no refund to hand back");
 }

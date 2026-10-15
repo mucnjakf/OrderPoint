@@ -242,6 +242,10 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                     b.Property<DateTimeOffset?>("CancelledAtUtc")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<decimal?>("CashReceived")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("numeric(10,2)");
+
                     b.Property<DateTimeOffset?>("CompletedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
@@ -271,6 +275,9 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
 
                     b.Property<DateTimeOffset?>("PaidAtUtc")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("PaidByBartenderId")
+                        .HasColumnType("uuid");
 
                     b.Property<int?>("PaymentMethod")
                         .HasColumnType("integer");
@@ -306,6 +313,8 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
 
                     b.HasIndex("Number")
                         .IsUnique();
+
+                    b.HasIndex("PaidByBartenderId");
 
                     b.HasIndex("TableId");
 
@@ -561,6 +570,11 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                         .HasForeignKey("BartenderId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("OrderPoint.Domain.Entities.Bartender", "PaidByBartender")
+                        .WithMany()
+                        .HasForeignKey("PaidByBartenderId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("OrderPoint.Domain.Entities.Table", null)
                         .WithMany()
                         .HasForeignKey("TableId")
@@ -572,6 +586,8 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Bartender");
+
+                    b.Navigation("PaidByBartender");
 
                     b.Navigation("TakenByBartender");
                 });

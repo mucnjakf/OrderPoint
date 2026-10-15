@@ -16,6 +16,7 @@ internal static class OrderMapper
         order.Items.Select(orderItem => orderItem.ToOrderItemDto()).ToList(),
         order.Bartender?.ToOrderBartenderDto(),
         order.TakenByBartender?.ToOrderBartenderDto(),
+        order.PaidByBartender?.ToOrderBartenderDto(),
         order.DeclineReason,
         order.AcceptedAtUtc,
         order.DeclinedAtUtc,
@@ -26,6 +27,7 @@ internal static class OrderMapper
         order.PaymentMethod,
         order.PaidAtUtc,
         order.RefundedAtUtc,
+        order.CashReceived,
         order.CreatedAtUtc,
         order.UpdatedAtUtc);
 
