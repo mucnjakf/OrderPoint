@@ -79,6 +79,9 @@ public sealed partial class DataSheet<TItem>
     [Parameter]
     public RenderFragment? FilterContent { get; set; }
 
+    [Parameter]
+    public RenderFragment? ToolbarActionsContent { get; set; }
+
     // The create button only shows when OnCreateClick is set
     [Parameter]
     public string? CreateButtonText { get; set; }

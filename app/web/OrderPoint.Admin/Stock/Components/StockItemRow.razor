@@ -26,8 +26,15 @@
         @StockItem.Value.ToString("C", CultureInfo.CurrentCulture)
     </MudText>
 
-    @* The buttons must not open the details as well *@
-    <div class="d-flex justify-end" @onclick:stopPropagation="true">
+    <MudStack Row="true" Justify="Justify.FlexEnd" Spacing="2">
+        <MudTooltip Text="Details">
+            <MudIconButton Icon="@Icons.Material.Filled.RemoveRedEye"
+                           Color="Color.Primary"
+                           Size="Size.Small"
+                           aria-label="Details"
+                           OnClick="@(() => OnDetailsClick.InvokeAsync(StockItem))"/>
+        </MudTooltip>
+
         <MudTooltip Text="Record waste">
             <MudIconButton Icon="@Icons.Material.Filled.DeleteSweep"
                            Size="Size.Small"
@@ -57,5 +64,5 @@
                            aria-label="Delete"
                            OnClick="@(() => OnDeleteClick.InvokeAsync(StockItem))"/>
         </MudTooltip>
-    </div>
+    </MudStack>
 </div>

@@ -20,6 +20,8 @@ public sealed partial class EditRecipeDialog
 
     private const int SearchResultsCount = 10;
 
+    private const string QuantityFieldStyle = "width: 160px; flex-shrink: 0";
+
     [Inject]
     private ApiService ApiService { get; set; } = null!;
 

@@ -2,13 +2,7 @@
 
 <PageTitle>Stock</PageTitle>
 
-<PageHeader Text="Stock">
-    <MudButton Variant="Variant.Outlined"
-               StartIcon="@Icons.Material.Filled.ShoppingCart"
-               OnClick="@ShowReorderDialogAsync">
-        Reorder@(ReorderCount > 0 ? $" ({ReorderCount})" : string.Empty)
-    </MudButton>
-</PageHeader>
+<PageHeader Text="Stock"/>
 
 <MudStack Row="true" Spacing="3" Class="mb-5">
     <StockSummaryCard Label="Stock value"
@@ -58,9 +52,16 @@
            CreateButtonText="New stock item"
            OnCreateClick="@ShowCreateStockItemDialogAsync"
            GetGroupKey="@(stockItem => stockItem.Group)"
-           OnRowClick="@ShowStockItemDetailsDialogAsync"
            EmptyStateIcon="@Icons.Material.Filled.Inventory2"
            EmptyStateText="No stock items found">
+
+    <ToolbarActionsContent>
+        <MudButton Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Filled.ShoppingCart"
+                   OnClick="@ShowReorderDialogAsync">
+            Reorder@(ReorderCount > 0 ? $" ({ReorderCount})" : string.Empty)
+        </MudButton>
+    </ToolbarActionsContent>
 
     <LoadingTemplate>
         <StockItemRowSkeleton/>
@@ -81,21 +82,6 @@
                         <MudIcon Icon="@group.GetIcon()" Size="Size.Small"/>
                         <MudText>@group.ToString()</MudText>
                     </MudStack>
-                </MudSelectItem>
-            }
-        </MudSelect>
-
-        <MudSelect @bind-Value="@SelectedLevel"
-                   @bind-Value:after="@OnFiltersChangedAsync"
-                   T="StockLevel?"
-                   Variant="Variant.Outlined"
-                   Label="Level"
-                   Clearable="true"
-                   FitContent="true">
-            @foreach (StockLevel level in Enum.GetValues<StockLevel>())
-            {
-                <MudSelectItem Value="@level" T="StockLevel?">
-                    <MudText>@level.GetLabel()</MudText>
                 </MudSelectItem>
             }
         </MudSelect>
@@ -143,6 +129,7 @@
 
     <RowTemplate>
         <StockItemRow StockItem="@context"
+                      OnDetailsClick="@ShowStockItemDetailsDialogAsync"
                       OnWasteClick="@RecordWasteAsync"
                       OnCorrectClick="@CorrectAsync"
                       OnEditClick="@ShowUpdateStockItemDialogAsync"

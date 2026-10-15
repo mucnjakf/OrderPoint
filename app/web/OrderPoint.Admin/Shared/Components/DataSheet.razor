@@ -34,15 +34,19 @@
         }
     </MudStack>
 
-    @if (OnCreateClick.HasDelegate)
-    {
-        <MudButton Variant="Variant.Filled"
-                   StartIcon="@Icons.Material.Filled.Add"
-                   Color="Color.Primary"
-                   OnClick="@OnCreateClickAsync">
-            @CreateButtonText
-        </MudButton>
-    }
+    <MudStack Row="true" AlignItems="AlignItems.Center">
+        @ToolbarActionsContent
+
+        @if (OnCreateClick.HasDelegate)
+        {
+            <MudButton Variant="Variant.Filled"
+                       StartIcon="@Icons.Material.Filled.Add"
+                       Color="Color.Primary"
+                       OnClick="@OnCreateClickAsync">
+                @CreateButtonText
+            </MudButton>
+        }
+    </MudStack>
 </MudStack>
 
 <StableHeight IsLoading="@IsLoading" KeepHeight="@(Pagination?.PageNumber > 1)" IsFramed="true">

@@ -5,5 +5,5 @@ internal static class StockRowLayout
 {
     internal const string GridStyle =
         "display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(120px, 1fr) minmax(0, 1.2fr) " +
-        "minmax(0, 0.9fr) 100px 176px; gap: 16px; align-items: center;";
+        "minmax(0, 0.9fr) 100px 200px; gap: 16px; align-items: center;";
 }

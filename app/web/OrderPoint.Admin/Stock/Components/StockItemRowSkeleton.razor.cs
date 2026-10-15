@@ -2,5 +2,5 @@
 
 public sealed partial class StockItemRowSkeleton
 {
-    private const int ActionsCount = 4;
+    private const int ActionsCount = 5;
 }

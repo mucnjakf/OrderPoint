@@ -43,14 +43,15 @@
                         </NoItemsTemplate>
                     </MudAutocomplete>
 
-                    <MudNumericField @bind-Value="@currentRow.Quantity"
-                                     Label="Per serving"
-                                     Variant="Variant.Outlined"
-                                     Adornment="Adornment.End"
-                                     AdornmentText="@(currentRow.Ingredient?.Unit.GetSymbol() ?? string.Empty)"
-                                     Min="0"
-                                     Immediate="true"
-                                     Style="width: 160px"/>
+                    <div style="@QuantityFieldStyle">
+                        <MudNumericField @bind-Value="@currentRow.Quantity"
+                                         Label="Per serving"
+                                         Variant="Variant.Outlined"
+                                         Adornment="Adornment.End"
+                                         AdornmentText="@(currentRow.Ingredient?.Unit.GetSymbol() ?? string.Empty)"
+                                         Min="0"
+                                         Immediate="true"/>
+                    </div>
 
                     <MudText Typo="Typo.body2" Class="mt-4" Style="width: 70px; text-align: right">
                         @GetCost(currentRow).ToString("C", CultureInfo.CurrentCulture)

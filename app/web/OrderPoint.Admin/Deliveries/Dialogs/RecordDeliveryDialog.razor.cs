@@ -23,6 +23,10 @@ public sealed partial class RecordDeliveryDialog
 
     private const int SearchResultsCount = 10;
 
+    private const string FixedFieldStyle = "width: 200px; flex-shrink: 0";
+
+    private const string LineFieldStyle = "width: 150px; flex-shrink: 0";
+
     [Inject]
     private ApiService ApiService { get; set; } = null!;
 

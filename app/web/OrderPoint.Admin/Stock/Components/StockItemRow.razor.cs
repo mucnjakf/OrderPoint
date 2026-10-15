@@ -13,6 +13,10 @@ public sealed partial class StockItemRow
 
     [Parameter]
     [EditorRequired]
+    public EventCallback<StockItemDto> OnDetailsClick { get; set; }
+
+    [Parameter]
+    [EditorRequired]
     public EventCallback<StockItemDto> OnWasteClick { get; set; }
 
     [Parameter]
