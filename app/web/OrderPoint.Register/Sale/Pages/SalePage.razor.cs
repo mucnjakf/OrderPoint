@@ -26,8 +26,8 @@ public sealed partial class SalePage : IDisposable
 
     private const int ItemsPageSize = 18;
 
-    // As tall as the screen under the app bar (64px) and the top padding, so the sale sits at the bottom
-    private const string PageStyle = "display: flex; flex-direction: column; min-height: calc(100vh - 76px);";
+    // As tall as the screen under the app bar (64px) and the page padding (12px each), so the sale sits at the bottom
+    private const string PageStyle = "display: flex; flex-direction: column; min-height: calc(100vh - 88px);";
 
     private const string ItemIsUnavailableCode = "Order.ItemIsUnavailable";
 

@@ -21,7 +21,7 @@ public sealed partial class MainLayout : IDisposable
     // Only the counts are read
     private const int CountedOrdersPageSize = 1;
 
-    // The brand and the account take equal room on both sides, so the tabs sit in the middle
+    // The brand and the live indicator take equal room on both sides, so the tabs sit in the middle
     private const string SideStyle = "flex: 1 1 0; min-width: 0;";
 
     // As tall as the app bar, so the underline of the current page sits on its bottom border

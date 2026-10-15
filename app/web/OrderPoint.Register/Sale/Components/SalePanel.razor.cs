@@ -18,14 +18,18 @@ public sealed partial class SalePanel
     // At the bottom of the screen: pushed there on a short page (the page is a flex column of the screen's height),
     // stuck there while the cards scroll; a solid bar over the page padding, so nothing shows at its sides or below it
     private const string PanelStyle =
-        "position: sticky; bottom: 0; z-index: 2; margin: auto -12px -12px; " +
+        "position: sticky; bottom: 0; z-index: 2; margin: auto -32px -12px; " +
         "border-top: 1px solid var(--mud-palette-lines-default);";
 
     private const string PanelGridStyle =
-        "display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 24px; align-items: start;";
+        "display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 24px;";
 
-    // About five lines, then the lines scroll inside the panel
-    private const string LinesStyle = "max-height: 240px; overflow-y: auto; padding-right: 4px;";
+    // About five lines, then the lines scroll inside the panel; the gutter keeps the scroll bar off the subtotals
+    private const string LinesStyle =
+        "max-height: 240px; overflow-y: auto; scrollbar-gutter: stable; padding-right: 12px;";
+
+    // The same gutter, so the column titles stay above their columns
+    private const string HeaderStyle = "overflow-y: hidden; scrollbar-gutter: stable; padding-right: 12px;";
 
     // Item, price for one, quantity, subtotal
     private const string LineGridStyle =

@@ -39,7 +39,7 @@
             }
             else
             {
-                <div style="@LineGridStyle">
+                <div style="@($"{LineGridStyle} {HeaderStyle}")">
                     <MudText Typo="Typo.caption" Style="@SecondaryStyle">Item</MudText>
                     <MudText Typo="Typo.caption" Align="Align.Right" Style="@SecondaryStyle">Price</MudText>
                     <MudText Typo="Typo.caption" Align="Align.Center" Style="@SecondaryStyle">Quantity</MudText>
@@ -94,7 +94,7 @@
             }
         </MudStack>
 
-        <MudStack Spacing="3">
+        <MudStack Spacing="3" Style="height: 100%">
             <MudStack Row="true" Spacing="2">
                 <MudTextField Value="@CustomerName"
                               ValueChanged="@OnCustomerNameChanged"
@@ -102,7 +102,6 @@
                               Label="Name to call"
                               Placeholder="e.g. Ana"
                               Variant="Variant.Outlined"
-                              Margin="Margin.Dense"
                               MaxLength="@CustomerNameMaxLength"
                               Immediate="true"
                               Class="flex-1"
@@ -114,14 +113,13 @@
                               Label="Note for the bar"
                               Placeholder="e.g. no ice"
                               Variant="Variant.Outlined"
-                              Margin="Margin.Dense"
                               MaxLength="@NoteMaxLength"
                               Immediate="true"
                               Class="flex-1"
                               Style="min-width: 0"/>
             </MudStack>
 
-            <MudStack Row="true" AlignItems="AlignItems.End" Justify="Justify.SpaceBetween">
+            <MudStack Row="true" AlignItems="AlignItems.End" Justify="Justify.SpaceBetween" Class="mt-auto">
                 <MudStack Spacing="0">
                     <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
                         Total · @ItemsCount.ToCountText("item", "items") · counter order

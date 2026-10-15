@@ -116,7 +116,8 @@
                               Variant="Variant.Outlined"
                               Clearable="true"
                               DebounceInterval="300"
-                              Immediate="true"/>
+                              Immediate="true"
+                              Style="width: 260px"/>
 
                 <MudSelect @bind-Value="@SelectedChannel"
                            @bind-Value:after="@OnFiltersChangedAsync"
@@ -125,7 +126,7 @@
                            Variant="Variant.Outlined"
                            Clearable="true"
                            RelativeWidth="DropdownWidth.Adaptive"
-                           Style="width: 150px">
+                           Style="width: 130px">
                     @foreach (PaymentChannel channel in Enum.GetValues<PaymentChannel>())
                     {
                         <MudSelectItem T="PaymentChannel?" Value="@channel">

@@ -18,7 +18,10 @@
 }
 
 <MudLayout>
-    <MudAppBar Elevation="0" Style="border-bottom: 1px solid var(--mud-palette-lines-default)">
+    <MudAppBar Elevation="0"
+               Gutters="false"
+               ToolBarClass="px-8"
+               Style="border-bottom: 1px solid var(--mud-palette-lines-default)">
         <div class="d-flex align-center" style="@SideStyle">
             <MudStack Row="true" AlignItems="AlignItems.Center">
                 <MudImage Src="@ImageUrls.Logo" Alt="OrderPoint logo" Width="36" Height="36" />
@@ -30,7 +33,7 @@
             </MudStack>
         </div>
 
-        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
             <MudButton Href="/"
                        Variant="Variant.Text"
                        StartIcon="@Icons.Material.Filled.Today"
@@ -72,23 +75,22 @@
                     </MudChip>
                 }
             </MudButton>
+
+            <MudButton Href="/account"
+                       Variant="Variant.Text"
+                       StartIcon="@Icons.Material.Filled.Person"
+                       Style="@GetTabStyle("/account")">
+                Account
+            </MudButton>
         </MudStack>
 
         <div class="d-flex align-center justify-end" style="@SideStyle">
             <LiveIndicator />
-
-            <MudTooltip Text="Account">
-                <MudIconButton Href="/account"
-                               Icon="@Icons.Material.Filled.Person"
-                               aria-label="Account"
-                               Class="ml-2"
-                               Style="@GetTabStyle("/account")" />
-            </MudTooltip>
         </div>
     </MudAppBar>
 
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="pa-3">
+        <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="px-8 py-3">
             @Body
         </MudContainer>
     </MudMainContent>

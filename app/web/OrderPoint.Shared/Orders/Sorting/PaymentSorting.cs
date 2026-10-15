@@ -11,7 +11,7 @@ internal static class PaymentSorting
         return parsedSortBy switch
         {
             PaymentSortBy.PaidAtUtcAsc or PaymentSortBy.PaidAtUtcDesc => "Paid",
-            PaymentSortBy.NumberAsc or PaymentSortBy.NumberDesc => "Order number",
+            PaymentSortBy.NumberAsc or PaymentSortBy.NumberDesc => "Number",
             PaymentSortBy.TotalAsc or PaymentSortBy.TotalDesc => "Total",
             _ => throw new ArgumentOutOfRangeException(nameof(sortBy), sortBy, null)
         };
