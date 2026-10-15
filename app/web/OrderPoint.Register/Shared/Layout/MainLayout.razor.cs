@@ -21,6 +21,9 @@ public sealed partial class MainLayout : IDisposable
     // Only the counts are read
     private const int CountedOrdersPageSize = 1;
 
+    private const string AppBarStyle =
+        $"border-bottom: 1px solid var(--mud-palette-lines-default); {PageGutter.PaddingStyle}";
+
     // The brand and the live indicator take equal room on both sides, so the tabs sit in the middle
     private const string SideStyle = "flex: 1 1 0; min-width: 0;";
 

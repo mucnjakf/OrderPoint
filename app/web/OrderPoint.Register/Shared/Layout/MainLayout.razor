@@ -18,10 +18,7 @@
 }
 
 <MudLayout>
-    <MudAppBar Elevation="0"
-               Gutters="false"
-               ToolBarClass="px-8"
-               Style="border-bottom: 1px solid var(--mud-palette-lines-default)">
+    <MudAppBar Elevation="0" Gutters="false" Style="@AppBarStyle">
         <div class="d-flex align-center" style="@SideStyle">
             <MudStack Row="true" AlignItems="AlignItems.Center">
                 <MudImage Src="@ImageUrls.Logo" Alt="OrderPoint logo" Width="36" Height="36" />
@@ -33,9 +30,10 @@
             </MudStack>
         </div>
 
-        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="6">
             <MudButton Href="/"
                        Variant="Variant.Text"
+                       Class="px-4"
                        StartIcon="@Icons.Material.Filled.Today"
                        Style="@GetTabStyle("/")">
                 Today
@@ -43,6 +41,7 @@
 
             <MudButton Href="/sales"
                        Variant="Variant.Text"
+                       Class="px-4"
                        StartIcon="@Icons.Material.Filled.PointOfSale"
                        Style="@GetTabStyle("/sales")">
                 Sale
@@ -50,6 +49,7 @@
 
             <MudButton Href="/to-pay"
                        Variant="Variant.Text"
+                       Class="px-4"
                        StartIcon="@Icons.Material.Filled.ReceiptLong"
                        Style="@GetTabStyle("/to-pay")">
                 To pay
@@ -64,6 +64,7 @@
 
             <MudButton Href="/refunds"
                        Variant="Variant.Text"
+                       Class="px-4"
                        StartIcon="@Icons.Material.Filled.AssignmentReturn"
                        Style="@GetTabStyle("/refunds")">
                 Refunds due
@@ -78,6 +79,7 @@
 
             <MudButton Href="/account"
                        Variant="Variant.Text"
+                       Class="px-4"
                        StartIcon="@Icons.Material.Filled.Person"
                        Style="@GetTabStyle("/account")">
                 Account
@@ -90,7 +92,7 @@
     </MudAppBar>
 
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="px-8 py-3">
+        <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="py-3" Style="@PageGutter.PaddingStyle">
             @Body
         </MudContainer>
     </MudMainContent>
