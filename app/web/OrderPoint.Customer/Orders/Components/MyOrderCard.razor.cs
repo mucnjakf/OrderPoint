@@ -32,8 +32,6 @@ public sealed partial class MyOrderCard
     // Only while no bartender has taken the order
     private bool CanCancel => Order.Status is OrderStatus.Pending;
 
-    private string LinesText => string.Join(", ", Order.Items.Select(item => $"{item.Quantity}× {item.Name}"));
-
     private async Task OnCardClickAsync()
     {
         await OnClick.InvokeAsync(Order);

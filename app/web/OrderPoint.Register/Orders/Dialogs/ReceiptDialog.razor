@@ -76,9 +76,16 @@
                     {
                         <MudDivider/>
 
-                        <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
-                            Served by @paidBy.FirstName @paidBy.LastName
-                        </MudText>
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                            <BartenderAvatar FirstName="@paidBy.FirstName"
+                                             LastName="@paidBy.LastName"
+                                             ImageUrl="@paidBy.ImageUrl"
+                                             Size="Size.Small"/>
+
+                            <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                                Served by @paidBy.FirstName @paidBy.LastName
+                            </MudText>
+                        </MudStack>
                     }
                 </MudStack>
             </MudPaper>

@@ -58,9 +58,7 @@ public sealed partial class OrderTicket
         _ => $"Placed {Order.CreatedAtUtc.ToRelativeTime()}"
     };
 
-    private string? BartenderSuffix => ShowsBartender && Order.Bartender is not null
-        ? $" · {BartenderText}"
-        : null;
+    private bool ShowsHandler => ShowsBartender && Order.Bartender is not null;
 
     // An open order turns amber, then red, the longer the guest waits, so the oldest ones stand out
     private string? WaitStyle

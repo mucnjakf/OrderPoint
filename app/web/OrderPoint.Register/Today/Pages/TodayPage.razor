@@ -69,18 +69,9 @@
                     {
                         <MudPaper @key="@bartender.Id" Outlined="true" Class="pa-3">
                             <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
-                                <MudAvatar Color="Color.Primary" Size="Size.Small">
-                                    @if (bartender.ImageUrl is not null)
-                                    {
-                                        <MudImage Src="@bartender.ImageUrl"
-                                                  Alt="Bartender photo"
-                                                  ObjectFit="ObjectFit.Cover"/>
-                                    }
-                                    else
-                                    {
-                                        @(bartender.FirstName[..1])
-                                    }
-                                </MudAvatar>
+                                <BartenderAvatar FirstName="@bartender.FirstName"
+                                                 LastName="@bartender.LastName"
+                                                 ImageUrl="@bartender.ImageUrl"/>
 
                                 <MudStack Spacing="0" Class="flex-1" Style="min-width: 0">
                                     <MudText Typo="Typo.body2">
@@ -137,7 +128,19 @@
                                 <td>@rowOrder.GetPlaceText()</td>
                                 <td>@rowOrder.PaidAtUtc!.Value.ToDisplayDateTime(TimeZoneService.TimeZone)</td>
                                 <td>@GetMethodText(rowOrder)</td>
-                                <td>@GetPaidByText(rowOrder)</td>
+                                <td>
+                                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                        @if (rowOrder.PaidByBartender is { } paidBy)
+                                        {
+                                            <BartenderAvatar FirstName="@paidBy.FirstName"
+                                                             LastName="@paidBy.LastName"
+                                                             ImageUrl="@paidBy.ImageUrl"
+                                                             Size="Size.Small"/>
+                                        }
+
+                                        <span>@GetPaidByText(rowOrder)</span>
+                                    </MudStack>
+                                </td>
                                 <td style="text-align: right">
                                     @rowOrder.Total.ToString("C", CultureInfo.CurrentCulture)
                                 </td>

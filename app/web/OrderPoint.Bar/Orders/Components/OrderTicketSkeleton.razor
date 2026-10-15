@@ -24,8 +24,12 @@
 
     @for (int i = 0; i < OrderLinesCount; i++)
     {
-        <MudText Typo="Typo.body1">
-            <MudSkeleton Width="160px"/>
-        </MudText>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="24px" Height="24px"/>
+
+            <MudText Typo="Typo.body1">
+                <MudSkeleton Width="160px"/>
+            </MudText>
+        </MudStack>
     }
 </MudStack>

@@ -25,9 +25,19 @@
                             @Order.GetPlaceText()
                         </MudText>
 
-                        <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
-                            @HandlerText
-                        </MudText>
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                            @if (Order.Bartender is { } bartender)
+                            {
+                                <BartenderAvatar FirstName="@bartender.FirstName"
+                                                 LastName="@bartender.LastName"
+                                                 ImageUrl="@bartender.ImageUrl"
+                                                 Size="Size.Small"/>
+                            }
+
+                            <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                                @HandlerText
+                            </MudText>
+                        </MudStack>
                     </MudStack>
 
                     <MudStack Spacing="1" AlignItems="AlignItems.End">

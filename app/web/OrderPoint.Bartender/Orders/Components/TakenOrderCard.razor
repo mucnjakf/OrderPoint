@@ -32,9 +32,18 @@
 
         @foreach (OrderItemDto orderItem in Order.Items)
         {
-            <MudText Typo="Typo.body1">
-                <strong>@orderItem.Quantity×</strong> @orderItem.Name
-            </MudText>
+            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                <MudImage Src="@(orderItem.ImageUrl ?? ImageUrls.Placeholder)"
+                          Alt="Item image"
+                          Width="24"
+                          Height="24"
+                          ObjectFit="ObjectFit.Cover"
+                          Style="@($"{ImageStyles.RoundedSmall} flex-shrink: 0;")"/>
+
+                <MudText Typo="Typo.body1">
+                    <strong>@orderItem.Quantity×</strong> @orderItem.Name
+                </MudText>
+            </MudStack>
         }
 
         @if (Order.Note is not null)

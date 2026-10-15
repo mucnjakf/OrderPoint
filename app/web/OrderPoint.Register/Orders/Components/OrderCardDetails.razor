@@ -26,7 +26,11 @@
         @if (Order.TakenByBartender is { } takenBy)
         {
             <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Small" Style="@SecondaryStyle"/>
+                <BartenderAvatar FirstName="@takenBy.FirstName"
+                                 LastName="@takenBy.LastName"
+                                 ImageUrl="@takenBy.ImageUrl"
+                                 Size="Size.Small"/>
+
                 <MudText Typo="Typo.body2">Taken by @takenBy.FirstName @takenBy.LastName</MudText>
             </MudStack>
         }
@@ -43,7 +47,11 @@
         @if (Order.Bartender is { } handledBy)
         {
             <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                <MudIcon Icon="@Icons.Material.Filled.LocalBar" Size="Size.Small" Style="@SecondaryStyle"/>
+                <BartenderAvatar FirstName="@handledBy.FirstName"
+                                 LastName="@handledBy.LastName"
+                                 ImageUrl="@handledBy.ImageUrl"
+                                 Size="Size.Small"/>
+
                 <MudText Typo="Typo.body2">At the bar: @handledBy.FirstName @handledBy.LastName</MudText>
             </MudStack>
         }

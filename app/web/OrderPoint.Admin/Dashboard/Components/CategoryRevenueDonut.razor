@@ -26,6 +26,16 @@
         </svg>
 
         <div class="d-flex flex-column align-center justify-center" style="@CenterStyle">
+            @if (HoveredIndex is not null)
+            {
+                <MudImage Src="@(CategoryRevenue[HoveredIndex.Value].CategoryImageUrl ?? ImageUrls.Placeholder)"
+                          Alt="Category image"
+                          Width="24"
+                          Height="24"
+                          ObjectFit="ObjectFit.Cover"
+                          Style="@ImageStyles.RoundedSmall"/>
+            }
+
             <MudText Typo="Typo.caption" Align="Align.Center">
                 @CenterLabel
             </MudText>
@@ -54,6 +64,14 @@
                  @onmouseenter="@(() => HoveredIndex = index)"
                  @onmouseleave="@(() => HoveredIndex = null)">
                 <div style="@GetLegendDotStyle(index)"></div>
+
+                <MudImage Src="@(category.CategoryImageUrl ?? ImageUrls.Placeholder)"
+                          Alt="Category image"
+                          Width="24"
+                          Height="24"
+                          ObjectFit="ObjectFit.Cover"
+                          Class="ml-2"
+                          Style="@($"{ImageStyles.RoundedSmall} flex-shrink: 0;")"/>
 
                 <MudText Typo="Typo.body2" Class="flex-1 ml-2">
                     @category.CategoryName

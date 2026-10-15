@@ -74,8 +74,18 @@
                     {
                         <TextDisplayRow Icon="@Icons.Material.Filled.EditNote"
                                         Label="Taken by"
-                                        Text="@($"{takenBy.FirstName} {takenBy.LastName}")"
-                                        ShowDivider="true"/>
+                                        ShowDivider="true">
+                            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                <BartenderAvatar FirstName="@takenBy.FirstName"
+                                                 LastName="@takenBy.LastName"
+                                                 ImageUrl="@takenBy.ImageUrl"
+                                                 Size="Size.Small"/>
+
+                                <MudText Typo="Typo.body1">
+                                    @takenBy.FirstName @takenBy.LastName
+                                </MudText>
+                            </MudStack>
+                        </TextDisplayRow>
                     }
 
                     <TextDisplayRow Icon="@Icons.Material.Filled.Notes"
@@ -128,20 +138,30 @@
                     </MudStack>
 
                     <div style="@PaymentFactsStyle">
-                        @foreach ((string icon, string label, string value) in PaymentFacts)
+                        @foreach (PaymentFact fact in PaymentFacts)
                         {
                             <MudPaper Outlined="true" Elevation="0" Class="pa-3">
                                 <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mb-1">
-                                    <MudIcon Icon="@icon" Size="Size.Small" Color="Color.Surface"/>
+                                    <MudIcon Icon="@fact.Icon" Size="Size.Small" Color="Color.Surface"/>
 
                                     <MudText Typo="Typo.caption" Color="Color.Surface">
-                                        @label
+                                        @fact.Label
                                     </MudText>
                                 </MudStack>
 
-                                <MudText Typo="Typo.body1" Style="font-weight: 600">
-                                    @value
-                                </MudText>
+                                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                    @if (fact.Bartender is { } bartender)
+                                    {
+                                        <BartenderAvatar FirstName="@bartender.FirstName"
+                                                         LastName="@bartender.LastName"
+                                                         ImageUrl="@bartender.ImageUrl"
+                                                         Size="Size.Small"/>
+                                    }
+
+                                    <MudText Typo="Typo.body1" Style="font-weight: 600">
+                                        @fact.Value
+                                    </MudText>
+                                </MudStack>
                             </MudPaper>
                         }
                     </div>

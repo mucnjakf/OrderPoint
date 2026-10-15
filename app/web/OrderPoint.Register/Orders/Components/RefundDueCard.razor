@@ -5,6 +5,14 @@
         <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mt-auto">
             <MudIcon Icon="@MethodIcon" Size="Size.Small" Style="color: var(--mud-palette-text-secondary)"/>
 
+            @if (Order.PaidByBartender is { } paidBy)
+            {
+                <BartenderAvatar FirstName="@paidBy.FirstName"
+                                 LastName="@paidBy.LastName"
+                                 ImageUrl="@paidBy.ImageUrl"
+                                 Size="Size.Small"/>
+            }
+
             <MudText Typo="Typo.body2">
                 @MethodText
             </MudText>

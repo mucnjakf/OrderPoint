@@ -230,11 +230,17 @@ internal sealed class DashboardEfCoreRepository(ApplicationDbContext dbContext) 
         CancellationToken cancellationToken = default)
     {
         var categories = await GetPaidOrderItemsInRange(fromUtc, toUtc)
-            .GroupBy(orderItem => new { orderItem.Item.CategoryId, orderItem.Item.Category.Name })
+            .GroupBy(orderItem => new
+            {
+                orderItem.Item.CategoryId,
+                orderItem.Item.Category.Name,
+                orderItem.Item.Category.ImageUrl
+            })
             .Select(group => new
             {
                 group.Key.CategoryId,
                 group.Key.Name,
+                group.Key.ImageUrl,
                 Revenue = group.Sum(orderItem => orderItem.Quantity * orderItem.UnitPrice)
             })
             .OrderByDescending(category => category.Revenue)
@@ -242,7 +248,11 @@ internal sealed class DashboardEfCoreRepository(ApplicationDbContext dbContext) 
             .ToListAsync(cancellationToken);
 
         return categories
-            .Select(category => new CategoryRevenueDto(category.CategoryId, category.Name, category.Revenue))
+            .Select(category => new CategoryRevenueDto(
+                category.CategoryId,
+                category.Name,
+                category.ImageUrl,
+                category.Revenue))
             .ToList();
     }
 

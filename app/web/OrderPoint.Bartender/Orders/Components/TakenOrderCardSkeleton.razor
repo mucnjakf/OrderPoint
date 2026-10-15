@@ -24,9 +24,13 @@
 
         <MudDivider/>
 
-        <MudText Typo="Typo.body1">
-            <MudSkeleton Width="60%"/>
-        </MudText>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="24px" Height="24px"/>
+
+            <MudText Typo="Typo.body1" Class="flex-1">
+                <MudSkeleton Width="60%"/>
+            </MudText>
+        </MudStack>
 
         <ChipSkeleton/>
     </MudStack>

@@ -37,11 +37,14 @@ public sealed partial class OrderDetailsDialog : IDisposable
     // The parameter is reset whenever the dialog provider re-renders, so live updates go here
     private OrderDto CurrentOrder { get; set; } = null!;
 
-    // One row of equal tiles, however many facts the payment has
-    private string PaymentFactsStyle =>
-        $"display: grid; grid-template-columns: repeat({PaymentFacts.Count}, minmax(0, 1fr)); gap: 12px;";
+    private bool IsRefund => CurrentOrder.PaymentStatus is PaymentStatus.RefundDue or PaymentStatus.Refunded;
 
-    private IReadOnlyList<(string Icon, string Label, string Value)> PaymentFacts
+    // Equal tiles: one row, or two rows of three for a refund
+    private string PaymentFactsStyle =>
+        $"display: grid; grid-template-columns: repeat({(IsRefund ? 3 : PaymentFacts.Count)}, minmax(0, 1fr)); " +
+        "gap: 12px;";
+
+    private IReadOnlyList<PaymentFact> PaymentFacts
     {
         get
         {
@@ -53,18 +56,18 @@ public sealed partial class OrderDetailsDialog : IDisposable
                 {
                     OrderStatus.Declined =>
                     [
-                        (Icons.Material.Filled.Euro, "Amount due", "Nothing"),
-                        (Icons.Material.Filled.Info, "Why", "Declined before it was paid")
+                        new PaymentFact(Icons.Material.Filled.Euro, "Amount due", "Nothing"),
+                        new PaymentFact(Icons.Material.Filled.Info, "Why", "Declined before it was paid")
                     ],
                     OrderStatus.Cancelled =>
                     [
-                        (Icons.Material.Filled.Euro, "Amount due", "Nothing"),
-                        (Icons.Material.Filled.Info, "Why", "Cancelled before it was paid")
+                        new PaymentFact(Icons.Material.Filled.Euro, "Amount due", "Nothing"),
+                        new PaymentFact(Icons.Material.Filled.Info, "Why", "Cancelled before it was paid")
                     ],
                     _ =>
                     [
-                        (Icons.Material.Filled.Euro, "Amount due", total),
-                        (Icons.Material.Filled.PointOfSale, "Pays at", "The register")
+                        new PaymentFact(Icons.Material.Filled.Euro, "Amount due", total),
+                        new PaymentFact(Icons.Material.Filled.PointOfSale, "Pays at", "The register")
                     ]
                 };
             }
@@ -76,11 +79,11 @@ public sealed partial class OrderDetailsDialog : IDisposable
 
             string paidAt = CurrentOrder.PaidAtUtc!.Value.ToDisplayDateTime(TimeZoneService.TimeZone);
 
-            List<(string Icon, string Label, string Value)> facts =
+            List<PaymentFact> facts =
             [
-                (Icons.Material.Filled.Euro, "Amount", total),
-                (Icons.Material.Filled.Schedule, "Paid", paidAt),
-                (Icons.Material.Filled.Person, "Paid to", paidTo)
+                new PaymentFact(Icons.Material.Filled.Euro, "Amount", total),
+                new PaymentFact(Icons.Material.Filled.Schedule, "Paid", paidAt),
+                new PaymentFact(Icons.Material.Filled.Person, "Paid to", paidTo, CurrentOrder.PaidByBartender)
             ];
 
             if (CurrentOrder.CashReceived is { } cashReceived)
@@ -88,20 +91,29 @@ public sealed partial class OrderDetailsDialog : IDisposable
                 string received = cashReceived.ToString("C", CultureInfo.CurrentCulture);
                 string change = (cashReceived - CurrentOrder.Total).ToString("C", CultureInfo.CurrentCulture);
 
-                facts.Add((Icons.Material.Filled.Payments, "Cash received", received));
-                facts.Add((Icons.Material.Filled.CurrencyExchange, "Change", change));
+                facts.Add(new PaymentFact(Icons.Material.Filled.Payments, "Cash received", received));
+                facts.Add(new PaymentFact(Icons.Material.Filled.CurrencyExchange, "Change", change));
+            }
+            else if (IsRefund)
+            {
+                bool isOnline = CurrentOrder.PaidByBartender is null;
+                string method = isOnline ? "Card in the customer app" : "Card on the terminal";
+                string refundTo = isOnline ? "The guest's card" : "The card, on the terminal";
+
+                facts.Add(new PaymentFact(Icons.Material.Filled.CreditCard, "Method", method));
+                facts.Add(new PaymentFact(Icons.Material.Filled.Undo, "Refund to", refundTo));
             }
 
             if (CurrentOrder.PaymentStatus == PaymentStatus.RefundDue)
             {
-                facts.Add((Icons.Material.Filled.AssignmentReturn, "Refund", "Due at the register"));
+                facts.Add(new PaymentFact(Icons.Material.Filled.AssignmentReturn, "Refund", "Due at the register"));
             }
 
             if (CurrentOrder.RefundedAtUtc is { } refundedAtUtc)
             {
                 string refundedAt = refundedAtUtc.ToDisplayDateTime(TimeZoneService.TimeZone);
 
-                facts.Add((Icons.Material.Filled.AssignmentReturn, "Refunded", refundedAt));
+                facts.Add(new PaymentFact(Icons.Material.Filled.AssignmentReturn, "Refunded", refundedAt));
             }
 
             return facts;
@@ -214,4 +226,7 @@ public sealed partial class OrderDetailsDialog : IDisposable
     {
         MudDialogInstance.Close(DialogResult.Ok(true));
     }
+
+    // One tile of the payment; with a bartender it shows their avatar before the value
+    private sealed record PaymentFact(string Icon, string Label, string Value, OrderBartenderDto? Bartender = null);
 }

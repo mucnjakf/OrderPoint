@@ -9,9 +9,23 @@
                         @Order.GetPlaceText()
                     </MudText>
 
-                    <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
-                        <span style="@WaitStyle">@TimeText</span>@BartenderSuffix
-                    </MudText>
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                        <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                            <span style="@WaitStyle">@TimeText</span>@(ShowsHandler ? " ·" : null)
+                        </MudText>
+
+                        @if (ShowsHandler)
+                        {
+                            <BartenderAvatar FirstName="@Order.Bartender!.FirstName"
+                                             LastName="@Order.Bartender.LastName"
+                                             ImageUrl="@Order.Bartender.ImageUrl"
+                                             Size="Size.Small"/>
+
+                            <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                                @BartenderText
+                            </MudText>
+                        }
+                    </MudStack>
                 </MudStack>
 
                 <MudStack Spacing="1" AlignItems="AlignItems.End">
@@ -33,9 +47,18 @@
 
             @foreach (OrderItemDto orderItem in Order.Items)
             {
-                <MudText Typo="Typo.body1">
-                    <strong>@orderItem.Quantity×</strong> @orderItem.Name
-                </MudText>
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                    <MudImage Src="@(orderItem.ImageUrl ?? ImageUrls.Placeholder)"
+                              Alt="Item image"
+                              Width="24"
+                              Height="24"
+                              ObjectFit="ObjectFit.Cover"
+                              Style="@($"{ImageStyles.RoundedSmall} flex-shrink: 0;")"/>
+
+                    <MudText Typo="Typo.body1">
+                        <strong>@orderItem.Quantity×</strong> @orderItem.Name
+                    </MudText>
+                </MudStack>
             }
 
             @if (Order.Note is not null)
@@ -45,11 +68,18 @@
                 </MudText>
             }
 
-            @if (TakenByText is not null)
+            @if (Order.TakenByBartender is { } takenBy)
             {
-                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
-                    @TakenByText
-                </MudText>
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1">
+                    <BartenderAvatar FirstName="@takenBy.FirstName"
+                                     LastName="@takenBy.LastName"
+                                     ImageUrl="@takenBy.ImageUrl"
+                                     Size="Size.Small"/>
+
+                    <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                        @TakenByText
+                    </MudText>
+                </MudStack>
             }
         </MudStack>
     </MudPaper>

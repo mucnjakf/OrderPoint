@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace OrderPoint.Admin.Bartenders.Components;
+namespace OrderPoint.Shared.Bartenders.Components;
 
 public sealed partial class BartenderAvatar
 {

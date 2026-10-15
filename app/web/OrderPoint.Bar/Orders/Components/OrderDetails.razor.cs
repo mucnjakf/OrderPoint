@@ -5,6 +5,7 @@ using OrderPoint.Bar.Orders.Enumerations;
 using OrderPoint.Bar.Shared.Layout;
 using OrderPoint.Shared.Auth.Services;
 using OrderPoint.Shared.Errors;
+using OrderPoint.Shared.Extensions;
 using OrderPoint.Shared.Orders.Dtos;
 using OrderPoint.Shared.Orders.Enumerations;
 using OrderPoint.Shared.Orders.Services;
@@ -104,16 +105,16 @@ public sealed partial class OrderDetails : IDisposable
     private string TableMapHref => $"/tables?table={Uri.EscapeDataString(Order!.TableCode!)}";
 
     // Orders a bartender entered in the Bartender app
-    private string? TakenBySuffix => Order?.TakenByBartender switch
+    private string PlacedText => Order!.TakenByBartender is null
+        ? $"Placed {Order.CreatedAtUtc.ToRelativeTime()}"
+        : $"Placed {Order.CreatedAtUtc.ToRelativeTime()} · taken by";
+
+    private string? TakenByName => Order?.TakenByBartender switch
     {
         null => null,
-        { } takenBy when takenBy.Id == AuthService.UserId => " · taken by you",
-        { } takenBy => $" · taken by {takenBy.FirstName} {takenBy.LastName}"
+        { } takenBy when takenBy.Id == AuthService.UserId => "you",
+        { } takenBy => $"{takenBy.FirstName} {takenBy.LastName}"
     };
-
-    private string BartenderInitials => Order?.Bartender is null
-        ? string.Empty
-        : $"{Order.Bartender.FirstName[0]}{Order.Bartender.LastName[0]}";
 
     private string BartenderText => IsMine
         ? "Handled by you"

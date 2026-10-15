@@ -75,7 +75,7 @@
                    Label="Payment"
                    Variant="Variant.Outlined"
                    Clearable="true"
-                   Style="min-width: 180px">
+                   FitContent="true">
             @foreach ((PaymentStatus status, string label) in PaymentStatusOptions)
             {
                 <MudSelectItem T="PaymentStatus?" Value="@status">@label</MudSelectItem>
@@ -150,6 +150,10 @@
                     </MudStack>
 
                     <MudStack AlignItems="AlignItems.End" Spacing="1">
+                        <MudText Typo="Typo.h6">
+                            @context.Total.ToString("C", CultureInfo.CurrentCulture)
+                        </MudText>
+
                         <MudChip T="string"
                                  Variant="Variant.Outlined"
                                  Size="Size.Small"
@@ -158,10 +162,6 @@
                                  Class="ma-0">
                             @context.GetPaymentText()
                         </MudChip>
-
-                        <MudText Typo="Typo.h6">
-                            @context.Total.ToString("C", CultureInfo.CurrentCulture)
-                        </MudText>
                     </MudStack>
                 </MudStack>
             </MudStack>
