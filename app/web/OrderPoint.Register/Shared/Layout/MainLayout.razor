@@ -63,14 +63,24 @@
             <MudNavLink Href="/to-pay" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.ReceiptLong">
                 <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
                     <MudText Typo="Typo.body1">To pay</MudText>
-                    <TabCount Count="@ToPayCount" />
+                    @if (ToPayCount is { } toPayCount)
+                    {
+                        <MudChip T="string" Size="Size.Small" Variant="Variant.Text" Class="ma-0 px-3">
+                            <RollingNumber Value="@toPayCount" Text="@toPayCount.ToString()"/>
+                        </MudChip>
+                    }
                 </MudStack>
             </MudNavLink>
 
             <MudNavLink Href="/refunds" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.AssignmentReturn">
                 <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
                     <MudText Typo="Typo.body1">Refunds due</MudText>
-                    <TabCount Count="@RefundsDueCount" />
+                    @if (RefundsDueCount is { } refundsDueCount)
+                    {
+                        <MudChip T="string" Size="Size.Small" Variant="Variant.Text" Class="ma-0 px-3">
+                            <RollingNumber Value="@refundsDueCount" Text="@refundsDueCount.ToString()"/>
+                        </MudChip>
+                    }
                 </MudStack>
             </MudNavLink>
 

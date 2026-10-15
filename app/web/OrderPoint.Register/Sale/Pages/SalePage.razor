@@ -3,86 +3,88 @@
 <PageTitle>Sale</PageTitle>
 
 <div style="@PageStyle">
-    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-3">
-        @if (SelectedCategory is not null)
-        {
-            <MudIconButton Icon="@Icons.Material.Filled.ArrowBack"
-                           OnClick="@ShowCategories"
-                           aria-label="Back to the categories"/>
+    <div>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="mb-3">
+            @if (SelectedCategory is not null)
+            {
+                <MudIconButton Icon="@Icons.Material.Filled.ArrowBack"
+                               OnClick="@ShowCategories"
+                               aria-label="Back to the categories"/>
 
-            <MudImage Src="@(SelectedCategory.ImageUrl ?? ImageUrls.Placeholder)"
-                      Alt="Category image"
-                      Width="40"
-                      Height="40"
-                      ObjectFit="ObjectFit.Cover"
-                      Style="@ImageStyles.Rounded"/>
-        }
+                <MudImage Src="@(SelectedCategory.ImageUrl ?? ImageUrls.Placeholder)"
+                          Alt="Category image"
+                          Width="40"
+                          Height="40"
+                          ObjectFit="ObjectFit.Cover"
+                          Style="@ImageStyles.Rounded"/>
+            }
 
-        <MudStack Spacing="0" Class="flex-1" Style="min-width: 0">
-            <MudText Typo="Typo.h6" HtmlTag="h1">
-                @(SelectedCategory?.Name ?? "Categories")
-            </MudText>
+            <MudStack Spacing="0" Class="flex-1" Style="min-width: 0">
+                <MudText Typo="Typo.h6" HtmlTag="h1">
+                    @(SelectedCategory?.Name ?? "Categories")
+                </MudText>
 
-            <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
-                @SubtitleText
-            </MudText>
+                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                    @SubtitleText
+                </MudText>
+            </MudStack>
         </MudStack>
-    </MudStack>
 
-    <MudTextField @bind-Value="@SearchQuery"
-                  T="string"
-                  Placeholder="@(SelectedCategory is null ? "Search categories" : "Search items")"
-                  Variant="Variant.Outlined"
-                  Adornment="Adornment.Start"
-                  AdornmentIcon="@Icons.Material.Filled.Search"
-                  Clearable="true"
-                  DebounceInterval="300"
-                  Immediate="true"
-                  Class="mb-3"
-                  Style="max-width: 480px"/>
+        <MudTextField @bind-Value="@SearchQuery"
+                      T="string"
+                      Placeholder="@(SelectedCategory is null ? "Search categories" : "Search items")"
+                      Variant="Variant.Outlined"
+                      Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      Clearable="true"
+                      DebounceInterval="300"
+                      Immediate="true"
+                      Class="mb-3"
+                      Style="max-width: 480px"/>
 
-    <StatefulView IsLoading="@IsLoading"
-                  ShowContent="@HasCards"
-                  EmptyStateIcon="@EmptyStateIcon"
-                  EmptyStateText="@EmptyStateText"
-                  EmptyStateDetail="@EmptyStateDetail">
-        <LoadingContent>
-            <div style="@SaleLayout.CategoryGridStyle">
-                @for (int i = 0; i < LoadingCardsCount; i++)
-                {
-                    <CategoryCardSkeleton/>
-                }
-            </div>
-        </LoadingContent>
-
-        <ChildContent>
-            @if (SelectedCategory is null)
-            {
+        <StatefulView IsLoading="@IsLoading"
+                      ShowContent="@HasCards"
+                      EmptyStateIcon="@EmptyStateIcon"
+                      EmptyStateText="@EmptyStateText"
+                      EmptyStateDetail="@EmptyStateDetail">
+            <LoadingContent>
                 <div style="@SaleLayout.CategoryGridStyle">
-                    @foreach (MenuCategoryDto category in FoundCategories)
+                    @for (int i = 0; i < LoadingCardsCount; i++)
                     {
-                        MenuCategoryDto cardCategory = category;
-
-                        <CategoryCard @key="@cardCategory.Id" Category="@cardCategory" OnClick="@SelectCategory"/>
+                        <CategoryCardSkeleton/>
                     }
                 </div>
-            }
-            else
-            {
-                <div style="@SaleLayout.ItemGridStyle">
-                    @foreach (MenuItemDto item in FoundItems)
-                    {
-                        MenuItemDto tileItem = item;
+            </LoadingContent>
 
-                        <ItemTile @key="@tileItem.Id"
-                                  Item="@tileItem"
-                                  Quantity="@SaleService.GetQuantity(tileItem.Id)"
-                                  OnClick="@AddItem"/>
-                    }
-                </div>
-            }
-        </ChildContent>
-    </StatefulView>
+            <ChildContent>
+                @if (SelectedCategory is null)
+                {
+                    <div style="@SaleLayout.CategoryGridStyle">
+                        @foreach (MenuCategoryDto category in FoundCategories)
+                        {
+                            MenuCategoryDto cardCategory = category;
+
+                            <CategoryCard @key="@cardCategory.Id" Category="@cardCategory" OnClick="@SelectCategory"/>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div style="@SaleLayout.ItemGridStyle">
+                        @foreach (MenuItemDto item in FoundItems)
+                        {
+                            MenuItemDto tileItem = item;
+
+                            <ItemTile @key="@tileItem.Id"
+                                      Item="@tileItem"
+                                      Quantity="@SaleService.GetQuantity(tileItem.Id)"
+                                      OnClick="@AddItem"/>
+                        }
+                    </div>
+                }
+            </ChildContent>
+        </StatefulView>
+    </div>
 
     <SalePanel Rows="@Rows"
                ItemsCount="@ItemsCount"
