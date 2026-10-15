@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using OrderPoint.Register.Sale.Dtos;
 using OrderPoint.Register.Sale.Services;
-using OrderPoint.Register.Shared.Layout;
+
 using OrderPoint.Shared.Menu.Dtos;
 
 namespace OrderPoint.Register.Sale.Components;
@@ -19,7 +19,7 @@ public sealed partial class SalePanel
     // At the bottom of the screen: pushed there on a short page (the page is a flex column of the screen's height),
     // stuck there while the cards scroll; a solid bar over the page padding, so nothing shows at its sides or below it
     private const string PanelStyle =
-        $"position: sticky; bottom: 0; z-index: 2; margin: auto calc(-1 * {PageGutter.Width}) -12px; " +
+        "position: sticky; bottom: 0; z-index: 2; margin: auto -12px -12px; " +
         "border-top: 1px solid var(--mud-palette-lines-default);";
 
     private const string PanelGridStyle =

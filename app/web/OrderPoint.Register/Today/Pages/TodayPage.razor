@@ -109,15 +109,17 @@
             </MudText>
 
             <MudStack Row="true" AlignItems="AlignItems.End" Class="mb-3">
-                <MudTextField @bind-Value="@SearchQuery"
-                              @bind-Value:after="@OnFiltersChangedAsync"
-                              T="string"
-                              Label="Search by number, table or name"
-                              Variant="Variant.Outlined"
-                              Clearable="true"
-                              DebounceInterval="300"
-                              Immediate="true"
-                              Style="flex: 0 0 300px"/>
+                @* As wide as its label; a text field on its own grows to fill the row *@
+                <div style="width: 300px; flex-shrink: 0">
+                    <MudTextField @bind-Value="@SearchQuery"
+                                  @bind-Value:after="@OnFiltersChangedAsync"
+                                  T="string"
+                                  Label="Search by number, table or name"
+                                  Variant="Variant.Outlined"
+                                  Clearable="true"
+                                  DebounceInterval="300"
+                                  Immediate="true"/>
+                </div>
 
                 <MudSelect @bind-Value="@SelectedChannel"
                            @bind-Value:after="@OnFiltersChangedAsync"
@@ -125,8 +127,7 @@
                            Label="How"
                            Variant="Variant.Outlined"
                            Clearable="true"
-                           RelativeWidth="DropdownWidth.Adaptive"
-                           Style="flex: 0 0 130px">
+                           FitContent="true">
                     @foreach (PaymentChannel channel in Enum.GetValues<PaymentChannel>())
                     {
                         <MudSelectItem T="PaymentChannel?" Value="@channel">

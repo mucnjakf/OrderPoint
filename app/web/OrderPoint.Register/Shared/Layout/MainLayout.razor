@@ -18,7 +18,7 @@
 }
 
 <MudLayout>
-    <MudAppBar Elevation="0" Gutters="false" Style="@AppBarStyle">
+    <MudAppBar Elevation="0" Style="border-bottom: 1px solid var(--mud-palette-lines-default)">
         <div class="d-flex align-center" style="@SideStyle">
             <MudStack Row="true" AlignItems="AlignItems.Center">
                 <MudImage Src="@ImageUrls.Logo" Alt="OrderPoint logo" Width="36" Height="36" />
@@ -92,7 +92,7 @@
     </MudAppBar>
 
     <MudMainContent>
-        <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="py-3" Style="@PageGutter.PaddingStyle">
+        <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="pa-3">
             @Body
         </MudContainer>
     </MudMainContent>
