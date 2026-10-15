@@ -87,5 +87,9 @@ internal sealed partial class CloseStockCountCommandHandler(
         Level = LogLevel.Information,
         Message = "Stock count {StockCountId} closed: {CountedCount} counted, {ChangedCount} changed, " +
                   "{ValueChange} EUR")]
-    private partial void LogStockCountClosed(Guid stockCountId, int countedCount, int changedCount, decimal valueChange);
+    private partial void LogStockCountClosed(
+        Guid stockCountId,
+        int countedCount,
+        int changedCount,
+        decimal valueChange);
 }

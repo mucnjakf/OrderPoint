@@ -48,13 +48,13 @@ builder.Services.AddHttpClient<TableApiClient>(ConfigureApiClient).AddHttpMessag
 builder.Services.AddHttpClient<MenuApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 
 // MudBlazor's default is 5000
-const int SnackbarVisibleMilliseconds = 2000;
+const int snackbarVisibleMilliseconds = 2000;
 
 // At the top, so snackbars never cover the bottom navigation
 builder.Services.AddMudServices(configuration =>
 {
     configuration.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopCenter;
-    configuration.SnackbarConfiguration.VisibleStateDuration = SnackbarVisibleMilliseconds;
+    configuration.SnackbarConfiguration.VisibleStateDuration = snackbarVisibleMilliseconds;
     configuration.SnackbarConfiguration.SnackbarVariant = Variant.Outlined;
     configuration.SnackbarConfiguration.ClearAfterNavigation = false;
 });

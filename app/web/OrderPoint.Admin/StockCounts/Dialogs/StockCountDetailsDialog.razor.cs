@@ -57,6 +57,11 @@ public sealed partial class StockCountDetailsDialog
         (Icons.Material.Filled.TrendingUp, "Gains", Gains.ToSignedMoneyText(), Gains.GetValueChangeStyle())
     ];
 
+    private static string GetValueChangeCellStyle(StockCountLineDto line)
+    {
+        return $"text-align: right; {(line.ValueChange ?? 0).GetValueChangeStyle()}";
+    }
+
     private void Close()
     {
         MudDialogInstance.Close();

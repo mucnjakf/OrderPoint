@@ -4,13 +4,13 @@ using Aspire.Hosting.DevTunnels;
 IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
 
 // The hour the bar's day starts (local time), so a night past midnight is one day; the API and the staff apps use it
-const string BusinessDayStartHour = "6";
+const string businessDayStartHour = "6";
 
 // Fixed, because image URLs are stored with it
-const int BlobPort = 59287;
+const int blobPort = 59287;
 
 // Every stored image URL starts with it; the apps serve images from it, so phones see them through the tunnel
-string imagesStorageUrl = $"http://127.0.0.1:{BlobPort}/devstoreaccount1/images";
+string imagesStorageUrl = $"http://127.0.0.1:{blobPort}/devstoreaccount1/images";
 
 IResourceBuilder<PostgresServerResource> postgres = builder
     .AddPostgres("postgres")
@@ -26,7 +26,7 @@ IResourceBuilder<AzureStorageResource> storage = builder
     .RunAsEmulator(emulator => emulator
         .WithDataVolume()
         .WithLifetime(ContainerLifetime.Persistent)
-        .WithBlobPort(BlobPort));
+        .WithBlobPort(blobPort));
 
 IResourceBuilder<AzureBlobStorageContainerResource> images = storage
     .AddBlobContainer("images");
@@ -37,7 +37,7 @@ IResourceBuilder<RedisResource> cache = builder
 IResourceBuilder<ProjectResource> api = builder
     .AddProject<Projects.OrderPoint_Api>("order-point-api")
     .WithHttpHealthCheck("/health")
-    .WithEnvironment("BusinessDay__StartHour", BusinessDayStartHour)
+    .WithEnvironment("BusinessDay__StartHour", businessDayStartHour)
     .WithReference(database)
     .WithReference(images)
     .WithReference(cache)
@@ -66,7 +66,7 @@ IResourceBuilder<ProjectResource> bar = builder
     .AddProject<Projects.OrderPoint_Bar>("order-point-bar")
     .WithExternalHttpEndpoints()
     .WithHttpHealthCheck("/health")
-    .WithEnvironment("BusinessDay__StartHour", BusinessDayStartHour)
+    .WithEnvironment("BusinessDay__StartHour", businessDayStartHour)
     .WithEnvironment("Images__StorageUrl", imagesStorageUrl)
     .WithReference(api)
     .WaitFor(api);
@@ -75,7 +75,7 @@ IResourceBuilder<ProjectResource> bartender = builder
     .AddProject<Projects.OrderPoint_Bartender>("order-point-bartender")
     .WithExternalHttpEndpoints()
     .WithHttpHealthCheck("/health")
-    .WithEnvironment("BusinessDay__StartHour", BusinessDayStartHour)
+    .WithEnvironment("BusinessDay__StartHour", businessDayStartHour)
     .WithEnvironment("Images__StorageUrl", imagesStorageUrl)
     .WithReference(api)
     .WaitFor(api);
@@ -92,7 +92,7 @@ IResourceBuilder<ProjectResource> register = builder
     .AddProject<Projects.OrderPoint_Register>("order-point-register")
     .WithExternalHttpEndpoints()
     .WithHttpHealthCheck("/health")
-    .WithEnvironment("BusinessDay__StartHour", BusinessDayStartHour)
+    .WithEnvironment("BusinessDay__StartHour", businessDayStartHour)
     .WithEnvironment("Images__StorageUrl", imagesStorageUrl)
     .WithReference(api)
     .WaitFor(api);

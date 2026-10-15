@@ -101,7 +101,9 @@
                                         <td style="text-align: right">
                                             @movement.ValueChange.ToString("C", CultureInfo.CurrentCulture)
                                         </td>
-                                        <td style="color: var(--mud-palette-text-secondary)">@(movement.Note ?? "-")</td>
+                                        <td style="color: var(--mud-palette-text-secondary)">
+                                            @(movement.Note ?? "-")
+                                        </td>
                                     </tr>
                                 }
                             </tbody>

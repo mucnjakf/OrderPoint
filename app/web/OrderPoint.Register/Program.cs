@@ -6,8 +6,8 @@ using OrderPoint.Register;
 using OrderPoint.Register.Menu.Services;
 using OrderPoint.Register.Orders.Api;
 using OrderPoint.Register.Orders.Services;
-using OrderPoint.Register.Today.Api;
 using OrderPoint.Register.Sale.Services;
+using OrderPoint.Register.Today.Api;
 using OrderPoint.ServiceDefaults;
 using OrderPoint.Shared.Account.Api;
 using OrderPoint.Shared.Account.Services;
@@ -51,12 +51,12 @@ builder.Services.AddHttpClient<PaymentApiClient>(ConfigureApiClient).AddHttpMess
 builder.Services.AddHttpClient<MenuApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 
 // MudBlazor's default is 5000
-const int SnackbarVisibleMilliseconds = 2000;
+const int snackbarVisibleMilliseconds = 2000;
 
 builder.Services.AddMudServices(configuration =>
 {
     configuration.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
-    configuration.SnackbarConfiguration.VisibleStateDuration = SnackbarVisibleMilliseconds;
+    configuration.SnackbarConfiguration.VisibleStateDuration = snackbarVisibleMilliseconds;
     configuration.SnackbarConfiguration.SnackbarVariant = Variant.Outlined;
     configuration.SnackbarConfiguration.ClearAfterNavigation = false;
 });

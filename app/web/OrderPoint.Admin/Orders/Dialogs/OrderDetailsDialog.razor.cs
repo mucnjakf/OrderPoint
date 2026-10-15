@@ -1,10 +1,10 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using OrderPoint.Shared.Extensions;
-using OrderPoint.Shared.Orders.Dtos;
 using OrderPoint.Admin.Orders.Api;
 using OrderPoint.Admin.Orders.Api.Requests;
+using OrderPoint.Shared.Extensions;
+using OrderPoint.Shared.Orders.Dtos;
 using OrderPoint.Shared.Orders.Enumerations;
 using OrderPoint.Shared.Orders.Services;
 using OrderPoint.Shared.Services;

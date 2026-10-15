@@ -77,7 +77,7 @@
                                     <td>@line.GetQuantityText(line.ExpectedQuantity ?? 0)</td>
                                     <td>@line.GetQuantityText(counted)</td>
                                     <td style="font-weight: 600">@line.GetQuantityChangeText()</td>
-                                    <td style="@($"text-align: right; {(line.ValueChange ?? 0).GetValueChangeStyle()}")">
+                                    <td style="@GetValueChangeCellStyle(line)">
                                         @((line.ValueChange ?? 0).ToSignedMoneyText())
                                     </td>
                                 }

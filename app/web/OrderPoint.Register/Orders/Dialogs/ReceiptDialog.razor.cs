@@ -29,7 +29,9 @@ public sealed partial class ReceiptDialog
 
     private string StatusText => IsRefunded ? "Refunded" : "Paid";
 
-    private string StatusIcon => IsRefunded ? Icons.Material.Filled.AssignmentReturn : Icons.Material.Filled.CheckCircle;
+    private string StatusIcon => IsRefunded
+        ? Icons.Material.Filled.AssignmentReturn
+        : Icons.Material.Filled.CheckCircle;
 
     private Color StatusColor => IsRefunded ? Color.Warning : Color.Success;
 

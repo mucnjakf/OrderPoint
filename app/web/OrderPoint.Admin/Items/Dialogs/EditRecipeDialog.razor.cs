@@ -51,7 +51,9 @@ public sealed partial class EditRecipeDialog
         $"{Margin.ToString("C", CultureInfo.CurrentCulture)} " +
         $"({(Margin / Item.Price).ToString("P0", CultureInfo.CurrentCulture)})";
 
-    private string? MarginStyle => Margin < 0 ? "color: var(--mud-palette-error); font-weight: 600" : "font-weight: 600";
+    private string? MarginStyle => Margin < 0
+        ? "color: var(--mud-palette-error); font-weight: 600"
+        : "font-weight: 600";
 
     // Every row picked, with an amount, each stock item once
     private bool CanSave => Rows.All(row => row.Ingredient is not null && row.Quantity > 0 && !IsDuplicate(row));

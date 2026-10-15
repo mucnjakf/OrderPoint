@@ -94,7 +94,10 @@ public sealed partial class MainLayout : IDisposable
         {
             _ = OrdersHubService.StartAsync();
 
-            await Task.WhenAll(AccountService.LoadAsync(), HealthService.CheckAsync(), NewOrderToastService.LoadAsync());
+            await Task.WhenAll(
+                AccountService.LoadAsync(),
+                HealthService.CheckAsync(),
+                NewOrderToastService.LoadAsync());
         }
     }
 

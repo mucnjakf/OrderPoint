@@ -74,12 +74,12 @@ builder.Services.AddHttpClient<DeliveryApiClient>(ConfigureApiClient).AddHttpMes
 builder.Services.AddHttpClient<StockCountApiClient>(ConfigureApiClient).AddHttpMessageHandler<AccessTokenHandler>();
 
 // MudBlazor's default is 5000
-const int SnackbarVisibleMilliseconds = 2000;
+const int snackbarVisibleMilliseconds = 2000;
 
 builder.Services.AddMudServices(configuration =>
 {
     configuration.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
-    configuration.SnackbarConfiguration.VisibleStateDuration = SnackbarVisibleMilliseconds;
+    configuration.SnackbarConfiguration.VisibleStateDuration = snackbarVisibleMilliseconds;
     configuration.SnackbarConfiguration.SnackbarVariant = Variant.Outlined;
     configuration.SnackbarConfiguration.ClearAfterNavigation = false;
 });

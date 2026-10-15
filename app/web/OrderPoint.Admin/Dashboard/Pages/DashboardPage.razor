@@ -70,7 +70,8 @@
                     </LoadingContent>
 
                     <ChildContent>
-                        <RevenueTrendChart Points="@RevenueTrend" IsHourly="@(SelectedPeriod is DashboardPeriod.Today)"/>
+                        <RevenueTrendChart Points="@RevenueTrend"
+                                           IsHourly="@(SelectedPeriod is DashboardPeriod.Today)"/>
                     </ChildContent>
                 </DashboardTile>
             </MudItem>
