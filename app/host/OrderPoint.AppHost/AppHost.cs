@@ -1,4 +1,5 @@
 ﻿using Aspire.Hosting.Azure;
+using Aspire.Hosting.DevTunnels;
 
 IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
 
@@ -93,6 +94,15 @@ IResourceBuilder<ProjectResource> register = builder
     .WithEnvironment("BusinessDay__StartHour", BusinessDayStartHour)
     .WithReference(api)
     .WaitFor(api);
+
+// Public addresses for phones (orderpoint-<port>.euw.devtunnels.ms); started from the dashboard only when needed
+builder
+    .AddDevTunnel("tunnel", "orderpoint", new DevTunnelOptions { Region = DevTunnelRegion.WestEurope })
+    .WithAnonymousAccess()
+    .WithReference(bar.GetEndpoint("https"))
+    .WithReference(bartender.GetEndpoint("https"))
+    .WithReference(customer.GetEndpoint("https"))
+    .WithExplicitStart();
 
 // The Admin's table QR codes point to the customer app
 admin.WithReference(customer);

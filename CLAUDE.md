@@ -24,7 +24,7 @@ Order management system for a bar: customers order from their phones via QR code
 app/
   OrderPoint.slnx                     solution file
   .editorconfig                       formatting rules (UTF-8 BOM, 4 spaces, 120 columns)
-  host/OrderPoint.AppHost             Aspire host: Postgres (+ pgweb) + Azure Storage emulator (blob container "images", + storage explorer) + Redis "cache" (+ RedisInsight) + API + Admin + Bar + Bartender + Customer + Register
+  host/OrderPoint.AppHost             Aspire host: Postgres (+ pgweb) + Azure Storage emulator (blob container "images", + storage explorer) + Redis "cache" (+ RedisInsight) + API + Admin + Bar + Bartender + Customer + Register + dev tunnel
   host/OrderPoint.ServiceDefaults     shared Aspire defaults (OpenTelemetry, health endpoints, service discovery, resilience)
   api/OrderPoint.Domain               entities, errors, Result type (Outcomes/), enums, sort enums
   api/OrderPoint.Application          commands/queries + handlers, DTOs, mappers, repository interfaces
@@ -61,7 +61,7 @@ dotnet ef migrations add <Name> \
 - There is no test project yet. Do not add one unless asked.
 - "Done" means the build succeeds with no warnings. The AppHost suppresses `ASPIRE010` on purpose (DCP and the dashboard come from NuGet, not the Aspire CLI bundle).
 - Secrets live in user secrets, not appsettings. The Api needs `MediatR:LicenseKey`, `Jwt:SigningKey` (at least 32 characters; the API refuses to start without it) and `Admin:Email` + `Admin:Password` (the seeded admin). `appsettings.json` lists these keys with empty values. The Admin's user secrets hold the optional `CustomerApp:PublicUrl`.
-- Phones reach the bar, Bartender and customer apps through a saved Microsoft dev tunnel `orderpoint` (ports 7034, 7036 and 7038, anonymous, GitHub sign-in): the owner runs `devtunnel host orderpoint` next to Aspire, which serves `https://orderpoint-7034.euw.devtunnels.ms`, `https://orderpoint-7036.euw.devtunnels.ms` and `https://orderpoint-7038.euw.devtunnels.ms`. Only the apps' pages go through it (they call the API from the server), images included, because the apps serve them under `/images` (see Images).
+- Phones reach the bar, Bartender and customer apps through the Microsoft dev tunnel `orderpoint`, the AppHost's `tunnel` resource (package `Aspire.Hosting.DevTunnels`: `AddDevTunnel("tunnel", "orderpoint", ...)` in `DevTunnelRegion.WestEurope`, `WithAnonymousAccess`, the three apps' `https` endpoints, `WithExplicitStart`, so the apps are public only while the owner starts it in the dashboard; the devtunnel CLI is signed in with GitHub). It serves `https://orderpoint-7034.euw.devtunnels.ms`, `https://orderpoint-7036.euw.devtunnels.ms` and `https://orderpoint-7038.euw.devtunnels.ms`. Only the apps' pages go through it (they call the API from the server), images included, because the apps serve them under `/images` (see Images).
 - Running the app needs Docker (Aspire starts Postgres on port 59286 and the Azurite blob endpoint on port 59287, both as persistent containers with data volumes; the blob port is fixed because image URLs are stored with it). The design-time `ApplicationDbContextFactory` points at `localhost:5432`; that is fine for `migrations add`, which does not connect.
 
 ## Backend conventions
