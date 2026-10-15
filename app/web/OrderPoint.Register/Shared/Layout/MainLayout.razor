@@ -1,0 +1,95 @@
+﻿@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="@Theme" IsDarkMode="@DarkModeService.IsDarkMode" />
+<MudPopoverProvider />
+<MudDialogProvider CloseButton="true" BackdropClick="false" Position="DialogPosition.Center" CloseOnEscapeKey="true" />
+<MudSnackbarProvider />
+
+@if (!AuthService.IsLoaded)
+{
+    return;
+}
+
+@if (!AuthService.IsSignedIn)
+{
+    <LoginForm Role="UserRole.Bartender" AppName="Register web" />
+
+    return;
+}
+
+<MudLayout>
+    <MudAppBar Elevation="0" Style="border-bottom: 1px solid var(--mud-palette-lines-default)">
+        <MudStack Row="true" AlignItems="AlignItems.Center">
+            <MudImage Src="@ImageUrls.Logo" Alt="OrderPoint logo" Width="36" Height="36" />
+
+            <MudStack Spacing="0">
+                <MudText Typo="Typo.h6" Style="line-height: 1.2">OrderPoint</MudText>
+                <MudText Typo="Typo.caption" Style="line-height: 1.2">Register</MudText>
+            </MudStack>
+        </MudStack>
+
+        <MudSpacer />
+
+        <LiveIndicator />
+    </MudAppBar>
+
+    <MudDrawer @bind-Open="@DrawerOpen" ClipMode="DrawerClipMode.Always" Elevation="0" Variant="DrawerVariant.Mini"
+               Style="border-right: 1px solid var(--mud-palette-lines-default)">
+        <MudNavMenu Bordered="true">
+            @if (DrawerOpen)
+            {
+                <MudText Typo="Typo.button" HtmlTag="p" Class="px-3 pt-3 pb-1" Style="font-size: 12px">
+                    Till
+                </MudText>
+            }
+
+            <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.PointOfSale">
+                <MudText Typo="Typo.body1">Sale</MudText>
+            </MudNavLink>
+
+            <MudNavLink Href="/to-pay" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.ReceiptLong">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                    <MudText Typo="Typo.body1">To pay</MudText>
+                    <TabCount Count="@ToPayCount" />
+                </MudStack>
+            </MudNavLink>
+
+            <MudNavLink Href="/refunds" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.AssignmentReturn">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                    <MudText Typo="Typo.body1">Refunds due</MudText>
+                    <TabCount Count="@RefundsDueCount" />
+                </MudStack>
+            </MudNavLink>
+
+            <MudNavLink Href="/today" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Today">
+                <MudText Typo="Typo.body1">Today</MudText>
+            </MudNavLink>
+
+            <MudDivider Class="my-3" />
+
+            @if (DrawerOpen)
+            {
+                <MudText Typo="Typo.button" HtmlTag="p" Class="px-3 pt-1 pb-1" Style="font-size: 12px">
+                    System
+                </MudText>
+            }
+
+            <MudNavLink Href="/account" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">
+                <MudText Typo="Typo.body1">Account</MudText>
+            </MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
+
+    <div style="@DrawerToggleWrapperStyle">
+        <MudTooltip Text="@(DrawerOpen ? "Collapse menu" : "Expand menu")" Placement="Placement.Right">
+            <MudIconButton Icon="@DrawerToggleIcon" Size="Size.Small" Class="pa-1" Style="@DrawerToggleButtonStyle"
+                           OnClick="@ToggleDrawerAsync" />
+        </MudTooltip>
+    </div>
+
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.False" Gutters="false" Class="pa-3">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>

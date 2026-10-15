@@ -86,6 +86,14 @@ IResourceBuilder<ProjectResource> customer = builder
     .WithReference(api)
     .WaitFor(api);
 
+IResourceBuilder<ProjectResource> register = builder
+    .AddProject<Projects.OrderPoint_Register>("order-point-register")
+    .WithExternalHttpEndpoints()
+    .WithHttpHealthCheck("/health")
+    .WithEnvironment("BusinessDay__StartHour", BusinessDayStartHour)
+    .WithReference(api)
+    .WaitFor(api);
+
 // The Admin's table QR codes point to the customer app
 admin.WithReference(customer);
 
@@ -93,6 +101,7 @@ admin.WithReference(customer);
 api
     .WithReference(bar)
     .WithReference(bartender)
-    .WithReference(customer);
+    .WithReference(customer)
+    .WithReference(register);
 
 builder.Build().Run();

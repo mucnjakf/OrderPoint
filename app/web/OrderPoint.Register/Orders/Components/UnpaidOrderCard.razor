@@ -1,0 +1,58 @@
+﻿<MudPaper Class="pa-3">
+    <MudStack Spacing="2">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <OrderAvatar Number="@Order.Number"/>
+
+            <MudStack Spacing="0" Class="flex-1" Style="min-width: 0">
+                <MudText Typo="Typo.body1">
+                    @Order.GetPlaceText()
+                </MudText>
+
+                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                    @CaptionText
+                </MudText>
+            </MudStack>
+
+            <MudStack Spacing="1" AlignItems="AlignItems.End">
+                <MudText Typo="Typo.h6">
+                    @Order.Total.ToString("C", CultureInfo.CurrentCulture)
+                </MudText>
+
+                <MudChip T="string"
+                         Variant="Variant.Text"
+                         Size="Size.Small"
+                         Color="@Order.Status.GetColor()"
+                         Class="ma-0">
+                    @Order.Status.ToString()
+                </MudChip>
+            </MudStack>
+        </MudStack>
+
+        <MudDivider/>
+
+        @foreach (OrderItemDto orderItem in Order.Items)
+        {
+            <MudText Typo="Typo.body2">
+                <strong>@orderItem.Quantity×</strong> @orderItem.Name
+            </MudText>
+        }
+
+        <MudStack Row="true" Spacing="2" Class="mt-1">
+            <MudButton Variant="Variant.Outlined"
+                       Class="flex-1"
+                       StartIcon="@Icons.Material.Filled.Payments"
+                       Disabled="@IsPaying"
+                       OnClick="@OnPayInCashClickAsync">
+                Cash
+            </MudButton>
+
+            <MudButton Variant="Variant.Outlined"
+                       Class="flex-1"
+                       StartIcon="@Icons.Material.Filled.CreditCard"
+                       Disabled="@IsPaying"
+                       OnClick="@OnPayByCardClickAsync">
+                Card
+            </MudButton>
+        </MudStack>
+    </MudStack>
+</MudPaper>

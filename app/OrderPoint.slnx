@@ -14,6 +14,7 @@
     <Project Path="web/OrderPoint.Bar/OrderPoint.Bar.csproj" />
     <Project Path="web/OrderPoint.Bartender/OrderPoint.Bartender.csproj" />
     <Project Path="web/OrderPoint.Customer/OrderPoint.Customer.csproj" />
+    <Project Path="web/OrderPoint.Register/OrderPoint.Register.csproj" />
     <Project Path="web/OrderPoint.Shared/OrderPoint.Shared.csproj" />
   </Folder>
 </Solution>

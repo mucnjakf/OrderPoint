@@ -1,0 +1,28 @@
+﻿<MudPaper Class="cursor-pointer" Style="@TileStyle" @onclick="@OnTileClickAsync">
+    <MudImage Src="@(Item.ImageUrl ?? ImageUrls.Placeholder)"
+              Alt="Item image"
+              Height="96"
+              ObjectFit="ObjectFit.Cover"
+              Style="width: 100%; display: block;"/>
+
+    @if (Quantity != 0)
+    {
+        <MudChip T="string"
+                 Variant="Variant.Filled"
+                 Color="Color.Primary"
+                 Size="Size.Small"
+                 Style="position: absolute; top: 6px; right: 6px; margin: 0;">
+            @Quantity
+        </MudChip>
+    }
+
+    <div class="pa-2">
+        <MudText Typo="Typo.body2" Style="@NameStyle">
+            @Item.Name
+        </MudText>
+
+        <MudText Typo="Typo.body2" Style="font-weight: 600">
+            @Item.Price.ToString("C", CultureInfo.CurrentCulture)
+        </MudText>
+    </div>
+</MudPaper>

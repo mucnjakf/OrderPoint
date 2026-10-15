@@ -1,0 +1,10 @@
+﻿@for (int i = 0; i < RowsCount; i++)
+{
+    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Class="px-2 py-2">
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="24px" Height="24px"/>
+
+        <MudText Typo="Typo.body2" Class="flex-1">
+            <MudSkeleton Width="70%"/>
+        </MudText>
+    </MudStack>
+}

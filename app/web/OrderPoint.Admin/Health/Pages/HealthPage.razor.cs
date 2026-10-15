@@ -20,7 +20,8 @@ public sealed partial class HealthPage : IDisposable
     [
         ("Bar web", "OrderPoint Bar", Icons.Material.Filled.LocalBar),
         ("Bartender web", "OrderPoint Bartender", Icons.Material.Filled.PhoneAndroid),
-        ("Customer web", "OrderPoint Customer", Icons.Material.Filled.PhoneIphone)
+        ("Customer web", "OrderPoint Customer", Icons.Material.Filled.PhoneIphone),
+        ("Register web", "OrderPoint Register", Icons.Material.Filled.PointOfSale)
     ];
 
     private static readonly (string Name, string Subtitle, string Icon)[] DevTools =

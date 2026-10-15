@@ -15,6 +15,7 @@
       <ProjectReference Include="..\..\web\OrderPoint.Bar\OrderPoint.Bar.csproj" />
       <ProjectReference Include="..\..\web\OrderPoint.Bartender\OrderPoint.Bartender.csproj" />
       <ProjectReference Include="..\..\web\OrderPoint.Customer\OrderPoint.Customer.csproj" />
+      <ProjectReference Include="..\..\web\OrderPoint.Register\OrderPoint.Register.csproj" />
     </ItemGroup>
 
     <ItemGroup>

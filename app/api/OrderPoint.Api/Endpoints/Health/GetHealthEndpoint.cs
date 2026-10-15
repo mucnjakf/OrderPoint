@@ -54,7 +54,8 @@ internal sealed class GetHealthEndpoint : IEndpoint
         ["redisinsight"] = "Cache browser",
         ["order-point-bar"] = "Bar web",
         ["order-point-bartender"] = "Bartender web",
-        ["order-point-customer"] = "Customer web"
+        ["order-point-customer"] = "Customer web",
+        ["order-point-register"] = "Register web"
     };
 
     public void MapEndpoint(IEndpointRouteBuilder app)

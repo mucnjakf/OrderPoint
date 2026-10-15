@@ -1,0 +1,203 @@
+﻿@page "/"
+
+<PageTitle>Sale</PageTitle>
+
+<div style="@SaleLayout.GridStyle">
+    <MudPaper Class="pa-2" Style="@SaleLayout.SideColumnStyle">
+        <MudText Typo="Typo.subtitle2" Class="px-2 pt-1 pb-2">
+            Categories
+        </MudText>
+
+        @if (IsLoading)
+        {
+            <CategoryListSkeleton/>
+        }
+        else
+        {
+            @foreach (MenuCategoryDto category in Menu)
+            {
+                MenuCategoryDto rowCategory = category;
+
+                <MudButton @key="@rowCategory.Id"
+                           Variant="Variant.Text"
+                           FullWidth="true"
+                           Style="@GetCategoryStyle(rowCategory)"
+                           OnClick="@(() => SelectCategory(rowCategory))">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2" Style="width: 100%">
+                        <MudImage Src="@(rowCategory.ImageUrl ?? ImageUrls.Placeholder)"
+                                  Alt="Category image"
+                                  Width="24"
+                                  Height="24"
+                                  ObjectFit="ObjectFit.Cover"
+                                  Style="@($"{ImageStyles.RoundedSmall} flex-shrink: 0;")"/>
+
+                        <MudText Typo="Typo.body2" Align="Align.Left" Class="flex-1">
+                            @rowCategory.Name
+                        </MudText>
+
+                        <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                            @rowCategory.Items.Count
+                        </MudText>
+                    </MudStack>
+                </MudButton>
+            }
+        }
+    </MudPaper>
+
+    <div style="min-width: 0">
+        <MudTextField @bind-Value="@SearchQuery"
+                      T="string"
+                      Placeholder="Search all items"
+                      Variant="Variant.Outlined"
+                      Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search"
+                      Clearable="true"
+                      DebounceInterval="300"
+                      Immediate="true"
+                      Class="mb-3"/>
+
+        <StatefulView IsLoading="@IsLoading"
+                      ShowContent="@ShownItems.Any()"
+                      EmptyStateIcon="@EmptyStateIcon"
+                      EmptyStateText="@EmptyStateText"
+                      EmptyStateDetail="@EmptyStateDetail">
+            <LoadingContent>
+                <div style="@SaleLayout.TileGridStyle">
+                    @for (int i = 0; i < LoadingTilesCount; i++)
+                    {
+                        <ItemTileSkeleton/>
+                    }
+                </div>
+            </LoadingContent>
+
+            <ChildContent>
+                <div style="@SaleLayout.TileGridStyle">
+                    @foreach (MenuItemDto item in ShownItems)
+                    {
+                        MenuItemDto tileItem = item;
+
+                        <ItemTile @key="@tileItem.Id"
+                                  Item="@tileItem"
+                                  Quantity="@SaleService.GetQuantity(tileItem.Id)"
+                                  OnClick="@AddItem"/>
+                    }
+                </div>
+            </ChildContent>
+        </StatefulView>
+    </div>
+
+    <MudPaper Class="pa-4" Style="@SaleLayout.SideColumnStyle">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-3">
+            <MudText Typo="Typo.h6" HtmlTag="h1">
+                Sale
+            </MudText>
+
+            @if (SaleService.Lines.Count != 0)
+            {
+                <MudButton Variant="Variant.Text"
+                           Color="Color.Error"
+                           Size="Size.Small"
+                           StartIcon="@Icons.Material.Filled.DeleteSweep"
+                           Disabled="@IsPaying"
+                           OnClick="@SaleService.Clear">
+                    Clear
+                </MudButton>
+            }
+        </MudStack>
+
+        @if (SaleService.Lines.Count == 0)
+        {
+            <MudText Typo="Typo.body2"
+                     Align="Align.Center"
+                     Class="py-6"
+                     Style="color: var(--mud-palette-text-secondary)">
+                Tap an item to add it.
+            </MudText>
+        }
+        else
+        {
+            <MudStack Spacing="3">
+                @foreach ((SaleLineDto line, MenuItemDto? item) in Rows)
+                {
+                    SaleLineDto rowLine = line;
+
+                    <MudStack @key="@rowLine.ItemId" Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                        <MudStack Spacing="0" Class="flex-1" Style="min-width: 0">
+                            <MudText Typo="Typo.body2">
+                                @rowLine.Name
+                            </MudText>
+
+                            <MudText Typo="Typo.caption" Style="@(item is null ? GoneStyle : SecondaryStyle)">
+                                @(item is null ? "No longer on the menu" : GetLineText(item, rowLine))
+                            </MudText>
+                        </MudStack>
+
+                        <QuantityStepper Value="@rowLine.Quantity"
+                                         ValueChanged="@(quantity => SetQuantity(rowLine, quantity))"
+                                         Min="0"
+                                         Max="@SaleService.MaxQuantity"/>
+                    </MudStack>
+                }
+            </MudStack>
+        }
+
+        <MudDivider Class="my-4"/>
+
+        <MudStack Spacing="3">
+            <MudTextField @bind-Value="@SaleService.CustomerName"
+                          T="string"
+                          Label="Name to call"
+                          Placeholder="e.g. Ana"
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          MaxLength="@CustomerNameMaxLength"
+                          Immediate="true"/>
+
+            <MudTextField @bind-Value="@SaleService.Note"
+                          T="string"
+                          Label="Note for the bar"
+                          Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          Lines="2"
+                          MaxLength="@NoteMaxLength"
+                          Immediate="true"/>
+
+            <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                <MudText Typo="Typo.h6">Total</MudText>
+
+                <MudText Typo="Typo.h5">
+                    @Total.ToString("C", CultureInfo.CurrentCulture)
+                </MudText>
+            </MudStack>
+
+            @if (HasUnavailableLines)
+            {
+                <MudText Typo="Typo.body2" Style="@GoneStyle">
+                    Remove what is no longer on the menu to take the payment.
+                </MudText>
+            }
+
+            <MudStack Row="true" Spacing="2">
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Size="Size.Large"
+                           Class="flex-1"
+                           StartIcon="@Icons.Material.Filled.Payments"
+                           Disabled="@(!CanPay)"
+                           OnClick="@PayInCashAsync">
+                    Cash
+                </MudButton>
+
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           Size="Size.Large"
+                           Class="flex-1"
+                           StartIcon="@Icons.Material.Filled.CreditCard"
+                           Disabled="@(!CanPay)"
+                           OnClick="@PayByCardAsync">
+                    Card
+                </MudButton>
+            </MudStack>
+        </MudStack>
+    </MudPaper>
+</div>

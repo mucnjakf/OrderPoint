@@ -1,0 +1,33 @@
+﻿<MudPaper Class="pa-3">
+    <MudStack Spacing="2">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="72px" Height="40px"/>
+
+            <MudStack Spacing="0" Class="flex-1">
+                <MudText Typo="Typo.body1">
+                    <MudSkeleton Width="50%"/>
+                </MudText>
+
+                <MudText Typo="Typo.caption">
+                    <MudSkeleton Width="70%"/>
+                </MudText>
+            </MudStack>
+
+            <MudStack Spacing="1" AlignItems="AlignItems.End">
+                <MudText Typo="Typo.h6">
+                    <MudSkeleton Width="64px"/>
+                </MudText>
+
+                <ChipSkeleton/>
+            </MudStack>
+        </MudStack>
+
+        <MudDivider/>
+
+        <MudText Typo="Typo.body2">
+            <MudSkeleton Width="60%"/>
+        </MudText>
+
+        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="36px"/>
+    </MudStack>
+</MudPaper>

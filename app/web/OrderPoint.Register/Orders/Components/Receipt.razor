@@ -1,0 +1,55 @@
+﻿@* Inline styles only: printing copies just this markup into an empty frame, without the app's styles *@
+<div style="@ReceiptStyle">
+    <div style="@TitleStyle">OrderPoint</div>
+    <div style="@CenteredStyle">Order #@Order.Number · @Order.GetPlaceText()</div>
+    <div style="@CenteredStyle">@PaidAtText</div>
+
+    <hr style="@RuleStyle"/>
+
+    @foreach (OrderItemDto orderItem in Order.Items)
+    {
+        <div style="@RowStyle">
+            <span>@orderItem.Quantity× @orderItem.Name</span>
+            <span>@((orderItem.Quantity * orderItem.UnitPrice).ToString("C", CultureInfo.CurrentCulture))</span>
+        </div>
+    }
+
+    <hr style="@RuleStyle"/>
+
+    <div style="@($"{RowStyle} font-weight: 700;")">
+        <span>Total</span>
+        <span>@Order.Total.ToString("C", CultureInfo.CurrentCulture)</span>
+    </div>
+
+    @if (Order.PaymentMethod == PaymentMethod.Cash && Order.CashReceived is { } cashReceived)
+    {
+        <div style="@RowStyle">
+            <span>Cash</span>
+            <span>@cashReceived.ToString("C", CultureInfo.CurrentCulture)</span>
+        </div>
+
+        <div style="@RowStyle">
+            <span>Change</span>
+            <span>@((cashReceived - Order.Total).ToString("C", CultureInfo.CurrentCulture))</span>
+        </div>
+    }
+    else if (Order.PaymentMethod == PaymentMethod.Card)
+    {
+        <div style="@RowStyle">
+            <span>Card</span>
+            <span>@Order.Total.ToString("C", CultureInfo.CurrentCulture)</span>
+        </div>
+    }
+
+    @if (Order.PaymentStatus is PaymentStatus.RefundDue or PaymentStatus.Refunded)
+    {
+        <div style="@($"{CenteredStyle} margin-top: 8px; font-weight: 700;")">Refunded</div>
+    }
+
+    @if (Order.PaidByBartender is { } paidBy)
+    {
+        <div style="@($"{CenteredStyle} margin-top: 12px;")">Served by @paidBy.FirstName @paidBy.LastName</div>
+    }
+
+    <div style="@CenteredStyle">Thank you!</div>
+</div>

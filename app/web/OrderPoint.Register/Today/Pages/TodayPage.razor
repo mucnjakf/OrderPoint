@@ -1,0 +1,155 @@
+﻿@page "/today"
+
+<PageTitle>Today</PageTitle>
+
+<MudText Typo="Typo.h6" HtmlTag="h1">
+    Today
+</MudText>
+
+<MudText Typo="Typo.body2" Class="mb-3" Style="color: var(--mud-palette-text-secondary)">
+    What was paid since @DayStartText
+</MudText>
+
+<MudGrid Spacing="3" Class="mb-3">
+    @if (Day is null)
+    {
+        @for (int i = 0; i < TilesCount; i++)
+        {
+            <MudItem xs="3">
+                <TodayTileSkeleton/>
+            </MudItem>
+        }
+    }
+    else
+    {
+        <MudItem xs="3">
+            <TodayTile Icon="@Icons.Material.Filled.Payments"
+                       Title="Cash in the till"
+                       Value="@Day.CashTotal"
+                       Caption="Taken here today"/>
+        </MudItem>
+
+        <MudItem xs="3">
+            <TodayTile Icon="@Icons.Material.Filled.CreditCard"
+                       Title="Card at the register"
+                       Value="@Day.CardTotal"
+                       Caption="On the bar's terminal"/>
+        </MudItem>
+
+        <MudItem xs="3">
+            <TodayTile Icon="@Icons.Material.Filled.PhoneIphone"
+                       Title="Card online"
+                       Value="@Day.OnlineCardTotal"
+                       Caption="Guests in the customer app"/>
+        </MudItem>
+
+        <MudItem xs="3">
+            <TodayTile Icon="@Icons.Material.Filled.AssignmentReturn"
+                       Title="Refunds due"
+                       Value="@Day.RefundsDueTotal"
+                       Caption="@Day.RefundsDueCount.ToCountText("order", "orders")"/>
+        </MudItem>
+    }
+</MudGrid>
+
+<MudGrid Spacing="3">
+    <MudItem xs="4">
+        <MudPaper Class="pa-4" Style="height: 100%">
+            <MudText Typo="Typo.subtitle1" HtmlTag="h2" Class="mb-3">
+                Per bartender
+            </MudText>
+
+            <StatefulView IsLoading="@(Day is null)"
+                          ShowContent="@(Day?.Bartenders.Count > 0)"
+                          Compact="true"
+                          EmptyStateIcon="@Icons.Material.Filled.People"
+                          EmptyStateText="No payments taken yet">
+                <MudStack Spacing="3">
+                    @foreach (RegisterBartenderDto bartender in Day!.Bartenders)
+                    {
+                        <MudStack @key="@bartender.Id" Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                            <MudAvatar Color="Color.Primary" Size="Size.Small">
+                                @if (bartender.ImageUrl is not null)
+                                {
+                                    <MudImage Src="@bartender.ImageUrl"
+                                              Alt="Bartender photo"
+                                              ObjectFit="ObjectFit.Cover"/>
+                                }
+                                else
+                                {
+                                    @(bartender.FirstName[..1])
+                                }
+                            </MudAvatar>
+
+                            <MudStack Spacing="0" Class="flex-1" Style="min-width: 0">
+                                <MudText Typo="Typo.body2">
+                                    @bartender.FirstName @bartender.LastName
+                                </MudText>
+
+                                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+                                    @GetBartenderText(bartender)
+                                </MudText>
+                            </MudStack>
+
+                            <MudText Typo="Typo.body1" Style="font-weight: 600">
+                                @((bartender.CashTotal + bartender.CardTotal).ToString("C", CultureInfo.CurrentCulture))
+                            </MudText>
+                        </MudStack>
+                    }
+                </MudStack>
+            </StatefulView>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="8">
+        <MudPaper Class="pa-4" Style="height: 100%">
+            <MudText Typo="Typo.subtitle1" HtmlTag="h2" Class="mb-3">
+                Payments
+            </MudText>
+
+            <StatefulView IsLoading="@IsLoadingPayments"
+                          ShowContent="@(Payments.Count != 0)"
+                          Compact="true"
+                          EmptyStateIcon="@Icons.Material.Filled.ReceiptLong"
+                          EmptyStateText="No payments yet">
+                <MudSimpleTable Dense="true" Hover="true" Elevation="0">
+                    <thead>
+                        <tr>
+                            <th>Order</th>
+                            <th>Place</th>
+                            <th>Paid</th>
+                            <th>How</th>
+                            <th>By</th>
+                            <th style="text-align: right">Total</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (OrderDto order in Payments)
+                        {
+                            OrderDto rowOrder = order;
+
+                            <tr @key="@rowOrder.Id">
+                                <td>#@rowOrder.Number</td>
+                                <td>@rowOrder.GetPlaceText()</td>
+                                <td>@rowOrder.PaidAtUtc!.Value.ToDisplayDateTime(TimeZoneService.TimeZone)</td>
+                                <td>@GetMethodText(rowOrder)</td>
+                                <td>@GetPaidByText(rowOrder)</td>
+                                <td style="text-align: right">
+                                    @rowOrder.Total.ToString("C", CultureInfo.CurrentCulture)
+                                </td>
+                                <td style="text-align: right">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Receipt"
+                                                   Size="Size.Small"
+                                                   aria-label="Show the receipt"
+                                                   OnClick="@(() => PaymentDialogService.ShowReceiptAsync(rowOrder))"/>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </MudSimpleTable>
+            </StatefulView>
+        </MudPaper>
+    </MudItem>
+</MudGrid>

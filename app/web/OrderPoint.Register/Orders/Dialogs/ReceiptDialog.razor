@@ -1,0 +1,29 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.Receipt"/>
+            <MudText Typo="Typo.h6">Order #@Order.Number</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudPaper Outlined="true" Class="pa-4">
+            <div @ref="@ReceiptElement">
+                <Receipt Order="@Order"/>
+            </div>
+        </MudPaper>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="@PrintAsync"
+                   Variant="Variant.Outlined"
+                   StartIcon="@Icons.Material.Filled.Print"
+                   Class="mr-3">
+            Print
+        </MudButton>
+
+        <MudButton OnClick="@Close" Variant="Variant.Filled" Color="Color.Primary">
+            Done
+        </MudButton>
+    </DialogActions>
+</MudDialog>

@@ -1,0 +1,59 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.Payments"/>
+            <MudText Typo="Typo.h6">Cash · @Total.ToString("C", CultureInfo.CurrentCulture)</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudStack Spacing="3">
+            <MudNumericField @bind-Value="@Received"
+                             T="decimal?"
+                             Label="Received"
+                             Adornment="Adornment.Start"
+                             AdornmentText="€"
+                             Min="0"
+                             Max="@MaxCashReceived"
+                             HideSpinButtons="true"
+                             Variant="Variant.Outlined"
+                             Immediate="true"
+                             AutoFocus="true"/>
+
+            <MudStack Row="true" Spacing="2" Wrap="Wrap.Wrap">
+                @foreach (decimal amount in QuickAmounts)
+                {
+                    decimal quickAmount = amount;
+
+                    <MudButton Variant="Variant.Outlined" Size="Size.Small" OnClick="@(() => Received = quickAmount)">
+                        @quickAmount.ToString("C", CultureInfo.CurrentCulture)
+                    </MudButton>
+                }
+            </MudStack>
+
+            <MudPaper Outlined="true" Class="pa-3">
+                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                    <MudText Typo="Typo.h6">Change</MudText>
+
+                    <MudText Typo="Typo.h6" Style="@ChangeStyle">
+                        @ChangeText
+                    </MudText>
+                </MudStack>
+            </MudPaper>
+        </MudStack>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
+            Back
+        </MudButton>
+
+        <MudButton OnClick="@Confirm"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Disabled="@(!IsEnough)"
+                   StartIcon="@Icons.Material.Filled.Payments">
+            Take cash
+        </MudButton>
+    </DialogActions>
+</MudDialog>
