@@ -32,6 +32,10 @@ public sealed partial class MyOrderCard
     // Only while no bartender has taken the order
     private bool CanCancel => Order.Status is OrderStatus.Pending;
 
+    // A cash order until it is paid at the register
+    private bool IsToPay => Order.PaymentStatus == PaymentStatus.Unpaid
+                            && Order.Status is not (OrderStatus.Declined or OrderStatus.Cancelled);
+
     private async Task OnCardClickAsync()
     {
         await OnClick.InvokeAsync(Order);

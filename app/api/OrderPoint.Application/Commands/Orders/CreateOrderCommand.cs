@@ -7,6 +7,7 @@ using OrderPoint.Application.Payments;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Application.Telemetry;
 using OrderPoint.Domain.Entities;
+using OrderPoint.Domain.Enumerations;
 using OrderPoint.Domain.Errors;
 using OrderPoint.Domain.Outcomes;
 
@@ -18,7 +19,8 @@ public sealed record CreateOrderCommand(
     string TableCode,
     string? Note,
     IReadOnlyList<CreateOrderItemCommand> Items,
-    CardDetails Card)
+    PaymentMethod PaymentMethod,
+    CardDetails? Card)
     : ICommand<OrderDto>, ICacheInvalidatingCommand, IOrderNotifyingCommand
 {
     IReadOnlyList<string> ICacheInvalidatingCommand.InvalidatedCacheTags => CacheTags.OrderChanges;
@@ -65,23 +67,15 @@ internal sealed partial class CreateOrderCommandHandler(
             return Result.Failure<OrderDto>(result.Error);
         }
 
-        // Charged before saving, so a declined card leaves no order behind
-        decimal total = result.Value.Items.Sum(orderItem => orderItem.Quantity * orderItem.UnitPrice);
-
-        bool isCardApproved = await paymentProvider.ChargeCardAsync(command.Card, total, cancellationToken);
-
-        if (!isCardApproved)
+        // Cash is paid later at the register, so the order goes to the bar unpaid
+        if (command.PaymentMethod == PaymentMethod.Card)
         {
-            LogCardDeclined(table.Code, total);
+            Result paymentResult = await PayByCardAsync(result.Value, command.Card!, table.Code, cancellationToken);
 
-            return Result.Failure<OrderDto>(PaymentErrors.CardDeclined);
-        }
-
-        Result paymentResult = result.Value.PayByCard();
-
-        if (paymentResult.IsFailure)
-        {
-            return Result.Failure<OrderDto>(paymentResult.Error);
+            if (paymentResult.IsFailure)
+            {
+                return Result.Failure<OrderDto>(paymentResult.Error);
+            }
         }
 
         await orderRepository.CreateAsync(result.Value, cancellationToken);
@@ -95,6 +89,25 @@ internal sealed partial class CreateOrderCommandHandler(
         LogOrderPlaced(orderDto.Number, table.Code, orderDto.Items.Count, orderDto.Total);
 
         return Result.Success(orderDto);
+    }
+
+    // Charged before saving, so a declined card leaves no order behind
+    private async Task<Result> PayByCardAsync(
+        Order order,
+        CardDetails card,
+        string tableCode,
+        CancellationToken cancellationToken)
+    {
+        bool isCardApproved = await paymentProvider.ChargeCardAsync(card, order.Total, cancellationToken);
+
+        if (!isCardApproved)
+        {
+            LogCardDeclined(tableCode, order.Total);
+
+            return Result.Failure(PaymentErrors.CardDeclined);
+        }
+
+        return order.PayByCard();
     }
 
     [LoggerMessage(

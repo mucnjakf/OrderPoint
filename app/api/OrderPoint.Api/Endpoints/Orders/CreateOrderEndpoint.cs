@@ -7,6 +7,7 @@ using OrderPoint.Api.Extensions;
 using OrderPoint.Application.Commands.Orders;
 using OrderPoint.Application.Dtos;
 using OrderPoint.Application.Payments;
+using OrderPoint.Domain.Enumerations;
 using OrderPoint.Domain.Outcomes;
 
 namespace OrderPoint.Api.Endpoints.Orders;
@@ -26,12 +27,14 @@ internal sealed record CreateOrderCardRequest(string Number, string Expiry, stri
 /// <param name="TableCode">The code of the table the order is placed from, e.g. `T11` (from the QR code).</param>
 /// <param name="Note">An optional note for the bartender, e.g. "no ice".</param>
 /// <param name="Items">The order lines; each item at most once.</param>
-/// <param name="Card">The card that pays the order, charged before the order is placed.</param>
+/// <param name="PaymentMethod">How the guest pays: `Card` now, or `Cash` later at the register.</param>
+/// <param name="Card">The card that pays the order, charged before the order is placed; only with `Card`.</param>
 internal sealed record CreateOrderRequest(
     string TableCode,
     string? Note,
     IReadOnlyList<CreateOrderItemRequest> Items,
-    CreateOrderCardRequest Card);
+    PaymentMethod? PaymentMethod,
+    CreateOrderCardRequest? Card);
 
 /// <summary>The placed order.</summary>
 /// <param name="Data">The order.</param>
@@ -63,10 +66,14 @@ internal sealed class CreateOrderEndpoint : IEndpoint
                 Places an order from a table. Used by the customer app, so no token is needed. Every line copies the
                 item's current price into `unitPrice`; the order starts as `Pending` and gets the next order `number`.
 
-                The guest pays when ordering: the `card` is charged for the total first, and the order is placed as
-                `paymentStatus` `Paid` by `Card`. Payments are simulated, so nothing is charged or stored: every
-                well-formed card is approved except `4000 0000 0000 0002` (use `4242 4242 4242 4242` for a working
-                one). Declining or cancelling the order later refunds the card.
+                The guest pays by card when ordering or in cash at the register:
+
+                - `Card`: the `card` is charged for the total first, and the order is placed as `paymentStatus` `Paid`
+                  by `Card`. Payments are simulated, so nothing is charged or stored: every well-formed card is
+                  approved except `4000 0000 0000 0002` (use `4242 4242 4242 4242` for a working one). Declining or
+                  cancelling the order later refunds the card.
+                - `Cash`: no `card` (it is refused); the order goes to the bar at once as `paymentStatus` `Unpaid`, and
+                  the guest pays at the register, in person or through a bartender (`PUT api/orders/{id}/pay`).
 
                 Limits, so an anonymous caller can't place absurd orders: at most 50 lines, each item at most once and
                 at most 20 pieces, and a table code of up to 10 letters, digits or hyphens.
@@ -93,7 +100,8 @@ internal sealed class CreateOrderEndpoint : IEndpoint
             request.TableCode,
             request.Note,
             request.Items.Select(item => new CreateOrderItemCommand(item.ItemId, item.Quantity)).ToList(),
-            new CardDetails(request.Card.Number, request.Card.Expiry, request.Card.Cvc));
+            request.PaymentMethod!.Value,
+            request.Card is null ? null : new CardDetails(request.Card.Number, request.Card.Expiry, request.Card.Cvc));
 
         Result<OrderDto> result = await sender.Send(command, cancellationToken);
 
@@ -124,10 +132,19 @@ internal sealed class CreateOrderEndpoint : IEndpoint
                 .Must(items => items.DistinctBy(item => item.ItemId).Count() == items.Count)
                 .WithMessage("Items must be unique");
 
-            RuleFor(request => request.Card)
-                .NotNull().WithMessage("Card is required");
+            RuleFor(request => request.PaymentMethod)
+                .NotNull().WithMessage("PaymentMethod is required")
+                .IsInEnum().WithMessage("PaymentMethod is invalid");
 
-            RuleFor(request => request.Card.Number)
+            RuleFor(request => request.Card)
+                .NotNull().WithMessage("Card is required")
+                .When(request => request.PaymentMethod == PaymentMethod.Card);
+
+            RuleFor(request => request.Card)
+                .Null().WithMessage("Card must be empty for a cash payment")
+                .When(request => request.PaymentMethod == PaymentMethod.Cash);
+
+            RuleFor(request => request.Card!.Number)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Card number is required")
                 .Matches(CardNumberPattern).WithMessage("Card number may only contain digits and spaces")
@@ -135,14 +152,14 @@ internal sealed class CreateOrderEndpoint : IEndpoint
                 .WithMessage($"Card number must have {MinimumCardNumberDigits} to {MaximumCardNumberDigits} digits")
                 .When(request => request.Card is not null);
 
-            RuleFor(request => request.Card.Expiry)
+            RuleFor(request => request.Card!.Expiry)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("Card expiry is required")
                 .Matches(ExpiryPattern).WithMessage("Card expiry must be MM/YY")
                 .Must(NotBeExpired).WithMessage("Card has expired")
                 .When(request => request.Card is not null);
 
-            RuleFor(request => request.Card.Cvc)
+            RuleFor(request => request.Card!.Cvc)
                 .NotEmpty().WithMessage("Card CVC is required")
                 .Matches(CvcPattern).WithMessage("Card CVC must be 3 or 4 digits")
                 .When(request => request.Card is not null);

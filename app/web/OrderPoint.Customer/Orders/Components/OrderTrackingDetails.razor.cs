@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using OrderPoint.Customer.Orders.Dtos;
 using OrderPoint.Shared.Orders.Dtos;
 using OrderPoint.Shared.Orders.Enumerations;
@@ -28,13 +29,28 @@ public sealed partial class OrderTrackingDetails
 
     private bool CanCancel => Order.Status is OrderStatus.Pending && OnCancelClick.HasDelegate;
 
-    // Guests pay by card in this app
+    // A cash order is paid at the register, which also takes cards on the bar's terminal
     private string PaymentText => Order.PaymentStatus switch
     {
+        PaymentStatus.Paid when Order.PaymentMethod == PaymentMethod.Cash => "Paid in cash",
         PaymentStatus.Paid => "Paid by card",
-        PaymentStatus.RefundDue or PaymentStatus.Refunded => "Refunded to your card",
-        _ => "Not paid yet"
+        PaymentStatus.RefundDue => "Refund at the register",
+        PaymentStatus.Refunded when Order.PaymentMethod == PaymentMethod.Card => "Refunded to your card",
+        PaymentStatus.Refunded => "Refunded",
+        _ when Order.Status is OrderStatus.Declined or OrderStatus.Cancelled => "Nothing to pay",
+        _ => "To pay at the register"
     };
+
+    private bool IsToPay => Order.PaymentStatus == PaymentStatus.Unpaid
+                            && Order.Status is not (OrderStatus.Declined or OrderStatus.Cancelled);
+
+    private string PaymentIcon => Order.PaymentMethod == PaymentMethod.Card
+        ? Icons.Material.Filled.CreditCard
+        : Icons.Material.Filled.Payments;
+
+    private string PaymentStyle => IsToPay
+        ? "color: var(--mud-palette-warning); font-weight: 600"
+        : "color: var(--mud-palette-text-secondary)";
 
     private IReadOnlyList<(OrderStatus Status, DateTimeOffset? ReachedAtUtc)> StatusSteps =>
         Order.Status switch

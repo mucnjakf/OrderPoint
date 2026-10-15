@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
+using MudBlazor;
 using OrderPoint.Customer.Cart.Dtos;
 using OrderPoint.Customer.Cart.Services;
 using OrderPoint.Customer.Menu.Services;
@@ -11,11 +14,12 @@ using OrderPoint.Shared.Errors;
 using OrderPoint.Shared.Extensions;
 using OrderPoint.Shared.Menu.Dtos;
 using OrderPoint.Shared.Orders.Dtos;
+using OrderPoint.Shared.Orders.Enumerations;
 using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Customer.Cart.Pages;
 
-// Guests pay when ordering: the card is charged, then the order goes to the bar
+// Guests pay by card when ordering, or choose cash and pay at the register; either way the order goes to the bar
 public sealed partial class PayPage : IAsyncDisposable
 {
     private const string ModulePath = "./Cart/Pages/PayPage.razor.js";
@@ -61,6 +65,13 @@ public sealed partial class PayPage : IAsyncDisposable
 
     private CreateOrderCardRequest Card { get; } = new();
 
+    // The card fields are only checked when paying by card
+    private EditContext CardEditContext { get; set; } = null!;
+
+    private PaymentMethod SelectedPaymentMethod { get; set; } = PaymentMethod.Card;
+
+    private bool IsCash => SelectedPaymentMethod == PaymentMethod.Cash;
+
     // The browser formats the card fields as the guest types; they reach the server when the guest leaves them
     private ElementReference CardFieldsElement { get; set; }
 
@@ -82,11 +93,19 @@ public sealed partial class PayPage : IAsyncDisposable
     private bool CanPay =>
         TableService.TableCode is not null && !HasUnavailableLines && !IsPaying && CartService.Lines.Count != 0;
 
+    private string SubmitText => IsCash
+        ? $"Place order · {Total.ToString("C", CultureInfo.CurrentCulture)}"
+        : $"Pay {Total.ToString("C", CultureInfo.CurrentCulture)}";
+
+    private string SubmitIcon => IsCash ? Icons.Material.Filled.Send : Icons.Material.Filled.Lock;
+
     private string SummaryText =>
         $"Table {TableService.TableCode} · {CartService.ItemsCount.ToCountText("item", "items")}";
 
     protected override async Task OnInitializedAsync()
     {
+        CardEditContext = new EditContext(Card);
+
         MenuService.Changed += OnMenuChanged;
 
         await GetMenuItemsAsync();
@@ -151,6 +170,16 @@ public sealed partial class PayPage : IAsyncDisposable
         });
     }
 
+    private async Task SubmitAsync()
+    {
+        if (!IsCash && !CardEditContext.Validate())
+        {
+            return;
+        }
+
+        await PayAsync();
+    }
+
     private async Task PayAsync()
     {
         if (!CanPay)
@@ -173,7 +202,7 @@ public sealed partial class PayPage : IAsyncDisposable
         await OrderTrackingHubService.TrackAsync(order.Id);
         await CartService.ClearAsync();
 
-        // The status page says it was sent and paid, so no snackbar
+        // The status page says it was sent, and paid or to pay, so no snackbar
         NavigationManager.NavigateTo($"/orders/{order.Id}");
     }
 
@@ -183,7 +212,8 @@ public sealed partial class PayPage : IAsyncDisposable
             TableService.TableCode!,
             CartService.Note,
             CartService.Lines.Select(line => new CreateOrderItemRequest(line.ItemId, line.Quantity)).ToList(),
-            Card);
+            SelectedPaymentMethod,
+            IsCash ? null : Card);
 
         try
         {

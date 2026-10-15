@@ -109,11 +109,9 @@
             </MudStack>
 
             <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
-                <MudIcon Icon="@Icons.Material.Filled.CreditCard"
-                         Size="Size.Small"
-                         Style="color: var(--mud-palette-text-secondary)"/>
+                <MudIcon Icon="@PaymentIcon" Size="Size.Small" Style="@PaymentStyle"/>
 
-                <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                <MudText Typo="Typo.body2" Style="@PaymentStyle">
                     @PaymentText
                 </MudText>
             </MudStack>

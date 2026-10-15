@@ -25,6 +25,18 @@
                          Class="ma-0">
                     @Order.Status.GetGuestTitle()
                 </MudChip>
+
+                @if (IsToPay)
+                {
+                    <MudChip T="string"
+                             Variant="Variant.Outlined"
+                             Size="Size.Small"
+                             Color="Color.Warning"
+                             Icon="@Icons.Material.Filled.Payments"
+                             Class="ma-0">
+                        To pay
+                    </MudChip>
+                }
             </MudStack>
         </MudStack>
 

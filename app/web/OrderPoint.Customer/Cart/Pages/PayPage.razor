@@ -24,7 +24,7 @@
               EmptyStateIcon="@Icons.Material.Filled.ShoppingCart"
               EmptyStateText="Your cart is empty"
               EmptyStateDetail="Add something from the menu.">
-    <EditForm Model="@Card" OnValidSubmit="@PayAsync">
+    <EditForm EditContext="@CardEditContext" OnSubmit="@SubmitAsync" Context="formContext">
         <DataAnnotationsValidator/>
 
         <MudStack Spacing="3">
@@ -83,6 +83,53 @@
             </MudPaper>
 
             <MudPaper Class="pa-4">
+                <MudText Typo="Typo.subtitle1" HtmlTag="h2" Class="mb-3">
+                    How do you want to pay?
+                </MudText>
+
+                <MudToggleGroup T="PaymentMethod"
+                                @bind-Value="@SelectedPaymentMethod"
+                                Color="Color.Primary"
+                                Style="width: 100%">
+                    <MudToggleItem Value="@PaymentMethod.Card" Class="flex-1 py-2">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.Center" Spacing="2">
+                            <MudIcon Icon="@Icons.Material.Filled.CreditCard" Size="Size.Small"/>
+                            <MudText Typo="Typo.body1">Card</MudText>
+                        </MudStack>
+                    </MudToggleItem>
+
+                    <MudToggleItem Value="@PaymentMethod.Cash" Class="flex-1 py-2">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.Center" Spacing="2">
+                            <MudIcon Icon="@Icons.Material.Filled.Payments" Size="Size.Small"/>
+                            <MudText Typo="Typo.body1">Cash</MudText>
+                        </MudStack>
+                    </MudToggleItem>
+                </MudToggleGroup>
+            </MudPaper>
+
+            @if (IsCash)
+            {
+                <MudPaper Class="pa-4">
+                    <MudStack Row="true" AlignItems="AlignItems.Start" Spacing="3">
+                        <MudIcon Icon="@Icons.Material.Filled.PointOfSale"
+                                 Style="color: var(--mud-palette-text-secondary)"/>
+
+                        <MudStack Spacing="1">
+                            <MudText Typo="Typo.subtitle1" HtmlTag="h2">
+                                Pay at the register
+                            </MudText>
+
+                            <MudText Typo="Typo.body2" Style="color: var(--mud-palette-text-secondary)">
+                                Your order goes to the bar right away. Pay at the register when you like, or give the
+                                cash to a bartender, who takes it there for you.
+                            </MudText>
+                        </MudStack>
+                    </MudStack>
+                </MudPaper>
+            }
+
+            @* Hidden, not removed, for cash: the browser keeps formatting the fields when the guest switches back *@
+            <MudPaper Class="pa-4" Style="@(IsCash ? "display: none" : null)">
                 <div @ref="@CardFieldsElement" class="d-flex flex-column gap-3">
                     <MudText Typo="Typo.subtitle1" HtmlTag="h2">
                         Card
@@ -145,13 +192,13 @@
                        Size="Size.Large"
                        FullWidth="true"
                        Disabled="@(!CanPay)"
-                       StartIcon="@(IsPaying ? null : Icons.Material.Filled.Lock)">
+                       StartIcon="@(IsPaying ? null : SubmitIcon)">
                 @if (IsPaying)
                 {
                     <MudProgressCircular Indeterminate="true" Size="Size.Small" Class="mr-2"/>
                 }
 
-                Pay @Total.ToString("C", CultureInfo.CurrentCulture)
+                @SubmitText
             </MudButton>
         </MudStack>
     </EditForm>
