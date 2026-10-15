@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using OrderPoint.Application.Caching;
 using OrderPoint.Application.Mediator;
+using OrderPoint.Application.Notifications;
 using OrderPoint.Application.Repositories;
 using OrderPoint.Domain.Entities;
 using OrderPoint.Domain.Errors;
@@ -16,7 +17,9 @@ public sealed record CorrectStockCommand(Guid Id, decimal Quantity, string? Note
 internal sealed partial class CorrectStockCommandHandler(
     IStockItemRepository stockItemRepository,
     IStockMovementRepository stockMovementRepository,
+    IRecipeLineRepository recipeLineRepository,
     IUnitOfWork unitOfWork,
+    ChangedMenu changedMenu,
     ILogger<CorrectStockCommandHandler> logger)
     : ICommandHandler<CorrectStockCommand>
 {
@@ -29,7 +32,7 @@ internal sealed partial class CorrectStockCommandHandler(
             return Result.Failure(StockItemErrors.NotFound);
         }
 
-        decimal previousQuantity = stockItem.Quantity;
+        decimal quantityBefore = stockItem.Quantity;
 
         Result<StockMovement> result = stockItem.Correct(command.Quantity, command.Note);
 
@@ -41,9 +44,24 @@ internal sealed partial class CorrectStockCommandHandler(
         await stockMovementRepository.CreateAsync(result.Value, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        LogStockCorrected(stockItem.Id, stockItem.Name, previousQuantity, stockItem.Quantity);
+        await CheckMenuAsync(stockItem, quantityBefore, cancellationToken);
+
+        LogStockCorrected(stockItem.Id, stockItem.Name, quantityBefore, stockItem.Quantity);
 
         return Result.Success();
+    }
+
+    // A recipe using it may have just run out, or come back
+    private async Task CheckMenuAsync(StockItem stockItem, decimal quantityBefore, CancellationToken cancellationToken)
+    {
+        IReadOnlyList<RecipeLine> recipeLines = await recipeLineRepository.GetByStockItemsAsync(
+            [stockItem.Id],
+            cancellationToken);
+
+        if (StockServings.HaveChanged(recipeLines, new Dictionary<Guid, decimal> { [stockItem.Id] = quantityBefore }))
+        {
+            changedMenu.MarkChanged();
+        }
     }
 
     [LoggerMessage(

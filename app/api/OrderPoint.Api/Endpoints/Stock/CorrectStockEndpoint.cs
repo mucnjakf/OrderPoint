@@ -25,6 +25,7 @@ internal sealed class CorrectStockEndpoint : IEndpoint
             .WithSummary("Correct the quantity")
             .WithDescription("""
                 Sets the stock item's quantity to what is really there, as a `Correction` movement of the difference.
+                Items whose recipe it leaves short of one serving become sold out, and sold-out ones come back.
 
                 - `400 StockItem.QuantityUnchanged`: the quantity is already this
                 """)

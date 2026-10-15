@@ -18,6 +18,8 @@ public interface IStockItemRepository
 
     Task<StockItem?> GetAsync(Guid id, CancellationToken cancellationToken = default);
 
+    Task<IReadOnlyList<StockItem>> GetAsync(IReadOnlyList<Guid> ids, CancellationToken cancellationToken = default);
+
     Task CreateAsync(StockItem stockItem, CancellationToken cancellationToken = default);
 
     void Delete(StockItem stockItem);

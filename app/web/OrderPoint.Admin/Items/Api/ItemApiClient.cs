@@ -68,6 +68,36 @@ internal sealed class ItemApiClient(HttpClient httpClient)
         return result.Data;
     }
 
+    internal async Task<ItemRecipeDto> GetItemRecipeAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await httpClient.GetAsync($"api/items/{id}/recipe", cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+
+        GetItemRecipeResponse result =
+            await response.Content.ReadFromJsonAsync<GetItemRecipeResponse>(cancellationToken)
+            ?? throw new InvalidOperationException($"Unable to parse {nameof(GetItemRecipeResponse)}");
+
+        return result.Data;
+    }
+
+    internal async Task SetItemRecipeAsync(
+        Guid id,
+        SetItemRecipeRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        HttpResponseMessage response = await httpClient
+            .PutAsJsonAsync($"api/items/{id}/recipe", request, cancellationToken);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            await ApiExceptionHelpers.ThrowApiExceptionAsync(response, cancellationToken);
+        }
+    }
+
     internal async Task<ItemDto> CreateItemAsync(
         CreateItemRequest request,
         CancellationToken cancellationToken = default)

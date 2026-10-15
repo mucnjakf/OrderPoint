@@ -21,7 +21,7 @@ public sealed partial class MenuItemRow
     [EditorRequired]
     public EventCallback<ItemDto> OnClick { get; set; }
 
-    private string ImageStyle => Item.IsActive
+    private string ImageStyle => Item.IsActive && !Item.IsSoldOut
         ? ImageRadiusStyle
         : $"{ImageRadiusStyle} filter: grayscale(1); opacity: 0.6;";
 

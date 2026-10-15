@@ -141,6 +141,17 @@ public sealed class StockItem : Entity
         return Result.Success(Move(StockMovementType.Waste, -amount, note));
     }
 
+    // What a completed order used; it may take the quantity below zero, since the drinks are already served
+    public Result<StockMovement> RecordSale(decimal quantity, string note)
+    {
+        if (quantity <= 0)
+        {
+            return Result.Failure<StockMovement>(StockItemErrors.QuantityMustBePositive);
+        }
+
+        return Result.Success(Move(StockMovementType.Sale, -quantity, note));
+    }
+
     // Sets the quantity to what is really there
     public Result<StockMovement> Correct(decimal actualQuantity, string? note)
     {

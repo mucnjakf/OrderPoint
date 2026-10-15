@@ -25,6 +25,11 @@ public sealed partial class MenuItemDetails
                 return $"The {Item.Category.Name} category is inactive, so guests can't order this item.";
             }
 
+            if (Item.IsSoldOut)
+            {
+                return "An ingredient ran out, so guests can't order this item until the stock is topped up.";
+            }
+
             return null;
         }
     }

@@ -37,6 +37,13 @@ internal sealed class StockItemEfCoreRepository(ApplicationDbContext dbContext) 
     public async Task<StockItem?> GetAsync(Guid id, CancellationToken cancellationToken = default)
         => await dbContext.StockItems.SingleOrDefaultAsync(stockItem => stockItem.Id == id, cancellationToken);
 
+    public async Task<IReadOnlyList<StockItem>> GetAsync(
+        IReadOnlyList<Guid> ids,
+        CancellationToken cancellationToken = default)
+        => await dbContext.StockItems
+            .Where(stockItem => ids.Contains(stockItem.Id))
+            .ToListAsync(cancellationToken);
+
     public async Task CreateAsync(StockItem stockItem, CancellationToken cancellationToken = default)
         => await dbContext.StockItems.AddAsync(stockItem, cancellationToken);
 

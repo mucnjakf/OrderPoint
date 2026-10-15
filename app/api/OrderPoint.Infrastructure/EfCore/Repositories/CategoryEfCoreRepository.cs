@@ -58,6 +58,8 @@ internal sealed class CategoryEfCoreRepository(ApplicationDbContext dbContext) :
         => await dbContext.Categories
             .AsNoTracking()
             .Include(category => category.Items)
+            .ThenInclude(item => item.RecipeLines)
+            .ThenInclude(recipeLine => recipeLine.StockItem)
             .Where(category => category.Status == status)
             .OrderBy(category => category.DisplayOrder)
             .ThenBy(category => category.Id)

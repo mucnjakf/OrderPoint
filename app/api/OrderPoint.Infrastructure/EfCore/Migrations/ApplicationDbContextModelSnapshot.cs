@@ -366,6 +366,37 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                     b.ToTable("OrderItems", (string)null);
                 });
 
+            modelBuilder.Entity("OrderPoint.Domain.Entities.RecipeLine", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ItemId")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Quantity")
+                        .HasPrecision(12, 3)
+                        .HasColumnType("numeric(12,3)");
+
+                    b.Property<Guid>("StockItemId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset?>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StockItemId");
+
+                    b.HasIndex("ItemId", "StockItemId")
+                        .IsUnique();
+
+                    b.ToTable("RecipeLines", (string)null);
+                });
+
             modelBuilder.Entity("OrderPoint.Domain.Entities.StockItem", b =>
                 {
                     b.Property<Guid>("Id")
@@ -703,6 +734,25 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
                     b.Navigation("Item");
                 });
 
+            modelBuilder.Entity("OrderPoint.Domain.Entities.RecipeLine", b =>
+                {
+                    b.HasOne("OrderPoint.Domain.Entities.Item", "Item")
+                        .WithMany("RecipeLines")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("OrderPoint.Domain.Entities.StockItem", "StockItem")
+                        .WithMany()
+                        .HasForeignKey("StockItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Item");
+
+                    b.Navigation("StockItem");
+                });
+
             modelBuilder.Entity("OrderPoint.Domain.Entities.StockMovement", b =>
                 {
                     b.HasOne("OrderPoint.Domain.Entities.StockItem", "StockItem")
@@ -765,6 +815,8 @@ namespace OrderPoint.Infrastructure.EfCore.Migrations
             modelBuilder.Entity("OrderPoint.Domain.Entities.Item", b =>
                 {
                     b.Navigation("OrderItems");
+
+                    b.Navigation("RecipeLines");
                 });
 
             modelBuilder.Entity("OrderPoint.Domain.Entities.Order", b =>

@@ -19,7 +19,9 @@ internal sealed class CompleteOrderEndpoint : IEndpoint
             .WithTags("Orders")
             .WithSummary("Complete an order")
             .WithDescription("""
-                Moves an active order to Completed: the bartender who prepared it has served it.
+                Moves an active order to Completed: the bartender who prepared it has served it. Each line's item
+                recipe (as it is now) is taken off the stock as `Sale` movements, which may take a stock item below 0;
+                an item that runs short of one serving becomes sold out, and the apps hear `MenuChanged`.
 
                 - `403 Auth.AccountInactive`: the signed-in bartender was deactivated
                 - `403 Auth.AccountDeleted`: the signed-in bartender no longer exists

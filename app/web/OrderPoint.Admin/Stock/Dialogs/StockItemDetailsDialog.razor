@@ -112,7 +112,7 @@
                 <ListPager TItem="StockMovementDto"
                            Pagination="@Pagination"
                            IsLoading="@IsLoadingMovements"
-                           OnPageChanged="@GetMovementsAsync"/>
+                           OnPageChanged="@(pageNumber => GetMovementsAsync(pageNumber))"/>
             </MudPaper>
         </MudStack>
     </DialogContent>

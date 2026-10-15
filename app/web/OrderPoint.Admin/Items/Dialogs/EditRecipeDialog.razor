@@ -1,0 +1,103 @@
+﻿<MudDialog ActionsClass="pa-6" Class="mud-background">
+    <TitleContent>
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+            <MudIcon Icon="@Icons.Material.Filled.Science"/>
+            <MudText Typo="Typo.h6">Recipe · @Item.Name</MudText>
+        </MudStack>
+    </TitleContent>
+
+    <DialogContent>
+        <MudText Typo="Typo.body2" Class="mb-4" Style="color: var(--mud-palette-text-secondary)">
+            What one serving uses. Completing an order takes it off the stock, and the item is sold out while an
+            ingredient has less than one serving left.
+        </MudText>
+
+        <MudStack Spacing="3">
+            @foreach (RecipeRow row in Rows)
+            {
+                RecipeRow currentRow = row;
+
+                <MudStack @key="@currentRow" Row="true" AlignItems="AlignItems.Start" Spacing="3">
+                    <MudAutocomplete @bind-Value="@currentRow.Ingredient"
+                                     T="RecipeIngredientDto"
+                                     SearchFunc="@SearchIngredientsAsync"
+                                     Variant="Variant.Outlined"
+                                     Label="Stock item"
+                                     ShowProgressIndicator="true"
+                                     Error="@IsDuplicate(currentRow)"
+                                     ErrorText="Already in the recipe"
+                                     ToStringFunc="@(ingredient => ingredient?.Name)"
+                                     Class="flex-1"
+                                     Style="min-width: 0">
+                        <ItemTemplate Context="ingredient">
+                            <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                                <MudIcon Icon="@ingredient.Group.GetIcon()" Size="Size.Small"/>
+                                <MudText Typo="Typo.body1">@ingredient.Name</MudText>
+                            </MudStack>
+                        </ItemTemplate>
+
+                        <NoItemsTemplate>
+                            <MudText Align="Align.Center" Class="px-3 py-1">
+                                No stock items found
+                            </MudText>
+                        </NoItemsTemplate>
+                    </MudAutocomplete>
+
+                    <MudNumericField @bind-Value="@currentRow.Quantity"
+                                     Label="Per serving"
+                                     Variant="Variant.Outlined"
+                                     Adornment="Adornment.End"
+                                     AdornmentText="@(currentRow.Ingredient?.Unit.GetSymbol() ?? string.Empty)"
+                                     Min="0"
+                                     Immediate="true"
+                                     Style="width: 160px"/>
+
+                    <MudText Typo="Typo.body2" Class="mt-4" Style="width: 70px; text-align: right">
+                        @GetCost(currentRow).ToString("C", CultureInfo.CurrentCulture)
+                    </MudText>
+
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                   Color="Color.Error"
+                                   Class="mt-2"
+                                   aria-label="Remove ingredient"
+                                   OnClick="@(() => Rows.Remove(currentRow))"/>
+                </MudStack>
+            }
+
+            <div>
+                <MudButton Variant="Variant.Text"
+                           StartIcon="@Icons.Material.Filled.Add"
+                           Disabled="@(Rows.Count >= MaxLines)"
+                           OnClick="@AddRow">
+                    Add ingredient
+                </MudButton>
+            </div>
+
+            <MudPaper Outlined="true" Elevation="0" Class="pa-4">
+                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+                    <MudText Typo="Typo.body2">
+                        @CostText
+                    </MudText>
+
+                    <MudText Typo="Typo.subtitle1" Style="@MarginStyle">
+                        Margin @MarginText
+                    </MudText>
+                </MudStack>
+            </MudPaper>
+        </MudStack>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="@Cancel" Variant="Variant.Text" Class="mr-5">
+            Cancel
+        </MudButton>
+
+        <MudButton OnClick="@Save"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Disabled="@(!CanSave)"
+                   StartIcon="@Icons.Material.Filled.Save">
+            Save recipe
+        </MudButton>
+    </DialogActions>
+</MudDialog>

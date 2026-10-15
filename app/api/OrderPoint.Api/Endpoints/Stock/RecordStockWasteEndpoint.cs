@@ -25,7 +25,7 @@ internal sealed class RecordStockWasteEndpoint : IEndpoint
             .WithSummary("Record waste")
             .WithDescription("""
                 Takes what was spilled, broken, expired or given away off the stock item, as a `Waste` movement.
-                The quantity may go below 0.
+                The quantity may go below 0. Items whose recipe it leaves short of one serving become sold out.
                 """)
             .ProducesProblem(StatusCodes.Status404NotFound)
             .RequireAuthorization(AuthorizationPolicies.Admin);

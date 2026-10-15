@@ -44,6 +44,10 @@ public static class StockItemErrors
         "StockItem.NameAlreadyExists",
         "A stock item with this name already exists");
 
+    public static readonly Error UsedInRecipes = Error.Conflict(
+        "StockItem.UsedInRecipes",
+        "Cannot delete a stock item that recipes use");
+
     public static readonly Error CannotDeleteWithMovements = Error.Conflict(
         "StockItem.CannotDeleteWithMovements",
         "Cannot delete a stock item with stock movements");

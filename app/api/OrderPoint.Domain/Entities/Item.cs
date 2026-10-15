@@ -27,7 +27,18 @@ public sealed class Item : Entity
 
     public IReadOnlyList<OrderItem> OrderItems => _orderItems.AsReadOnly();
 
-    public bool IsAvailable => Status == ItemStatus.Active && Category.Status == CategoryStatus.Active;
+    private readonly List<RecipeLine> _recipeLines = [];
+
+    public IReadOnlyList<RecipeLine> RecipeLines => _recipeLines.AsReadOnly();
+
+    // An ingredient has less than one serving left; needs RecipeLines and their StockItem loaded
+    public bool IsSoldOut => _recipeLines.Any(line => !line.HasServing);
+
+    // Needs Category, RecipeLines and their StockItem loaded
+    public bool IsAvailable => Status == ItemStatus.Active && Category.Status == CategoryStatus.Active && !IsSoldOut;
+
+    // What one serving costs in stock, or null without a recipe (its stock isn't tracked)
+    public decimal? Cost => _recipeLines.Count == 0 ? null : _recipeLines.Sum(line => line.Cost);
 
     private Item(
         Guid id,
@@ -190,5 +201,27 @@ public sealed class Item : Entity
         ImageUrl = null;
 
         UpdatedAtUtc = DateTimeOffset.UtcNow;
+    }
+
+    // The new recipe's lines, replacing the old ones; each stock item at most once
+    public Result<IReadOnlyList<RecipeLine>> CreateRecipe(IReadOnlyList<(StockItem StockItem, decimal Quantity)> lines)
+    {
+        if (lines.Any(line => line.Quantity <= 0))
+        {
+            return Result.Failure<IReadOnlyList<RecipeLine>>(ItemErrors.RecipeQuantityMustBePositive);
+        }
+
+        if (lines.DistinctBy(line => line.StockItem.Id).Count() != lines.Count)
+        {
+            return Result.Failure<IReadOnlyList<RecipeLine>>(ItemErrors.RecipeHasDuplicateStockItems);
+        }
+
+        IReadOnlyList<RecipeLine> recipeLines = lines
+            .Select(line => RecipeLine.Create(this, line.StockItem, line.Quantity))
+            .ToList();
+
+        UpdatedAtUtc = DateTimeOffset.UtcNow;
+
+        return Result.Success(recipeLines);
     }
 }

@@ -17,6 +17,7 @@ public sealed record DeleteItemCommand(Guid Id) : ICommand, ICacheInvalidatingCo
 internal sealed partial class DeleteItemCommandHandler(
     IItemRepository itemRepository,
     IOrderRepository orderRepository,
+    IRecipeLineRepository recipeLineRepository,
     IImageStorage imageStorage,
     IUnitOfWork unitOfWork,
     ILogger<DeleteItemCommandHandler> logger)
@@ -36,6 +37,12 @@ internal sealed partial class DeleteItemCommandHandler(
         if (hasOrders)
         {
             return Result.Failure(ItemErrors.CannotDeleteItemWithOrders);
+        }
+
+        // The recipe only describes the item, so it goes with it
+        foreach (RecipeLine recipeLine in item.RecipeLines)
+        {
+            recipeLineRepository.Delete(recipeLine);
         }
 
         itemRepository.Delete(item);

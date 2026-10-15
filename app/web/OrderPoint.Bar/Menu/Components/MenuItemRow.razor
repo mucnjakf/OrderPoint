@@ -19,6 +19,12 @@
                         Unavailable
                     </MudChip>
                 }
+                else if (Item.IsSoldOut)
+                {
+                    <MudChip T="string" Variant="Variant.Text" Size="Size.Small" Color="Color.Warning" Class="ma-0">
+                        Sold out
+                    </MudChip>
+                }
             </MudStack>
 
             <MudText Typo="Typo.caption" Style="@($"color: var(--mud-palette-text-secondary); {SingleLineStyle}")">

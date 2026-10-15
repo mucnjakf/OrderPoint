@@ -9,12 +9,13 @@ using OrderPoint.Admin.Stock.Enumerations;
 using OrderPoint.Admin.Stock.Services;
 using OrderPoint.Admin.Stock.Sorting;
 using OrderPoint.Shared.Dtos;
+using OrderPoint.Shared.Orders.Services;
 using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Stock.Pages;
 
 // The stock sheet: stock items under their groups, with the value on the shelves and what is low or out above it
-public sealed partial class StockPage
+public sealed partial class StockPage : IDisposable
 {
     // A sheet worth scanning, not ten rows at a time
     private const int PageSize = 50;
@@ -32,6 +33,9 @@ public sealed partial class StockPage
 
     [Inject]
     private StockDialogService StockDialogService { get; set; } = null!;
+
+    [Inject]
+    private OrdersHubService OrdersHubService { get; set; } = null!;
 
     private StockSummaryDto? Summary { get; set; }
 
@@ -55,9 +59,24 @@ public sealed partial class StockPage
 
     protected override async Task OnInitializedAsync()
     {
+        OrdersHubService.OrdersChanged += OnOrdersChanged;
+
         await Task.WhenAll(
             GetSummaryAsync(),
             GetStockItemsAsync(pageNumber: 1));
+    }
+
+    public void Dispose()
+    {
+        OrdersHubService.OrdersChanged -= OnOrdersChanged;
+    }
+
+    // A completed order takes its ingredients off the stock
+    private void OnOrdersChanged()
+    {
+        _ = InvokeAsync(() => Task.WhenAll(
+            GetSummaryAsync(),
+            GetStockItemsAsync(Pagination?.PageNumber ?? 1, isLiveUpdate: true)));
     }
 
     private async Task GetSummaryAsync()
@@ -69,9 +88,12 @@ public sealed partial class StockPage
         StateHasChanged();
     }
 
-    private async Task GetStockItemsAsync(int pageNumber)
+    private async Task GetStockItemsAsync(int pageNumber, bool isLiveUpdate = false)
     {
-        IsLoading = true;
+        if (!isLiveUpdate)
+        {
+            IsLoading = true;
+        }
 
         Pagination = await ApiService.ExecuteAsync(() => StockApiClient.GetStockItemsAsync(
             pageNumber,

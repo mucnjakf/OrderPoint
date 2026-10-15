@@ -18,6 +18,7 @@ public sealed record DeleteItemsCommand(IReadOnlyList<Guid> Ids)
 internal sealed partial class DeleteItemsCommandHandler(
     IItemRepository itemRepository,
     IOrderRepository orderRepository,
+    IRecipeLineRepository recipeLineRepository,
     IImageStorage imageStorage,
     IUnitOfWork unitOfWork,
     ILogger<DeleteItemsCommandHandler> logger)
@@ -41,6 +42,11 @@ internal sealed partial class DeleteItemsCommandHandler(
 
         foreach (Item item in items)
         {
+            foreach (RecipeLine recipeLine in item.RecipeLines)
+            {
+                recipeLineRepository.Delete(recipeLine);
+            }
+
             itemRepository.Delete(item);
         }
 

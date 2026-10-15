@@ -19,7 +19,9 @@ internal sealed class ItemEfCoreRepository(ApplicationDbContext dbContext) : IIt
     {
         IQueryable<Item> query = dbContext.Items
             .AsNoTracking()
-            .Include(item => item.Category);
+            .Include(item => item.Category)
+            .Include(item => item.RecipeLines)
+            .ThenInclude(recipeLine => recipeLine.StockItem);
 
         query = SearchItems(query, searchQuery);
         query = FilterItems(query, categoryId, status);
@@ -38,6 +40,8 @@ internal sealed class ItemEfCoreRepository(ApplicationDbContext dbContext) : IIt
     public async Task<Item?> GetAsync(Guid id, CancellationToken cancellationToken = default)
         => await dbContext.Items
             .Include(item => item.Category)
+            .Include(item => item.RecipeLines)
+            .ThenInclude(recipeLine => recipeLine.StockItem)
             .SingleOrDefaultAsync(item => item.Id == id, cancellationToken);
 
     public async Task<IReadOnlyList<Item>> GetAsync(
@@ -45,6 +49,8 @@ internal sealed class ItemEfCoreRepository(ApplicationDbContext dbContext) : IIt
         CancellationToken cancellationToken = default)
         => await dbContext.Items
             .Include(item => item.Category)
+            .Include(item => item.RecipeLines)
+            .ThenInclude(recipeLine => recipeLine.StockItem)
             .Where(item => ids.Contains(item.Id))
             .ToListAsync(cancellationToken);
 
@@ -84,12 +90,18 @@ internal sealed class ItemEfCoreRepository(ApplicationDbContext dbContext) : IIt
             query = query.Where(item => item.CategoryId == categoryId.Value);
         }
 
+        // The effective status, like Item.IsAvailable: a sold-out item (an ingredient short of one serving) counts as
+        // inactive too
         query = status switch
         {
             ItemStatus.Active => query.Where(item =>
-                item.Status == ItemStatus.Active && item.Category.Status == CategoryStatus.Active),
+                item.Status == ItemStatus.Active &&
+                item.Category.Status == CategoryStatus.Active &&
+                !item.RecipeLines.Any(recipeLine => recipeLine.StockItem.Quantity < recipeLine.Quantity)),
             ItemStatus.Inactive => query.Where(item =>
-                item.Status == ItemStatus.Inactive || item.Category.Status == CategoryStatus.Inactive),
+                item.Status == ItemStatus.Inactive ||
+                item.Category.Status == CategoryStatus.Inactive ||
+                item.RecipeLines.Any(recipeLine => recipeLine.StockItem.Quantity < recipeLine.Quantity)),
             _ => query
         };
 

@@ -21,7 +21,7 @@
 
     <MudChip T="string"
              Variant="Variant.Text"
-             Color="@(IsActive ? Color.Success : Color.Error)">
-        @(IsActive ? nameof(ItemStatus.Active) : nameof(ItemStatus.Inactive))
+             Color="@StatusColor">
+        @StatusText
     </MudChip>
 </MudPaper>

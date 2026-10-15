@@ -12,6 +12,9 @@ namespace OrderPoint.Application.Dtos;
 /// <param name="ImageUrl">The public URL of the image, or `null` if there is none.</param>
 /// <param name="Category">The category the item belongs to.</param>
 /// <param name="OrdersCount">The number of orders that contain the item.</param>
+/// <param name="Cost">What one serving costs in stock, in euros, or `null` without a recipe.</param>
+/// <param name="IsSoldOut">Whether an ingredient has less than one serving left; a sold-out item can't be
+/// ordered.</param>
 /// <param name="CreatedAtUtc">When it was created (UTC).</param>
 /// <param name="UpdatedAtUtc">When it was last updated (UTC), or `null` if it never was.</param>
 public sealed record ItemDto(
@@ -24,5 +27,7 @@ public sealed record ItemDto(
     string? ImageUrl,
     ItemCategoryDto Category,
     int OrdersCount,
+    decimal? Cost,
+    bool IsSoldOut,
     DateTimeOffset CreatedAtUtc,
     DateTimeOffset? UpdatedAtUtc);

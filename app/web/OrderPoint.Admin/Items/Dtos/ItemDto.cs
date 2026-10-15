@@ -13,6 +13,8 @@ public sealed record ItemDto(
     string? ImageUrl,
     ItemCategoryDto Category,
     int OrdersCount,
+    decimal? Cost,
+    bool IsSoldOut,
     DateTimeOffset CreatedAtUtc,
     DateTimeOffset? UpdatedAtUtc)
 {

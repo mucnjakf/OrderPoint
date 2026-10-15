@@ -29,6 +29,7 @@ public static class ApplicationModule
 
         services.AddSingleton<ApplicationTelemetry>();
         services.AddScoped<ChangedOrders>();
+        services.AddScoped<ChangedMenu>();
         services.AddSingleton(new BusinessDay(GetBusinessDayStartTime(configuration)));
 
         return services;

@@ -6,12 +6,13 @@ using OrderPoint.Admin.Stock.Api;
 using OrderPoint.Admin.Stock.Dtos;
 using OrderPoint.Admin.Stock.Services;
 using OrderPoint.Shared.Dtos;
+using OrderPoint.Shared.Orders.Services;
 using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Admin.Stock.Dialogs;
 
 // The stock item with its history; waste and corrections recorded here show at once
-public sealed partial class StockItemDetailsDialog
+public sealed partial class StockItemDetailsDialog : IDisposable
 {
     private const int PageSize = 10;
 
@@ -28,6 +29,9 @@ public sealed partial class StockItemDetailsDialog
 
     [Inject]
     private StockDialogService StockDialogService { get; set; } = null!;
+
+    [Inject]
+    private OrdersHubService OrdersHubService { get; set; } = null!;
 
     [Parameter]
     public StockItemDto StockItem { get; set; } = null!;
@@ -65,7 +69,22 @@ public sealed partial class StockItemDetailsDialog
     {
         CurrentStockItem = StockItem;
 
+        OrdersHubService.OrdersChanged += OnOrdersChanged;
+
         await GetMovementsAsync(pageNumber: 1);
+    }
+
+    public void Dispose()
+    {
+        OrdersHubService.OrdersChanged -= OnOrdersChanged;
+    }
+
+    // A completed order may have taken some of it
+    private void OnOrdersChanged()
+    {
+        _ = InvokeAsync(() => Task.WhenAll(
+            GetStockItemAsync(),
+            GetMovementsAsync(Pagination?.PageNumber ?? 1, isLiveUpdate: true)));
     }
 
     private async Task GetStockItemAsync()
@@ -83,9 +102,12 @@ public sealed partial class StockItemDetailsDialog
         StateHasChanged();
     }
 
-    private async Task GetMovementsAsync(int pageNumber)
+    private async Task GetMovementsAsync(int pageNumber, bool isLiveUpdate = false)
     {
-        IsLoadingMovements = true;
+        if (!isLiveUpdate)
+        {
+            IsLoadingMovements = true;
+        }
 
         Pagination = await ApiService.ExecuteAsync(
             () => StockApiClient.GetStockMovementsAsync(CurrentStockItem.Id, pageNumber, PageSize));

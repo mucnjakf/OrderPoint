@@ -28,6 +28,14 @@ public static class ItemErrors
         "Item.ImageUrlIsRequired",
         "Item image URL is required");
 
+    internal static readonly Error RecipeQuantityMustBePositive = Error.Validation(
+        "Item.RecipeQuantityMustBePositive",
+        "Every recipe quantity must be positive");
+
+    internal static readonly Error RecipeHasDuplicateStockItems = Error.Validation(
+        "Item.RecipeHasDuplicateStockItems",
+        "A stock item can be in a recipe only once");
+
     public static readonly Error CannotDeleteItemWithOrders = Error.Conflict(
         "Item.CannotDeleteItemWithOrders",
         "Cannot delete item with orders");

@@ -22,7 +22,7 @@ internal static class CategoryMapper
         category.Description,
         category.ImageUrl,
         category.Items
-            .Where(item => item.Status == ItemStatus.Active)
+            .Where(item => item.Status == ItemStatus.Active && !item.IsSoldOut)
             .OrderBy(item => item.Name)
             .Select(item => item.ToMenuItemDto())
             .ToList());

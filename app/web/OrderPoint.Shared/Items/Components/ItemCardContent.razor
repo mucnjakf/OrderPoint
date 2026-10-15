@@ -1,4 +1,4 @@
-﻿<ItemCardImage ImageUrl="@ImageUrl" IsActive="@IsActive"/>
+﻿<ItemCardImage ImageUrl="@ImageUrl" IsActive="@(IsActive && !IsSoldOut)"/>
 
 <MudCardContent Class="d-flex flex-column">
     <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Spacing="2" Class="mb-1">
@@ -20,7 +20,7 @@
             <MudChip T="string"
                      Variant="Variant.Text"
                      Size="Size.Small"
-                     Color="@(IsActive ? Color.Success : Color.Error)"
+                     Color="@StatusColor"
                      Class="ma-0"
                      Style="@StatusChipStyle">
                 @StatusText

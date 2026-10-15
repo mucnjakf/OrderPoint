@@ -5,7 +5,7 @@ using OrderPoint.Domain.Outcomes;
 namespace OrderPoint.Application.Mediator;
 
 // Registered outside CacheInvalidationBehavior, so apps that reload on the signal never read stale cache entries
-internal sealed class MenuNotificationBehavior<TRequest, TResponse>(IMenuNotifier menuNotifier)
+internal sealed class MenuNotificationBehavior<TRequest, TResponse>(IMenuNotifier menuNotifier, ChangedMenu changedMenu)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : notnull
     where TResponse : Result
@@ -17,7 +17,7 @@ internal sealed class MenuNotificationBehavior<TRequest, TResponse>(IMenuNotifie
     {
         TResponse response = await next(cancellationToken);
 
-        if (response.IsSuccess && request is IMenuNotifyingCommand)
+        if (response.IsSuccess && (request is IMenuNotifyingCommand || changedMenu.IsChanged))
         {
             await menuNotifier.NotifyMenuChangedAsync(CancellationToken.None);
         }

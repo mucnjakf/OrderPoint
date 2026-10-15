@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using OrderPoint.Shared.Extensions;
 
 namespace OrderPoint.Shared.Items.Components;
@@ -15,6 +16,8 @@ public sealed partial class ItemCardContent
     private const string ActiveText = "Active";
 
     private const string InactiveText = "Inactive";
+
+    private const string SoldOutText = "Sold out";
 
     // As tall as the category line next to it
     private const string StatusChipStyle = "height: 20px; font-size: 0.75rem;";
@@ -59,6 +62,10 @@ public sealed partial class ItemCardContent
     [Parameter]
     public int? OrdersCount { get; set; }
 
+    // An active item whose ingredient ran short; it reads "Sold out" instead of "Active"
+    [Parameter]
+    public bool IsSoldOut { get; set; }
+
     // Guests only ever see available items, so the customer app leaves the chip out
     [Parameter]
     public bool ShowsStatus { get; set; } = true;
@@ -69,7 +76,9 @@ public sealed partial class ItemCardContent
 
     private string DescriptionStyle => IsDescriptionClamped ? ClampedDescriptionStyle : SecondaryTextStyle;
 
-    private string StatusText => IsActive ? ActiveText : InactiveText;
+    private string StatusText => !IsActive ? InactiveText : IsSoldOut ? SoldOutText : ActiveText;
+
+    private Color StatusColor => !IsActive ? Color.Error : IsSoldOut ? Color.Warning : Color.Success;
 
     private string PriceText => Price.ToString("C", CultureInfo.CurrentCulture);
 

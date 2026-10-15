@@ -21,5 +21,10 @@ internal static class CacheTags
 
     internal static readonly IReadOnlyList<string> TableChanges = [Tables];
 
-    internal static readonly IReadOnlyList<string> StockChanges = [Stock];
+    // An item's availability and cost come from its stock
+    internal static readonly IReadOnlyList<string> StockChanges = [Stock, Items, Menu];
+
+    // A completed order takes its ingredients off the stock
+    internal static readonly IReadOnlyList<string> CompletedOrderChanges =
+        [Orders, Items, Bartenders, Dashboard, Stock, Menu];
 }

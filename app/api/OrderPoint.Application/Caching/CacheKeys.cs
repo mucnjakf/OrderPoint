@@ -27,6 +27,8 @@ internal static class CacheKeys
 
     internal static string For(GetItemQuery query) => $"items:{query.Id}";
 
+    internal static string For(GetItemRecipeQuery query) => $"items:{query.Id}:recipe";
+
     internal static string For(GetItemsQuery query)
         => $"items:page:{query.PageNumber}:{query.PageSize}:{query.CategoryId}:{query.Status}:{query.SortBy}:" +
            $"{query.SearchQuery}";
