@@ -1,0 +1,94 @@
+﻿@page "/tables/{TableCode}/order/{CategoryId:guid}/items/{ItemId:guid}"
+@page "/counter/order/{CategoryId:guid}/items/{ItemId:guid}"
+
+<PageTitle>@(Item?.Name ?? "Item")</PageTitle>
+
+<MudStack Row="true" AlignItems="AlignItems.Center" Spacing="1" Class="mb-2">
+    <MudIconButton Icon="@Icons.Material.Filled.ArrowBack"
+                   Href="@CategoryUri"
+                   aria-label="Back to the category"/>
+
+    <MudStack Spacing="0" Class="flex-1" Style="min-width: 0">
+        <MudText Typo="Typo.h6" HtmlTag="h1" Style="overflow-wrap: anywhere">
+            @if (IsLoading)
+            {
+                <MudSkeleton Width="140px"/>
+            }
+            else
+            {
+                @(Item?.Name ?? "Item")
+            }
+        </MudText>
+
+        <MudText Typo="Typo.caption" Style="color: var(--mud-palette-text-secondary)">
+            @PlaceText
+        </MudText>
+    </MudStack>
+</MudStack>
+
+<StatefulView IsLoading="@IsLoading"
+              ShowContent="@(Item is not null)"
+              EmptyStateIcon="@Icons.Material.Filled.MenuBook"
+              EmptyStateText="Item not found"
+              EmptyStateDetail="It may have been taken off the menu.">
+    <LoadingContent>
+        <OrderItemDetailsSkeleton/>
+    </LoadingContent>
+
+    <ChildContent>
+        <MudCard>
+            <ItemCardContent ImageUrl="@Item!.ImageUrl"
+                             IsActive="true"
+                             ShowsStatus="false"
+                             CategoryName="@Category!.Name"
+                             CategoryImageUrl="@Category.ImageUrl"
+                             Name="@Item.Name"
+                             Description="@Item.Description"
+                             Price="@Item.Price"
+                             Portion="@Item.Portion"
+                             IsDescriptionClamped="false"/>
+        </MudCard>
+
+        <MudPaper Class="pa-3 mt-3">
+            @if (OrderQuantity == 0)
+            {
+                <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                    <QuantityStepper @bind-Value="@Quantity" Max="@OrderDraft.MaxQuantity"/>
+
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Size="Size.Large"
+                               Class="flex-1"
+                               StartIcon="@Icons.Material.Filled.Add"
+                               OnClick="@AddToOrder">
+                        @AddButtonText
+                    </MudButton>
+                </MudStack>
+            }
+            else
+            {
+                <MudStack Spacing="3">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                        <MudText Typo="Typo.body1">
+                            In the order
+                        </MudText>
+
+                        <QuantityStepper Value="@OrderQuantity"
+                                         ValueChanged="@SetOrderQuantity"
+                                         Min="0"
+                                         Max="@OrderDraft.MaxQuantity"/>
+                    </MudStack>
+
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               Size="Size.Large"
+                               FullWidth="true"
+                               EndIcon="@Icons.Material.Filled.ArrowForward"
+                               Href="@ReviewUri">
+                        Review
+                    </MudButton>
+                </MudStack>
+            }
+        </MudPaper>
+    </ChildContent>
+</StatefulView>

@@ -1,0 +1,18 @@
+﻿@if (ItemsCount != 0)
+{
+    <MudPaper Class="pa-3 mt-3" Style="@BarStyle">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <MudText Typo="Typo.body1" Class="flex-1">
+                <strong>@ItemsCount.ToCountText("item", "items")</strong>
+                · @Total.ToString("C", CultureInfo.CurrentCulture)
+            </MudText>
+
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       EndIcon="@Icons.Material.Filled.ArrowForward"
+                       Href="@ReviewUri">
+                Review
+            </MudButton>
+        </MudStack>
+    </MudPaper>
+}

@@ -1,4 +1,5 @@
 ﻿using OrderPoint.Bartender.Orders.Dtos;
+using OrderPoint.Shared.Menu.Dtos;
 
 namespace OrderPoint.Bartender.Orders.Services;
 
@@ -18,6 +19,16 @@ internal sealed class OrderDraft
     internal string? CustomerName { get; set; }
 
     internal int ItemsCount => _lines.Sum(line => line.Quantity);
+
+    // Today's prices; a line whose item left the menu counts nothing
+    internal decimal GetTotal(IReadOnlyList<MenuCategoryDto> menu)
+    {
+        Dictionary<Guid, decimal> prices = menu
+            .SelectMany(category => category.Items)
+            .ToDictionary(item => item.Id, item => item.Price);
+
+        return _lines.Sum(line => prices.GetValueOrDefault(line.ItemId) * line.Quantity);
+    }
 
     internal int GetQuantity(Guid itemId)
     {

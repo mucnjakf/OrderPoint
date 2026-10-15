@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Server.Circuits;
 using MudBlazor;
 using MudBlazor.Services;
 using OrderPoint.Bartender;
+using OrderPoint.Bartender.Menu.Services;
 using OrderPoint.Bartender.Orders.Api;
 using OrderPoint.Bartender.Orders.Services;
 using OrderPoint.Bartender.Tables.Api;
@@ -37,6 +38,7 @@ builder.Services.AddScoped<DarkModeService>();
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<OrdersHubService>();
 builder.Services.AddScoped<OrderDraftService>();
+builder.Services.AddScoped<MenuService>();
 
 // The auth endpoints are anonymous and called without AccessTokenHandler, which uses them to refresh tokens
 builder.Services.AddHttpClient<AuthApiClient>(ConfigureApiClient);

@@ -21,7 +21,7 @@ public sealed partial class BottomNavigation : IDisposable
     private static readonly (string Href, string Label, string Icon)[] Destinations =
     [
         ("/", "Tables", Icons.Material.Filled.TableRestaurant),
-        ("/orders", "My orders", Icons.Material.Filled.Receipt),
+        ("/orders", "Orders", Icons.Material.Filled.Receipt),
         ("/account", "Account", Icons.Material.Filled.Person)
     ];
 

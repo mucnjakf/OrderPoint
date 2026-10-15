@@ -1,14 +1,13 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Components;
+using OrderPoint.Bartender.Menu.Services;
 using OrderPoint.Bartender.Orders.Api;
 using OrderPoint.Bartender.Orders.Api.Requests;
 using OrderPoint.Bartender.Orders.Dtos;
 using OrderPoint.Bartender.Orders.Services;
 using OrderPoint.Bartender.Shared.Extensions;
 using OrderPoint.Shared.Errors;
-using OrderPoint.Shared.Menu.Api;
 using OrderPoint.Shared.Menu.Dtos;
-using OrderPoint.Shared.Orders.Services;
 using OrderPoint.Shared.Services;
 
 namespace OrderPoint.Bartender.Orders.Pages;
@@ -29,16 +28,13 @@ public sealed partial class ReviewOrderPage : IDisposable
     private ApiService ApiService { get; set; } = null!;
 
     [Inject]
-    private MenuApiClient MenuApiClient { get; set; } = null!;
+    private MenuService MenuService { get; set; } = null!;
 
     [Inject]
     private OrderApiClient OrderApiClient { get; set; } = null!;
 
     [Inject]
     private OrderDraftService OrderDraftService { get; set; } = null!;
-
-    [Inject]
-    private OrdersHubService OrdersHubService { get; set; } = null!;
 
     [Inject]
     private NavigationManager NavigationManager { get; set; } = null!;
@@ -72,14 +68,14 @@ public sealed partial class ReviewOrderPage : IDisposable
 
     protected override async Task OnInitializedAsync()
     {
-        OrdersHubService.MenuChanged += OnMenuChanged;
+        MenuService.Changed += OnMenuChanged;
 
         await GetMenuItemsAsync();
     }
 
     public void Dispose()
     {
-        OrdersHubService.MenuChanged -= OnMenuChanged;
+        MenuService.Changed -= OnMenuChanged;
     }
 
     private void OnMenuChanged()
@@ -90,7 +86,7 @@ public sealed partial class ReviewOrderPage : IDisposable
     // New prices, and lines whose item just left the menu; a failed reload keeps what is shown
     private async Task GetMenuItemsAsync(bool isLiveUpdate = false)
     {
-        IReadOnlyList<MenuCategoryDto>? menu = await ApiService.ExecuteAsync(() => MenuApiClient.GetMenuAsync());
+        IReadOnlyList<MenuCategoryDto>? menu = await MenuService.GetMenuAsync();
 
         if (menu is not null || !isLiveUpdate)
         {
@@ -130,7 +126,8 @@ public sealed partial class ReviewOrderPage : IDisposable
 
         OrderDraftService.Remove(TableCode);
 
-        NavigationManager.NavigateTo("/");
+        // The order shows up there, and follows the bar live
+        NavigationManager.NavigateTo("/orders");
     }
 
     private async Task SendOrderAsync()
@@ -149,6 +146,8 @@ public sealed partial class ReviewOrderPage : IDisposable
             when (exception.HasErrorCode(ItemIsUnavailableCode) || exception.HasErrorCode(ItemNotFoundCode))
         {
             // The menu changed since it was loaded: reload it, so the gone lines are marked
+            MenuService.Reset();
+
             await GetMenuItemsAsync(isLiveUpdate: true);
 
             throw;

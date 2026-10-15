@@ -14,7 +14,7 @@ using OrderPoint.Shared.Services;
 namespace OrderPoint.Bartender.Orders.Pages;
 
 // What this bartender took since the day start, live, so they see when the bar takes it and when it is paid
-public sealed partial class MyOrdersPage : IDisposable
+public sealed partial class OrdersPage : IDisposable
 {
     // A day's orders of one bartender fit on one page
     private const int PageSize = 50;
